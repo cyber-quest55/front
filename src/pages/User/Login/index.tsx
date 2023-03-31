@@ -6,7 +6,7 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { useIntl, useModel, useRequest } from '@umijs/max';
+import { history, useIntl, useModel, useRequest } from '@umijs/max';
 import { Button, ConfigProvider, Tabs, theme } from 'antd';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -23,9 +23,7 @@ export default () => {
   const loginReq = useRequest(login, { manual: true });
 
   /** States */
-  const [type, setType] = useState<string>('account');
   const [loginType, setLoginType] = useState<LoginType>('username');
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
 
   /** Models */
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -42,8 +40,12 @@ export default () => {
     }
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
-    const msg = await loginReq.run({ ...values });
+  const handleSubmit = async (values: any) => {
+    await loginReq.run({ ...values });
+    await fetchUserInfo();
+    const urlParams = new URL(window.location.href).searchParams;
+    history.push(urlParams.get('redirect') || '/');
+    return true
   };
 
   return (
@@ -130,28 +132,26 @@ export default () => {
             </Tabs>
             {loginType === 'username' && (
               <>
-                <ProConfigProvider token={{ colorPrimaryActive: '#74E39A' }}>
-                  <ProFormText
-                    name="username"
-                    fieldProps={{
-                      size: 'large',
-                      prefix: <UserOutlined className={'prefixIcon'} />,
-                    }}
-                    placeholder={intl.formatMessage({
-                      id: 'pages.login.input.user.placeholder',
-                      defaultMessage: 'usuário.sobrenome',
-                    })}
-                    rules={[
-                      {
-                        required: true,
-                        message: intl.formatMessage({
-                          id: 'validation.required',
-                          defaultMessage: 'Campo obrigatório',
-                        }),
-                      },
-                    ]}
-                  />
-                </ProConfigProvider>
+                <ProFormText
+                  name="username"
+                  fieldProps={{
+                    size: 'large',
+                    prefix: <UserOutlined className={'prefixIcon'} />,
+                  }}
+                  placeholder={intl.formatMessage({
+                    id: 'pages.login.input.user.placeholder',
+                    defaultMessage: 'usuário.sobrenome',
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: intl.formatMessage({
+                        id: 'validation.required',
+                        defaultMessage: 'Campo obrigatório',
+                      }),
+                    },
+                  ]}
+                />
                 <ProFormText.Password
                   name="password"
                   fieldProps={{
@@ -176,35 +176,33 @@ export default () => {
             )}
             {loginType === 'email' && (
               <>
-                <ProConfigProvider token={{ colorPrimaryActive: '#74E39A' }}>
-                  <ProFormText
-                    name="username"
-                    fieldProps={{
-                      size: 'large',
-                      prefix: <MailOutlined className={'prefixIcon'} />,
-                    }}
-                    placeholder={intl.formatMessage({
-                      id: 'pages.login.input.user.placeholder',
-                      defaultMessage: 'usuário.sobrenome',
-                    })}
-                    rules={[
-                      {
-                        required: true,
-                        message: intl.formatMessage({
-                          id: 'validation.required',
-                          defaultMessage: 'Campo obrigatório',
-                        }),
-                      },
-                      {
-                        type: 'email',
-                        message: intl.formatMessage({
-                          id: 'validation.email',
-                          defaultMessage: 'E-mail inválido',
-                        }),
-                      },
-                    ]}
-                  />
-                </ProConfigProvider>
+                <ProFormText
+                  name="email"
+                  fieldProps={{
+                    size: 'large',
+                    prefix: <MailOutlined className={'prefixIcon'} />,
+                  }}
+                  placeholder={intl.formatMessage({
+                    id: 'pages.login.input.user.placeholder',
+                    defaultMessage: 'usuário.sobrenome',
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: intl.formatMessage({
+                        id: 'validation.required',
+                        defaultMessage: 'Campo obrigatório',
+                      }),
+                    },
+                    {
+                      type: 'email',
+                      message: intl.formatMessage({
+                        id: 'validation.email',
+                        defaultMessage: 'E-mail inválido',
+                      }),
+                    },
+                  ]}
+                />
                 <ProFormText.Password
                   name="password"
                   fieldProps={{

@@ -81,6 +81,8 @@ export default defineConfig({
     locale: true,
     ...defaultSettings,
   },
+  dva: { 
+  },
   /**
    * @name moment2dayjs 插件
    * @description 将项目中的 moment 替换为 dayjs
@@ -152,4 +154,7 @@ export default defineConfig({
     strategy: 'normal',
   },
   requestRecord: {},
+  define: { 
+    "MAPS_KEY": "&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU", 
+  }
 });

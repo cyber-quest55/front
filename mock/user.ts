@@ -28,18 +28,7 @@ const getAccess = () => {
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
-  'GET /api/currentUser': (req: Request, res: Response) => {
-    if (!getAccess()) {
-      res.status(401).send({
-        data: {
-          isLogin: false,
-        },
-        errorCode: '401',
-        errorMessage: '请先登录！',
-        success: true,
-      });
-      return;
-    }
+  'GET /auth/currentUser': (req: Request, res: Response) => {
     res.send({
       success: true,
       data: {
@@ -99,6 +88,7 @@ export default {
   'POST /auth/login': async (req: Request, res: Response) => {
     const { password, username, type } = req.body;
     await waitTime(2000);
+   
     if (password === 'ant.design' && username === 'admin') {
       res.send({
         status: 'ok',

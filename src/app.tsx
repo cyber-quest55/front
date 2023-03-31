@@ -1,11 +1,12 @@
-import { AvatarDropdown, AvatarName, Footer, Question, SelectLang } from '@/components';
-import { currentUser as queryCurrentUser } from '@/services/users/index';
+import { AvatarDropdown, AvatarName, Footer, SelectLang } from '@/components';
+import { currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
+import FarmSelect from './components/FarmSelect'
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -48,7 +49,10 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
-    actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
+    actionsRender: () => [
+      <FarmSelect key="FarmSelect" />,
+      <SelectLang key="SelectLang" />,
+    ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -89,16 +93,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
-    menuHeaderRender: undefined,
+    menuHeaderRender: (undefined),
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
+
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return <>{children}</>;
