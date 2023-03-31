@@ -1,32 +1,41 @@
-import { LoadingOutlined } from '@ant-design/icons';
-import { ProField } from '@ant-design/pro-components';
-import { useMount } from 'ahooks';
+import { GetFarmModelProps } from '@/models/farm';
+import { GetFarmConnectionModelProps } from '@/models/farm-connection';
+import { LoadingOutlined, WifiOutlined } from '@ant-design/icons';
+import { Badge, Tooltip } from 'antd';
 import { connect } from 'dva';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export type WithConnectionProps = {
-    dispatch: any;
-    farmConnection: any
-}; 
-
-const FarmSelect: React.FC<WithConnectionProps> = (props) => {
-  useMount(() => {
-    props.dispatch({
-      type: 'farm/queryFarm',
-      payload: {}
-    })
-  })
-
-  return props.farmConnection.loading? <LoadingOutlined/> : <ProField
-    style={{ marginRight: 12, width: 175 }}
-    text="open"
-    mode={'edit'}
-    valueType="select"
-    value={props.farmConnection.result.list[0].id}  
-    request={async () => props.farmConnection.result.list.map(item => ({label: item.name, value: item.id}))}
-  />;
+  dispatch: any;
+  farm: GetFarmModelProps;
+  farmConnection: GetFarmConnectionModelProps;
 };
 
-export default connect(({ farm }: { farm: any }) => ({
+const WithConnection: React.FC<WithConnectionProps> = (props) => {
+
+  useEffect(() => {
+    if (props.farm.loaded)
+      props.dispatch({
+        type: 'farmConnection/queryFarmConnection',
+        payload: { id: props.farm.selectedFarm }
+      })
+  }, [props.farm.selectedFarm])
+
+  return <span style={{ marginRight: '8px' }} >
+    {
+      props.farmConnection.loading ?
+        <Tooltip title="Carregando conexão da fazenda"> <LoadingOutlined /> </Tooltip>
+        :
+        props.farmConnection?.result?.is_online ?
+          <Tooltip title="Fazenda com conexão"> <WifiOutlined /> </Tooltip> :
+          <Badge count={"x"} size="small" style={{ color: 'white' }}>
+            <Tooltip title="Fazenda sem conexão"> <WifiOutlined /> </Tooltip>
+          </Badge >
+    }
+  </span>
+};
+
+export default connect(({ farm, farmConnection }: { farm: any, farmConnection: any }) => ({
   farm,
-}))(FarmSelect);  
+  farmConnection,
+}))(WithConnection);  

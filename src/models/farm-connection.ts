@@ -1,7 +1,7 @@
-import { getFarms } from "@/services/farm";
+import { getFarmConnection } from "@/services/farm";
 
-export interface GetFarmModelProps {
-    result: API.gerFarmsResponse;
+export interface GetFarmConnectionModelProps {
+    result: API.getFarmConnectionResponse;
     loading: boolean;
     loaded: boolean;
 }
@@ -17,24 +17,24 @@ export default {
 
     effects: {
         *queryFarmConnection(
-            { payload }: { payload: API.getFarmsParams },
+            { payload }: { payload: API.getFarmConnectionParams },
             { call, put }: { call: any, put: any }) {
             yield put({ type: 'queryFarmConnectionStart' });
-            const { data } = yield call(getFarms, payload);
+            const { data } = yield call(getFarmConnection, payload);
             yield put({ type: 'queryFarmConnectionSuccess', payload: data });
         },
     },
 
     reducers: {
         queryFarmConnectionStart(
-            state: GetFarmModelProps) { 
+            state: GetFarmConnectionModelProps) { 
             return {
                 ...state,
                 loading: true,
             };
         },
         queryFarmConnectionSuccess(
-            state: GetFarmModelProps,
+            state: GetFarmConnectionModelProps,
             { payload }: { payload: API.gerFarmsResponse }) { 
             return {
                 ...state,

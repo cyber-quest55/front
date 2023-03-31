@@ -6,7 +6,7 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import FarmSelect from './components/FarmSelect'
+import WithConnection from './components/WithConnection';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -50,7 +50,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     actionsRender: () => [
-      <FarmSelect key="FarmSelect" />,
+      <WithConnection key="WithConnection" />,
       <SelectLang key="SelectLang" />,
     ],
     avatarProps: {

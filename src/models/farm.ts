@@ -4,6 +4,7 @@ export interface GetFarmModelProps {
     result: API.gerFarmsResponse;
     loading: boolean;
     loaded: boolean;
+    selectedFarm: number;
 }
 
 export default {
@@ -12,7 +13,8 @@ export default {
     state: {
         result: {},
         loaded: false,
-        loading: true
+        loading: true,
+        selectedFarm: 0
     },
 
     effects: {
@@ -40,7 +42,16 @@ export default {
                 ...state,
                 loading: false,
                 loaded: true,
+                selectedFarm: payload.list[0]?.id,
                 result: payload,
+            };
+        },
+        setSelectedFarm(
+            state: GetFarmModelProps,
+            { payload }: { payload: number}) { 
+            return {
+                ...state, 
+                selectedFarm: payload, 
             };
         },
     },

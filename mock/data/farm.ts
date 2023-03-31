@@ -16,3 +16,10 @@ export const gerFarmsResponse: IResponse<API.gerFarmsResponse> = Mock.mock({
         }]
     }
 })
+
+export const getFarmConnectionResponse: IResponse<API.getFarmConnectionResponse> = Mock.mock({
+    ...defaulSuccessResponse,
+    data: {
+        is_online: false
+    }
+})

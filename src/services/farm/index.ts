@@ -13,10 +13,10 @@ export async function getFarms(options?: { [key: string]: any }) {
 }
 
 /** GET /farms/${farmId}/central_panel/status/ */
-export async function getFarmConnection(farmId: string, options?: { [key: string]: any }) {
+export async function getFarmConnection(props: API.getFarmConnectionParams, options?: { [key: string]: any }) {
   return request<{
     data: API.gerFarmsResponse;
-  }>(`/v3/farms/${farmId}/central_panel/status/`, {
+  }>(`/farms/${props.id}/central_panel/status`, {
     method: 'GET',
     ...(options || {}),
   });

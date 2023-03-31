@@ -8,4 +8,8 @@ declare namespace Models {
     timezone: string
     pivots: Models.Pivot[]
   }; 
+
+  type FarmConnection = { 
+    is_online: boolean;
+  }
 }

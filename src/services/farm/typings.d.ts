@@ -10,4 +10,11 @@ declare namespace API {
     total: number;
     list: Models.Farm[]
   };
+
+  type getFarmConnectionParams = {
+    id: string;
+  };
+
+  type getFarmConnectionResponse = Models.FarmConnection;
+
 }

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { gerFarmsResponse } from './data/farm';
+import { gerFarmsResponse, getFarmConnectionResponse } from './data/farm';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -16,8 +16,8 @@ export default {
     res.status(200).send(gerFarmsResponse);
   },
 
-  'GET /farms/313/central_panel/status': async (req: Request, res: Response) => {
+  'GET /farms/:farmId/central_panel/status': async (req: Request, res: Response) => {
     await waitTime(2000)
-    res.status(200).send(gerFarmsResponse);
+    res.status(200).send(getFarmConnectionResponse);
   },
 };
