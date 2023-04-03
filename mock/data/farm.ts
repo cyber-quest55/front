@@ -1,7 +1,7 @@
 import { IResponse, defaulSuccessResponse } from '../response';
 import Mock from 'mockjs';
 
-export const GetFarmsResponse: IResponse<API.GetFarmsResponse> = Mock.mock({ 
+export const GetFarmsResponse: IResponse<API.GetFarmResponse> = Mock.mock({ 
     ...defaulSuccessResponse,
     data: {
         current: 0,

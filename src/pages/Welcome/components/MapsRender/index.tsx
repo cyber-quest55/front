@@ -44,7 +44,7 @@ const MapsRender: FunctionComponent<Props> = (props) => {
                     }}  >
                         <Space size="large" direction="vertical" style={{width :'100%'}}>
                             <Row justify="space-between" align="middle"  >
-                                <Col ><Typography.Title level={5} style={{ margin: 0 }} >asdas</Typography.Title ></Col>
+                                <Col ><Typography.Title level={5} style={{ margin: 0 }} >Pivos</Typography.Title ></Col>
                                 <Col ><FarmSelect /></Col>
                             </Row>
                             <PivotList />

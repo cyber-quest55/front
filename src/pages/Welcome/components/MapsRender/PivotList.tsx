@@ -1,8 +1,10 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
+import { FieldTimeOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
-import { Tag, Tooltip } from 'antd';
-import { ReactText, useEffect, useState } from 'react';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { Space, Tag, Tooltip } from 'antd';
+import { useEffect } from 'react';
 import { connect } from 'umi';
 
 type Props = {
@@ -12,7 +14,6 @@ type Props = {
 }
 
 const PivotList: React.FC<Props> = (props) => {
-    const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
 
     useEffect(() => {
         props.dispatch({
@@ -21,31 +22,49 @@ const PivotList: React.FC<Props> = (props) => {
         })
     }, [props.farm.selectedFarm])
 
+    const className = useEmotionCss(({ }) => {
+        return {
+            [`.ant-pro-card-body`]: {
+                'padding-inline': '0px !important',
+            },
+        };
+    });
+
+    const iconPivot = useEmotionCss(({  token }) => {
+        return {
+            'font-size': 22,
+            color: token.colorPrimary
+        };
+    });
+
+    const renderColumn = (
+        <Space>
+            <Tooltip title="Status"><Tag>Parado</Tag></Tooltip>
+            <Tooltip title="Versão"><Tag>V5</Tag></Tooltip>
+            <Tooltip title="Último Functionamento"><Tag>23 Mar 14:14</Tag></Tooltip>
+        </Space>
+    )
+
     const formatedData = props.pivot.result?.list?.map((item) => ({
         title: item.name,
-        subTitle: <Tooltip title="Status"><Tag>Parado</Tag></Tooltip>,
-        description: (
-            <div>
-              <div>version : {item.protocol}</div>
-              <div>inline 标题字体是 normal</div>
-              <div>new 会有一个入场动画</div>
-            </div>
-          ),
+        avatar: <FieldTimeOutlined className={iconPivot}/>,
+        subTitle: renderColumn,
     }))
 
     return (
-        <ProList<any>
-            loading={props.pivot.loading}
-            rowKey="title"
-            style={{ width: '100%', margin: 0, padding: 0 }}
-            dataSource={formatedData}
-            metas={{
-                title: { }, 
-                subTitle: { }, 
-                description: {}
-            }}
-            expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
-        />
+        <div className={className}>
+            <ProList<any>
+                loading={props.pivot.loading}
+                rowKey="title"
+                style={{ width: '100%' }}
+                dataSource={formatedData}
+                metas={{
+                    avatar: {},
+                    title: {},
+                    subTitle: {}, 
+                }}
+            />
+        </div>
     )
 }
 
