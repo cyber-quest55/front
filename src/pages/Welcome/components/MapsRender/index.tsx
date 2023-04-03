@@ -1,27 +1,17 @@
-import { ProCard, ProList, ProSkeleton } from '@ant-design/pro-components';
 import GoogleMapReact from 'google-map-react';
-import { FunctionComponent, ReactNode, ReactText, useState } from 'react';
-import { connect } from 'umi';
-import { GetFarmModelProps } from '@/models/farm';
+import PivotList from './PivotList'
+import { FunctionComponent, ReactNode } from 'react';
 import FarmSelect from '@/components/FarmSelect';
-import { useMount } from 'ahooks';
-
+import { ProCard } from '@ant-design/pro-components';
+import { Col, Row, Space, Typography } from 'antd';
 
 type Props = {
     dispatch: any;
-    farm: GetFarmModelProps
     children: ReactNode
 }
 
 const MapsRender: FunctionComponent<Props> = (props) => {
-    const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
-    console.log('chegou aqui')
-    useMount(() => {
-        props.dispatch({
-            type: 'farm/queryFarm',
-            payload: {}
-        })
-    })
+
     const defaultProps = {
         center: {
             lat: 10.99835602,
@@ -35,7 +25,6 @@ const MapsRender: FunctionComponent<Props> = (props) => {
             {
                 <>
                     <GoogleMapReact
-
                         bootstrapURLKeys={{ key: "&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU" as string }}
                         defaultCenter={defaultProps.center}
                         defaultZoom={defaultProps.zoom}
@@ -43,62 +32,28 @@ const MapsRender: FunctionComponent<Props> = (props) => {
                     >
                         {props.children}
                     </GoogleMapReact>
-                    <div style={{
+                    <ProCard style={{
                         position: 'absolute',
                         width: 400,
                         top: 65,
                         left: 45,
                         maxHeight: 500,
                         overflowY: 'auto',
-                        overflowX: 'hidden'
-                    }}>
-                        {
-                            !props.farm.loading ?
-                                <ProList<Models.Farm>
-                                    rowKey="title"
-                                    headerTitle={
-                                        <div style={{ 
-                                            display: 'flex', 
-                                            justifyContent: 'space-between', 
-                                            alignItems: 'center', 
-                                            width: '360px' 
-                                        }}>
-                                            <div>Fazendas</div>
-                                            <FarmSelect />
-                                        </div>
-                                    }
-                                    style={{ width: '100%' }}
-                                    expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
-                                    dataSource={props.farm.result.list}
-                                    metas={{
-                                        title: {
-                                            dataIndex: 'name',
-                                        },
-                                        actions: {
-                                            render: () => {
-                                                return <a key="invite">Editar</a>;
-                                            },
-                                        },
-                                    }}
-                                /> :
-                                <ProCard >
-                                    <ProSkeleton
-                                        statistic={false}
-                                        list={3}
-                                        pageHeader={false}
-                                        toolbar={false}
-                                        type="list"
-                                    />
-                                </ProCard>
-                        }
-
-                    </div>
+                        overflowX: 'hidden',
+                        padding: 0
+                    }}  >
+                        <Space size="large" direction="vertical" style={{width :'100%'}}>
+                            <Row justify="space-between" align="middle"  >
+                                <Col ><Typography.Title level={5} style={{ margin: 0 }} >asdas</Typography.Title ></Col>
+                                <Col ><FarmSelect /></Col>
+                            </Row>
+                            <PivotList />
+                        </Space>
+                    </ProCard>
                 </>
             }
         </>
     );
 };
 
-export default connect(({ farm }: { farm: GetFarmModelProps }) => ({
-    farm,
-}))(MapsRender); 
+export default MapsRender; 

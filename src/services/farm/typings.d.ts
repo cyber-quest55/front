@@ -2,19 +2,19 @@
 /* eslint-disable */
 
 declare namespace API {
-  type getFarmsParams = {};
+  type GetFarmsParams = {};
 
-  type gerFarmsResponse = {
+  type GetFarmResponse = {
     current: number;
     pageSize: number;
     total: number;
     list: Models.Farm[]
   };
 
-  type getFarmConnectionParams = {
+  type GetFarmConnectionParams = {
     id: string;
   };
 
-  type getFarmConnectionResponse = Models.FarmConnection;
+  type GetFarmConnectionResponse = Models.FarmConnection;
 
 }

@@ -12,8 +12,7 @@ export type FarmSelectProps = {
   dispatch: any;
 };
 
-const FarmSelect: React.FC<FarmSelectProps> = (props) => {
-  console.log('chegou aqui')
+const FarmSelect: React.FC<FarmSelectProps> = (props) => { 
   useMount(() => {
     if (!props.farm.loaded)
       props.dispatch({
@@ -30,7 +29,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
   }
 
   return props.farm.loading ? <LoadingOutlined /> : <ProField
-    style={{ marginRight: 12, width: 175 }}
+    style={{   width: 175 }}
     text="open"
     mode={'edit'}
     valueType="select"

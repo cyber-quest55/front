@@ -1,7 +1,7 @@
-import { getPivotById } from "@/services/pivot";
+import { getPivots } from "@/services/pivot";
 
 export interface GetPivotModelProps {
-    result: API.getPivotByIdResponse;
+    result: API.GetPivotByFarmResponse;
     loading: boolean;
     loaded: boolean;
 }
@@ -17,10 +17,11 @@ export default {
 
     effects: {
         *queryPivot(
-            { payload }: { payload: API.getPivotByIdParam },
+            { payload }: { payload: API.GetPivotByFarmParam },
             { call, put }: { call: any, put: any }) {
             yield put({ type: 'queryPivotStart' });
-            const { data } = yield call(getPivotById, payload.id);
+            
+            const { data } = yield call(getPivots, payload);
             yield put({ type: 'queryPivotSuccess', payload: data });
         },
     },
@@ -36,7 +37,7 @@ export default {
         },
         queryPivotSuccess(
             state: GetPivotModelProps,
-            { payload }: { payload: API.getPivotByIdResponse }
+            { payload }: { payload: API.GetPivotByFarmResponse }
         ) {
             return {
                 ...state,

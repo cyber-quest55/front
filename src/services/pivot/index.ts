@@ -2,11 +2,11 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** GET /farms/${pivotId}/pivots/light */
-export async function getPivotById(id: string, options?: { [key: string]: any }) {
+/** GET /farms/${farmId}/pivots/light */
+export async function getPivots(data: API.GetPivotByFarmParam, options?: { [key: string]: any }) {
   return request<{
-    data: API.gerFarmsResponse;
-  }>(`farms/${id}/pivots/light/`, {
+    data: API.GetPivotByFarmResponse;
+  }>(`farms/${data.id}/pivots/light/`, {
     method: 'GET',
     ...(options || {}),
   });

@@ -1,7 +1,7 @@
 import { getFarms } from "@/services/farm";
 
 export interface GetFarmModelProps {
-    result: API.gerFarmsResponse;
+    result: API.GetFarmResponse;
     loading: boolean;
     loaded: boolean;
     selectedFarm: number;
@@ -19,7 +19,7 @@ export default {
 
     effects: {
         *queryFarm(
-            { payload }: { payload: API.getFarmsParams },
+            { payload }: { payload: API.GetFarmsParams },
             { call, put }: { call: any, put: any }) {
             yield put({ type: 'queryFarmStart' });
             const { data } = yield call(getFarms, payload);
@@ -37,7 +37,7 @@ export default {
         },
         queryFarmSuccess(
             state: GetFarmModelProps,
-            { payload }: { payload: API.gerFarmsResponse }) { 
+            { payload }: { payload: API.GetFarmResponse }) { 
             return {
                 ...state,
                 loading: false,

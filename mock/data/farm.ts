@@ -1,7 +1,7 @@
 import { IResponse, defaulSuccessResponse } from '../response';
 import Mock from 'mockjs';
 
-export const gerFarmsResponse: IResponse<API.gerFarmsResponse> = Mock.mock({ 
+export const GetFarmsResponse: IResponse<API.GetFarmsResponse> = Mock.mock({ 
     ...defaulSuccessResponse,
     data: {
         current: 0,
@@ -17,9 +17,9 @@ export const gerFarmsResponse: IResponse<API.gerFarmsResponse> = Mock.mock({
     }
 })
 
-export const getFarmConnectionResponse: IResponse<API.getFarmConnectionResponse> = Mock.mock({
+export const GetFarmConnectionResponse: IResponse<API.GetFarmConnectionResponse> = Mock.mock({
     ...defaulSuccessResponse,
     data: {
-        is_online: false
+        is_online: true
     }
 })

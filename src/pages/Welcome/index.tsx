@@ -1,7 +1,7 @@
 import { ProCard } from '@ant-design/pro-components';
 import { Col, Row } from 'antd';
 import MapsRender from './components/MapsRender'
- 
+
 const Welcome: React.FC = () => {
 
   return (
