@@ -25,14 +25,14 @@ const PivotList: React.FC<Props> = (props) => {
     const className = useEmotionCss(({ }) => {
         return {
             [`.ant-pro-card-body`]: {
-                'padding-inline': '0px !important',
+                paddingInline: '0px !important',
             },
         };
     });
 
     const iconPivot = useEmotionCss(({  token }) => {
         return {
-            'font-size': 22,
+            fontSize: 22,
             color: token.colorPrimary
         };
     });

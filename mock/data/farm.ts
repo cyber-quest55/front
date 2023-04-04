@@ -20,6 +20,6 @@ export const GetFarmsResponse: IResponse<API.GetFarmResponse> = Mock.mock({
 export const GetFarmConnectionResponse: IResponse<API.GetFarmConnectionResponse> = Mock.mock({
     ...defaulSuccessResponse,
     data: {
-        is_online: true
+        is_online: false
     }
 })
