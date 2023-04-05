@@ -3,9 +3,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import FarmSelect from '@/components/FarmSelect';
 import { ProCard } from '@ant-design/pro-components';
 import { Col, Row, Space, Typography } from 'antd';
-import { GoogleMap, LoadScript, Circle, Polyline } from '@react-google-maps/api';
-import { Rectangle } from '@react-google-maps/api';
-import { LatLng, computeDistanceBetween, computeHeading, computeOffset, computeOffsetOrigin } from 'spherical-geometry-js';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import CirclePivot from '@/components/CirclePivot/CirclePivot';
 
 type Props = {
@@ -47,7 +45,8 @@ const MapsRender: FunctionComponent<Props> = (props) => {
                         zoom={18}
                     >
                         <CirclePivot
-                            version="v5"
+                            protocol="v5"
+                            type='sectorial'
                             centerLat={centerLat}
                             centerLng={centerLng}
                             referencedLat={referencedLat}
@@ -55,10 +54,11 @@ const MapsRender: FunctionComponent<Props> = (props) => {
                             gpsLat={gpsLat}
                             gpsLong={gpsLong}
                             pivotColor="#FF0000"
-                            lineColor="#fff"
-                            dashed
+                            lineColor="#fff" 
+                            referenceAngle={208.44756136416618}
+                            irrigationDirection={1}
+                            stopAngle={135}
                         /> 
- 
                     </GoogleMap>
                 </LoadScript>
             </div>
