@@ -3,7 +3,7 @@
 
 declare namespace API {
   type GetPivotByFarmParam = {
-    id: number
+    id: number;
   };
 
   type GetPivotByFarmResponse =  {
@@ -12,4 +12,16 @@ declare namespace API {
     total: number;
     list: Models.Pivot[];
   };
+
+  type GetPivotInformationParam = { 
+    id: number; 
+    params: any
+  }
+
+  type GetPivotInformationResponse = { 
+    current: number;
+    pageSize: number;
+    total: number;
+    list: Models.PivotInformation[];
+  }
 }

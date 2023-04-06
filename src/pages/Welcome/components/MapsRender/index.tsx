@@ -3,8 +3,8 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import FarmSelect from '@/components/FarmSelect';
 import { ProCard } from '@ant-design/pro-components';
 import { Col, Row, Space, Typography } from 'antd';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-import CirclePivot from '@/components/CirclePivot/CirclePivot';
+import { GoogleMap, LoadScript } from '@react-google-maps/api'; 
+import RenderPivots from '@/components/RenderPivots';
 
 type Props = {
     dispatch?: any;
@@ -12,23 +12,17 @@ type Props = {
     google?: any
 }
 
-const MapsRender: FunctionComponent<Props> = (props) => {
+const MapsRender: FunctionComponent<Props> = () => {
     const containerStyle = {
         width: '100%',
         height: 'calc(100vh )'
     };
 
     const center = {
-        lat: -22.425491,
-        lng: -45.452787
+        lat: -21.027351,
+        lng: -46.058161
     }
-
-    const centerLat = -22.425491
-    const centerLng = -45.452787
-    const referencedLat = -22.426115
-    const referencedLng = -45.453535
-    const gpsLat = -22.0092306
-    const gpsLong = -46.8108764
+ 
   
     return (
         <>
@@ -44,21 +38,7 @@ const MapsRender: FunctionComponent<Props> = (props) => {
                         }}
                         zoom={18}
                     >
-                        <CirclePivot
-                            protocol="v5"
-                            type='sectorial'
-                            centerLat={centerLat}
-                            centerLng={centerLng}
-                            referencedLat={referencedLat}
-                            referencedLng={referencedLng}
-                            gpsLat={gpsLat}
-                            gpsLong={gpsLong}
-                            pivotColor="#FF0000"
-                            lineColor="#fff" 
-                            referenceAngle={208.44756136416618}
-                            irrigationDirection={1}
-                            stopAngle={135}
-                        /> 
+                        <RenderPivots />
                     </GoogleMap>
                 </LoadScript>
             </div>

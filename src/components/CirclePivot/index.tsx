@@ -2,6 +2,7 @@ import { Circle, Marker, Polygon, Polyline } from '@react-google-maps/api';
 import React from 'react';
 import {
     LatLng,
+    LatLngLiteral,
     computeDistanceBetween,
     computeHeading,
     computeOffset,
@@ -10,7 +11,7 @@ import {
 } from 'spherical-geometry-js';
 
 export type CirclePivotProps = {
-    color?: string;
+    id: number | string; 
     protocol: 'v4' | 'v5';
     type: 'sectorial' | 'central'
     centerLat: number;
@@ -25,6 +26,8 @@ export type CirclePivotProps = {
     referenceAngle: number;
     irrigationDirection: number;
     stopAngle: number; // To dashed line, need antCL
+    endAngle: boolean;
+    sectorAngle?: number;
 };
 
 const circleOptions = {
@@ -43,6 +46,25 @@ const lineOptions = {
     strokeWeight: 3,
     zIndex: 3,
 }
+
+// Função para gerar o array que desenha o circulo com determinado angulo
+function circlePath(center: LatLngLiteral, reference: LatLngLiteral, radius: number, points: number, angle: number) {
+    const a = [];
+    const p = angle / points; // Variação do angulo baseado no numero de pontos
+    let d = computeHeading(
+        // Angulo que começa o desenho
+        center,
+        reference
+    );
+
+    for (let i = 0; i < points; ++i, d += p) {
+        a.push(computeOffset(center, radius, d));
+    }
+    a.unshift(center);
+
+    return a;
+}
+
 
 const CirclePivot: React.FC<CirclePivotProps> = (props) => {
     const { centerLat, centerLng, referencedLat, referencedLng, gpsLat, gpsLong } = props;
@@ -88,7 +110,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
         referencePositionGMaps,
     );
 
-    /** For dash the circle */
+    /** For angle lines */
     const getPolylines = () => {
         let nextAngle = initialAngle;
         return [...Array(72).keys()].map(() => {
@@ -138,7 +160,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
         centerPositionGMaps,
         referenceRadius,
         lineAngle
-    ); 
+    );
 
     const interiorPositionRadiusGMaps = interpolate(
         centerPositionGMaps,
@@ -192,7 +214,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
         referenceRadius,
         props.stopAngle
     );
- 
+
     return <>
         {/** Mark to zoom */}
         <Marker
@@ -225,25 +247,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
                 path: linePoints
             }}
         />
-        {/** Draw dashed line */}
-        <Polyline
-            options={{
-                strokeOpacity: 0,
-                strokeColor: lineColor,
-                icons: [
-                    {
-                        icon: lineSymbol,
-                        offset: "0",
-                        repeat: "10px",
-                    },
-                ],
-                path: [
-                    { lat: centerPositionGMaps.latitude, lng: centerPositionGMaps.longitude },
-                    { lat: endIrrigationDashedLine.latitude, lng: endIrrigationDashedLine.longitude }
-                ],
-                zIndex: 3
-            }}
-        />
+
         {/** Draw triangle */}
         <Polygon
             paths={triangleCoords}
@@ -268,6 +272,27 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
                 zIndex: 3,
             }}
         />
+        {/** Draw dashed line */}
+        {props.endAngle ?
+            <Polyline
+                options={{
+                    strokeOpacity: 0,
+                    strokeColor: lineColor,
+                    icons: [
+                        {
+                            icon: lineSymbol,
+                            offset: "0",
+                            repeat: "10px",
+                        },
+                    ],
+                    path: [
+                        { lat: centerPositionGMaps.latitude, lng: centerPositionGMaps.longitude },
+                        { lat: endIrrigationDashedLine.latitude, lng: endIrrigationDashedLine.longitude }
+                    ],
+                    zIndex: 3
+                }}
+            /> : null}
+        {/** Draw angles lines */}
         {
             props.dashed ? getPolylines().map((item) => (
                 <Polyline
@@ -284,6 +309,22 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
                     }}
                 />
             )) : null
+        }
+        {/** Case is V4 */}
+        {
+            props.protocol === 'v4' ?
+                <>
+                    <Polygon 
+                        options={{
+                            strokeColor: props.pivotColor,
+                            strokeOpacity: 0.5,
+                            strokeWeight: 0.5,
+                            fillColor: props.pivotColor,
+                            fillOpacity: 0.5,
+                        }}
+                    />
+                </> :
+                null
         }
     </>
 };

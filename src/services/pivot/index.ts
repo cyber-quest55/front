@@ -11,3 +11,12 @@ export async function getPivots(data: API.GetPivotByFarmParam, options?: { [key:
     ...(options || {}),
   });
 }
+
+export async function getPivotsWithInformations(data: API.GetPivotInformationParam, options?: { [key: string]: any }) {
+  return request<{
+    data: API.GetPivotByFarmResponse;
+  }>(`farms/${data.id}/pivots/paginated/`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
