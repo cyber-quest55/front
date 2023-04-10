@@ -1,5 +1,5 @@
-import { Circle, Marker, Polygon, Polyline } from '@react-google-maps/api';
-import React from 'react';
+import { Circle, InfoWindow, Marker, Polygon, Polyline } from '@react-google-maps/api';
+import React, { useState } from 'react';
 import {
     LatLng,
     LatLngLiteral,
@@ -11,7 +11,7 @@ import {
 } from 'spherical-geometry-js';
 
 export type CirclePivotProps = {
-    id: number | string; 
+    id: number | string;
     protocol: 'v4' | 'v5';
     type: 'sectorial' | 'central'
     centerLat: number;
@@ -25,15 +25,20 @@ export type CirclePivotProps = {
     dashed?: boolean;
     referenceAngle: number;
     irrigationDirection: number;
+    lpmGpsStreamLat: number;
+    lpmGpsStreamLng: number;
     stopAngle: number; // To dashed line, need antCL
-    endAngle: boolean;
+    endAngle: number;
     sectorAngle?: number;
+    zoom: number;
+    hasMarker?: boolean;
+    irrigationStatus: 4 | 6 | 33
 };
 
 const circleOptions = {
     strokeOpacity: 0.8,
     strokeWeight: 2,
-    fillOpacity: 0.55,
+    fillOpacity: 0.4,
     clickable: false,
     draggable: false,
     editable: false,
@@ -42,13 +47,13 @@ const circleOptions = {
 }
 
 const lineOptions = {
-    strokeOpacity: 1,
+    strokeOpacity: .5,
     strokeWeight: 3,
     zIndex: 3,
 }
 
 // Função para gerar o array que desenha o circulo com determinado angulo
-function circlePath(center: LatLngLiteral, reference: LatLngLiteral, radius: number, points: number, angle: number) {
+function circlePath(center: LatLngLiteral, reference: LatLngLiteral, radius: number, points: number, angle: number): LatLngLiteral[] {
     const a = [];
     const p = angle / points; // Variação do angulo baseado no numero de pontos
     let d = computeHeading(
@@ -58,7 +63,8 @@ function circlePath(center: LatLngLiteral, reference: LatLngLiteral, radius: num
     );
 
     for (let i = 0; i < points; ++i, d += p) {
-        a.push(computeOffset(center, radius, d));
+        const result = computeOffset(center, radius, d)
+        a.push({ lat: result.lat(), lng: result.lng() });
     }
     a.unshift(center);
 
@@ -67,6 +73,11 @@ function circlePath(center: LatLngLiteral, reference: LatLngLiteral, radius: num
 
 
 const CirclePivot: React.FC<CirclePivotProps> = (props) => {
+    console.log(props.gpsLat, props.gpsLong, props.endAngle)
+    /** States*/
+    const [infoWindowVisible, setInfoWindowVisible] = useState(false)
+
+    /** Props */
     const { centerLat, centerLng, referencedLat, referencedLng, gpsLat, gpsLong } = props;
 
     const pivotColor = props.pivotColor ? props.pivotColor : '#000'
@@ -216,116 +227,181 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
     );
 
     return <>
+
         {/** Mark to zoom */}
-        <Marker
+        {props.zoom <= 11 && props.hasMarker ? <Marker
             position={{
                 lat: props.centerLat,
                 lng: props.centerLng,
             }}
-            visible={false}
-        />
-        {/** Draw circle */}
-        <Circle
-            center={{ lat: centerLat, lng: centerLng }}
-            options={{
-                ...circleOptions,
-                strokeColor: pivotColor,
-                fillColor: pivotColor,
-                radius: referenceRadius,
-                clickable: true,
-
-            }}
-            onMouseOver={() => {
-
-            }}
-        />
-        {/** Draw pivot line */}
-        <Polyline
-            options={{
-                ...lineOptions,
-                strokeColor: lineColor,
-                path: linePoints
-            }}
-        />
-
-        {/** Draw triangle */}
-        <Polygon
-            paths={triangleCoords}
-            options={{
-                strokeColor: lineColor,
-                strokeOpacity: 1,
-                strokeWeight: 0,
-                fillColor: lineColor,
-                fillOpacity: 1,
-                zIndex: 3,
-            }}
-        />
-        {/** Draw arrow */}
-        <Polygon
-            paths={lineUpArrow}
-            options={{
-                strokeColor: lineColor,
-                strokeOpacity: 1,
-                strokeWeight: 0,
-                fillColor: lineColor,
-                fillOpacity: 1,
-                zIndex: 3,
-            }}
-        />
-        {/** Draw dashed line */}
-        {props.endAngle ?
-            <Polyline
-                options={{
-                    strokeOpacity: 0,
-                    strokeColor: lineColor,
-                    icons: [
-                        {
-                            icon: lineSymbol,
-                            offset: "0",
-                            repeat: "10px",
-                        },
-                    ],
-                    path: [
-                        { lat: centerPositionGMaps.latitude, lng: centerPositionGMaps.longitude },
-                        { lat: endIrrigationDashedLine.latitude, lng: endIrrigationDashedLine.longitude }
-                    ],
-                    zIndex: 3
+            zIndex={13}
+            onMouseOver={() => setInfoWindowVisible(true)}
+            onMouseOut={() => setInfoWindowVisible(false)}
+            visible={true}
+        /> : null}
+        {/** Draw Info Window */}
+        {
+            infoWindowVisible ? <InfoWindow
+                position={{
+                    lat: centerLat,
+                    lng: centerLng
                 }}
-            /> : null}
-        {/** Draw angles lines */}
-        {
-            props.dashed ? getPolylines().map((item) => (
-                <Polyline
-                    key={`line-${Math.random()}`}
-                    path={[
-                        { lat: item.x.lat(), lng: item.x.lng() },
-                        { lat: item.y.lat(), lng: item.y.lng() }
-                    ]}
-                    options={{
-                        strokeColor: lineColor,
-                        strokeOpacity: 1,
-                        strokeWeight: 1,
-                        zIndex: 999,
-                    }}
-                />
-            )) : null
+                options={{
+                    zIndex: 12
+
+                }}
+                zIndex={12}
+            >
+                <div style={{
+                    backgroundColor: 'yellow',
+                    opacity: 0.75,
+                    padding: 12
+                }}>
+                    asd
+                </div>
+            </InfoWindow>
+                : null
         }
-        {/** Case is V4 */}
-        {
-            props.protocol === 'v4' ?
+
+        {props.zoom > 11 ? <>
+            {/** Draw circle */}
+            {props.type === 'central' ?
+                <Circle
+                    center={{ lat: centerLat, lng: centerLng }}
+                    options={{
+                        ...circleOptions,
+                        strokeColor: pivotColor,
+                        fillColor: pivotColor,
+                        radius: referenceRadius,
+                        clickable: true,
+                    }}
+                    onMouseOver={() => setInfoWindowVisible(true)}
+                    onMouseOut={() => setInfoWindowVisible(false)}
+                /> :
                 <>
-                    <Polygon 
+                    {/** Draw circle */}
+                    <Circle
+                        center={{ lat: centerLat, lng: centerLng }}
                         options={{
-                            strokeColor: props.pivotColor,
-                            strokeOpacity: 0.5,
+                            ...circleOptions,
+                            strokeColor: pivotColor,
+                            fillColor: pivotColor,
+                            radius: referenceRadius,
+                            strokeOpacity: 0,
                             strokeWeight: 0.5,
-                            fillColor: props.pivotColor,
-                            fillOpacity: 0.5,
+                            fillOpacity: 0,
+                        }}
+                        onMouseOver={() => setInfoWindowVisible(true)}
+                        onMouseOut={() => setInfoWindowVisible(false)}
+                    />
+                    {/** Cut the circle */}
+                    <Polygon
+                        paths={[
+                            ...circlePath(
+                                { lat: centerPositionGMaps.lat(), lng: centerPositionGMaps.lng() },
+                                { lat: referencePositionGMaps.lat(), lng: referencePositionGMaps.lng() },
+                                referenceRadius,
+                                360,
+                                props.endAngle
+                            ),
+                        ]}
+                        options={{
+                            strokeOpacity: 0,
+                            strokeWeight: 0.5,
+                            fillOpacity: 0.5, 
                         }}
                     />
-                </> :
-                null
-        }
+                    {/** Draw dashed line */}
+                    <Polyline
+                        options={{
+                            strokeOpacity: 0,
+                            strokeColor: lineColor,
+                            icons: [
+                                {
+                                    icon: lineSymbol,
+                                    offset: "0",
+                                    repeat: "10px",
+                                },
+                            ],
+                            path: [
+                                { lat: centerPositionGMaps.latitude, lng: centerPositionGMaps.longitude },
+                                { lat: endIrrigationDashedLine.latitude, lng: endIrrigationDashedLine.longitude }
+                            ],
+                            zIndex: 3
+                        }}
+                    />
+                </>
+            }
+
+            {/** Draw pivot line */}
+            <Polyline
+                options={{
+                    ...lineOptions,
+                    strokeColor: lineColor,
+                    path: linePoints
+                }}
+            />
+            {/** Draw triangle */}
+            <Polygon
+                paths={triangleCoords}
+                options={{
+                    strokeColor: lineColor,
+                    strokeOpacity: 1,
+                    strokeWeight: 0,
+                    fillColor: lineColor,
+                    fillOpacity: 1,
+                    zIndex: 3,
+                }}
+            />
+            {/** Draw arrow */}
+            <Polygon
+                paths={lineUpArrow}
+                options={{
+                    strokeColor: lineColor,
+                    strokeOpacity: 1,
+                    strokeWeight: 0,
+                    fillColor: lineColor,
+                    fillOpacity: 1,
+                    zIndex: 3,
+                }}
+            />
+
+
+            {/** Draw angles lines */}
+            {
+                props.dashed ? getPolylines().map((item) => (
+                    <Polyline
+                        key={`line-${Math.random()}`}
+                        path={[
+                            { lat: item.x.lat(), lng: item.x.lng() },
+                            { lat: item.y.lat(), lng: item.y.lng() }
+                        ]}
+                        options={{
+                            strokeColor: lineColor,
+                            strokeOpacity: 1,
+                            strokeWeight: 1,
+                            zIndex: 999,
+                        }}
+                    />
+                )) : null
+            }
+            {/** Case is V4 */}
+            {
+                props.protocol === 'v4' ?
+                    <>
+                        <Polygon
+                            options={{
+                                strokeColor: props.pivotColor,
+                                strokeOpacity: 0.5,
+                                strokeWeight: 0.5,
+                                fillColor: props.pivotColor,
+                                fillOpacity: 0.5,
+                            }}
+                        />
+                    </> :
+                    null
+            }
+        </> : null}
     </>
 };
 

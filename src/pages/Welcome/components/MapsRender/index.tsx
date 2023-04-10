@@ -3,7 +3,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import FarmSelect from '@/components/FarmSelect';
 import { ProCard } from '@ant-design/pro-components';
 import { Col, Row, Space, Typography } from 'antd';
-import { GoogleMap, LoadScript } from '@react-google-maps/api'; 
+import { LoadScript, } from '@react-google-maps/api';
 import RenderPivots from '@/components/RenderPivots';
 
 type Props = {
@@ -13,33 +13,14 @@ type Props = {
 }
 
 const MapsRender: FunctionComponent<Props> = () => {
-    const containerStyle = {
-        width: '100%',
-        height: 'calc(100vh )'
-    };
-
-    const center = {
-        lat: -21.027351,
-        lng: -46.058161
-    }
  
-  
     return (
         <>
             <div style={{ width: '100%', height: 'calc(100vh - 55px)' }}>
                 <LoadScript
                     googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
                 >
-                    <GoogleMap
-                        mapContainerStyle={containerStyle}
-                        center={center}
-                        options={{
-                            mapTypeId: 'satellite'
-                        }}
-                        zoom={18}
-                    >
-                        <RenderPivots />
-                    </GoogleMap>
+                    <RenderPivots />
                 </LoadScript>
             </div>
 

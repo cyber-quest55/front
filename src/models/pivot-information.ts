@@ -103,8 +103,7 @@ export default {
                 if (item.protocol < 5) {
                     const gpsPosition = item.latest_gps_stream?.position?.split(",");
                     const centerPosition = item.config.center.split(",");
-                    const referencePosition = item.config.reference.split(",");
-                    console.log(centerPosition)
+                    const referencePosition = item.config.reference.split(","); 
                     centerLat = parseFloat(centerPosition[0]).toFixed(6)
                     centerLng = parseFloat(centerPosition[1]).toFixed(6)
                     referencedLat = parseFloat(referencePosition[0]).toFixed(6)
@@ -133,8 +132,10 @@ export default {
                 }
 
                 if(type === 'sectorial'){
-                    sectorAngle = item.config.sector_angle
+                    sectorAngle = item.config?.sector_angle
                 }
+ 
+                let endAngle =  item.controllerconfig?.content?.sector?.end_angle
 
                 mapper.push({
                     id: item.id,
@@ -147,13 +148,18 @@ export default {
                     referencedLat: referencedLat as number,
                     referencedLng: referencedLng as number,
                     referenceAngle: item.reference_angle,
-                    endAngle: item.irrigation_end_angle !== null,
+                    endAngle,
                     stopAngle,
                     type: type, 
                     dashed: false,
                     lineColor: '#fff',
                     pivotColor: '#f33',
                     sectorAngle: sectorAngle,
+                    hasMarker: true, 
+                    irrigationStatus: item.controllerstream_panel?.content?.irrigation_status as any,
+                    lpmGpsStreamLng: 30,
+                    lpmGpsStreamLat: 30,
+                    zoom: 15
                 })
             }
 
