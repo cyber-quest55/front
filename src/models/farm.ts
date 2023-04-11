@@ -4,7 +4,7 @@ export interface GetFarmModelProps {
     result: API.GetFarmResponse;
     loading: boolean;
     loaded: boolean;
-    selectedFarm: number;
+    selectedFarm: Models.Farm;
 }
 
 export default {
@@ -14,13 +14,14 @@ export default {
         result: {},
         loaded: false,
         loading: true,
-        selectedFarm: 0
+        selectedFarm: {}
     },
 
     effects: {
         *queryFarm(
             { payload }: { payload: API.GetFarmsParams },
             { call, put }: { call: any, put: any }) {
+                console.log('chegou aqui')
             yield put({ type: 'queryFarmStart' });
             const { data } = yield call(getFarms, payload);
             yield put({ type: 'queryFarmSuccess', payload: data });
@@ -42,13 +43,13 @@ export default {
                 ...state,
                 loading: false,
                 loaded: true,
-                selectedFarm: payload.list[0]?.id,
+                selectedFarm: payload.list[0],
                 result: payload,
             };
         },
         setSelectedFarm(
             state: GetFarmModelProps,
-            { payload }: { payload: number}) { 
+            { payload }: { payload: Models.Farm}) { 
             return {
                 ...state, 
                 selectedFarm: payload, 

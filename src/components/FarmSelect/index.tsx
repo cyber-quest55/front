@@ -12,24 +12,23 @@ export type FarmSelectProps = {
   dispatch: any;
 };
 
-const FarmSelect: React.FC<FarmSelectProps> = (props) => { 
+const FarmSelect: React.FC<FarmSelectProps> = (props) => {
   useMount(() => {
-    if (!props.farm.loaded)
-      props.dispatch({
-        type: 'farm/queryFarm',
-        payload: {}
-      })
+    props.dispatch({
+      type: 'farm/queryFarm',
+      payload: {}
+    })
   })
 
   const onChange = (e: SyntheticEventData) => {
     props.dispatch({
       type: 'farm/setSelectedFarm',
-      payload: e
+      payload: props.farm.result?.list?.find(f => f.id === e)
     })
   }
 
   return props.farm.loading ? <LoadingOutlined /> : <ProField
-    style={{   width: 175 }}
+    style={{ width: '100%' }}
     text="open"
     mode={'edit'}
     valueType="select"

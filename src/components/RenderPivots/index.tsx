@@ -1,46 +1,47 @@
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
-import { Dispatch } from '@umijs/max';
-import { useMount } from 'ahooks';
+import { Dispatch } from '@umijs/max'; 
 import { connect } from 'dva';
 import React, { useEffect, useState } from 'react';
 import CirclePivot from '../CirclePivot';
 import { GoogleMap } from '@react-google-maps/api';
+import { GetFarmModelProps } from '@/models/farm';
 
 export type RenderPivotsProps = {
   dispatch: Dispatch;
   zoom: number;
   pivotInformation: GetPivotInformationModelProps;
+  farm: GetFarmModelProps
 };
 
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const [zoom, setZoom] = useState(13)
   const [map, setMap] = useState<any>(null)
-  const [mapCenter, setMapCenter] = useState({lat: 0, lng: 0})
+  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 })
 
   const containerStyle = {
     width: '100%',
-    height: 'calc(100vh )'
+    height: 'calc(100vh)'
   };
- 
 
-  useMount(() => {
-    props.dispatch({
-      type: 'pivotInformation/queryPivotInformation',
-      payload: {
-        id: 310,
-        params: {}
-      }
-    })
-  })
+  useEffect(() => {
+    if (props.farm.loaded && !props.pivotInformation.loaded)
+      props.dispatch({
+        type: 'pivotInformation/queryPivotInformation',
+        payload: {
+          id: 310,
+          params: {}
+        }
+      })
+  }, [props.farm])
 
-  useEffect(() => { 
-    if(props.pivotInformation.loading === false){
+  useEffect(() => {
+    if (props.pivotInformation.loaded === true) {
       const pivot = props.pivotInformation.result[0]
-      setMapCenter({lat: pivot.centerLat, lng: pivot.centerLng})
+      setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng })
     }
 
-  }, [props.pivotInformation.loading])
-  
+  }, [props.pivotInformation.loaded])
+
 
   return <>
     <GoogleMap
@@ -88,6 +89,6 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   </>
 };
 
-export default connect(({ pivotInformation }: { pivotInformation: any }) => ({
-  pivotInformation,
+export default connect(({ pivotInformation, farm }: { pivotInformation: any, farm: any }) => ({
+  pivotInformation, farm
 }))(RenderPivots);  

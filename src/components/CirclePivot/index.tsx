@@ -72,8 +72,7 @@ function circlePath(center: LatLngLiteral, reference: LatLngLiteral, radius: num
 }
 
 
-const CirclePivot: React.FC<CirclePivotProps> = (props) => {
-    console.log(props.gpsLat, props.gpsLong, props.endAngle)
+const CirclePivot: React.FC<CirclePivotProps> = (props) => { 
     /** States*/
     const [infoWindowVisible, setInfoWindowVisible] = useState(false)
 

@@ -1,10 +1,10 @@
-import PivotList from './PivotList'
+
 import React, { FunctionComponent, ReactNode } from 'react';
-import FarmSelect from '@/components/FarmSelect';
 import { ProCard } from '@ant-design/pro-components';
-import { Col, Row, Space, Typography } from 'antd';
 import { LoadScript, } from '@react-google-maps/api';
 import RenderPivots from '@/components/RenderPivots';
+import PivotList from '@/components/PivotList';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 
 type Props = {
     dispatch?: any;
@@ -13,7 +13,14 @@ type Props = {
 }
 
 const MapsRender: FunctionComponent<Props> = () => {
- 
+    const className = useEmotionCss(({ }) => {
+        return {
+            [`.ant-pro-card-body`]: {
+                paddingInline: '0px !important',
+            },
+        };
+    });
+
     return (
         <>
             <div style={{ width: '100%', height: 'calc(100vh - 55px)' }}>
@@ -23,24 +30,14 @@ const MapsRender: FunctionComponent<Props> = () => {
                     <RenderPivots />
                 </LoadScript>
             </div>
-
-            <ProCard style={{
+            <ProCard className={className} style={{
                 position: 'absolute',
                 width: 400,
                 top: 65,
                 left: 45,
-                maxHeight: 500,
-                overflowY: 'auto',
-                overflowX: 'hidden',
                 padding: 0
-            }}  >
-                <Space size="large" direction="vertical" style={{ width: '100%' }}>
-                    <Row justify="space-between" align="middle"  >
-                        <Col ><Typography.Title level={5} style={{ margin: 0 }} >Pivos</Typography.Title ></Col>
-                        <Col ><FarmSelect /></Col>
-                    </Row>
-                    <PivotList />
-                </Space>
+            }}>
+                <PivotList />
             </ProCard>
         </>
 
