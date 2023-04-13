@@ -5,7 +5,7 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig'; 
+import { errorConfig } from './requestErrorConfig';
 import FarmSelect from './components/FarmSelect';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -30,7 +30,6 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
@@ -49,8 +48,9 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
-    actionsRender: () => [ 
-      <SelectLang key="SelectLang" />,
+    actionsRender: () => [
+      <div key="SelectLang" style={{ color: 'white' }}><SelectLang /></div>,
+      <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
     ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
@@ -70,33 +70,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         history.push(loginPath);
       }
     },
-    layoutBgImgList: [
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
-        left: 85,
-        bottom: 100,
-        height: '303px',
-      },
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
-        bottom: -68,
-        right: -45,
-        height: '303px',
-      },
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
-        bottom: 0,
-        left: 0,
-        width: '331px',
-      },
-    ],
     links: isDev
       ? [
         <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
           <LinkOutlined />
           <span>OpenAPI 文档</span>
         </Link>,
-        <FarmSelect key="farm-select"/>
       ]
       : [],
     menuHeaderRender: (undefined),

@@ -20,7 +20,7 @@ export default {
             { payload }: { payload: API.GetFarmConnectionParams },
             { call, put }: { call: any, put: any }) {
             yield put({ type: 'queryFarmConnectionStart' });
-            const { data } = yield call(getFarmConnection, payload);
+            const { data } = yield call(getFarmConnection, payload.id);
             yield put({ type: 'queryFarmConnectionSuccess', payload: data });
         },
     },

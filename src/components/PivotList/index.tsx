@@ -3,10 +3,10 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { CalendarOutlined, EditFilled, PlusCircleFilled, RedoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Button, Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { Button, Col, Divider, Row, Select, Space, Spin, Tag, Tooltip, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
-import { Link } from '@umijs/max'
+import { Link, useParams } from '@umijs/max'
 import WithConnection from '../WithConnection';
 import { BsCloudRainFill } from "react-icons/bs";
 
@@ -17,13 +17,15 @@ type Props = {
 }
 
 const PivotList: React.FC<Props> = (props) => {
-    useEffect(() => {
-        if (props.farm.loaded && !props.pivot.loaded)
-            props.dispatch({
-                type: 'pivot/queryPivot',
-                payload: {}
-            })
-    }, [props.farm.selectedFarm])
+    const params = useParams()
+
+    useEffect(() => { 
+        console.log('aqui')
+        props.dispatch({
+            type: 'pivot/queryPivot',
+            payload: { id: parseInt(params.id as string) }
+        })
+    }, [params])
 
     const classNameScrollable = useEmotionCss(({ }) => {
         return {
@@ -46,8 +48,8 @@ const PivotList: React.FC<Props> = (props) => {
                 paddingInline: '0px !important',
             },
         };
-    }); 
- 
+    });
+
 
     const dataSource = [
         {
@@ -63,10 +65,11 @@ const PivotList: React.FC<Props> = (props) => {
             title: 'Pivô 4',
         },
     ];
+
     return (
-        <div className={className}>
+        <Spin spinning={props.pivot.loading} className={className}>
             <Row justify="center" align="middle" gutter={[25, 10]}  >
-                <Col ><Typography.Title level={5} style={{ margin: 0 }} >{props.farm.selectedFarm.name}</Typography.Title ></Col>
+                <Col ><Typography.Title level={5} style={{ margin: 0 }} >{props.farm.selectedFarm?.name}</Typography.Title ></Col>
                 <Col >
                     <Link to="/edit/farm">
                         <Tooltip title="Editar Fazenda"><EditFilled style={{ fontSize: 18 }} /></Tooltip>
@@ -91,7 +94,6 @@ const PivotList: React.FC<Props> = (props) => {
                 </Row>
                 <Divider style={{ marginBottom: 0 }} />
                 <ProList<{ title: string }>
-
                     itemLayout="vertical"
                     rowKey="id"
                     dataSource={dataSource}
@@ -100,7 +102,7 @@ const PivotList: React.FC<Props> = (props) => {
                         description: {
                             render: () => (
                                 <>
-                                    <Tag color="geekblue">V5</Tag>
+                                    <Tag color="geekblue" >V5</Tag>
                                     <Tag color="red">Sem Comunicação</Tag>
                                 </>
                             ),
@@ -108,7 +110,7 @@ const PivotList: React.FC<Props> = (props) => {
                         content: {
                             render: () => {
                                 return (
-                                    <Space direction='vertical'   >
+                                    <Space direction='vertical'>
                                         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                             <Tooltip title="Pluviometro"><BsCloudRainFill style={{ fontSize: 20 }} /> </Tooltip> 0 mm
                                         </span>
@@ -125,9 +127,7 @@ const PivotList: React.FC<Props> = (props) => {
                     }}
                 />
             </section>
-
-
-        </div>
+        </Spin  >
     )
 }
 

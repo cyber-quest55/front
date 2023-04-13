@@ -6,17 +6,15 @@ import { request } from '@umijs/max';
 export async function getPivots(data: API.GetPivotByFarmParam, options?: { [key: string]: any }) {
   return request<{
     data: API.GetPivotByFarmResponse;
-  }>(`farms/${data.id}/pivots/light/`, {
-    method: 'GET',
-    ...(options || {}),
+  }>(`${data.id}/pivots/light/`, {
+    method: 'GET', 
   });
 }
 
 export async function getPivotsWithInformations(data: API.GetPivotInformationParam, options?: { [key: string]: any }) {
   return request<{
     data: API.GetPivotByFarmResponse;
-  }>(`farms/${data.id}/pivots/paginated/`, {
-    method: 'GET',
-    ...(options || {}),
+  }>(`${data.id}/pivots/paginated/`, {
+    method: 'GET', 
   });
 }

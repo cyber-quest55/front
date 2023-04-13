@@ -3,7 +3,7 @@ import { Col, Row } from 'antd';
 import MapsRender from './components/MapsRender'
  
 const Welcome: React.FC = () => {
-
+  
   return (
     <Row   >
       <Col xs={24} style={{ height: ' 100vh ', position: 'relative' }}>

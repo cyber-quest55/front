@@ -20,8 +20,8 @@ export default {
         *queryPivotInformation(
             { payload }: { payload: API.GetPivotInformationParam },
             { call, put }: { call: any, put: any }) {
-            yield put({ type: 'queryPivotInformationStart' });
-            const { data } = yield call(getPivotsWithInformations, payload.id, payload.params);
+            yield put({ type: 'queryPivotInformationStart' }); 
+            const { data } = yield call(getPivotsWithInformations, payload, payload.params);
             yield put({ type: 'queryPivotInformationSuccess', payload: data });
         },
     },

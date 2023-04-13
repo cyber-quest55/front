@@ -1,29 +1,19 @@
 import { login } from '@/services/auth';
-import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import {
-  LoginFormPage,
-  ProConfigProvider,
-  ProFormCheckbox,
-  ProFormText,
+  ProCard, ProFormCheckbox,
+  ProFormText, ProForm, ProFormItem
 } from '@ant-design/pro-components';
-import { history, useIntl, useModel, useRequest } from '@umijs/max';
-import { Button, ConfigProvider, Tabs, theme } from 'antd';
-import { useState } from 'react';
+import { SelectLang, history, useModel, useRequest } from '@umijs/max';
+import { Button, Col, ConfigProvider, Row, Space, Typography } from 'antd';
 import { flushSync } from 'react-dom';
-import ImageBgLogin from '../../../../public/images/bglogin.png';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+ 
 
-type LoginType = 'username' | 'email';
-
-export default () => {
-  /** Use functions */
-  const intl = useIntl();
+export default () => { 
 
   /** Requests */
   const loginReq = useRequest(login, { manual: true });
-
-  /** States */
-  const [loginType, setLoginType] = useState<LoginType>('username');
 
   /** Models */
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -41,215 +31,97 @@ export default () => {
   };
 
   const handleSubmit = async (values: any) => {
-    await loginReq.run({ ...values });
+    const response: any = await loginReq.run({ ...values });
     await fetchUserInfo();
-    const urlParams = new URL(window.location.href).searchParams;
-    history.push(urlParams.get('redirect') || '/');
+    history.push(`/farms/${response.farm_id}`);
     return true
   };
+
+  const className = useEmotionCss(({ }) => {
+    return {
+      maxWidth: 375,
+      background: 'rgb(255 255 255 / 0.2)',
+      'backdrop-filter': 'blur(8px)',
+    };
+  });
 
   return (
     <ConfigProvider
       theme={{
-        algorithm: theme.darkAlgorithm,
         token: {
-          colorPrimary: '#3BD16F',
+          colorPrimary: '#44b86a',
         },
       }}
     >
-      <ProConfigProvider dark>
-        <div style={{ height: ' 100vh ' }}>
-          <LoginFormPage
-            onFinish={handleSubmit}
-            submitter={{
-              searchConfig: {
-                submitText: intl.formatMessage({
-                  id: 'pages.login.btn.text',
-                  defaultMessage: 'Entrar ',
-                }),
-              },
-            }}
-            style={{ color: 'white' }}
-            backgroundImageUrl={ImageBgLogin}
-            logo={ImageBgLogo}
-            title="Irricontrol"
-            subTitle="A BAUER GROUP COMPANY"
-            labelAlign="left"
-            activityConfig={{
-              style: {
-                boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.2)',
-                color: '#fff',
-                borderRadius: 8,
-                opacity: '0.9',
-                backgroundColor: '#141414',
-              },
-              title: intl.formatMessage({
-                id: 'pages.login.activity.title',
-                defaultMessage: 'Sobre, Informações',
-              }),
-              subTitle: intl.formatMessage({
-                id: 'pages.login.activity.desc',
-                defaultMessage: 'Caso queira entrar em contato',
-              }),
+      <div style={{
+        height: ' 100vh ',
+        backgroundImage: 'url(https://gw.alipayobjects.com/mdn/rms_08e378/afts/img/A*XpGeRoZKGycAAAAAAAAAAAAAARQnAQ)',
+      }}>
+        <div style={{ color: 'white', }}>
 
-              action: (
-                <Button
-                  size="large"
-                  style={{
-                    borderRadius: 20,
-                    background: '#fff',
-                    color: '#1677FF',
-                    width: 160,
+          <div style={{
+            display: 'flex',
+            height: 'calc(100vh - 84px)',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <ProCard className={className}>
+              <Space direction='vertical' size={'large'}>
+                <Row justify="space-between">
+                  <Col >
+                    <Space size="small">
+                      <img src={ImageBgLogo} style={{ width: 35 }} alt="logo-enchant" />
+                      <Typography.Title level={4} style={{ margin: 0, color: 'white' }}>
+                        Irricontrol
+                      </Typography.Title>
+                    </Space>
+                  </Col>
+                  <Col style={{ color: 'white' }}>
+                    <SelectLang />
+                  </Col>
+                </Row>
+                <ProForm
+
+                  submitter={{
+                    render: () => <Button 
+                    type='primary' 
+                    htmlType='submit' 
+                    loading={loginReq.loading}
+                    style={{ width: '100%' }}>
+                      Entrar
+                    </Button>,
                   }}
+                  size='large'
+                  name="validate_other"
+                  initialValues={{
+                    name: '',
+                    password: '',
+                  }}
+                  onValuesChange={(_, values) => {
+                    console.log(values);
+                  }}
+                  onFinish={handleSubmit}
                 >
-                  {intl.formatMessage({
-                    id: 'pages.login.activity.btn.text',
-                    defaultMessage: 'CLIQUE AQUI',
-                  })}
-                </Button>
-              ),
-            }}
-          >
-            <Tabs
-              centered
-              activeKey={loginType}
-              onChange={(activeKey) => setLoginType(activeKey as LoginType)}
-            >
-              <Tabs.TabPane
-                key={'username'}
-                tab={intl.formatMessage({
-                  id: 'pages.login.withUsername',
-                  defaultMessage: 'Entrar com usuário',
-                })}
-              />
-              <Tabs.TabPane
-                key={'email'}
-                tab={intl.formatMessage({
-                  id: 'pages.login.withEmail',
-                  defaultMessage: 'Entrar com e-mail',
-                })}
-              />
-            </Tabs>
-            {loginType === 'username' && (
-              <>
-                <ProFormText
-                  name="username"
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <UserOutlined className={'prefixIcon'} />,
-                  }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.input.user.placeholder',
-                    defaultMessage: 'usuário.sobrenome',
-                  })}
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'validation.required',
-                        defaultMessage: 'Campo obrigatório',
-                      }),
-                    },
-                  ]}
-                />
-                <ProFormText.Password
-                  name="password"
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <LockOutlined className={'prefixIcon'} />,
-                  }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.input.password.placeholder',
-                    defaultMessage: 'suaSenha123@',
-                  })}
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'validation.required',
-                        defaultMessage: 'Campo obrigatório',
-                      }),
-                    },
-                  ]}
-                />
-              </>
-            )}
-            {loginType === 'email' && (
-              <>
-                <ProFormText
-                  name="email"
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <MailOutlined className={'prefixIcon'} />,
-                  }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.input.user.placeholder',
-                    defaultMessage: 'usuário.sobrenome',
-                  })}
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'validation.required',
-                        defaultMessage: 'Campo obrigatório',
-                      }),
-                    },
-                    {
-                      type: 'email',
-                      message: intl.formatMessage({
-                        id: 'validation.email',
-                        defaultMessage: 'E-mail inválido',
-                      }),
-                    },
-                  ]}
-                />
-                <ProFormText.Password
-                  name="password"
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <LockOutlined className={'prefixIcon'} />,
-                  }}
-                  placeholder={intl.formatMessage({
-                    id: 'pages.login.input.password.placeholder',
-                    defaultMessage: 'suaSenha123@',
-                  })}
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({
-                        id: 'validation.required',
-                        defaultMessage: 'Campo obrigatório',
-                      }),
-                    },
-                  ]}
-                />
-              </>
-            )}
-            <div
-              style={{
-                marginBlockEnd: 24,
-              }}
-            >
-              <ProFormCheckbox noStyle name="autoLogin">
-                {intl.formatMessage({
-                  id: 'pages.login.keepLoged',
-                  defaultMessage: 'Continuar conectado',
-                })}
-              </ProFormCheckbox>
-              <a
-                style={{
-                  float: 'right',
-                }}
-              >
-                {intl.formatMessage({
-                  id: 'pages.login.recoverPassword',
-                  defaultMessage: 'Esqueceu sua senha?',
-                })}
-              </a>
-            </div>
-          </LoginFormPage>
+                  <ProFormText width="md" name="name" placeholder="Usuário ou E-mail" />
+                  <ProFormText.Password width="md" name="password" placeholder="Sua senha" />
+                  <Row align="middle" justify="space-between">
+                    <Col>
+                      <ProFormCheckbox  >
+                        Continuar conectado
+                      </ProFormCheckbox>
+                    </Col>
+                    <Col>
+                      <ProFormItem>
+                        <a >Esqueceu a senha?</a>
+                      </ProFormItem>
+                    </Col>
+                  </Row>
+                </ProForm>
+              </Space>
+            </ProCard>
+          </div>
         </div>
-      </ProConfigProvider>
+      </div>
     </ConfigProvider>
   );
 };

@@ -19,18 +19,17 @@ export default {
 
     effects: {
         *queryFarm(
-            { payload }: { payload: API.GetFarmsParams },
+            { payload }: { payload: any },
             { call, put }: { call: any, put: any }) {
-                console.log('chegou aqui')
             yield put({ type: 'queryFarmStart' });
             const { data } = yield call(getFarms, payload);
-            yield put({ type: 'queryFarmSuccess', payload: data });
+            yield put({ type: 'queryFarmSuccess', payload: { data, id: payload.id } });
         },
     },
 
     reducers: {
         queryFarmStart(
-            state: GetFarmModelProps) { 
+            state: GetFarmModelProps) {
             return {
                 ...state,
                 loading: true,
@@ -38,21 +37,21 @@ export default {
         },
         queryFarmSuccess(
             state: GetFarmModelProps,
-            { payload }: { payload: API.GetFarmResponse }) { 
+            { payload }: { payload: {data: API.GetFarmResponse, id: string }}) {
             return {
                 ...state,
                 loading: false,
                 loaded: true,
-                selectedFarm: payload.list[0],
-                result: payload,
+                selectedFarm: payload.data.list?.find(item => item.id === parseInt(payload.id)),
+                result: payload.data,
             };
         },
         setSelectedFarm(
             state: GetFarmModelProps,
-            { payload }: { payload: Models.Farm}) { 
+            { payload }: { payload: Models.Farm }) {
             return {
-                ...state, 
-                selectedFarm: payload, 
+                ...state,
+                selectedFarm: payload,
             };
         },
     },

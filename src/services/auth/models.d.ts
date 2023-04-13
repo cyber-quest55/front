@@ -6,6 +6,7 @@ declare namespace Models {
     resellers: any[];
     token: string;
     two_factor_authentication: boolean;
+    farm_id: string;
     user: number;
   };
 }

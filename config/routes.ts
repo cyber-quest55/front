@@ -21,12 +21,17 @@ export default [
         component: './User/Login',
       },
     ],
-  },
+  }, 
   {
-    path: '/welcome',
-    name: 'welcome',
-    icon: 'smile',
+    path: '/farms/:id',
+    name: 'Inicio',
+    hideInMenu: true,
+    icon: 'home',
     component: './Welcome',
+    menu: {
+      key: '/farms/:id',
+      name: 'Inicio'
+    }
   },
   {
     path: '/admin',
@@ -47,7 +52,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/users/login',
   },
   {
     path: '*',

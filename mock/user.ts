@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { GetLoginResponse } from './data/auth';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -108,11 +109,7 @@ export default {
       return;
     }
 
-    res.send({
-      status: 'error',
-      type,
-      currentAuthority: 'guest',
-    });
+    res.send(GetLoginResponse);
     access = 'guest';
   },
 

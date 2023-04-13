@@ -17,7 +17,7 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({ overlayClassName: cls, 
       },
     };
   });
-  return <Dropdown overlayClassName={classNames(className, cls)} {...restProps} />;
+  return <Dropdown placement="topRight" overlayClassName={classNames(className, cls)} {...restProps} />;
 };
 
 export default HeaderDropdown;
