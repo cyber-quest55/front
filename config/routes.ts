@@ -27,7 +27,7 @@ export default [
     name: 'Inicio',
     hideInMenu: true,
     icon: 'home',
-    component: './Welcome',
+    component: './Farms/[id].tsx',
     menu: {
       key: '/farms/:id',
       name: 'Inicio'

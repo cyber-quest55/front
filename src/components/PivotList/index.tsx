@@ -3,7 +3,7 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { CalendarOutlined, EditFilled, PlusCircleFilled, RedoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Button, Col, Divider, Row, Select, Space, Spin, Tag, Tooltip, Typography } from 'antd';
+import { Button, Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { Link, useParams } from '@umijs/max'
@@ -20,7 +20,6 @@ const PivotList: React.FC<Props> = (props) => {
     const params = useParams()
 
     useEffect(() => { 
-        console.log('aqui')
         props.dispatch({
             type: 'pivot/queryPivot',
             payload: { id: parseInt(params.id as string) }
@@ -67,7 +66,7 @@ const PivotList: React.FC<Props> = (props) => {
     ];
 
     return (
-        <Spin spinning={props.pivot.loading} className={className}>
+        <div className={className}>
             <Row justify="center" align="middle" gutter={[25, 10]}  >
                 <Col ><Typography.Title level={5} style={{ margin: 0 }} >{props.farm.selectedFarm?.name}</Typography.Title ></Col>
                 <Col >
@@ -102,8 +101,8 @@ const PivotList: React.FC<Props> = (props) => {
                         description: {
                             render: () => (
                                 <>
-                                    <Tag color="geekblue" >V5</Tag>
-                                    <Tag color="red">Sem Comunicação</Tag>
+                                    <Tag color="#2db7f5" >V5</Tag>
+                                    <Tag color="#f50">Sem Comunicação</Tag>
                                 </>
                             ),
                         },
@@ -127,7 +126,7 @@ const PivotList: React.FC<Props> = (props) => {
                     }}
                 />
             </section>
-        </Spin  >
+        </div  >
     )
 }
 

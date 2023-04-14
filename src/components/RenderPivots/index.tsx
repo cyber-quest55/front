@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 import CirclePivot from '../CirclePivot';
 import { GoogleMap } from '@react-google-maps/api';
 import { GetFarmModelProps } from '@/models/farm';
-import { Spin } from 'antd';
 
 export type RenderPivotsProps = {
   dispatch: Dispatch;
@@ -17,7 +16,7 @@ export type RenderPivotsProps = {
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const params = useParams()
 
-  const [zoom, setZoom] = useState(13)
+  const [zoom, setZoom] = useState(14)
   const [map, setMap] = useState<any>(null)
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 })
 
@@ -44,8 +43,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   }, [props.pivotInformation.loaded])
 
 
-  return <>
-    <Spin spinning={props.pivotInformation.loading}>
+  return <> 
       <GoogleMap
         onLoad={(map => setMap(map))}
         onZoomChanged={() => {
@@ -91,8 +89,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               dashed={false}
             />
           )) : null}
-      </GoogleMap>
-    </Spin>
+      </GoogleMap> 
   </>
 };
 

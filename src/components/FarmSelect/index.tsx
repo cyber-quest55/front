@@ -75,6 +75,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
   }
   return props.farm.loading ? <LoadingOutlined /> :
     <Dropdown
+      trigger={['click']}
       placement='topRight'
       menu={{ items: render }}
       dropdownRender={(menu) => (

@@ -6,6 +6,7 @@
   const _root = document.querySelector('#root');
   if (_root && _root.innerHTML === '') {
     _root.innerHTML = `
+    
       <style>
         html,
         body,
@@ -191,10 +192,10 @@
           </div>
         </div>
         <div class="loading-title">
-          正在加载资源
+          Carregando...
         </div>
         <div class="loading-sub-title">
-          初次加载资源可能需要较多时间 请耐心等待
+          estamos atualizando seus dados
         </div>
       </div>
     `;

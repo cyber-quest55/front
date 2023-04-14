@@ -11,7 +11,7 @@ export const GetFarmsResponse: IResponse<API.GetFarmResponse> = Mock.mock({
             id: '@integer(0, 300)',
             is_administrator: true,
             payment_status: 0,
-            name: 'Fezenda coração de boi',
+            name: 'Fazenda Sertão das Veredas',
             timezone: "America/Sao_Paulo",
         }]
     }
