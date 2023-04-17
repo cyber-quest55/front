@@ -1,5 +1,4 @@
 import { PivotStatusColor } from "@/utils/pivot-status";
-import { Liquid, Pie } from "@ant-design/charts"
 import { CaretDownOutlined, ClockCircleOutlined, CloseCircleFilled, CloudFilled, EditFilled, HistoryOutlined, ThunderboltFilled } from "@ant-design/icons";
 import { ProCard, StatisticCard } from "@ant-design/pro-components"
 import { Button, Col, Row, Space, Tag, Tooltip, Typography } from "antd";
@@ -7,59 +6,38 @@ import { BsFillCloudRainFill } from "react-icons/bs";
 import { GiPadlockOpen, GiSolidLeaf } from "react-icons/gi";
 import { TbBrandFlightradar24 } from "react-icons/tb";
 import { GrObjectGroup } from "react-icons/gr";
+import { useEmotionCss } from "@ant-design/use-emotion-css";
+import { Pie, G2 } from '@ant-design/plots';
+
+const { Statistic } = StatisticCard;
 
 const ShowPivot = () => {
     const { Text } = Typography;
 
+    const className = useEmotionCss(() => {
+        return {
+            '.ant-statistic-content-value': {
+                fontSize: '24px !important'
+            }
+        }
+    });
+    const G = G2.getEngine('canvas');
 
     const data = [
         {
-            sex: 'Trigo',
-            sold: 0.45,
+            type: 'Horas de pico',
+            value: 100,
+        },  
+        {
+            type: 'Horas em fora de pico',
+            value: 100,
         },
         {
-            sex: 'Feijão',
-            sold: 0.55,
+            type: 'Horas em reduzido',
+            value: 200,
+            color: 'red', 
         },
-    ];
-    const config = {
-        data,
-        angleField: 'sold',
-        colorField: 'sex',
-        legend: false,
-        label: {
-            type: 'inner',
-            offset: '-50%',
-            style: {
-                fill: '#fff',
-                fontSize: 18,
-                textAlign: 'center',
-            },
-        },
-        pieStyle: ({ sex }) => {
-            if (sex === 'Trigo') {
-                return {
-                    fill: 'p(a)https://gw.alipayobjects.com/zos/antfincdn/FioHMFgIld/pie-wenli1.png',
-                };
-            }
-
-            return {
-                fill: 'p(a)https://gw.alipayobjects.com/zos/antfincdn/Ye2DqRx%2627/pie-wenli2.png',
-            };
-        },
-        tooltip: false,
-    };
-
-    const configLiquid = {
-        percent: 0.25,
-        outline: {
-            border: 4,
-            distance: 8,
-        },
-        wave: {
-            length: 128,
-        },
-    };
+    ]; 
 
     return (
         <ProCard ghost style={{ marginBlockStart: 8, }} gutter={[16, 16]} wrap>
@@ -68,7 +46,7 @@ const ShowPivot = () => {
             <ProCard colSpan={{ xs: 24, sm: 9 }} style={{ height: 275 }}>
                 <Space direction="vertical" style={{ width: '100%' }} size="large">
                     <Row justify="space-between" align="middle">
-                        <Col><Tag color={PivotStatusColor.irrigating}>PIVOT PARADO</Tag></Col>
+                        <Col><Tag color={PivotStatusColor.off}>PIVOT PARADO</Tag></Col>
                         <Col>
                             <Space>
                                 <Button icon={<GiPadlockOpen />} href="https://www.google.com" />
@@ -121,7 +99,7 @@ const ShowPivot = () => {
                                         <div>10 mm </div>
                                     </Space>
                                     <Space>
-                                        <TbBrandFlightradar24 style={{fontSize: 20}} />
+                                        <TbBrandFlightradar24 style={{ fontSize: 20 }} />
                                         <div>1.2 bar</div>
                                     </Space>
                                 </Space>
@@ -149,23 +127,142 @@ const ShowPivot = () => {
                 </Space>
 
             </ProCard>
-            <StatisticCard
-                title="SEGMENTAÇÕES"
-                tooltip="大盘说明"
-                colSpan={{ xs: 24, sm: 5 }} style={{ height: 275 }}
-                chart={
-                    <Pie height={190}  {...config} />
-                }
-            />
-            <StatisticCard
-                title="NÍVEL DA ÁGUA"
-                tooltip="大盘说明"
-                colSpan={{ xs: 24, sm: 5 }} style={{ height: 275 }}
-                chart={
-                    <Liquid height={190}  {...configLiquid} />
-                }
-            />
-            <ProCard colSpan={{ xs: 24, sm: 5 }} style={{ height: 225 }} >
+
+            <ProCard split="vertical" colSpan={{ xs: 24, sm: 10 }} style={{ height: 275 }}>
+                <ProCard split="horizontal" colSpan={{ xs: 24, sm: 12 }}   >
+                    <StatisticCard
+
+                        style={{ height: "calc((275px / 2) - 1px)" }}
+                        statistic={{
+                            title: 'Falta de pressão',
+                            value: 8,
+                            description: <Statistic className={className} title="Último mês" value="8.04%" trend="down" />,
+                        }}
+                    />
+                    <StatisticCard
+                        style={{ height: "calc((275px / 2) - 1px)" }}
+                        statistic={{
+                            title: 'Queda de energia',
+                            value: 0,
+                            description: <Statistic className={className} title="Último mês" value="8.04%" trend="down" />,
+                        }}
+                    />
+                </ProCard>
+                <ProCard split="horizontal" colSpan={{ xs: 24, sm: 12 }}   >
+                    <StatisticCard
+                        style={{ height: "calc((275px / 2) - 1px)" }}
+                        statistic={{
+                            title: 'Desalinhado',
+                            value: 0,
+                            description: <Statistic className={className} title="Último mês" value="8.04%" trend="down" />,
+                        }}
+                    />
+                    <StatisticCard
+                        style={{ height: "calc((275px / 2) - 1px)" }}
+                        statistic={{
+                            title: 'Oscilação de energia',
+                            value: 0,
+                            description: <Statistic className={className} title="Último mês" value="8.04%" trend="down" />,
+                        }}
+                    />
+                </ProCard>
+
+            </ProCard>
+            <ProCard
+                title="Consumo de energia"
+                split={'vertical'}
+                headerBordered
+                colSpan={{ xs: 24, sm: 12 }}
+            >
+                <ProCard split="horizontal">
+                    <ProCard split="horizontal">
+                        <ProCard split="vertical">
+                            <StatisticCard
+                                statistic={{
+                                    title: 'Volume total',
+                                    value: "100.604,31",
+                                    suffix: 'm³'
+                                }}
+                            />
+                            <StatisticCard
+                                statistic={{
+                                    title: 'Horas trabalhadas',
+                                    value: "152,03",
+                                    suffix: 'h'
+                                }}
+                            />
+                        </ProCard>
+                    </ProCard>
+                    <StatisticCard
+                        style={{width: '100%' }}
+                        title="Horas de Trabalho Molhado"
+                        chart={
+                            <Pie
+                                appendPadding={10} 
+                                data={data}
+                                angleField="value"
+                                colorField="type"
+                                radius={0.7}
+                                legend={false}
+                                autoFit
+                                color= { ({ type }) => {
+                                    if(type === 'Horas de pico'){
+                                      return '#ff4d4f';
+                                    } else if (type === 'Horas em fora de pico'){
+                                      return '#4169E1'
+                                    }
+                                    return '#9FE2BF';
+                                  }}
+                                label={{
+                                    type: 'spider',
+                                    labelHeight: 40,
+                                    formatter: (data, mappingData) => {
+                                        const group = new G.Group({});
+                                        group.addShape({
+                                            type: 'circle',
+                                            attrs: {
+                                                x: 0,
+                                                y: 0,
+                                                width: 40,
+                                                height: 50,
+                                                r: 5,
+                                                fill: mappingData.color,
+                                            },
+                                        });
+                                        group.addShape({
+                                            type: 'text',
+                                            attrs: {
+                                                x: 10,
+                                                y: 8,
+                                                text: `${data.type}`,
+                                                fill: mappingData.color,
+                                            },
+                                        });
+                                        group.addShape({
+                                            type: 'text',
+                                            attrs: {
+                                                x: 0,
+                                                y: 25,
+                                                text: `${data.value}个 ${data.percent * 100}%`,
+                                                fill: 'rgba(0, 0, 0, 0.65)',
+                                                fontWeight: 700,
+                                            },
+                                        });
+                                        return group;
+                                    },
+                                }}
+                                interactions={[
+                                    {
+                                        type: 'element-selected',
+                                    },
+                                    {
+                                        type: 'element-active',
+                                    },
+                                ]}
+                            />
+                        }
+                    />
+                </ProCard> 
             </ProCard>
             <ProCard colSpan={{ xs: 24, sm: 12 }} style={{ height: 225 }}>
             </ProCard>

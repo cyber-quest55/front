@@ -21,7 +21,7 @@ const Welcome: React.FC = () => {
           <MapsRender >
           </MapsRender>
         </Col>
-        <Col xs={24} style={{ padding: '15px 15px', height: 'calc(100vh - 116px)' }}>
+        <Col xs={24} style={{ padding: '15px 15px', minHeight: 'calc(100vh - 116px)' }}>
           <ShowPivot/>
         </Col>
       </Row>

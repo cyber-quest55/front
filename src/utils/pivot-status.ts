@@ -1,8 +1,8 @@
 export enum PivotStatusColor {
     pressureFailure = "#DA1D29",
     scruffy = "#DA1D29",
-    energized = "#DAC422",
-    off = "#DA8E1E",
-    noCommunication = "#0A2842",
-    irrigating = "#339252"
+    energized = "#DA8E1E",
+    off = "#DAC422",
+    noCommunication = "grey",
+    irrigating = "#0A2842"
 }

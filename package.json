@@ -48,7 +48,7 @@
   "dependencies": {
     "@ant-design/charts": "^1.4.2",
     "@ant-design/icons": "^4.8.0",
-    "@ant-design/pro-components": "^2.3.57",
+    "@ant-design/pro-components": "^2.4.4",
     "@ant-design/use-emotion-css": "1.0.4",
     "@react-google-maps/api": "^2.18.1",
     "@umijs/route-utils": "^2.2.2",
