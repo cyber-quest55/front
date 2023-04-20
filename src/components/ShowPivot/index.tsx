@@ -1,20 +1,34 @@
 import { PivotStatusColor } from "@/utils/pivot-status";
 import { ProCard, ProTable, StatisticCard, TableDropdown } from "@ant-design/pro-components"
-import { Button, Col, Dropdown, Input, Row, Space, Tag, Tooltip, Typography } from "antd";
+import { Button, Input, Select, Space, Tag, Tooltip } from "antd";
 import { BsFillCloudRainFill } from "react-icons/bs";
 import { GiPadlockOpen, GiSolidLeaf } from "react-icons/gi";
 import { TbBrandFlightradar24 } from "react-icons/tb";
 import { GrObjectGroup } from "react-icons/gr";
 import { useEmotionCss } from "@ant-design/use-emotion-css";
 import { Pie, G2, Line, Column } from '@ant-design/plots';
-import { CaretDownOutlined, ClockCircleOutlined, CloseCircleFilled, CloudFilled, EditFilled, EllipsisOutlined, HistoryOutlined, SearchOutlined, ThunderboltFilled } from "@ant-design/icons";
 import { useState } from "react";
-
+import DevicePanel from "../DevicePanel";
+import {
+    CaretDownOutlined,
+    ClockCircleOutlined,
+    CloseCircleFilled,
+    CloudFilled, EditFilled,
+    HistoryOutlined,
+    SearchOutlined,
+    ThunderboltFilled
+} from "@ant-design/icons";
+import { connect } from "umi";
+import { GetPivotModelProps } from "@/models/pivot";
 const { Statistic } = StatisticCard;
 
-const ShowPivot = () => {
-    const { Text } = Typography;
-    const [tab, setTab] = useState('tab2');
+type Props = {
+    pivot: GetPivotModelProps
+    dispatch: any;
+}
+
+const ShowPivot: React.FC<Props> = (props) => {
+    const [tab, setTab] = useState('tab1');
 
     const className = useEmotionCss(() => {
         return {
@@ -23,6 +37,25 @@ const ShowPivot = () => {
             }
         }
     });
+
+    const classNameSelect = useEmotionCss(() => {
+        return {
+            ".ant-select-selection-item": {
+                fontWeight: 700,
+                fontSize: 24
+            },
+            ".ant-select-selector": {
+                padding: "0 !important",
+            },
+            ".ant-select-arrow": {
+                color: 'black',
+                fontSize: 20
+
+            }
+        };
+    });
+
+
     const G = G2.getEngine('canvas');
 
     const data = [
@@ -41,17 +74,10 @@ const ShowPivot = () => {
         },
     ];
 
-    const valueEnum = {
-        0: 'close',
-        1: 'running',
-        2: 'online',
-        3: 'error',
-    };
 
     const tableListDataSource: any[] = [];
 
     const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
-
 
     for (let i = 0; i < 50; i += 1) {
         tableListDataSource.push({
@@ -61,10 +87,16 @@ const ShowPivot = () => {
             callNumber: Math.floor(Math.random() * 2000),
             progress: Math.ceil(Math.random() * 100) + 1,
             creator: creators[Math.floor(Math.random() * creators.length)],
-            status: valueEnum[Math.floor(Math.random() * 10) % 4],
             createdAt: Date.now() - Math.floor(Math.random() * 100000),
             memo: i % 2 === 1 ? '很长很长很长很长很长很长很长的文字要展示但是要留下尾巴' : '简短备注文案',
         });
+    }
+
+    const onChangeDevice = (e: string) => {
+        props.dispatch({
+            type: 'pivot/setSelectedPivot',
+            payload: props.pivot.result.list.find(item => item.id === parseInt(e))
+        })
     }
 
     return (
@@ -72,88 +104,80 @@ const ShowPivot = () => {
             <ProCard colSpan={{ xs: 24, sm: 5 }} style={{ height: 275 }}>
             </ProCard>
             <ProCard colSpan={{ xs: 24, sm: 9 }} style={{ height: 275 }}>
-                <Space direction="vertical" style={{ width: '100%' }} size="large">
-                    <Row justify="space-between" align="middle">
-                        <Col><Tag color={PivotStatusColor.off}>PIVOT PARADO</Tag></Col>
-                        <Col>
+                <DevicePanel
+                    actions={
+                        <Space>
+                            <Button icon={<GiPadlockOpen />} href="https://www.google.com" />
+                            <Button icon={<GiSolidLeaf />} href="https://www.google.com" />
+                            <Button icon={<CloudFilled />} href="https://www.google.com" />
+                            <Button icon={<EditFilled />} href="https://www.google.com" >Edit</Button>
+                            <Button icon={<CloseCircleFilled />} href="https://www.google.com" >Close</Button>
+                        </Space>
+                    }
+                    status={<Tag color={PivotStatusColor.off}>PIVOT PARADO</Tag>}
+                    deviceSelector={
+                        <Select  
+                            className={classNameSelect}
+                            suffixIcon={<CaretDownOutlined />} 
+                            bordered={false}
+                            showSearch
+                            value={props.pivot.selectedPivot?.name?.toString()}
+                            size="large"
+                            style={{ width: '100%', }}
+                            filterOption={(input, option) =>
+                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            onChange={onChangeDevice} 
+                            options={props.pivot.result.list?.map(item => ({ value: item.id, label: item.name }))}
+                        />
+                    }
+                    extra={<Space direction="vertical" size="middle">
+                        <Space size="middle">
                             <Space>
-                                <Button icon={<GiPadlockOpen />} href="https://www.google.com" />
-                                <Button icon={<GiSolidLeaf />} href="https://www.google.com" />
-                                <Button icon={<CloudFilled />} href="https://www.google.com" />
+                                <Tooltip title="Voltagem">
+                                    <ThunderboltFilled />
+                                </Tooltip>
 
-                                <Button icon={<EditFilled />} href="https://www.google.com" >Edit</Button>
-                                <Button icon={<CloseCircleFilled />} href="https://www.google.com" >Close</Button>
+                                <div>220 V</div>
                             </Space>
-                        </Col>
-                    </Row>
-                    <Row style={{ maxWidth: 175 }}>
-                        <Col style={{ width: '100%' }}>
-                            <Row justify="space-between" align="middle"  >
-                                <Col>
-                                    <Typography.Title level={2} style={{ margin: 0, fontWeight: '700' }}>Pivô 1 </Typography.Title>
-                                </Col>
-                                <Col>
-                                    <CaretDownOutlined style={{ fontSize: 24 }} />
-                                </Col>
-                            </Row>
-                        </Col>
-                        <Col>
-                            <Text type="secondary" style={{ fontSize: 11 }}>Last communication: 19 May 10:15</Text>
-                        </Col>
-                    </Row>
-                    <Row justify="space-between">
-                        <Col>
-                            <Space direction="vertical" size="middle">
-                                <Space size="middle">
-                                    <Space>
-                                        <Tooltip title="Voltagem">
-                                            <ThunderboltFilled />
-                                        </Tooltip>
-
-                                        <div>220 V</div>
-                                    </Space>
-                                    <Space>
-                                        <Tooltip title="Barras">
-                                            <HistoryOutlined />
-                                        </Tooltip>
-                                        <div>1.2 bar</div>
-                                    </Space>
-                                </Space>
-                                <Space size="middle">
-                                    <Space>
-                                        <Tooltip title="Chuva hoje">
-                                            <BsFillCloudRainFill />
-                                        </Tooltip>
-                                        <div>10 mm </div>
-                                    </Space>
-                                    <Space>
-                                        <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                                        <div>1.2 bar</div>
-                                    </Space>
-                                </Space>
-                                <Space size="middle">
-                                    <Space>
-                                        <Tooltip title="Grupo">
-                                            <GrObjectGroup />
-                                        </Tooltip>
-                                        <div>10 mm </div>
-                                    </Space>
-                                    <Space>
-                                        <ClockCircleOutlined />
-                                        <div>262h 33min</div>
-                                    </Space>
-                                </Space>
+                            <Space>
+                                <Tooltip title="Barras">
+                                    <HistoryOutlined />
+                                </Tooltip>
+                                <div>1.2 bar</div>
                             </Space>
-                        </Col>
-                        <Col >
-                            <Space direction="vertical" size="middle">
-                                <Button type="primary" style={{ width: '200px' }}>Start Pivot</Button>
-                                <Button type="default" danger style={{ width: '200px' }}>Stop Pivot</Button>
+                        </Space>
+                        <Space size="middle">
+                            <Space>
+                                <Tooltip title="Chuva hoje">
+                                    <BsFillCloudRainFill />
+                                </Tooltip>
+                                <div>10 mm </div>
                             </Space>
-                        </Col>
-                    </Row>
-                </Space>
-
+                            <Space>
+                                <TbBrandFlightradar24 style={{ fontSize: 20 }} />
+                                <div>1.2 bar</div>
+                            </Space>
+                        </Space>
+                        <Space size="middle">
+                            <Space>
+                                <Tooltip title="Grupo">
+                                    <GrObjectGroup />
+                                </Tooltip>
+                                <div>10 mm </div>
+                            </Space>
+                            <Space>
+                                <ClockCircleOutlined />
+                                <div>262h 33min</div>
+                            </Space>
+                        </Space>
+                    </Space>}
+                    lastCommunication="19 May 10:15"
+                    deviceActions={<Space direction="vertical" size="middle">
+                        <Button type="primary" style={{ width: '200px' }}>Start Pivot</Button>
+                        <Button type="default" danger style={{ width: '200px' }}>Stop Pivot</Button>
+                    </Space>}
+                />
             </ProCard>
 
             <ProCard split="vertical" colSpan={{ xs: 24, sm: 10 }} style={{ height: 275 }}>
@@ -814,7 +838,7 @@ const ShowPivot = () => {
                             return '#5B8FF9';
                         }}
                         label={{
-                            content: (originData) => {
+                            content: (originData: any): any => {
                                 const val = parseFloat(originData.value);
 
                                 if (val < 0.05) {
@@ -1202,7 +1226,7 @@ const ShowPivot = () => {
                             label: `Eventos`,
                             key: 'tab1',
                             children: <ProTable<any>
-                                
+
                                 rowSelection={{
                                     // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
                                     // 注释该行则默认不显示下拉选项 
@@ -1298,7 +1322,7 @@ const ShowPivot = () => {
                                 toolbar={{
                                     title: 'Lista de eventos',
                                     tooltip: '这是一个标题提示',
-                                }} 
+                                }}
                             />,
                         },
                         {
@@ -1318,4 +1342,6 @@ const ShowPivot = () => {
     )
 }
 
-export default ShowPivot
+export default connect(({ pivot }: { pivot: any }) => ({
+    pivot,
+}))(ShowPivot);

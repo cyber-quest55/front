@@ -1,6 +1,6 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
-import { CalendarOutlined, EditFilled, PlusCircleFilled, RedoOutlined } from '@ant-design/icons';
+import { CalendarOutlined, CaretDownOutlined, EditFilled, PlusCircleFilled, RedoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Button, Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
@@ -40,6 +40,23 @@ const PivotList: React.FC<Props> = (props) => {
         };
     });
 
+    const classNameSelect = useEmotionCss(() => {
+        return {
+            ".ant-select-selection-item": {
+                fontWeight: 700,
+                fontSize: 19,
+                paddingInlineEnd: "35px !important"
+
+            },
+            ".ant-select-selector": {
+                padding: "0 !important",
+            },
+            ".ant-select-arrow": {
+                color: 'black',
+                fontSize: 20
+            }, 
+        };
+    });
 
     const className = useEmotionCss(({ }) => {
         return {
@@ -48,6 +65,7 @@ const PivotList: React.FC<Props> = (props) => {
             },
         };
     });
+
 
 
     const dataSource = [
@@ -71,8 +89,20 @@ const PivotList: React.FC<Props> = (props) => {
                 <Col >
                     <Space size="small">
                         <WithConnection />
+                        <Select
 
-                        <Typography.Title level={5} style={{ margin: 0 }} >{props.farm.selectedFarm?.name}</Typography.Title >
+                            className={classNameSelect}
+                            suffixIcon={<CaretDownOutlined />}
+                            bordered={false}
+                            showSearch
+                            value={props.farm.selectedFarm?.name?.toString()}
+                            size="large"
+                            filterOption={(input, option) =>
+                                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            onChange={() => { }}
+                            options={props.farm.result.list?.map(item => ({ value: item.id, label: item.name }))}
+                        />
                     </Space>
                 </Col>
                 <Col >

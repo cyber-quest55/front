@@ -57,7 +57,6 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
   }, [value])
 
   useEffect(() => {
-    console.log(props.farm.result?.list?.find(f => f.id === parseInt(params.id as string)))
     props.dispatch({
       type: 'farm/setSelectedFarm',
       payload: props.farm.result?.list?.find(f => f.id === parseInt(params.id as string))
