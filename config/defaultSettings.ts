@@ -1,5 +1,4 @@
-import { ProLayoutProps } from '@ant-design/pro-components';
-import * as path from 'path'
+import { ProLayoutProps } from '@ant-design/pro-components'; 
 /**
  * @name
  */
@@ -22,12 +21,15 @@ const Settings: ProLayoutProps & {
   splitMenus: false,
   token: {
     header: {
-      colorHeaderTitle: 'white'
+      colorHeaderTitle: 'white',
     }, 
     sider: {
+      colorTextCollapsedButton: 'white',
+      colorTextMenuSelected: 'white',
       colorMenuBackground: '#2f4050',
       colorTextMenu: 'white', 
-      colorTextMenuTitle: 'white'
+      colorTextMenuTitle: 'white',
+
     },
     pageContainer: {
       paddingBlockPageContainerContent: 0,

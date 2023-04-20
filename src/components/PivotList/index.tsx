@@ -4,7 +4,7 @@ import { CalendarOutlined, EditFilled, PlusCircleFilled, RedoOutlined } from '@a
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Button, Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, } from 'react';
 import { connect } from 'umi';
 import { Link, useParams } from '@umijs/max'
 import WithConnection from '../WithConnection';
@@ -18,8 +18,7 @@ type Props = {
 
 const PivotList: React.FC<Props> = (props) => {
     const params = useParams()
-
-    useEffect(() => { 
+    useEffect(() => {
         props.dispatch({
             type: 'pivot/queryPivot',
             payload: { id: parseInt(params.id as string) }
@@ -28,7 +27,7 @@ const PivotList: React.FC<Props> = (props) => {
 
     const classNameScrollable = useEmotionCss(({ }) => {
         return {
-            maxHeight: '70vh',
+            maxHeight: '63vh',
             overflowY: 'auto',
             overflowX: 'hidden',
             [`.ant-list-item`]: {
@@ -36,7 +35,8 @@ const PivotList: React.FC<Props> = (props) => {
             },
             ['.ant-pro-list-row-content']: {
                 marginInline: 0
-            }
+            },
+            position: 'relative'
         };
     });
 
@@ -67,8 +67,14 @@ const PivotList: React.FC<Props> = (props) => {
 
     return (
         <div className={className}>
-            <Row justify="center" align="middle" gutter={[25, 10]}  >
-                <Col ><Typography.Title level={5} style={{ margin: 0 }} >{props.farm.selectedFarm?.name}</Typography.Title ></Col>
+            <Row justify="space-between" align="middle" style={{ padding: "0px 16px", }} >
+                <Col >
+                    <Space size="small">
+                        <WithConnection />
+
+                        <Typography.Title level={5} style={{ margin: 0 }} >{props.farm.selectedFarm?.name}</Typography.Title >
+                    </Space>
+                </Col>
                 <Col >
                     <Link to="/edit/farm">
                         <Tooltip title="Editar Fazenda"><EditFilled style={{ fontSize: 18 }} /></Tooltip>
@@ -76,25 +82,20 @@ const PivotList: React.FC<Props> = (props) => {
                 </Col>
             </Row>
             <Divider />
-            <Row justify="space-between" align="middle" style={{ padding: "0px 12px", width: '100%' }}>
-                <Col>
-                    <Select showSearch placeholder="Ex: Pivo 1" size="large" style={{ width: '320px' }} />
+            <Row align="middle" style={{ padding: "0px 12px", width: '100%' }}>
+                <Col xs={24}>
+                    <Select showSearch placeholder="Ex: Pivo 1" size="large" style={{ width: '100%' }} />
                 </Col>
                 <Col>
-                    <WithConnection />
+
                 </Col>
             </Row>
             <Divider style={{ marginBottom: 0 }} />
-            <section className={classNameScrollable}>
-                <Row justify="center" align="middle" style={{ padding: "0px 12px", paddingTop: 24, width: '100%' }}>
-                    <Col>
-                        <Button size="large" type="primary" icon={<PlusCircleFilled />}> Cadastrar Equipamento</Button>
-                    </Col>
-                </Row>
-                <Divider style={{ marginBottom: 0 }} />
+            <div className={classNameScrollable}  >
                 <ProList<{ title: string }>
                     itemLayout="vertical"
                     rowKey="id"
+                    style={{ paddingBottom: 0, marginBottom: 0 }}
                     dataSource={dataSource}
                     metas={{
                         title: {},
@@ -125,7 +126,17 @@ const PivotList: React.FC<Props> = (props) => {
                         },
                     }}
                 />
-            </section>
+            </div>
+            <Row justify="center" style={{ marginTop: -45 }}>
+                <Col>
+                    <Button
+                        size="large"
+                        type="primary"
+                        icon={<PlusCircleFilled />}>
+                        Cadastrar Equipamento
+                    </Button>
+                </Col>
+            </Row>
         </div  >
     )
 }
