@@ -1,9 +1,11 @@
 import { getFarmConnection } from "@/services/farm";
+import { AxiosError } from "@umijs/max";
 
 export interface GetFarmConnectionModelProps {
     result: API.GetFarmConnectionResponse;
     loading: boolean;
     loaded: boolean;
+    error: any;
 }
 
 export default {
@@ -12,7 +14,8 @@ export default {
     state: {
         result: {},
         loaded: false,
-        loading: true
+        loading: true,
+        error: {}
     },
 
     effects: {
@@ -20,12 +23,27 @@ export default {
             { payload }: { payload: API.GetFarmConnectionParams },
             { call, put }: { call: any, put: any }) {
             yield put({ type: 'queryFarmConnectionStart' });
-            const { data } = yield call(getFarmConnection, payload.id);
-            yield put({ type: 'queryFarmConnectionSuccess', payload: data });
+
+            try{
+                const { data } = yield call(getFarmConnection, payload.id);
+                yield put({ type: 'queryFarmConnectionSuccess', payload: data });
+            } catch (error) {
+                yield put({ type: 'queryFarmConnectionError', payload: error });
+            }
         },
     },
 
     reducers: {
+        queryFarmConnectionError(
+            state: GetFarmConnectionModelProps,
+            { payload }: { payload: AxiosError }
+        )  { 
+            return {
+                ...state,
+                loading: false,
+                error: payload
+            };
+        },
         queryFarmConnectionStart(
             state: GetFarmConnectionModelProps) { 
             return {
@@ -41,6 +59,7 @@ export default {
                 loading: false,
                 loaded: true,
                 result: payload,
+                error: {}
             };
         },
     },

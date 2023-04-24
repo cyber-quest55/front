@@ -1304,9 +1304,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                                         ],
                                     },
                                 ]}
-                                request={(params, sorter, filter) => {
-                                    // 表单搜索项会从 params 传入，传递给后端接口。
-                                    console.log(params, sorter, filter);
+                                request={( ) => { 
                                     return Promise.resolve({
                                         data: tableListDataSource,
                                         success: true,

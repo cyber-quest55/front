@@ -1,32 +1,51 @@
 import { CirclePivotProps } from "@/components/CirclePivot";
 import { getPivotsWithInformations } from "@/services/pivot";
+import { AxiosError } from "@umijs/max";
 
 export interface GetPivotInformationModelProps {
-    result: CirclePivotProps[] ;
+    result: CirclePivotProps[];
     loading: boolean;
     loaded: boolean;
+    error: any;
 }
 
 export default {
     namespace: 'pivotInformation',
 
     state: {
-        result: {},
+        result: [],
         loaded: false,
-        loading: true
+        loading: true,
+        error: {}
     },
 
     effects: {
         *queryPivotInformation(
             { payload }: { payload: API.GetPivotInformationParam },
             { call, put }: { call: any, put: any }) {
-            yield put({ type: 'queryPivotInformationStart' }); 
-            const { data } = yield call(getPivotsWithInformations, payload, payload.params);
-            yield put({ type: 'queryPivotInformationSuccess', payload: data });
+                
+            yield put({ type: 'queryPivotInformationStart' });
+            try {
+                const { data } = yield call(getPivotsWithInformations, payload, payload.params);
+                yield put({ type: 'queryPivotInformationSuccess', payload: data });
+            } catch (error: any) {
+                yield put({ type: 'queryPivotInformationError', payload: error });
+            }
         },
     },
 
     reducers: {
+        queryPivotInformationError(
+            state: GetPivotInformationModelProps,
+            { payload }: { payload: AxiosError }
+        ) {
+            return {
+                ...state,
+                error: payload.response?.data,
+                loading: false,
+            };
+        },
+
         queryPivotInformationStart(
             state: GetPivotInformationModelProps,
         ) {
@@ -103,7 +122,7 @@ export default {
                 if (item.protocol < 5) {
                     const gpsPosition = item.latest_gps_stream?.position?.split(",");
                     const centerPosition = item.config.center.split(",");
-                    const referencePosition = item.config.reference.split(","); 
+                    const referencePosition = item.config.reference.split(",");
                     centerLat = parseFloat(centerPosition[0]).toFixed(6)
                     centerLng = parseFloat(centerPosition[1]).toFixed(6)
                     referencedLat = parseFloat(referencePosition[0]).toFixed(6)
@@ -131,11 +150,11 @@ export default {
                     type = 'sectorial'
                 }
 
-                if(type === 'sectorial'){
+                if (type === 'sectorial') {
                     sectorAngle = item.config?.sector_angle
                 }
- 
-                let endAngle =  item.controllerconfig?.content?.sector?.end_angle
+
+                let endAngle = item.controllerconfig?.content?.sector?.end_angle
 
                 mapper.push({
                     id: item.id,
@@ -150,12 +169,12 @@ export default {
                     referenceAngle: item.reference_angle,
                     endAngle,
                     stopAngle,
-                    type: type, 
+                    type: type,
                     dashed: false,
                     lineColor: '#fff',
                     pivotColor: '#f33',
                     sectorAngle: sectorAngle,
-                    hasMarker: true, 
+                    hasMarker: true,
                     irrigationStatus: item.controllerstream_panel?.content?.irrigation_status as any,
                     lpmGpsStreamLng: 30,
                     lpmGpsStreamLat: 30,
@@ -168,6 +187,7 @@ export default {
                 loading: false,
                 loaded: true,
                 result: mapper,
+                error: {}
             };
         },
     },

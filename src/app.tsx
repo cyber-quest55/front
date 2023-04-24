@@ -5,8 +5,7 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
-import FarmSelect from './components/FarmSelect';
+import { errorConfig } from './requestErrorConfig'; 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -50,7 +49,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
     actionsRender: () => [
       <div key="SelectLang" style={{ color: 'white' }}><SelectLang /></div>,
-      <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
+      // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
     ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,

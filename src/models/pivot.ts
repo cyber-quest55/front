@@ -1,10 +1,11 @@
-import { getPivots } from "@/services/pivot";
-
+import { getPivots } from "@/services/pivot"; 
+import { AxiosError } from "@umijs/max";
 export interface GetPivotModelProps {
     result: API.GetPivotByFarmResponse;
     loading: boolean;
     loaded: boolean;
-    selectedPivot: Models.Pivot
+    selectedPivot: Models.Pivot,
+    error: any
 }
 
 export default {
@@ -14,21 +15,38 @@ export default {
         result: {},
         loaded: false,
         loading: true,
-        selectedPivot: {}
+        selectedPivot: {},
+        error: {}
     },
 
     effects: {
         *queryPivot(
             { payload }: { payload: API.GetPivotByFarmParam },
             { call, put }: { call: any, put: any }) {
+            console.log('enter there')
             yield put({ type: 'queryPivotStart' });
-            
-            const { data } = yield call(getPivots, payload);
-            yield put({ type: 'queryPivotSuccess', payload: data });
+
+            try {
+                const { data } = yield call(getPivots, payload);
+                yield put({ type: 'queryPivotSuccess', payload: data });
+            } catch (error: any) {
+                yield put({ type: 'queryPivotError', payload: error }); 
+            }
         },
     },
 
     reducers: {
+        queryPivotError(
+            state: GetPivotModelProps,
+            { payload }: { payload: AxiosError }
+
+        ) {
+            return {
+                ...state,
+                loading: false,
+                error: payload.response?.data
+            };
+        },
         queryPivotStart(
             state: GetPivotModelProps,
         ) {
@@ -46,7 +64,8 @@ export default {
                 loading: false,
                 loaded: true,
                 result: payload,
-                selectedPivot: payload.list[0]
+                selectedPivot: payload.list[0],
+                error: {}
             };
         },
         setSelectedPivot(

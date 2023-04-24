@@ -3,12 +3,13 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { CalendarOutlined, CaretDownOutlined, EditFilled, PlusCircleFilled, RedoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Button, Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { Button, Col, Divider, Row, Select, Space, Tag, Tooltip } from 'antd';
 import React, { useEffect, } from 'react';
 import { connect } from 'umi';
-import { Link, useParams } from '@umijs/max'
+import { Link, useParams, history } from '@umijs/max'
 import WithConnection from '../WithConnection';
 import { BsCloudRainFill } from "react-icons/bs";
+import { useMount } from 'ahooks';
 
 type Props = {
     dispatch: any;
@@ -18,7 +19,43 @@ type Props = {
 
 const PivotList: React.FC<Props> = (props) => {
     const params = useParams()
+
+    useMount(() => {
+        if (!props.farm.loaded)
+            props.dispatch({
+                type: 'farm/queryFarm',
+                payload: { id: params.id }
+            })
+    })
+
+
     useEffect(() => {
+        if (props.farm.loaded)
+            if (params.id === ':id') {
+                history.push(`${props.farm.result.list[0].id}`)
+                return
+            }
+
+        const selectedFarm = props.farm.result?.list?.find(f =>
+            f.id === parseInt(params.id as string)
+        )
+
+        if (props.farm.loaded)
+            if (!selectedFarm) {
+                // history.push(`/404`)
+            }
+    }, [props.farm])
+
+    useEffect(() => {
+        const selectedFarm = props.farm.result?.list?.find(f =>
+            f.id === parseInt(params.id as string)
+        )
+
+        props.dispatch({
+            type: 'farm/setSelectedFarm',
+            payload: selectedFarm
+        })
+
         props.dispatch({
             type: 'pivot/queryPivot',
             payload: { id: parseInt(params.id as string) }
@@ -54,7 +91,7 @@ const PivotList: React.FC<Props> = (props) => {
             ".ant-select-arrow": {
                 color: 'black',
                 fontSize: 20
-            }, 
+            },
         };
     });
 
@@ -65,8 +102,6 @@ const PivotList: React.FC<Props> = (props) => {
             },
         };
     });
-
-
 
     const dataSource = [
         {
@@ -90,17 +125,20 @@ const PivotList: React.FC<Props> = (props) => {
                     <Space size="small">
                         <WithConnection />
                         <Select
-
                             className={classNameSelect}
                             suffixIcon={<CaretDownOutlined />}
                             bordered={false}
                             showSearch
+
                             value={props.farm.selectedFarm?.name?.toString()}
                             size="large"
                             filterOption={(input, option) =>
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
-                            onChange={() => { }}
+                            onChange={(e) => {
+                                console.log(e.toString())
+                                history.push(e.toString())
+                            }}
                             options={props.farm.result.list?.map(item => ({ value: item.id, label: item.name }))}
                         />
                     </Space>

@@ -97,9 +97,7 @@ export default () => {
                     name: '',
                     password: '',
                   }}
-                  onValuesChange={(_, values) => {
-                    console.log(values);
-                  }}
+                  onValuesChange={( ) => {  }}
                   onFinish={handleSubmit}
                 >
                   <ProFormText width="md" name="name" placeholder="Usuário ou E-mail" />
