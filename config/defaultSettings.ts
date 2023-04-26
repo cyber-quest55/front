@@ -8,7 +8,7 @@ const Settings: ProLayoutProps & {
 } = { 
   // 拂晓蓝 
   colorPrimary: '#00b96b',
-  layout: 'side', 
+  layout: 'side',  
   collapsed: true,
   contentWidth: 'Fluid',
   fixedHeader: false,

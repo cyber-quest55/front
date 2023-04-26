@@ -54,6 +54,12 @@ export default [
     }
   },
   {
+    path: '/farms/create',
+    name: 'Criar Fazenda',   
+    component: './Farms/create.tsx',
+    hideInMenu: true,  
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',

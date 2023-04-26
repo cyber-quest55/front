@@ -3,6 +3,7 @@ import { currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
+import { App } from 'antd';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig'; 
@@ -57,10 +58,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
-    },
-    waterMarkProps: {
-      content: initialState?.currentUser?.name,
-    },
+    }, 
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
@@ -84,7 +82,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
-      return <>{children}</>;
+      return <App>{children}</App>;
     },
     ...initialState?.settings,
   };

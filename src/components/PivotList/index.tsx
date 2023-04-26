@@ -1,15 +1,16 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
-import { CalendarOutlined, CaretDownOutlined, EditFilled, PlusCircleFilled, RedoOutlined } from '@ant-design/icons';
+import { CalendarOutlined, CaretDownOutlined, EditFilled, RedoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Button, Col, Divider, Row, Select, Space, Tag, Tooltip } from 'antd';
+import { Col, Divider, Row, Select, Space, Tag, Tooltip } from 'antd';
 import React, { useEffect, } from 'react';
 import { connect } from 'umi';
 import { Link, useParams, history } from '@umijs/max'
 import WithConnection from '../WithConnection';
 import { BsCloudRainFill } from "react-icons/bs";
 import { useMount } from 'ahooks';
+import AddDeviceForm from '../Forms/AddDeviceForm';
 
 type Props = {
     dispatch: any;
@@ -27,7 +28,6 @@ const PivotList: React.FC<Props> = (props) => {
                 payload: { id: params.id }
             })
     })
-
 
     useEffect(() => {
         if (props.farm.loaded)
@@ -47,9 +47,12 @@ const PivotList: React.FC<Props> = (props) => {
     }, [props.farm])
 
     useEffect(() => {
+        console.log(params.id)
         const selectedFarm = props.farm.result?.list?.find(f =>
             f.id === parseInt(params.id as string)
         )
+
+        console.log('selected', selectedFarm)
 
         props.dispatch({
             type: 'farm/setSelectedFarm',
@@ -117,7 +120,7 @@ const PivotList: React.FC<Props> = (props) => {
             title: 'Pivô 4',
         },
     ];
-
+ 
     return (
         <div className={className}>
             <Row justify="space-between" align="middle" style={{ padding: "0px 16px", }} >
@@ -129,14 +132,12 @@ const PivotList: React.FC<Props> = (props) => {
                             suffixIcon={<CaretDownOutlined />}
                             bordered={false}
                             showSearch
-
                             value={props.farm.selectedFarm?.name?.toString()}
                             size="large"
                             filterOption={(input, option) =>
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
-                            onChange={(e) => {
-                                console.log(e.toString())
+                            onChange={(e) => { 
                                 history.push(e.toString())
                             }}
                             options={props.farm.result.list?.map(item => ({ value: item.id, label: item.name }))}
@@ -196,13 +197,8 @@ const PivotList: React.FC<Props> = (props) => {
                 />
             </div>
             <Row justify="center" style={{ marginTop: -45 }}>
-                <Col>
-                    <Button
-                        size="large"
-                        type="primary"
-                        icon={<PlusCircleFilled />}>
-                        Cadastrar Equipamento
-                    </Button>
+                <Col> 
+                    <AddDeviceForm/>
                 </Col>
             </Row>
         </div  >
