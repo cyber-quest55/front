@@ -47,7 +47,7 @@ export default [
     path: '/notifications/',
     name: 'Notificações', 
     icon: 'bellOutlined',
-    component: './Farms/[id].tsx',
+    component: './Notifications',
     menu: {
       key: '/notifications/',
       name: 'Notificações'

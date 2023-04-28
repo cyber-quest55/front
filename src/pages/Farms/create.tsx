@@ -12,23 +12,23 @@ export const CreateFarm = () => {
     const className = useEmotionCss(({ token }) => {
         return {
             '.ant-pro-page-container-warp-page-header': {
-                'padding-block-start': '12px',
-                'padding-block-end': '12px',
-                'padding-inline-start': '40px',
-                'padding-inline-end': '40px',
+                paddingBlockStart: '12px',
+                paddingBlockEnd: '12px',
+                paddingInlineStart: '40px',
+                paddingInlineEnd: '40px',
                 marginBottom: 24,
                 background: 'white',
             },
             '.ant-pro-page-container-children-content': {
                 [`@media screen and (max-width: ${token.screenXS}px)`]: {
-                    'padding-inline': '12px',
+                    paddingInline: '12px',
                 },
-                'padding-inline': '40px',
+                paddingInline: '40px',
            
             },
             '.ant-pro-steps-form-container': {
-                'min-width': '0px',
-                'width': '700px', 
+                minWidth: '0px',
+                width: '700px', 
                 [`@media screen and (max-width: ${token.screenXS})`]: {
                     width: '100%',
                 },
@@ -49,11 +49,11 @@ export const CreateFarm = () => {
                 content={"Labore qui occaecat adipisicing anim, abore qui occaecat anim."}
                 breadcrumb={{
                     items: [{
-                        path: '/farms/:id',
+                        path: '',
                         title: 'Início',
                     },
                     {
-                        path: '/farms/create',
+                        path: 'create',
                         title: 'Criar Fazenda',
                     }
                     ],
