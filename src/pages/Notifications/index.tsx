@@ -1,95 +1,584 @@
 
-import { BellOutlined,  DeleteFilled, EditFilled, PlusCircleFilled } from '@ant-design/icons';
+import AddLevelGaugeForm from '@/components/Forms/AddAlarmForm/LevelGauge';
+import AddPivotAlarmForm from '@/components/Forms/AddAlarmForm/Pivot';
+import AddPivotMonitorAlarmForm from '@/components/Forms/AddAlarmForm/PivotMonitor';
+import { TinyArea } from '@ant-design/charts';
+import { BellOutlined, DeleteFilled, EditFilled } from '@ant-design/icons';
 import { PageContainer, ProCard, ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Button, Space, Tabs, Tag, Switch, Typography } from 'antd';
-import React, { useState } from 'react';
+import { Button, Space, Tabs, Tag, Switch, Typography, Row, Col } from 'antd';
+import React, { ReactText, useState } from 'react';
 
-const defaultData = [
-    {
-        id: '1',
-        name: 'Nome do grupo de alarmes',
-        image:
-            <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-        desc: <Space direction='vertical' size={"middle"}>
-            <Typography.Text type="secondary" style={{ marginTop: 4 }}>
-                {"18:00h > 06:00h"}
-            </Typography.Text>
-            <Space size={2} style={{ margin: 0 }} >
-                <Tag>Pivô 1</Tag>
-                <Tag>Pivô 2</Tag>
-                <Tag>Pivô 3</Tag>
-                <Tag>Pivô 4</Tag>
-                <Tag>Pivô 5</Tag>
-                <Tag>Pivô 6</Tag>
-            </Space>
-            <Tag color='blue'>Ver razões</Tag>
-        </Space>,
-    },
-    {
-        id: '2',
-        name: 'Nome do grupo de alarmes',
-        image:
-            <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-        desc: <Space direction='vertical' size={"middle"}>
 
-            <Typography.Text type="secondary" style={{ marginTop: 4 }}>
-                {"18:00h > 06:00h"}
-            </Typography.Text>
-            <Space size={2} style={{ margin: 0 }} >
-                <Tag color="green">Todos os Pivôs</Tag>
-            </Space>
-            <Tag color='blue'>Ver razões</Tag>
-        </Space>,
-    },
-    {
-        id: '3',
-        name: 'Nome do grupo de alarmes',
-        image:
-            <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-        desc: <Space direction='vertical' size={"middle"}>
 
-            <Typography.Text type="secondary" style={{ marginTop: 4 }}>
-                {"18:00h > 06:00h"}
-            </Typography.Text>
-            <Space size={2} style={{ margin: 0 }} >
-                <Tag>Pivô 1</Tag>
-                <Tag>Pivô 2</Tag>
-                <Tag>Pivô 3</Tag>
-                <Tag>Pivô 4</Tag>
-                <Tag>Pivô 5</Tag>
-                <Tag>Pivô 6</Tag>
-            </Space>
-            <Tag color='blue'>Ver razões</Tag>
-        </Space>,
-    },
-    {
-        id: '4',
-        name: 'Nome do grupo de alarmes',
-        image:
-            <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-        desc: <Space direction='vertical' size={"middle"}>
-
-            <Typography.Text type="secondary" style={{ marginTop: 4 }}>
-                {"18:00h > 06:00h"}
-            </Typography.Text>
-            <Space size={2} style={{ margin: 0 }} >
-                <Tag>Pivô 1</Tag>
-                <Tag>Pivô 2</Tag>
-                <Tag>Pivô 3</Tag>
-                <Tag>Pivô 4</Tag>
-                <Tag>Pivô 5</Tag>
-                <Tag>Pivô 6</Tag>
-            </Space>
-            <Tag color='blue'>Ver razões</Tag>
-        </Space>,
-    },
-];
-
-type DataItem = (typeof defaultData)[number];
 
 const NoFoundPage: React.FC = () => {
+    const data = [
+        264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539, 243, 226, 192,
+    ];
+    const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
+
+    const defaultData2 = [
+        {
+            id: '1',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <TinyArea
+                        height={100}
+                        autoFit={false}
+                        data={data}
+                        smooth={true}
+                        tooltip={false}
+                        color={"#E5EDFE"}
+                        pattern={{
+                            type: 'line',
+                            cfg: {
+                                stroke: '#5B8FF9',
+                            },
+                        }}
+                        annotations={[
+                            {
+                                type: 'line',
+                                start: ['min', 'mean'],
+                                end: ['max', 'mean'],
+                                text: {
+                                    content: 'ffff',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.25)',
+                                },
+                            },
+                            {
+                                type: 'line',
+                                start: ['min', 800],
+                                end: ['max', 800],
+                                text: {
+                                    content: 'eeee',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.55)',
+                                },
+                            },
+                        ]}
+                    />
+                </Col>
+                <Col span={12} >
+                    <Row align={"middle"} style={{ height: "100%" }}>
+                        <Space direction="vertical" size={"large"}>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível superior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    75; 85; 95.
+                                </Typography.Text>
+                            </Space>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível inferior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    25; 15; 5.
+                                </Typography.Text>
+                            </Space>
+                        </Space>
+                    </Row>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+        {
+            id: '2',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <TinyArea
+                        height={100}
+                        autoFit={false}
+                        data={data}
+                        smooth={true}
+                        tooltip={false}
+                        color={"#E5EDFE"}
+                        pattern={{
+                            type: 'line',
+                            cfg: {
+                                stroke: '#5B8FF9',
+                            },
+                        }}
+                        annotations={[
+                            {
+                                type: 'line',
+                                start: ['min', 'mean'],
+                                end: ['max', 'mean'],
+                                text: {
+                                    content: 'ffff',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.25)',
+                                },
+                            },
+                            {
+                                type: 'line',
+                                start: ['min', 800],
+                                end: ['max', 800],
+                                text: {
+                                    content: 'eeee',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.55)',
+                                },
+                            },
+                        ]}
+                    />
+                </Col>
+                <Col span={12} >
+                    <Row align={"middle"} style={{ height: "100%" }}>
+                        <Space direction="vertical" size={"large"}>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível superior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    75; 85; 95.
+                                </Typography.Text>
+                            </Space>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível inferior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    25; 15; 5.
+                                </Typography.Text>
+                            </Space>
+                        </Space>
+                    </Row>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+        {
+            id: '3',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <TinyArea
+                        height={100}
+                        autoFit={false}
+                        data={data}
+                        smooth={true}
+                        tooltip={false}
+                        color={"#E5EDFE"}
+                        pattern={{
+                            type: 'line',
+                            cfg: {
+                                stroke: '#5B8FF9',
+                            },
+                        }}
+                        annotations={[
+                            {
+                                type: 'line',
+                                start: ['min', 'mean'],
+                                end: ['max', 'mean'],
+                                text: {
+                                    content: 'ffff',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.25)',
+                                },
+                            },
+                            {
+                                type: 'line',
+                                start: ['min', 800],
+                                end: ['max', 800],
+                                text: {
+                                    content: 'eeee',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.55)',
+                                },
+                            },
+                        ]}
+                    />
+                </Col>
+                <Col span={12} >
+                    <Row align={"middle"} style={{ height: "100%" }}>
+                        <Space direction="vertical" size={"large"}>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível superior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    75; 85; 95.
+                                </Typography.Text>
+                            </Space>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível inferior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    25; 15; 5.
+                                </Typography.Text>
+                            </Space>
+                        </Space>
+                    </Row>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+        {
+            id: '4',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <TinyArea
+                        height={100}
+                        autoFit={false}
+                        data={data}
+                        smooth={true}
+                        tooltip={false}
+                        color={"#E5EDFE"}
+                        pattern={{
+                            type: 'line',
+                            cfg: {
+                                stroke: '#5B8FF9',
+                            },
+                        }}
+                        annotations={[
+                            {
+                                type: 'line',
+                                start: ['min', 'mean'],
+                                end: ['max', 'mean'],
+                                text: {
+                                    content: 'ffff',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.25)',
+                                },
+                            },
+                            {
+                                type: 'line',
+                                start: ['min', 800],
+                                end: ['max', 800],
+                                text: {
+                                    content: 'eeee',
+                                    offsetY: -2,
+                                    style: {
+                                        textAlign: 'left',
+                                        fontSize: 10,
+                                        fill: 'rgba(44, 53, 66, 0.45)',
+                                        textBaseline: 'bottom',
+                                    },
+                                },
+                                style: {
+                                    stroke: 'rgba(0, 0, 0, 0.55)',
+                                },
+                            },
+                        ]}
+                    />
+                </Col>
+                <Col span={12} >
+                    <Row align={"middle"} style={{ height: "100%" }}>
+                        <Space direction="vertical" size={"large"}>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível superior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    75; 85; 95.
+                                </Typography.Text>
+                            </Space>
+                            <Space>
+                                <Typography.Text type="secondary">
+                                    Limites de nível inferior:
+                                </Typography.Text>
+
+                                <Typography.Text >
+                                    25; 15; 5.
+                                </Typography.Text>
+                            </Space>
+                        </Space>
+                    </Row>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+    ];
+
+    const defaultData = [
+        {
+            id: '1',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Panel on
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Powered on after power fault and pressurized
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Dry mode after pause time
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Moving in dry mode
+                    </Typography.Text>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
+                    {"18:00h > 06:00h"}
+                </Typography.Text>
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+        {
+            id: '2',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Panel on
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Powered on after power fault and pressurized
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Dry mode after pause time
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Moving in dry mode
+                    </Typography.Text>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
+                    {"18:00h > 06:00h"}
+                </Typography.Text>
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+        {
+            id: '3',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Panel on
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Powered on after power fault and pressurized
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Dry mode after pause time
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Moving in dry mode
+                    </Typography.Text>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
+                    {"18:00h > 06:00h"}
+                </Typography.Text>
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+        {
+            id: '4',
+            name: 'Nome do grupo de alarmes',
+            image:
+                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
+            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Panel on
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Powered on after power fault and pressurized
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Dry mode after pause time
+                    </Typography.Text>
+                </Col>
+                <Col span={12}>
+                    <Typography.Text type="secondary">
+                        Moving in dry mode
+                    </Typography.Text>
+                </Col>
+            </Row>,
+            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
+                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
+                    {"18:00h > 06:00h"}
+                </Typography.Text>
+                <Space size={2} style={{ margin: 0 }} >
+                    <Tag>Pivô 1</Tag>
+                    <Tag>Pivô 2</Tag>
+                    <Tag>Pivô 3</Tag>
+                    <Tag>Pivô 4</Tag>
+                    <Tag>Pivô 5</Tag>
+                    <Tag>Pivô 6</Tag>
+                </Space>
+            </Space>
+        },
+    ];
+
     const [dataSource, setDataSource] = useState<DataItem[]>(defaultData);
+    const [dataSource2, setDataSource2] = useState<DataItem[]>(defaultData2);
+
+    type DataItem = (typeof defaultData)[number];
 
     const className = useEmotionCss(({ token }) => {
         return {
@@ -114,6 +603,10 @@ const NoFoundPage: React.FC = () => {
                 [`@media screen and (max-width: ${token.screenXS})`]: {
                     width: '100%',
                 },
+            },
+            '.ant-pro-list-row-header-title': {
+                flexDirection: 'column',
+                alignItems: 'flex-start'
             }
         };
     })
@@ -123,25 +616,22 @@ const NoFoundPage: React.FC = () => {
             id: 0,
             key: '0',
             label: 'Pivôs',
-            children: <ProList<DataItem> 
-            
+            children: <ProList<DataItem>
+                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
                 rowKey="id"
                 size="large"
                 headerTitle="Pivôs"
                 dataSource={dataSource}
                 showActions="hover"
                 editable={{
-                    onSave: async (key, record, originRow) => {
-                        console.log(key, record, originRow);
+                    onSave: async () => {
                         return true;
                     },
                 }}
                 onDataSourceChange={setDataSource}
                 toolBarRender={() => {
                     return [
-                        <Button size='large' key="add" type="primary">
-                            <PlusCircleFilled></PlusCircleFilled> Adicionar Alarme
-                        </Button>,
+                        <AddPivotAlarmForm key="form-add-pivot-alarm" />,
                     ];
                 }}
                 metas={{
@@ -156,12 +646,19 @@ const NoFoundPage: React.FC = () => {
                         dataIndex: 'desc',
                     },
                     actions: {
-                        render: ( ) => [
+                        render: () => [
                             <Button key="1-btn-" icon={<EditFilled />} />,
                             <Button key="2-btn-" icon={<DeleteFilled />} />,
                             <Switch key="1-swtich" />
                         ],
                     },
+                    content: {
+                        dataIndex: 'content',
+
+                    },
+                    subTitle: {
+                        dataIndex: 'subTitle',
+                    }
                 }}
             />
         },
@@ -169,19 +666,151 @@ const NoFoundPage: React.FC = () => {
             id: 1,
             key: '1',
             label: 'Monitores de pivôs',
-            children: 'Monitores de pivôs'
+            children: <ProList<DataItem>
+                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
+                rowKey="id"
+                size="large"
+                headerTitle="Monitores de Pivôs"
+                dataSource={dataSource}
+                showActions="hover"
+                editable={{
+                    onSave: async () => {
+                        return true;
+                    },
+                }}
+                onDataSourceChange={setDataSource}
+                toolBarRender={() => {
+                    return [
+                        <AddPivotMonitorAlarmForm key="form-add-pivot-alarm" />,
+                    ];
+                }}
+                metas={{
+                    title: {
+                        dataIndex: 'name',
+                    },
+                    avatar: {
+                        dataIndex: 'image',
+                        editable: false,
+                    },
+                    description: {
+                        dataIndex: 'desc',
+                    },
+                    actions: {
+                        render: () => [
+                            <Button key="1-btn-" icon={<EditFilled />} />,
+                            <Button key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch key="1-swtich" />
+                        ],
+                    },
+                    content: {
+                        dataIndex: 'content',
+
+                    },
+                    subTitle: {
+                        dataIndex: 'subTitle',
+                    }
+                }}
+            />
         },
         {
             id: 2,
             key: '2',
             label: 'Bombas',
-            children: 'Bombas'
+            children: <ProList<DataItem>
+                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
+                rowKey="id"
+                size="large"
+                headerTitle="Bombas"
+                dataSource={dataSource}
+                showActions="hover"
+                editable={{
+                    onSave: async () => {
+                        return true;
+                    },
+                }}
+                onDataSourceChange={setDataSource}
+                toolBarRender={() => {
+                    return [
+                        <AddPivotMonitorAlarmForm key="form-add-pivot-alarm" />,
+                    ];
+                }}
+                metas={{
+                    title: {
+                        dataIndex: 'name',
+                    },
+                    avatar: {
+                        dataIndex: 'image',
+                        editable: false,
+                    },
+                    description: {
+                        dataIndex: 'desc',
+                    },
+                    actions: {
+                        render: () => [
+                            <Button key="1-btn-" icon={<EditFilled />} />,
+                            <Button key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch key="1-swtich" />
+                        ],
+                    },
+                    content: {
+                        dataIndex: 'content',
+
+                    },
+                    subTitle: {
+                        dataIndex: 'subTitle',
+                    }
+                }}
+            />
         },
         {
             id: 3,
             key: '3',
             label: 'Medidores de nível',
-            children: 'Medidores de nível'
+            children: <ProList<DataItem>
+                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
+                rowKey="id"
+                size="large"
+                headerTitle="Bombas"
+                dataSource={dataSource2}
+                showActions="hover"
+                editable={{
+                    onSave: async () => {
+                        return true;
+                    },
+                }}
+                onDataSourceChange={setDataSource2}
+                toolBarRender={() => {
+                    return [
+                        <AddLevelGaugeForm key="form-add-pivot-alarm" />,
+                    ];
+                }}
+                metas={{
+                    title: {
+                        dataIndex: 'name',
+                    },
+                    avatar: {
+                        dataIndex: 'image',
+                        editable: false,
+                    },
+                    description: {
+                        dataIndex: 'desc',
+                    },
+                    actions: {
+                        render: () => [
+                            <Button key="1-btn-" icon={<EditFilled />} />,
+                            <Button key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch key="1-swtich" />
+                        ],
+                    },
+                    content: {
+                        dataIndex: 'content',
+
+                    },
+                    subTitle: {
+                        dataIndex: 'subTitle',
+                    }
+                }}
+            />
         },
         {
             id: 4,
