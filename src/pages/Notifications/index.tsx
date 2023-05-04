@@ -8,14 +8,17 @@ import { PageContainer, ProCard, ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Button, Space, Tabs, Tag, Switch, Typography, Row, Col } from 'antd';
 import React, { ReactText, useState } from 'react';
-
+import { useWindowWidth } from '@react-hook/window-size'
 
 
 
 const NoFoundPage: React.FC = () => {
+    const onlyWidth = useWindowWidth()
+
     const data = [
         264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539, 243, 226, 192,
     ];
+
     const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
 
     const defaultData2 = [
@@ -106,7 +109,7 @@ const NoFoundPage: React.FC = () => {
             </Row>,
             subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
 
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -203,7 +206,7 @@ const NoFoundPage: React.FC = () => {
             </Row>,
             subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
 
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -300,7 +303,7 @@ const NoFoundPage: React.FC = () => {
             </Row>,
             subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
 
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -396,7 +399,7 @@ const NoFoundPage: React.FC = () => {
                 </Col>
             </Row>,
             subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -415,22 +418,22 @@ const NoFoundPage: React.FC = () => {
             image:
                 <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
             desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                     <Typography.Text type="secondary">
                         Panel on
                     </Typography.Text>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                     <Typography.Text type="secondary">
                         Powered on after power fault and pressurized
                     </Typography.Text>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                     <Typography.Text type="secondary">
                         Dry mode after pause time
                     </Typography.Text>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                     <Typography.Text type="secondary">
                         Moving in dry mode
                     </Typography.Text>
@@ -440,7 +443,7 @@ const NoFoundPage: React.FC = () => {
                 <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
                     {"18:00h > 06:00h"}
                 </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -481,7 +484,7 @@ const NoFoundPage: React.FC = () => {
                 <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
                     {"18:00h > 06:00h"}
                 </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -522,7 +525,7 @@ const NoFoundPage: React.FC = () => {
                 <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
                     {"18:00h > 06:00h"}
                 </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -563,7 +566,7 @@ const NoFoundPage: React.FC = () => {
                 <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
                     {"18:00h > 06:00h"}
                 </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} >
+                <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
                     <Tag>Pivô 3</Tag>
@@ -587,8 +590,8 @@ const NoFoundPage: React.FC = () => {
                 paddingBlockEnd: '12px',
                 paddingInlineStart: '40px',
                 paddingInlineEnd: '40px',
-                marginBottom: 24,
                 background: 'white',
+                marginBottom: 24,
             },
             '.ant-pro-page-container-children-content': {
                 [`@media screen and (max-width: ${token.screenXS}px)`]: {
@@ -607,7 +610,34 @@ const NoFoundPage: React.FC = () => {
             '.ant-pro-list-row-header-title': {
                 flexDirection: 'column',
                 alignItems: 'flex-start'
-            }
+            },
+            '.ant-pro-card .ant-pro-card-body': {
+                [`@media screen and (max-width: ${token.screenMD}px)`]: {
+                    paddingInline: 4,
+                },
+            },
+            '.ant-pro-table-list-toolbar-container': {
+                [`@media screen and (max-width: ${token.screenMD}px)`]: {
+                    flexWrap: 'nowrap',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                },
+            },
+            '.ant-pro-table-list-toolbar-left': {
+                [`@media screen and (max-width: ${token.screenMD}px)`]: {
+                    marginBlockEnd: 0
+                },
+            },
+            '.ant-list-item': {
+                [`@media screen and (max-width: ${token.screenMD}px)`]: {
+                    padding: "16px 0px",
+                    flexDirection: 'column',
+                    alignItems: 'stretch',
+                    gap: 12
+                },
+            },
+
         };
     })
 
@@ -866,8 +896,8 @@ const NoFoundPage: React.FC = () => {
                 <ProCard>
                     <Tabs
                         defaultActiveKey="0"
-                        tabPosition={"left"}
-                        style={{ maxHeight: '100vh' }}
+                        tabPosition={onlyWidth > 1100 ? "left" : "top"}
+                        style={{ maxHeight: onlyWidth > 1100 ? '100vh' : '100%' }}
                         items={tabs as any}
                     >
 

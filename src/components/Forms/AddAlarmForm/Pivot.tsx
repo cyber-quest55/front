@@ -144,6 +144,7 @@ const AddPivotAlarmForm = () => {
                                 bordered
                                 colSpan={24}
                                 key={`list-${item.name}`}
+                                style={{padding: 12}}
 
                             >
                                 <Space direction="vertical" style={{ width: '100%' }} size="large">
