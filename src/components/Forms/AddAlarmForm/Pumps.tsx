@@ -12,10 +12,11 @@ import {
     ProFormText,
     ProFormTimePicker
 } from "@ant-design/pro-components";
+import { useWindowWidth } from '@react-hook/window-size'
 
 const AddPumpAlarmForm = () => {
-
     const [form] = Form.useForm<any>();
+    const onlyWidth = useWindowWidth()
 
     const [step, setStep] = useState(0)
 
@@ -24,10 +25,10 @@ const AddPumpAlarmForm = () => {
         { title: 'Moving in dry mode', name: 'p2' },
         { title: 'Wet mode after pressurized', name: 'p3' },
         { title: 'Dry mode after power fault', name: 'p4' },
-        { title: 'Powered on after power fault and pressurized', name: 'p5' },
+        { title: 'Powered on after power fault', name: 'p5' },
         { title: 'Wet mode after pause time', name: 'p6' },
         { title: 'Dry mode after pause time', name: 'p7' },
-        { title: 'Wet mode after pause time and pressurized', name: 'p8' },
+        { title: 'Wet mode after pause time', name: 'p8' },
     ]
 
     return (
@@ -44,7 +45,7 @@ const AddPumpAlarmForm = () => {
             }}
             trigger={
                 <Button
-                    size="large"
+                    size={onlyWidth > 1100 ? "large" : "middle"}
                     type="primary"
                     icon={<PlusCircleFilled />}>
                     Adicionar Alarme
@@ -93,14 +94,14 @@ const AddPumpAlarmForm = () => {
                         ]}
                     />
                     <ProFormTimePicker
-                        colProps={{ xs: 24, md: 5 }}
+                        colProps={{ xs: 12, md: 5 }}
                         name="started_at"
                         label="Horário de início"
                         placeholder="Dispositivo..."
                     />
 
                     <ProFormTimePicker
-                        colProps={{ xs: 24, md: 5 }}
+                        colProps={{ xs: 12, md: 5 }}
                         name="started_at"
                         label="Horário de fim"
                         placeholder="Dispositivo..."

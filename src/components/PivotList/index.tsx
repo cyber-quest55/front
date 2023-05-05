@@ -46,13 +46,10 @@ const PivotList: React.FC<Props> = (props) => {
             }
     }, [props.farm])
 
-    useEffect(() => {
-        console.log(params.id)
+    useEffect(() => { 
         const selectedFarm = props.farm.result?.list?.find(f =>
             f.id === parseInt(params.id as string)
         )
-
-        console.log('selected', selectedFarm)
 
         props.dispatch({
             type: 'farm/setSelectedFarm',
@@ -67,7 +64,7 @@ const PivotList: React.FC<Props> = (props) => {
 
     const classNameScrollable = useEmotionCss(({ }) => {
         return {
-            maxHeight: '63vh',
+            maxHeight: 'calc(100vh - 275px)',
             overflowY: 'auto',
             overflowX: 'hidden',
             [`.ant-list-item`]: {

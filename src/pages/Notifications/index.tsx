@@ -27,8 +27,8 @@ const NoFoundPage: React.FC = () => {
             name: 'Nome do grupo de alarmes',
             image:
                 <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
+            desc: <Row gutter={[12, 24]} style={{ marginTop: 16 }}>
+                <Col xs={24} md={12}>
                     <TinyArea
                         height={100}
                         autoFit={false}
@@ -82,7 +82,7 @@ const NoFoundPage: React.FC = () => {
                         ]}
                     />
                 </Col>
-                <Col span={12} >
+                <Col xs={24} md={12} >
                     <Row align={"middle"} style={{ height: "100%" }}>
                         <Space direction="vertical" size={"large"}>
                             <Space>
@@ -108,7 +108,6 @@ const NoFoundPage: React.FC = () => {
                 </Col>
             </Row>,
             subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-
                 <Space size={2} style={{ margin: 0 }} wrap >
                     <Tag>Pivô 1</Tag>
                     <Tag>Pivô 2</Tag>
@@ -677,9 +676,9 @@ const NoFoundPage: React.FC = () => {
                     },
                     actions: {
                         render: () => [
-                            <Button key="1-btn-" icon={<EditFilled />} />,
-                            <Button key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch key="1-swtich" />
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
                         ],
                     },
                     content: {
@@ -727,9 +726,9 @@ const NoFoundPage: React.FC = () => {
                     },
                     actions: {
                         render: () => [
-                            <Button key="1-btn-" icon={<EditFilled />} />,
-                            <Button key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch key="1-swtich" />
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
                         ],
                     },
                     content: {
@@ -777,9 +776,9 @@ const NoFoundPage: React.FC = () => {
                     },
                     actions: {
                         render: () => [
-                            <Button key="1-btn-" icon={<EditFilled />} />,
-                            <Button key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch key="1-swtich" />
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
                         ],
                     },
                     content: {
@@ -827,9 +826,9 @@ const NoFoundPage: React.FC = () => {
                     },
                     actions: {
                         render: () => [
-                            <Button key="1-btn-" icon={<EditFilled />} />,
-                            <Button key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch key="1-swtich" />
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
+                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
                         ],
                     },
                     content: {

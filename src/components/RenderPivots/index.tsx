@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import CirclePivot from '../CirclePivot';
 import { GoogleMap } from '@react-google-maps/api';
 import { GetFarmModelProps } from '@/models/farm';
+import { useWindowWidth } from '@react-hook/window-size'
 
 export type RenderPivotsProps = {
   dispatch: Dispatch;
@@ -15,6 +16,7 @@ export type RenderPivotsProps = {
 
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const params = useParams()
+  const onlyWidth = useWindowWidth()
 
   const [zoom, setZoom] = useState(14)
   const [map, setMap] = useState<any>(null)
@@ -22,7 +24,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
 
   const containerStyle = {
     width: '100%',
-    height: 'calc(100vh)'
+    height: onlyWidth > 1210? '100vh': 'calc(100vh -  102px)'
   };
 
   useEffect(() => {

@@ -21,6 +21,7 @@ import {
 import { connect } from "umi";
 import { GetPivotModelProps } from "@/models/pivot";
 const { Statistic } = StatisticCard;
+import { useWindowWidth } from '@react-hook/window-size'
 
 type Props = {
     pivot: GetPivotModelProps
@@ -28,6 +29,8 @@ type Props = {
 }
 
 const ShowPivot: React.FC<Props> = (props) => {
+    const onlyWidth = useWindowWidth()
+
     const [tab, setTab] = useState('tab1');
 
     const className = useEmotionCss(() => {
@@ -101,9 +104,9 @@ const ShowPivot: React.FC<Props> = (props) => {
 
     return (
         <ProCard ghost style={{ marginBlockStart: 8, }} gutter={[16, 16]} wrap>
-            <ProCard colSpan={{ xs: 24, sm: 5 }} style={{ height: 275 }}>
+            <ProCard colSpan={{ xs: 24, md: 8, xl: 5 }} style={{ height: 275 }}>
             </ProCard>
-            <ProCard colSpan={{ xs: 24, sm: 9 }} style={{ height: 275 }}>
+            <ProCard colSpan={{ xs: 24, md: 16, xl: 9 }} style={{ height: onlyWidth > 767 ? 275 : '100%' }}>
                 <DevicePanel
                     actions={
                         <Space>
@@ -116,9 +119,9 @@ const ShowPivot: React.FC<Props> = (props) => {
                     }
                     status={<Tag color={PivotStatusColor.off}>PIVOT PARADO</Tag>}
                     deviceSelector={
-                        <Select  
+                        <Select
                             className={classNameSelect}
-                            suffixIcon={<CaretDownOutlined />} 
+                            suffixIcon={<CaretDownOutlined />}
                             bordered={false}
                             showSearch
                             value={props.pivot.selectedPivot?.name?.toString()}
@@ -127,7 +130,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                             filterOption={(input, option) =>
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
-                            onChange={onChangeDevice} 
+                            onChange={onChangeDevice}
                             options={props.pivot.result.list?.map(item => ({ value: item.id, label: item.name }))}
                         />
                     }
@@ -173,18 +176,15 @@ const ShowPivot: React.FC<Props> = (props) => {
                         </Space>
                     </Space>}
                     lastCommunication="19 May 10:15"
-                    deviceActions={<Space direction="vertical" size="middle">
-                        <Button type="primary" style={{ width: '200px' }}>Start Pivot</Button>
-                        <Button type="default" danger style={{ width: '200px' }}>Stop Pivot</Button>
+                    deviceActions={<Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                        <Button type="primary" style={{ width: onlyWidth > 767 ? '200px' : '100%' }}>Start Pivot</Button>
+                        <Button type="default" danger style={{ width: onlyWidth > 767 ? '200px' : '100%' }}>Stop Pivot</Button>
                     </Space>}
                 />
             </ProCard>
-
-            <ProCard split="vertical" colSpan={{ xs: 24, sm: 10 }} style={{ height: 275 }}>
-                <ProCard split="horizontal" colSpan={{ xs: 24, sm: 12 }}   >
+            <ProCard split="vertical" colSpan={{ xs: 24, md: 24, xl: 10 }} wrap>
+                <ProCard split={onlyWidth > 1150 ? "vertical" : "horizontal"} colSpan={{ xs: 24, md: 12, xl: 12 }}   >
                     <StatisticCard
-
-                        style={{ height: "calc((275px / 2) - 1px)" }}
                         statistic={{
                             title: 'Falta de pressão',
                             value: 8,
@@ -192,7 +192,6 @@ const ShowPivot: React.FC<Props> = (props) => {
                         }}
                     />
                     <StatisticCard
-                        style={{ height: "calc((275px / 2) - 1px)" }}
                         statistic={{
                             title: 'Queda de energia',
                             value: 0,
@@ -200,9 +199,8 @@ const ShowPivot: React.FC<Props> = (props) => {
                         }}
                     />
                 </ProCard>
-                <ProCard split="horizontal" colSpan={{ xs: 24, sm: 12 }}   >
+                <ProCard split={onlyWidth > 1200 ? "vertical" : "horizontal"} colSpan={{ xs: 24, md: 12, xl: 12 }}   >
                     <StatisticCard
-                        style={{ height: "calc((275px / 2) - 1px)" }}
                         statistic={{
                             title: 'Desalinhado',
                             value: 0,
@@ -210,7 +208,6 @@ const ShowPivot: React.FC<Props> = (props) => {
                         }}
                     />
                     <StatisticCard
-                        style={{ height: "calc((275px / 2) - 1px)" }}
                         statistic={{
                             title: 'Oscilação de energia',
                             value: 0,
@@ -223,13 +220,13 @@ const ShowPivot: React.FC<Props> = (props) => {
 
             <ProCard
                 title="Consumo de energia"
-                split={'vertical'}
+                split={onlyWidth > 767 ? 'vertical' : 'horizontal'}
                 headerBordered
                 style={{ minHeight: 450 }}
             >
-                <ProCard split="horizontal" colSpan={{ xs: 24, sm: 12 }}>
+                <ProCard split="horizontal" colSpan={{ xs: 24, lg: 12 }}>
                     <ProCard split="horizontal">
-                        <ProCard split="vertical">
+                        <ProCard split="vertical" wrap>
                             <StatisticCard
                                 statistic={{
                                     title: 'Volume total',
@@ -245,7 +242,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                                 }}
                             />
                         </ProCard>
-                        <ProCard split="vertical">
+                        <ProCard split="vertical" wrap>
                             <StatisticCard
                                 statistic={{
                                     title: 'Volume total mês anterior',
@@ -332,10 +329,13 @@ const ShowPivot: React.FC<Props> = (props) => {
                         }
                     />
                 </ProCard>
-                <ProCard split="horizontal" colSpan={{ xs: 24, sm: 12 }}>
-                    <ProCard colSpan={{ xs: 24, sm: 24 }} split="vertical" style={{ height: 350 }}>
+                <ProCard split="horizontal" colSpan={{ xs: 24, lg: 12 }}>
+                    <ProCard
+                        colSpan={{ xs: 24, lg: 24 }}
+                        split={onlyWidth > 767 ? 'vertical' : 'horizontal'}
+                        style={{ height: onlyWidth > 767 ? 350 : '100%' }}>
                         <StatisticCard
-                            colSpan={{ xs: 24, sm: 16 }}
+                            colSpan={{ xs: 24, lg: 16 }}
                             style={{ width: '100%', }}
                             title="Custo total de energia (R$)"
                             chart={
@@ -392,7 +392,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                                 />
                             }
                         />
-                        <ProCard split="vertical" colSpan={{ xs: 24, sm: 8 }}>
+                        <ProCard split="vertical" colSpan={{ xs: 24, lg: 8 }}>
                             <ProCard split="horizontal" >
                                 <ProCard split="horizontal">
                                     <StatisticCard
@@ -427,7 +427,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                     </ProCard>
                     <StatisticCard
                         title={"Tensões do Pivô (V)"}
-                        colSpan={{ xs: 24, sm: 24 }}
+                        colSpan={{ xs: 24, lg: 24 }}
                         chart={<Line
                             height={320}
                             data={[
@@ -789,7 +789,7 @@ const ShowPivot: React.FC<Props> = (props) => {
 
             </ProCard>
 
-            <ProCard wrap ghost gutter={[0, 12, 0, 0]} colSpan={{ xs: 24, sm: 12 }} style={{ marginTop: -6 }}>
+            <ProCard wrap ghost gutter={[0, 12, 0, 0]} colSpan={{ xs: 24, lg: 12 }} style={{ marginTop: -6 }}>
                 <StatisticCard
                     title="Gráfico de Lâmina"
                     chart={<Column
@@ -1216,7 +1216,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                     />}
                 />
             </ProCard>
-            <ProCard colSpan={{ xs: 24, sm: 12 }}
+            <ProCard colSpan={{ xs: 24, lg: 12 }}
                 title="Histórico"
                 tabs={{
                     tabPosition: 'top',
@@ -1304,7 +1304,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                                         ],
                                     },
                                 ]}
-                                request={( ) => { 
+                                request={() => {
                                     return Promise.resolve({
                                         data: tableListDataSource,
                                         success: true,

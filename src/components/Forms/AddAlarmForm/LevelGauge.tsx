@@ -2,6 +2,7 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import { Button, Col, Form, Row, Space, Steps } from "antd";
 import { TinyArea } from '@ant-design/plots';
 import { useState } from "react";
+import { useWindowWidth } from '@react-hook/window-size'
 
 import {
     ModalForm,
@@ -17,6 +18,8 @@ import {
 
 const AddLevelGaugeForm = () => {
     const [form] = Form.useForm<any>();
+    const onlyWidth = useWindowWidth()
+
     const [step, setStep] = useState(0)
 
     const data = [
@@ -42,7 +45,7 @@ const AddLevelGaugeForm = () => {
             }}
             trigger={
                 <Button
-                    size="large"
+                    size={onlyWidth > 1100 ? "large" : "middle"}
                     type="primary"
                     icon={<PlusCircleFilled />}>
                     Adicionar Alarme
@@ -91,14 +94,14 @@ const AddLevelGaugeForm = () => {
                         ]}
                     />
                     <ProFormTimePicker
-                        colProps={{ xs: 24, md: 5 }}
+                        colProps={{ xs: 12, md: 5 }}
                         name="started_at"
                         label="Horário de início"
                         placeholder="Dispositivo..."
                     />
 
                     <ProFormTimePicker
-                        colProps={{ xs: 24, md: 5 }}
+                        colProps={{ xs: 12, md: 5 }}
                         name="started_at"
                         label="Horário de fim"
                         placeholder="Dispositivo..."
@@ -141,10 +144,10 @@ const AddLevelGaugeForm = () => {
                         pattern={{
                             type: 'line',
                             cfg: {
-                              stroke: '#5B8FF9',
+                                stroke: '#5B8FF9',
                             },
-                          }}
-                        annotations={[ 
+                        }}
+                        annotations={[
                             {
                                 type: 'line',
                                 start: ['min', 'mean'],
