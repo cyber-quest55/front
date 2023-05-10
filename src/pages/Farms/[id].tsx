@@ -6,8 +6,7 @@ import { FunctionComponent, ReactNode } from 'react';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetFarmModelProps } from '@/models/farm';
 import { useWindowWidth } from '@react-hook/window-size'
-import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { LoadScript } from '@react-google-maps/api';
+import { useEmotionCss } from '@ant-design/use-emotion-css'; 
 import RenderPivots from '@/components/RenderPivots';
 import { ProCard } from '@ant-design/pro-components';
 import PivotList from '@/components/PivotList';
@@ -66,11 +65,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
       label: `Tab 1`,
       children: <Spin spinning={false}>
         <div style={{ width: '100%', height: 'calc(100vh - 102px)' }}>
-          <LoadScript
-            googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-          >
-            <RenderPivots />
-          </LoadScript>
+            <RenderPivots /> 
         </div>
       </Spin>
     },
@@ -95,11 +90,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
           {
             onlyWidth > 767 ? <Spin spinning={props.pivot.loading || props.farm.loading}>
               <div style={{ width: '100%', height: '100vh' }}>
-                <LoadScript
-                  googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-                >
-                  <RenderPivots />
-                </LoadScript>
+                  <RenderPivots /> 
               </div>
               <ProCard className={className} >
                 <PivotList />

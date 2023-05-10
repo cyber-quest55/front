@@ -1,7 +1,6 @@
 
 import React, { FunctionComponent, ReactNode } from 'react';
 import { ProCard } from '@ant-design/pro-components';
-import { LoadScript, } from '@react-google-maps/api';
 import RenderPivots from '@/components/RenderPivots';
 import PivotList from '@/components/PivotList';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -10,6 +9,7 @@ import { Spin, Tabs } from 'antd';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetFarmModelProps } from '@/models/farm';
 import { useWindowWidth } from '@react-hook/window-size'
+import { GetGoogleMapsProps } from '@/models/google-maps';
 
 type Props = {
     dispatch?: any;
@@ -17,6 +17,7 @@ type Props = {
     google?: any;
     pivot: GetPivotModelProps;
     farm: GetFarmModelProps;
+    googleMaps: GetGoogleMapsProps
 }
 
 const MapsRender: FunctionComponent<Props> = (props) => {
@@ -47,18 +48,13 @@ const MapsRender: FunctionComponent<Props> = (props) => {
         }
     })
 
-
-    const items: TabsProps['items'] = [
+    const items: any[] = [
         {
             key: '1',
             label: `Tab 1`,
             children: <Spin spinning={false}>
                 <div style={{ width: '100%', height: ' calc(100vh - 56px - 60px)' }}>
-                    <LoadScript
-                        googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-                    >
-                        <RenderPivots />
-                    </LoadScript>
+                    {props.googleMaps.loaded?  <RenderPivots />: null}
                 </div>
             </Spin>
         },
@@ -75,17 +71,12 @@ const MapsRender: FunctionComponent<Props> = (props) => {
         },
     ];
 
-
     return (
         <>
             {
                 onlyWidth > 1210 ? <Spin spinning={props.pivot.loading || props.farm.loading}>
                     <div style={{ width: '100%', height: ' 100vh' }}>
-                        <LoadScript
-                            googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-                        >
-                            <RenderPivots />
-                        </LoadScript>
+                        <RenderPivots />
                     </div>
                     <ProCard className={className} >
                         <PivotList />
@@ -106,7 +97,6 @@ const MapsRender: FunctionComponent<Props> = (props) => {
     );
 };
 
-
-export default connect(({ pivot, farm }: { pivot: any, farm: any }) => ({
-    pivot, farm
+export default connect(({ pivot, farm, googleMaps }: { pivot: any, farm: any, googleMaps: any }) => ({
+    pivot, farm, googleMaps
 }))(MapsRender); 

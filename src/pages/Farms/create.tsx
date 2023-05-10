@@ -1,6 +1,6 @@
 import { ProCard, PageContainer, StepsForm, ProFormInstance, ProFormText, ProFormSelect } from "@ant-design/pro-components"
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import { GoogleMap  } from "@react-google-maps/api";
 import { Avatar, Col, Divider, Row, Typography } from "antd";
 import { useRef } from "react";
 import { RiGpsFill } from "react-icons/ri";
@@ -24,11 +24,11 @@ export const CreateFarm = () => {
                     paddingInline: '12px',
                 },
                 paddingInline: '40px',
-           
+
             },
             '.ant-pro-steps-form-container': {
                 minWidth: '0px',
-                width: '700px', 
+                width: '700px',
                 [`@media screen and (max-width: ${token.screenXS})`]: {
                     width: '100%',
                 },
@@ -60,7 +60,7 @@ export const CreateFarm = () => {
                 }}>
                 <ProCard   >
                     <StepsForm
-                        submitter={{submitButtonProps: {size: 'large'}, resetButtonProps: {size: 'large'}}}
+                        submitter={{ submitButtonProps: { size: 'large' }, resetButtonProps: { size: 'large' } }}
                         formProps={{ size: 'large' }}
                         formMapRef={formMapRef}
                         onFinish={() => {
@@ -101,26 +101,24 @@ export const CreateFarm = () => {
                             </Row>
                             <Row>
                                 <Col xs={24} style={{ marginBottom: 24 }}>
-                                    <LoadScript
-                                        googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+
+                                    <GoogleMap
+                                        center={{
+                                            lat: -22.380033,
+                                            lng: -46.955198
+                                        }}
+                                        mapContainerStyle={containerStyle}
+                                        options={{
+                                            keyboardShortcuts: false,
+                                            rotateControl: false,
+                                            mapTypeControl: false,
+                                            isFractionalZoomEnabled: false,
+                                            mapTypeId: 'satellite'
+                                        }}
+                                        zoom={13}
                                     >
-                                        <GoogleMap
-                                            center={{
-                                                lat: -22.380033,
-                                                lng: -46.955198
-                                            }}
-                                            mapContainerStyle={containerStyle}
-                                            options={{
-                                                keyboardShortcuts: false,
-                                                rotateControl: false,
-                                                mapTypeControl: false,
-                                                isFractionalZoomEnabled: false,
-                                                mapTypeId: 'satellite'
-                                            }}
-                                            zoom={13}
-                                        >
-                                        </GoogleMap>
-                                    </LoadScript>
+                                    </GoogleMap>
+
                                 </Col>
                             </Row>
                         </StepsForm.StepForm>
@@ -150,29 +148,29 @@ export const CreateFarm = () => {
                                 <Col xs={24} sm={8}>
                                     <ProFormSelect label="Estado" name={'name'} />
                                 </Col>
-                                
+
                             </Row>
                         </StepsForm.StepForm>
                     </StepsForm>
-                    <Divider/>
+                    <Divider />
 
-                    <Typography style={{fontSize: 16}}> 
-                        Lorem  
+                    <Typography style={{ fontSize: 16 }}>
+                        Lorem
                     </Typography>
-                    <Typography style={{fontSize: 16}}> 
+                    <Typography style={{ fontSize: 16 }}>
                         Lorem impsun
                     </Typography>
-                    <Typography style={{fontSize: 16}}> 
+                    <Typography style={{ fontSize: 16 }}>
                         Lorem in labore deserunt ullamco quis officia proident adipisicing Lorem est ad. Ullamco minim sit proident pariatur ea minim elit duis pariatur.
                     </Typography>
 
-                    <Typography style={{fontSize: 16}}> 
-                        Lorem  
+                    <Typography style={{ fontSize: 16 }}>
+                        Lorem
                     </Typography>
-                    <Typography style={{fontSize: 16}}> 
+                    <Typography style={{ fontSize: 16 }}>
                         Lorem impsun
                     </Typography>
-                    <Typography style={{fontSize: 16}}> 
+                    <Typography style={{ fontSize: 16 }}>
                         Lorem in labore deserunt ullamco quis officia proident adipisicing Lorem est ad. Ullamco minim sit proident pariatur ea minim elit duis pariatur.
                     </Typography>
                 </ProCard>

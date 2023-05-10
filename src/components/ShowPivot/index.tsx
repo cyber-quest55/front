@@ -9,6 +9,10 @@ import { useEmotionCss } from "@ant-design/use-emotion-css";
 import { Pie, G2, Line, Column } from '@ant-design/plots';
 import { useState } from "react";
 import DevicePanel from "../DevicePanel";
+import { connect } from "umi";
+import { GetPivotModelProps } from "@/models/pivot";
+import { useWindowWidth } from '@react-hook/window-size'
+import DeviceMapsRender from "../DeviceMapsRender";
 import {
     CalendarOutlined,
     CaretDownOutlined,
@@ -20,10 +24,8 @@ import {
     SearchOutlined,
     ThunderboltFilled
 } from "@ant-design/icons";
-import { connect } from "umi";
-import { GetPivotModelProps } from "@/models/pivot";
+
 const { Statistic } = StatisticCard;
-import { useWindowWidth } from '@react-hook/window-size'
 
 type Props = {
     pivot: GetPivotModelProps
@@ -133,14 +135,13 @@ const ShowPivot: React.FC<Props> = (props) => {
                 destroyOnClose
 
             >
-
                 <Row>
-                    <Col xs={24} md={12} style={{background: 'black'}}>
-
+                    <Col xs={24} md={12} style={{ height: 360 }}>
+                        <DeviceMapsRender height={400}/>
                     </Col>
                     <Col xs={24} md={12}>
                         <ProTable<any>
-                            columns={[ 
+                            columns={[
                                 {
                                     title: '应用名称',
                                     dataIndex: 'name',
@@ -154,7 +155,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                                     filterIcon: (filtered) => (
                                         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
                                     ),
-                                }, 
+                                },
                                 {
                                     title: '状态',
                                     dataIndex: 'status',
@@ -175,7 +176,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                                     ellipsis: true,
                                     copyable: true,
                                 },
-                            
+
                             ]}
                             request={() => {
                                 return Promise.resolve({
@@ -184,19 +185,20 @@ const ShowPivot: React.FC<Props> = (props) => {
                                 });
                             }}
                             rowKey="key"
-                            pagination={{ 
+                            pagination={{
                                 pageSize: 6
-                            }} 
+                            }}
                             options={false}
                             search={false}
                             dateFormatter="string"
-                            toolbar={ {}}
+                            toolbar={{}}
                         />
                     </Col>
                 </Row>
             </Modal>
             <ProCard className={generalClassName} ghost style={{ marginBlockStart: 8, }} gutter={[16, 16]} wrap>
-                <ProCard colSpan={{ xs: 24, md: 8, xxl: 5 }} style={{ height: 275 }}>
+                <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 5 }} style={{ height: 275 }}>
+                    <DeviceMapsRender height={275} />
                 </ProCard>
                 <ProCard colSpan={{ xs: 24, md: 16, xxl: 9 }} style={{ height: onlyWidth > 767 ? 275 : '100%' }}>
                     <DevicePanel

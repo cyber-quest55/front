@@ -7,8 +7,10 @@ import { App } from 'antd';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig'; 
+import { LoadScript } from '@react-google-maps/api';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+import uniqid from 'uniqid'
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -46,7 +48,11 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
+const onLoad = () => console.log('script loaded')
+const loaderId = uniqid('loader-')
+
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+
   return {
     actionsRender: () => [
       <div key="SelectLang" style={{ color: 'white' }}><SelectLang /></div>,
@@ -58,7 +64,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
-    }, 
+    },
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
@@ -82,7 +88,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
-      return <App>{children}</App>;
+      return <App>
+        <LoadScript
+          id={loaderId}
+          onLoad={onLoad}
+
+          loadingElement={<div>loadinqwewqeg</div>}
+          googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+        >
+          {children}
+        </LoadScript>
+      </App>;
     },
     ...initialState?.settings,
   };
