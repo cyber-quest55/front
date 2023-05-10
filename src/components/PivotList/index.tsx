@@ -3,7 +3,7 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { CalendarOutlined, CaretDownOutlined, EditFilled, RedoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Col, Divider, Row, Select, Space, Tag, Tooltip } from 'antd';
+import { Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
 import React, { useEffect, } from 'react';
 import { connect } from 'umi';
 import { Link, useParams, history } from '@umijs/max'
@@ -46,7 +46,7 @@ const PivotList: React.FC<Props> = (props) => {
             }
     }, [props.farm])
 
-    useEffect(() => { 
+    useEffect(() => {
         const selectedFarm = props.farm.result?.list?.find(f =>
             f.id === parseInt(params.id as string)
         )
@@ -64,7 +64,11 @@ const PivotList: React.FC<Props> = (props) => {
 
     const classNameScrollable = useEmotionCss(({ }) => {
         return {
-            maxHeight: 'calc(100vh - 275px)',
+            maxHeight: 'calc(100vh - 350px)',
+            [`@media screen and (max-width: 762px)`]: {
+                maxHeight: 'calc(100vh - 283px)',
+                height: '100vh',
+            },
             overflowY: 'auto',
             overflowX: 'hidden',
             [`.ant-list-item`]: {
@@ -100,24 +104,66 @@ const PivotList: React.FC<Props> = (props) => {
             [`.ant-pro-card-body`]: {
                 paddingInline: '0px !important',
             },
+            '.ant-pro-list-row-title': {
+                width: '100%'
+            },
+            '.ant-list-item .ant-list-item-meta': {
+                marginBlockEnd: 0
+            }
         };
     });
 
     const dataSource = [
         {
-            title: 'Pivô 1',
+            title: <Row justify="space-between" style={{ width: '100%', }}>
+                <Col>
+                    <span>Pivô 1</span>
+
+                </Col>
+                <Col>
+                    <Tag color="#2db7f5" >V5</Tag>
+                    <Tag color="#f50">Sem Comunicação</Tag>
+                </Col>
+            </Row>,
         },
         {
-            title: 'Pivô 2',
+            title: <Row justify="space-between" style={{ width: '100%', }}>
+                <Col>
+                    <span>Pivô 2</span>
+
+                </Col>
+                <Col>
+                    <Tag color="#2db7f5" >V5</Tag>
+                    <Tag color="#f50">Sem Comunicação</Tag>
+                </Col>
+            </Row>,
         },
         {
-            title: 'Pivô 3',
+            title: <Row justify="space-between" style={{ width: '100%', }}>
+                <Col>
+                    <span>Pivô 3</span>
+
+                </Col>
+                <Col>
+                    <Tag color="#2db7f5" >V5</Tag>
+                    <Tag color="#f50">Sem Comunicação</Tag>
+                </Col>
+            </Row>,
         },
         {
-            title: 'Pivô 4',
+            title: <Row justify="space-between" style={{ width: '100%' }}>
+                <Col>
+                    <span>Pivô 4</span>
+
+                </Col>
+                <Col>
+                    <Tag color="#2db7f5" >V5</Tag>
+                    <Tag color="#f50">Sem Comunicação</Tag>
+                </Col>
+            </Row>,
         },
     ];
- 
+
     return (
         <div className={className}>
             <Row justify="space-between" align="middle" style={{ padding: "0px 16px", }} >
@@ -134,7 +180,7 @@ const PivotList: React.FC<Props> = (props) => {
                             filterOption={(input, option) =>
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
-                            onChange={(e) => { 
+                            onChange={(e) => {
                                 history.push(e.toString())
                             }}
                             options={props.farm.result.list?.map(item => ({ value: item.id, label: item.name }))}
@@ -158,21 +204,13 @@ const PivotList: React.FC<Props> = (props) => {
             </Row>
             <Divider style={{ marginBottom: 0 }} />
             <div className={classNameScrollable}  >
-                <ProList<{ title: string }>
+                <ProList<any>
                     itemLayout="vertical"
                     rowKey="id"
                     style={{ paddingBottom: 0, marginBottom: 0 }}
                     dataSource={dataSource}
                     metas={{
                         title: {},
-                        description: {
-                            render: () => (
-                                <>
-                                    <Tag color="#2db7f5" >V5</Tag>
-                                    <Tag color="#f50">Sem Comunicação</Tag>
-                                </>
-                            ),
-                        },
                         content: {
                             render: () => {
                                 return (
@@ -183,9 +221,9 @@ const PivotList: React.FC<Props> = (props) => {
                                         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                             <Tooltip title="Ângulo"><RedoOutlined style={{ fontSize: 20 }} /> </Tooltip> 199°
                                         </span>
-                                        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                            <Tooltip title="Última Conexão"><CalendarOutlined style={{ fontSize: 20 }} /> </Tooltip> 22 mar 13:00
-                                        </span>
+                                        <Typography.Text type='secondary'>
+                                            22 mar 13:00
+                                        </Typography.Text>
                                     </Space>
                                 );
                             },
@@ -194,8 +232,8 @@ const PivotList: React.FC<Props> = (props) => {
                 />
             </div>
             <Row justify="center" style={{ marginTop: -45 }}>
-                <Col> 
-                    <AddDeviceForm/>
+                <Col>
+                    <AddDeviceForm />
                 </Col>
             </Row>
         </div  >

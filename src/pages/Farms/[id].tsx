@@ -27,7 +27,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
     return onlyWidth > 767 ? {
       position: 'absolute',
       width: 400,
-      top: 65,
+      top: 35,
       left: 45,
       padding: 0,
       [`.ant-pro-card-body`]: {
@@ -35,7 +35,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
       },
     } : {
       width: "100%",
-      height: 'calc(100vh -  102px)',
+      minHeight: '150px',
       padding: 0,
       [`.ant-pro-card-body`]: {
         paddingInline: '0px !important',
