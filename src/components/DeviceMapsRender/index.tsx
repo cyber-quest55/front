@@ -33,6 +33,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
   }, [props.pivotInformation.loaded])
 
   const item = props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined
+  
   return  props.googleMaps?  <GoogleMap
       mapContainerStyle={containerStyle}
       center={mapCenter}

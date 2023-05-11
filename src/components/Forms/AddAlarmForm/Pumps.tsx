@@ -21,14 +21,11 @@ const AddPumpAlarmForm = () => {
     const [step, setStep] = useState(0)
 
     const listOptions = [
-        { title: 'Panel On', name: 'p1', children: <div>asdasd</div> },
-        { title: 'Moving in dry mode', name: 'p2' },
-        { title: 'Wet mode after pressurized', name: 'p3' },
-        { title: 'Dry mode after power fault', name: 'p4' },
-        { title: 'Powered on after power fault', name: 'p5' },
-        { title: 'Wet mode after pause time', name: 'p6' },
-        { title: 'Dry mode after pause time', name: 'p7' },
-        { title: 'Wet mode after pause time', name: 'p8' },
+        { title: 'Quedas de energia', name: 'p1', children: undefined },
+        { title: 'Limites de tensão inferior', name: 'p2', children: <div>Novo children</div> },
+        { title: 'Limites de tensão superior', name: 'p3', children: undefined },
+        { title: 'Outorga de consumo de água próxima do limite', name: 'p4', children: undefined },
+        { title: 'Outorga de consumo de energia próxima do limite', name: 'p5', children: undefined },
     ]
 
     return (

@@ -14,21 +14,15 @@ import {
 } from "@ant-design/pro-components";
 import { useWindowWidth } from '@react-hook/window-size'
 
-const AddPivotAlarmForm = () => {
+const AddFlowMetterAlarmForm = () => {
     const [form] = Form.useForm<any>();
     const onlyWidth = useWindowWidth()
 
     const [step, setStep] = useState(0)
 
     const listOptions = [
-        { title: 'Panel On', name: 'p1', children: undefined  },
-        { title: 'Moving in dry mode', name: 'p2', children: undefined  },
-        { title: 'Wet mode after pressurized', name: 'p3', children: undefined  },
-        { title: 'Dry mode after power fault', name: 'p4', children: undefined  },
-        { title: 'Powered on after power fault', name: 'p5', children: undefined  },
-        { title: 'Wet mode after pause time', name: 'p6', children: undefined  },
-        { title: 'Dry mode after pause time', name: 'p7', children: undefined  },
-        { title: 'Wet mode after pause time', name: 'p8', children: undefined  },
+        { title: 'Limites de vazão inferior', name: 'p1', children: <div>asdasd</div> },
+        { title: 'Limites de vazão superior', name: 'p2', children: undefined  }, 
     ]
 
     return (
@@ -145,7 +139,6 @@ const AddPivotAlarmForm = () => {
                                 bordered
                                 colSpan={24}
                                 key={`list-${item.name}`}
-                                style={{ padding: 12 }}
 
                             >
                                 <Space direction="vertical" style={{ width: '100%' }} size="large">
@@ -197,4 +190,4 @@ const AddPivotAlarmForm = () => {
     )
 }
 
-export default AddPivotAlarmForm
+export default AddFlowMetterAlarmForm

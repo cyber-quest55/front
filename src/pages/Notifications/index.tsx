@@ -1,584 +1,355 @@
 
-import AddLevelGaugeForm from '@/components/Forms/AddAlarmForm/LevelGauge';
 import AddPivotAlarmForm from '@/components/Forms/AddAlarmForm/Pivot';
-import AddPivotMonitorAlarmForm from '@/components/Forms/AddAlarmForm/PivotMonitor';
-import { TinyArea } from '@ant-design/charts';
-import { BellOutlined, DeleteFilled, EditFilled } from '@ant-design/icons';
-import { PageContainer, ProCard, ProList } from '@ant-design/pro-components';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Button, Space, Tabs, Tag, Switch, Typography, Row, Col } from 'antd';
-import React, { ReactText, useState } from 'react';
+import { Tabs } from 'antd';
+import React, { useState } from 'react';
 import { useWindowWidth } from '@react-hook/window-size'
-
-
+import AlarmPivotList from '@/components/Lists/Alarm/AlarmPivotList';
+import AlarmPivotMonitorList from '@/components/Lists/Alarm/AlarmPivotMonitorList';
+import AddPivotMonitorAlarmForm from '@/components/Forms/AddAlarmForm/PivotMonitor';
+import AlarmPumpList from '@/components/Lists/Alarm/PumpList';
+import AddPumpAlarmForm from '@/components/Forms/AddAlarmForm/Pumps';
+import LevelGaugeList from '@/components/Lists/Alarm/LevelGaugeList';
+import AddLevelGaugeForm from '@/components/Forms/AddAlarmForm/LevelGauge';
+import FlowMetterList from '@/components/Lists/Alarm/FlowMetterList';
+import WaterGroupList from '@/components/Lists/Alarm/WaterGroupList';
+import WaterGroupForm from '@/components/Forms/AddAlarmForm/WaterGroup';
 
 const NoFoundPage: React.FC = () => {
     const onlyWidth = useWindowWidth()
-
-    const data = [
-        264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539, 243, 226, 192,
-    ];
-
-    const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
-
-    const defaultData2 = [
-        {
-            id: '1',
-            name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 24]} style={{ marginTop: 16 }}>
-                <Col xs={24} md={12}>
-                    <TinyArea
-                        height={100}
-                        autoFit={false}
-                        data={data}
-                        smooth={true}
-                        tooltip={false}
-                        color={"#E5EDFE"}
-                        pattern={{
-                            type: 'line',
-                            cfg: {
-                                stroke: '#5B8FF9',
-                            },
-                        }}
-                        annotations={[
-                            {
-                                type: 'line',
-                                start: ['min', 'mean'],
-                                end: ['max', 'mean'],
-                                text: {
-                                    content: 'ffff',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.25)',
-                                },
-                            },
-                            {
-                                type: 'line',
-                                start: ['min', 800],
-                                end: ['max', 800],
-                                text: {
-                                    content: 'eeee',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.55)',
-                                },
-                            },
-                        ]}
-                    />
-                </Col>
-                <Col xs={24} md={12} >
-                    <Row align={"middle"} style={{ height: "100%" }}>
-                        <Space direction="vertical" size={"large"}>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível superior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    75; 85; 95.
-                                </Typography.Text>
-                            </Space>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível inferior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    25; 15; 5.
-                                </Typography.Text>
-                            </Space>
-                        </Space>
-                    </Row>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
-        },
-        {
-            id: '2',
-            name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
-                    <TinyArea
-                        height={100}
-                        autoFit={false}
-                        data={data}
-                        smooth={true}
-                        tooltip={false}
-                        color={"#E5EDFE"}
-                        pattern={{
-                            type: 'line',
-                            cfg: {
-                                stroke: '#5B8FF9',
-                            },
-                        }}
-                        annotations={[
-                            {
-                                type: 'line',
-                                start: ['min', 'mean'],
-                                end: ['max', 'mean'],
-                                text: {
-                                    content: 'ffff',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.25)',
-                                },
-                            },
-                            {
-                                type: 'line',
-                                start: ['min', 800],
-                                end: ['max', 800],
-                                text: {
-                                    content: 'eeee',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.55)',
-                                },
-                            },
-                        ]}
-                    />
-                </Col>
-                <Col span={12} >
-                    <Row align={"middle"} style={{ height: "100%" }}>
-                        <Space direction="vertical" size={"large"}>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível superior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    75; 85; 95.
-                                </Typography.Text>
-                            </Space>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível inferior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    25; 15; 5.
-                                </Typography.Text>
-                            </Space>
-                        </Space>
-                    </Row>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
-        },
-        {
-            id: '3',
-            name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
-                    <TinyArea
-                        height={100}
-                        autoFit={false}
-                        data={data}
-                        smooth={true}
-                        tooltip={false}
-                        color={"#E5EDFE"}
-                        pattern={{
-                            type: 'line',
-                            cfg: {
-                                stroke: '#5B8FF9',
-                            },
-                        }}
-                        annotations={[
-                            {
-                                type: 'line',
-                                start: ['min', 'mean'],
-                                end: ['max', 'mean'],
-                                text: {
-                                    content: 'ffff',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.25)',
-                                },
-                            },
-                            {
-                                type: 'line',
-                                start: ['min', 800],
-                                end: ['max', 800],
-                                text: {
-                                    content: 'eeee',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.55)',
-                                },
-                            },
-                        ]}
-                    />
-                </Col>
-                <Col span={12} >
-                    <Row align={"middle"} style={{ height: "100%" }}>
-                        <Space direction="vertical" size={"large"}>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível superior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    75; 85; 95.
-                                </Typography.Text>
-                            </Space>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível inferior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    25; 15; 5.
-                                </Typography.Text>
-                            </Space>
-                        </Space>
-                    </Row>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
-        },
-        {
-            id: '4',
-            name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
-                    <TinyArea
-                        height={100}
-                        autoFit={false}
-                        data={data}
-                        smooth={true}
-                        tooltip={false}
-                        color={"#E5EDFE"}
-                        pattern={{
-                            type: 'line',
-                            cfg: {
-                                stroke: '#5B8FF9',
-                            },
-                        }}
-                        annotations={[
-                            {
-                                type: 'line',
-                                start: ['min', 'mean'],
-                                end: ['max', 'mean'],
-                                text: {
-                                    content: 'ffff',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.25)',
-                                },
-                            },
-                            {
-                                type: 'line',
-                                start: ['min', 800],
-                                end: ['max', 800],
-                                text: {
-                                    content: 'eeee',
-                                    offsetY: -2,
-                                    style: {
-                                        textAlign: 'left',
-                                        fontSize: 10,
-                                        fill: 'rgba(44, 53, 66, 0.45)',
-                                        textBaseline: 'bottom',
-                                    },
-                                },
-                                style: {
-                                    stroke: 'rgba(0, 0, 0, 0.55)',
-                                },
-                            },
-                        ]}
-                    />
-                </Col>
-                <Col span={12} >
-                    <Row align={"middle"} style={{ height: "100%" }}>
-                        <Space direction="vertical" size={"large"}>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível superior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    75; 85; 95.
-                                </Typography.Text>
-                            </Space>
-                            <Space>
-                                <Typography.Text type="secondary">
-                                    Limites de nível inferior:
-                                </Typography.Text>
-
-                                <Typography.Text >
-                                    25; 15; 5.
-                                </Typography.Text>
-                            </Space>
-                        </Space>
-                    </Row>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
-        },
-    ];
 
     const defaultData = [
         {
             id: '1',
             name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col xs={24} md={12}>
-                    <Typography.Text type="secondary">
-                        Panel on
-                    </Typography.Text>
-                </Col>
-                <Col xs={24} md={12}>
-                    <Typography.Text type="secondary">
-                        Powered on after power fault and pressurized
-                    </Typography.Text>
-                </Col>
-                <Col xs={24} md={12}>
-                    <Typography.Text type="secondary">
-                        Dry mode after pause time
-                    </Typography.Text>
-                </Col>
-                <Col xs={24} md={12}>
-                    <Typography.Text type="secondary">
-                        Moving in dry mode
-                    </Typography.Text>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
-                    {"18:00h > 06:00h"}
-                </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
+            image: '',
+            description: [
+                'Panel on',
+                'Powered on after power fault and pressurized',
+                'Dry mode after pause time',
+                'Moving in dry mode'
+            ],
+            subTitle: {
+                date: "18:00h > 06:00h",
+                pivotList: [
+                    'Pivô 1',
+                    'Pivô 2',
+                    'Pivô 3',
+                    'Pivô 4',
+                ]
+            },
         },
         {
             id: '2',
             name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Panel on
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Powered on after power fault and pressurized
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Dry mode after pause time
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Moving in dry mode
-                    </Typography.Text>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
-                    {"18:00h > 06:00h"}
-                </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
+            image: '',
+            description: [
+                'Panel on',
+                'Powered on after power fault and pressurized',
+                'Dry mode after pause time',
+                'Moving in dry mode'
+            ],
+            subTitle: {
+                date: "18:00h > 06:00h",
+                pivotList: [
+                    'Pivô 1',
+                    'Pivô 2',
+                    'Pivô 3',
+                    'Pivô 4',
+                ]
+            },
         },
         {
             id: '3',
             name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Panel on
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Powered on after power fault and pressurized
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Dry mode after pause time
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Moving in dry mode
-                    </Typography.Text>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
-                    {"18:00h > 06:00h"}
-                </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
+            image: '',
+            description: [
+                'Panel on',
+                'Powered on after power fault and pressurized',
+                'Dry mode after pause time',
+                'Moving in dry mode'
+            ],
+            subTitle: {
+                date: "18:00h > 06:00h",
+                pivotList: [
+                    'Pivô 1',
+                    'Pivô 2',
+                    'Pivô 3',
+                    'Pivô 4',
+                ]
+            },
         },
         {
             id: '4',
             name: 'Nome do grupo de alarmes',
-            image:
-                <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-            desc: <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Panel on
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Powered on after power fault and pressurized
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Dry mode after pause time
-                    </Typography.Text>
-                </Col>
-                <Col span={12}>
-                    <Typography.Text type="secondary">
-                        Moving in dry mode
-                    </Typography.Text>
-                </Col>
-            </Row>,
-            subTitle: <Space direction='vertical' size={"middle"} style={{ marginTop: 4 }}>
-                <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
-                    {"18:00h > 06:00h"}
-                </Typography.Text>
-                <Space size={2} style={{ margin: 0 }} wrap >
-                    <Tag>Pivô 1</Tag>
-                    <Tag>Pivô 2</Tag>
-                    <Tag>Pivô 3</Tag>
-                    <Tag>Pivô 4</Tag>
-                    <Tag>Pivô 5</Tag>
-                    <Tag>Pivô 6</Tag>
-                </Space>
-            </Space>
+            image: '',
+            description: [
+                'Panel on',
+                'Powered on after power fault and pressurized',
+                'Dry mode after pause time',
+                'Moving in dry mode'
+            ],
+            subTitle: {
+                date: "18:00h > 06:00h",
+                pivotList: [
+                    'Pivô 1',
+                    'Pivô 2',
+                    'Pivô 3',
+                    'Pivô 4',
+                ]
+            },
         },
     ];
 
-    const [dataSource, setDataSource] = useState<DataItem[]>(defaultData);
-    const [dataSource2, setDataSource2] = useState<DataItem[]>(defaultData2);
+    const defaultData2 = [
+        {
+            id: '1',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                graph: {},
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+        {
+            id: '2',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                graph: {},
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                date: "18:00h > 06:00h",
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+        {
+            id: '3',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                graph: {},
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                date: "18:00h > 06:00h",
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+        {
+            id: '4',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                graph: {},
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                date: "18:00h > 06:00h",
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+    ];
+
+    const defaultData3 = [
+        {
+            id: '1',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+        {
+            id: '2',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+        {
+            id: '3',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+        {
+            id: '4',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Medidor 1',
+                    'Medidor 2',
+                    'Medidor 3',
+                    'Medidor 4',
+                ]
+            },
+        },
+    ];
+
+    const defaultData4 = [
+        {
+            id: '1',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Grupo de Água 1',
+                    'Grupo de Água 2',
+                    'Grupo de Água 3',
+                    'Grupo de Água 4',
+                ]
+            },
+        },
+        {
+            id: '2',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Grupo de Água 1',
+                    'Grupo de Água 2',
+                    'Grupo de Água 3',
+                    'Grupo de Água 4',
+                ]
+            },
+        },
+        {
+            id: '3',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Grupo de Água 1',
+                    'Grupo de Água 2',
+                    'Grupo de Água 3',
+                    'Grupo de Água 4',
+                ]
+            },
+        },
+        {
+            id: '4',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: {
+                value: [{
+                    key: 'Limites de nível superior:',
+                    value: '75; 85; 95'
+                }]
+            },
+            subTitle: {
+                pivotList: [
+                    'Grupo de Água 1',
+                    'Grupo de Água 2',
+                    'Grupo de Água 3',
+                    'Grupo de Água 4',
+                ]
+            },
+        },
+    ];
+
+    const [dataSource] = useState<DataItem[]>(defaultData);
+    const [dataSource2] = useState(defaultData2);
+    const [dataSource3] = useState(defaultData3);
+    const [dataSource4] = useState(defaultData4);
 
     type DataItem = (typeof defaultData)[number];
 
@@ -606,37 +377,6 @@ const NoFoundPage: React.FC = () => {
                     width: '100%',
                 },
             },
-            '.ant-pro-list-row-header-title': {
-                flexDirection: 'column',
-                alignItems: 'flex-start'
-            },
-            '.ant-pro-card .ant-pro-card-body': {
-                [`@media screen and (max-width: ${token.screenMD}px)`]: {
-                    paddingInline: 4,
-                },
-            },
-            '.ant-pro-table-list-toolbar-container': {
-                [`@media screen and (max-width: ${token.screenMD}px)`]: {
-                    flexWrap: 'nowrap',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                },
-            },
-            '.ant-pro-table-list-toolbar-left': {
-                [`@media screen and (max-width: ${token.screenMD}px)`]: {
-                    marginBlockEnd: 0
-                },
-            },
-            '.ant-list-item': {
-                [`@media screen and (max-width: ${token.screenMD}px)`]: {
-                    padding: "16px 0px",
-                    flexDirection: 'column',
-                    alignItems: 'stretch',
-                    gap: 12
-                },
-            },
-
         };
     })
 
@@ -645,219 +385,74 @@ const NoFoundPage: React.FC = () => {
             id: 0,
             key: '0',
             label: 'Pivôs',
-            children: <ProList<DataItem>
-                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
-                rowKey="id"
-                size="large"
-                headerTitle="Pivôs"
+            children: <AlarmPivotList
+                title="Pivôs"
                 dataSource={dataSource}
-                showActions="hover"
-                editable={{
-                    onSave: async () => {
-                        return true;
-                    },
-                }}
-                onDataSourceChange={setDataSource}
-                toolBarRender={() => {
-                    return [
-                        <AddPivotAlarmForm key="form-add-pivot-alarm" />,
-                    ];
-                }}
-                metas={{
-                    title: {
-                        dataIndex: 'name',
-                    },
-                    avatar: {
-                        dataIndex: 'image',
-                        editable: false,
-                    },
-                    description: {
-                        dataIndex: 'desc',
-                    },
-                    actions: {
-                        render: () => [
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
-                        ],
-                    },
-                    content: {
-                        dataIndex: 'content',
-
-                    },
-                    subTitle: {
-                        dataIndex: 'subTitle',
-                    }
-                }}
+                form={<AddPivotAlarmForm />}
+                size="large"
             />
         },
         {
             id: 1,
             key: '1',
-            label: 'Monitores de pivôs',
-            children: <ProList<DataItem>
-                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
-                rowKey="id"
-                size="large"
-                headerTitle="Monitores de Pivôs"
+            label: 'Monitores de Pivôs',
+            children: <AlarmPivotMonitorList
+                title="Monitores de Pivôs"
                 dataSource={dataSource}
-                showActions="hover"
-                editable={{
-                    onSave: async () => {
-                        return true;
-                    },
-                }}
-                onDataSourceChange={setDataSource}
-                toolBarRender={() => {
-                    return [
-                        <AddPivotMonitorAlarmForm key="form-add-pivot-alarm" />,
-                    ];
-                }}
-                metas={{
-                    title: {
-                        dataIndex: 'name',
-                    },
-                    avatar: {
-                        dataIndex: 'image',
-                        editable: false,
-                    },
-                    description: {
-                        dataIndex: 'desc',
-                    },
-                    actions: {
-                        render: () => [
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
-                        ],
-                    },
-                    content: {
-                        dataIndex: 'content',
-
-                    },
-                    subTitle: {
-                        dataIndex: 'subTitle',
-                    }
-                }}
+                form={<AddPivotMonitorAlarmForm />}
+                size="large"
             />
         },
         {
             id: 2,
             key: '2',
             label: 'Bombas',
-            children: <ProList<DataItem>
-                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
-                rowKey="id"
-                size="large"
-                headerTitle="Bombas"
+            children: <AlarmPumpList
+                title="Bombas"
                 dataSource={dataSource}
-                showActions="hover"
-                editable={{
-                    onSave: async () => {
-                        return true;
-                    },
-                }}
-                onDataSourceChange={setDataSource}
-                toolBarRender={() => {
-                    return [
-                        <AddPivotMonitorAlarmForm key="form-add-pivot-alarm" />,
-                    ];
-                }}
-                metas={{
-                    title: {
-                        dataIndex: 'name',
-                    },
-                    avatar: {
-                        dataIndex: 'image',
-                        editable: false,
-                    },
-                    description: {
-                        dataIndex: 'desc',
-                    },
-                    actions: {
-                        render: () => [
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
-                        ],
-                    },
-                    content: {
-                        dataIndex: 'content',
-
-                    },
-                    subTitle: {
-                        dataIndex: 'subTitle',
-                    }
-                }}
+                form={<AddPumpAlarmForm />}
+                size="large"
             />
         },
         {
             id: 3,
             key: '3',
-            label: 'Medidores de nível',
-            children: <ProList<DataItem>
-                expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
-                rowKey="id"
-                size="large"
-                headerTitle="Bombas"
+            label: 'Medidores de Nível',
+            children: <LevelGaugeList
+                title="Medidores de Nível"
                 dataSource={dataSource2}
-                showActions="hover"
-                editable={{
-                    onSave: async () => {
-                        return true;
-                    },
-                }}
-                onDataSourceChange={setDataSource2}
-                toolBarRender={() => {
-                    return [
-                        <AddLevelGaugeForm key="form-add-pivot-alarm" />,
-                    ];
-                }}
-                metas={{
-                    title: {
-                        dataIndex: 'name',
-                    },
-                    avatar: {
-                        dataIndex: 'image',
-                        editable: false,
-                    },
-                    description: {
-                        dataIndex: 'desc',
-                    },
-                    actions: {
-                        render: () => [
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
-                        ],
-                    },
-                    content: {
-                        dataIndex: 'content',
-
-                    },
-                    subTitle: {
-                        dataIndex: 'subTitle',
-                    }
-                }}
+                form={<AddLevelGaugeForm />}
+                size="large"
             />
         },
         {
             id: 4,
             key: '4',
-            label: 'Medidores de vazão',
-            children: 'Medidores de vazão'
+            label: 'Medidores de Vazão',
+            children: <FlowMetterList
+                title="Medidores de Vazão"
+                dataSource={dataSource3}
+                form={<AddLevelGaugeForm />}
+                size="large"
+            />
         },
         {
             id: 5,
             key: '5',
-            label: 'Grupos de água',
-            children: 'Grupos de água'
+            label: 'Grupos de Água',
+            children: <WaterGroupList
+                title="Grupos de Água"
+                dataSource={dataSource4}
+                form={<WaterGroupForm />}
+                size="large"
+            />
         },
         {
             id: 6,
             key: '6',
             label: 'Grupos de energia',
-            children: 'Grupos de energia'
+            children: 'Grupos de energia',
+            
         },
         {
             id: 7,

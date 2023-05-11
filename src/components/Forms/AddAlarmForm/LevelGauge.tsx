@@ -27,8 +27,8 @@ const AddLevelGaugeForm = () => {
     ];
 
     const listOptions = [
-        { title: 'Panel On', name: 'p1', children: <div>asdasd</div> },
-        { title: 'Moving in dry mode', name: 'p2' },
+        { title: 'Limites de nível inferior', name: 'p1', children: <div>asdasd</div> },
+        { title: 'Limites de nível superior', name: 'p2', children: null },
     ]
 
     return (
@@ -134,7 +134,7 @@ const AddLevelGaugeForm = () => {
                             { required: true, message: 'Please select your favorite colors!', type: 'array' },
                         ]}
                     />
-                    <TinyArea
+                    <TinyArea 
                         height={100}
                         autoFit={false}
                         data={data}

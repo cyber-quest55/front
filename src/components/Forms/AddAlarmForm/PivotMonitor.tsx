@@ -21,19 +21,19 @@ const AddPivotMonitorAlarmForm = () => {
     const [step, setStep] = useState(0)
 
     const listOptions = [
-        { title: 'Panel On', name: 'p1', children: <div>asdasd</div> },
-        { title: 'Moving in dry mode', name: 'p2' },
-        { title: 'Wet mode after pressurized', name: 'p3' },
-        { title: 'Dry mode after power fault', name: 'p4' },
-        { title: 'Powered on after power fault', name: 'p5' },
-        { title: 'Wet mode after pause time', name: 'p6' },
-        { title: 'Dry mode after pause time', name: 'p7' },
-        { title: 'Wet mode after pause time', name: 'p8' },
+        { title: 'Panel On', name: 'p1', children: undefined },
+        { title: 'Moving in dry mode', name: 'p2', children: undefined  },
+        { title: 'Wet mode after pressurized', name: 'p3', children: undefined  },
+        { title: 'Dry mode after power fault', name: 'p4', children: undefined  },
+        { title: 'Powered on after power fault', name: 'p5', children: undefined  },
+        { title: 'Wet mode after pause time', name: 'p6', children: undefined  },
+        { title: 'Dry mode after pause time', name: 'p7', children: undefined  },
+        { title: 'Wet mode after pause time', name: 'p8', children: undefined  },
     ]
 
     return (
         <ModalForm<any>
-            title="Cadastrar equipamento"
+            title="Novos Alarmes"
             submitter={{
                 submitButtonProps: {
                     type: "primary",
