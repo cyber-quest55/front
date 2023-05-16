@@ -1,14 +1,14 @@
-import { ProLayoutProps } from '@ant-design/pro-components'; 
+import { ProLayoutProps } from '@ant-design/pro-components';
 /**
  * @name
  */
 const Settings: ProLayoutProps & {
   pwa?: boolean;
   logo?: string;
-} = { 
+} = {
   // 拂晓蓝 
   colorPrimary: '#00b96b',
-  layout: 'side',  
+  layout: 'side',
   collapsed: true,
   contentWidth: 'Fluid',
   fixedHeader: false,
@@ -19,22 +19,24 @@ const Settings: ProLayoutProps & {
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   iconfontUrl: '',
   splitMenus: false,
+
   token: {
+  
     header: {
-      colorHeaderTitle: 'white',
-    }, 
+      colorHeaderTitle: 12,
+    },
     sider: {
-      colorTextCollapsedButton: 'white',
+      colorTextCollapsedButton: 'black',
       colorTextMenuSelected: 'white',
       colorMenuBackground: '#2f4050',
-      colorTextMenu: 'white', 
-      colorTextMenuTitle: 'white',
-
+      colorTextMenu: 'white',
+      colorTextMenuTitle: 'white', 
+      colorTextMenuSecondary: 'black'
     },
     pageContainer: {
       paddingBlockPageContainerContent: 0,
       paddingInlinePageContainerContent: 0,
-    },
+    },  
   },
 };
 

@@ -15,6 +15,9 @@ import AddLevelGaugeForm from '@/components/Forms/AddAlarmForm/LevelGauge';
 import FlowMetterList from '@/components/Lists/Alarm/FlowMetterList';
 import WaterGroupList from '@/components/Lists/Alarm/WaterGroupList';
 import WaterGroupForm from '@/components/Forms/AddAlarmForm/WaterGroup';
+import AlarmServiceOrdersList from '@/components/Lists/Alarm/ServiceOrdersList';
+import ServiceOrdersForm from '@/components/Forms/AddAlarmForm/ServiceOrders';
+import AddFlowMetterAlarmForm from '@/components/Forms/AddAlarmForm/FlowMetter';
 
 const NoFoundPage: React.FC = () => {
     const onlyWidth = useWindowWidth()
@@ -345,11 +348,67 @@ const NoFoundPage: React.FC = () => {
             },
         },
     ];
+    
+    const defaultData5 = [
+        {
+            id: '1',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: [
+                'Ordem criada',
+                'Ordem concluída',
+                'Ordem atribuída a mim',
+                'Ordem deletada',
+                'Ordem próxima do prazo de validade',
+                'Alterações de status'
+            ]
+        },
+        {
+            id: '2',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: [
+                'Ordem criada',
+                'Ordem concluída',
+                'Ordem atribuída a mim',
+                'Ordem deletada',
+                'Ordem próxima do prazo de validade',
+                'Alterações de status'
+            ]
+        },
+        {
+            id: '3',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: [
+                'Ordem criada',
+                'Ordem concluída',
+                'Ordem atribuída a mim',
+                'Ordem deletada',
+                'Ordem próxima do prazo de validade',
+                'Alterações de status'
+            ]
+        },
+        {
+            id: '4',
+            name: 'Nome do grupo de alarmes',
+            image: '',
+            description: [
+                'Ordem criada',
+                'Ordem concluída',
+                'Ordem atribuída a mim',
+                'Ordem deletada',
+                'Ordem próxima do prazo de validade',
+                'Alterações de status'
+            ]
+        },
+    ];
 
     const [dataSource] = useState<DataItem[]>(defaultData);
     const [dataSource2] = useState(defaultData2);
     const [dataSource3] = useState(defaultData3);
     const [dataSource4] = useState(defaultData4);
+    const [dataSource5] = useState(defaultData5);
 
     type DataItem = (typeof defaultData)[number];
 
@@ -432,7 +491,7 @@ const NoFoundPage: React.FC = () => {
             children: <FlowMetterList
                 title="Medidores de Vazão"
                 dataSource={dataSource3}
-                form={<AddLevelGaugeForm />}
+                form={<AddFlowMetterAlarmForm />}
                 size="large"
             />
         },
@@ -458,7 +517,12 @@ const NoFoundPage: React.FC = () => {
             id: 7,
             key: '7',
             label: 'Ordens de serviço',
-            children: 'Ordens de serviço'
+            children: <AlarmServiceOrdersList
+                title="Grupos de Água"
+                dataSource={dataSource5}
+                form={<ServiceOrdersForm />}
+                size="large"
+            />
         },
         {
             id: 8,

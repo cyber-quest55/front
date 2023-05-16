@@ -1,4 +1,4 @@
-﻿ 
+﻿
 /**
  * @name umi 的路由配置
  * @description 只支持 path,component,routes,redirect,wrappers,name,icon 的配置
@@ -22,42 +22,45 @@ export default [
         component: './User/Login',
       },
     ],
-  }, 
+  },
+
   {
-    path: '/farms/:id',
+    path: '/farms/',
     name: 'Fazenda', 
     icon: 'formOutlined',
-    component: './Farms/[id].tsx',
-    menu: {
-      key: '/farms/:id',
-      name: 'Inicio'
-    }
+
+    routes: [
+      {
+        path: '/farms/:id',
+        name: 'Sua Fazenda', 
+        component: './Farms/[id].tsx',
+     
+      },
+      {
+        path: '/farms/create',
+        name: 'Criar Fazenda',
+        component: './Farms/create.tsx',
+        },
+    ],
   },
+
+
   {
     path: '/devices/',
-    name: 'Dispositivos', 
+    name: 'Dispositivos',
     icon: 'deploymentUnitOutlined',
-    component: './Farms/[id].tsx',
-    menu: {
-      key: '/devices/',
-      name: 'Dispositivos'
-    }
+    component: './Devices',
+ 
   },
   {
     path: '/notifications/',
-    name: 'Notificações', 
+    name: 'Notificações',
     icon: 'bellOutlined',
     component: './Notifications',
     menu: {
       key: '/notifications/',
       name: 'Notificações'
     }
-  },
-  {
-    path: '/farms/create',
-    name: 'Criar Fazenda',   
-    component: './Farms/create.tsx',
-    hideInMenu: true,  
   },
   {
     path: '/admin',

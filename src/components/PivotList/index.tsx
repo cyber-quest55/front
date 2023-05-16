@@ -1,6 +1,6 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
-import { CalendarOutlined, CaretDownOutlined, EditFilled, RedoOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, EditFilled, RedoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
