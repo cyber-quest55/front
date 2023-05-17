@@ -5,7 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { GoogleMap } from '@react-google-maps/api';
 import { GetFarmModelProps } from '@/models/farm';
 import { useWindowWidth } from '@react-hook/window-size'
-import DotDevice from '../DotDevice';
+import DotDevice from '../Devices/DotDevice';
+import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 
 export type RenderPivotsProps = {
   dispatch: Dispatch;
@@ -69,11 +70,9 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
       >
         {!props.pivotInformation.loading ?
           props.pivotInformation.result?.map(item => (
-            <DotDevice
+            <LakeLevelMeterDevice
               id={item.id}
-              key={item.id}
-              protocol={item.protocol}
-              type={item.type}
+              key={item.id}  
               centerLat={item.centerLat}
               centerLng={item.centerLng}
               referencedLat={item.referencedLat}
@@ -81,18 +80,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
               gpsLat={item.gpsLat}
               gpsLong={item.gpsLong}
               pivotColor="#FF0000"
-              lineColor="#fff"
-              referenceAngle={item.referenceAngle}
-              irrigationDirection={item.irrigationDirection}
-              stopAngle={item.stopAngle}
-              endAngle={item.endAngle}
-              sectorAngle={item.sectorAngle}
-              lpmGpsStreamLat={item.lpmGpsStreamLat}
-              lpmGpsStreamLng={item.lpmGpsStreamLng}
-              zoom={zoom}
-              hasMarker={true}
-              irrigationStatus={4}
-              dashed={false}
+              lineColor="#fff"          
             />
           )) : null}
       </GoogleMap> 

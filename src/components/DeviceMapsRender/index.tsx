@@ -5,7 +5,7 @@ import { GetFarmModelProps } from '@/models/farm';
 import { GoogleMap } from '@react-google-maps/api';
 import { Dispatch } from '@umijs/max';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
-import CirclePivot from '../CirclePivot';
+import CirclePivot from '../Devices/CirclePivot';
 import { GetGoogleMapsProps } from '@/models/google-maps';
 
 type Props = {

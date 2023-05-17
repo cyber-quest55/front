@@ -1,4 +1,4 @@
-import { CirclePivotProps } from "@/components/CirclePivot";
+import { CirclePivotProps } from "@/components/Devices/CirclePivot";
 import { getPivotsWithInformations } from "@/services/pivot";
 import { AxiosError } from "@umijs/max";
 

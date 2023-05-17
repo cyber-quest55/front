@@ -2,7 +2,7 @@ import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { Dispatch, useParams } from '@umijs/max';
 import { connect } from 'dva';
 import React, { useEffect, useState } from 'react';
-import CirclePivot from '../CirclePivot';
+import CirclePivot from '../Devices/CirclePivot';
 import { GoogleMap } from '@react-google-maps/api';
 import { GetFarmModelProps } from '@/models/farm';
 import { useWindowWidth } from '@react-hook/window-size'
