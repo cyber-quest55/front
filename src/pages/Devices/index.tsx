@@ -1,14 +1,13 @@
-
+import DeviceList from '@/components/DeviceList';
+import RenderDotDevices from '@/components/RenderDotDevices';
+import { GetFarmModelProps } from '@/models/farm';
+import { GetPivotModelProps } from '@/models/pivot';
+import { ProCard } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useWindowWidth } from '@react-hook/window-size';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode } from 'react';
-import { GetPivotModelProps } from '@/models/pivot';
-import { GetFarmModelProps } from '@/models/farm';
-import { useWindowWidth } from '@react-hook/window-size'
-import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { ProCard } from '@ant-design/pro-components';
-import DeviceList from '@/components/DeviceList';
-import RenderDotDevices from '@/components/RenderDotDevices';
 
 type Props = {
   dispatch?: any;
@@ -16,81 +15,92 @@ type Props = {
   google?: any;
   pivot: GetPivotModelProps;
   farm: GetFarmModelProps;
-}
+};
 
 const Devices: FunctionComponent<Props> = (props) => {
-  const onlyWidth = useWindowWidth()
+  const onlyWidth = useWindowWidth();
 
-  const className = useEmotionCss(({ }) => {
-    return onlyWidth > 767 ? {
-      position: 'absolute',
-      width: 400,
-      top: 35,
-      left: 45,
-      padding: 0,
-      [`.ant-pro-card-body`]: {
-        paddingInline: '0px !important',
-      },
-    } : {
-      width: "100%",
-      minHeight: '150px',
-      padding: 0,
-      [`.ant-pro-card-body`]: {
-        paddingInline: '0px !important',
-      },
-    };
-  }); 
+  const className = useEmotionCss(({}) => {
+    return onlyWidth > 767
+      ? {
+          position: 'absolute',
+          width: 400,
+          top: 10,
+          left: 45,
+          padding: 0,
+          [`.ant-pro-card-body`]: {
+            paddingInline: '0px !important',
+          },
+        }
+      : {
+          width: '100%',
+          minHeight: '150px',
+          padding: 0,
+          [`.ant-pro-card-body`]: {
+            paddingInline: '0px !important',
+          },
+        };
+  });
 
-  const classNameFixedMobile = useEmotionCss(({ }) => {
+  const classNameFixedMobile = useEmotionCss(({}) => {
     return {
       height: 65,
       width: '100%',
       background: 'white',
       zIndex: 3,
       ['.ant-tabs-nav-wrap']: {
-        justifyContent: 'center'
+        justifyContent: 'center',
       },
       ['.ant-tabs-nav']: {
         background: 'white',
         zIndex: '5',
-        marginTop: '0px'
-      }
-    }
-  })
+        marginTop: '0px',
+      },
+    };
+  });
 
   const items = [
     {
       key: '1',
       label: `Tab 1`,
-      children: <Spin spinning={false}>
-        <div style={{ width: '100%', height: 'calc(100vh - 102px)' }}>
-          <RenderDotDevices  />
-        </div>
-      </Spin>
+      children: (
+        <Spin spinning={false}>
+          <div style={{ width: '100%', height: 'calc(100vh - 102px)' }}>
+            <RenderDotDevices />
+          </div>
+        </Spin>
+      ),
     },
     {
       key: '2',
       label: `Tab 2`,
-      children: <ProCard className={className} >
-        <DeviceList />
-      </ProCard>
+      children: (
+        <ProCard className={className}>
+          <DeviceList />
+        </ProCard>
+      ),
     },
   ];
 
   return (
-    <Row   >
-      <Col xs={24} style={{ height: onlyWidth > 767 ? '100vh' : 'calc(100vh - 56px - 60px)', position: 'relative' }}>
+    <Row>
+      <Col
+        xs={24}
+        style={{
+          height: onlyWidth > 767 ? '100vh' : 'calc(100vh - 56px - 60px)',
+          position: 'relative',
+        }}
+      >
         <>
-          {
-            onlyWidth > 767 ? <Spin spinning={props.pivot.loading || props.farm.loading}>
+          {onlyWidth > 767 ? (
+            <Spin spinning={props.pivot.loading || props.farm.loading}>
               <div style={{ width: '100%', height: '100vh' }}>
                 <RenderDotDevices />
               </div>
-              <ProCard className={className} >
+              <ProCard className={className}>
                 <DeviceList />
               </ProCard>
-              {
-                /***
+              {/***
                  <ProCard
               className={legendClassName}
               title="Dispositivos"
@@ -206,26 +216,21 @@ const Devices: FunctionComponent<Props> = (props) => {
                 </Space>
               </Space>
             </ProCard>
-                 */
-              }
-
-            </Spin> : null
-          }
-          {
-            onlyWidth > 767 ? null : <div className={classNameFixedMobile}>
-              <Tabs
-                defaultActiveKey="1"
-                items={items}
-                tabPosition='bottom'
-              />
+                 */}
+            </Spin>
+          ) : null}
+          {onlyWidth > 767 ? null : (
+            <div className={classNameFixedMobile}>
+              <Tabs defaultActiveKey="1" items={items} tabPosition="bottom" />
             </div>
-          }
+          )}
         </>
       </Col>
     </Row>
   );
 };
 
-export default connect(({ pivot, farm }: { pivot: any, farm: any }) => ({
-  pivot, farm
-}))(Devices); 
+export default connect(({ pivot, farm }: { pivot: any; farm: any }) => ({
+  pivot,
+  farm,
+}))(Devices);

@@ -6,7 +6,7 @@ const Settings: ProLayoutProps & {
   pwa?: boolean;
   logo?: string;
 } = {
-  // 拂晓蓝 
+  // 拂晓蓝
   colorPrimary: '#00b96b',
   layout: 'side',
   collapsed: true,
@@ -21,22 +21,20 @@ const Settings: ProLayoutProps & {
   splitMenus: false,
 
   token: {
-  
-    header: {
-      colorHeaderTitle: 12,
-    },
+    colorTextAppListIcon: 'white',
+    colorBgAppListIconHover: 'white',
+    colorTextAppListIconHover: 'white',
+
     sider: {
-      colorTextCollapsedButton: 'black',
-      colorTextMenuSelected: 'white',
-      colorMenuBackground: '#2f4050',
-      colorTextMenu: 'white',
-      colorTextMenuTitle: 'white', 
-      colorTextMenuSecondary: 'black'
+      colorMenuBackground: '#2f4050', 
+      colorTextSubMenuSelected: 'black',
+      colorTextMenu: 'white', 
     },
     pageContainer: {
       paddingBlockPageContainerContent: 0,
       paddingInlinePageContainerContent: 0,
-    },  
+      
+    },
   },
 };
 
