@@ -8,6 +8,8 @@ export type LakeLevelMeterProps = {
   centerLng: number;
   pivotColor?: string;
   lineColor?: string;
+  name: string;
+  updated: string;
 };
 
 const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {

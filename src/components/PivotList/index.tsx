@@ -60,6 +60,16 @@ const PivotList: React.FC<Props> = (props) => {
             type: 'pivot/queryPivot',
             payload: { id: parseInt(params.id as string) }
         })
+
+        props.dispatch({
+            type: 'central/queryCentral',
+            payload: { id: parseInt(params.id as string) }
+        })
+
+        props.dispatch({
+            type: 'repeater/queryRepeater',
+            payload: { id: parseInt(params.id as string) }
+        })
     }, [params])
 
     const classNameScrollable = useEmotionCss(({ }) => {

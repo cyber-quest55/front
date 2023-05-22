@@ -32,7 +32,8 @@ export type CirclePivotProps = {
     sectorAngle?: number;
     zoom: number;
     hasMarker?: boolean;
-    irrigationStatus: 4 | 6 | 33
+    irrigationStatus: 4 | 6 | 33;
+    updated: string;
 };
 
 const circleOptions = {

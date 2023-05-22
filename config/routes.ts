@@ -28,13 +28,11 @@ export default [
     path: '/farms/',
     name: 'Fazenda', 
     icon: 'formOutlined',
-
     routes: [
       {
         path: '/farms/:id',
         name: 'Sua Fazenda', 
         component: './Farms/[id].tsx',
-     
       },
       {
         path: '/farms/create',
@@ -43,14 +41,11 @@ export default [
         },
     ],
   },
-
-
   {
-    path: '/devices/',
+    path: 'devices/farms/:id/',
     name: 'Dispositivos',
     icon: 'deploymentUnitOutlined',
     component: './Devices',
- 
   },
   {
     path: '/notifications/',

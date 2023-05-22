@@ -165,6 +165,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 hasMarker={true}
                 irrigationStatus={4}
                 dashed={false}
+                updated={item.updated}
               />
             ))
           : null}

@@ -1,8 +1,8 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter'; 
-import { getIrpds } from '@/services/irpd';
+import { getRepeaters } from '@/services/repeaters';
 import { AxiosError } from '@umijs/max';
 
-export interface GetIrpdModelProps {
+export interface GetRepeaterModelProps {
   result: LakeLevelMeterProps[];
   loading: boolean;
   loaded: boolean;
@@ -10,7 +10,7 @@ export interface GetIrpdModelProps {
 }
 
 export default {
-  namespace: 'irpd',
+  namespace: 'repeater',
 
   state: {
     result: [],
@@ -20,32 +20,32 @@ export default {
   },
 
   effects: {
-    *queryIrpd({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
-      yield put({ type: 'queryIrpdStart' });
+    *queryRepeater({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+      yield put({ type: 'queryRepeaterStart' });
       try {
-        const { data } = yield call(getIrpds, payload);
-        yield put({ type: 'queryIrpdSuccess', payload: data });
+        const { data } = yield call(getRepeaters, payload);
+        yield put({ type: 'queryRepeaterSuccess', payload: data });
       } catch (error: any) {
-        yield put({ type: 'queryIrpdError', payload: error });
+        yield put({ type: 'queryRepeaterError', payload: error });
       }
     },
   },
 
   reducers: {
-    queryIrpdError(state: GetIrpdModelProps, { payload }: { payload: AxiosError }) {
+    queryRepeaterError(state: GetRepeaterModelProps, { payload }: { payload: AxiosError }) {
       return {
         ...state,
         error: payload.response?.data,
         loading: false,
       };
     },
-    queryIrpdStart(state: GetIrpdModelProps) {
+    queryRepeaterStart(state: GetRepeaterModelProps) {
       return {
         ...state,
         loading: true,
       };
     },
-    queryIrpdSuccess(state: GetIrpdModelProps, { payload }: { payload: API.GetIrpdResponse }) {
+    queryRepeaterSuccess(state: GetRepeaterModelProps, { payload }: { payload: API.GetRepeaterResponse }) {
       const mapper: LakeLevelMeterProps[] = [];
 
       /**

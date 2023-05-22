@@ -178,7 +178,8 @@ export default {
                     irrigationStatus: item.controllerstream_panel?.content?.irrigation_status as any,
                     lpmGpsStreamLng: 30,
                     lpmGpsStreamLat: 30,
-                    zoom: 15
+                    zoom: 15,
+                    updated: new Date(payload.list[index].updated).toLocaleString(),
                 })
             }
 

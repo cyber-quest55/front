@@ -1,18 +1,39 @@
+import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
+import { GetIrpdModelProps } from '@/models/irpd';
 import { GetPivotModelProps } from '@/models/pivot';
-import { CaretDownOutlined, SettingOutlined } from '@ant-design/icons';
+import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { GetRepeaterModelProps } from '@/models/repeaters';
+import { CaretDownOutlined, ClockCircleOutlined, RedoOutlined, SettingOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';
 import { useMount } from 'ahooks';
-import { Button, Col, Popover, Row, Select, Space, Switch, Tabs, Tag, Typography } from 'antd';
+import {
+  Button,
+  Col,
+  Popover,
+  Row,
+  Select,
+  Space,
+  Switch,
+  Tabs,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
 import React, { useEffect } from 'react';
+import { BsCloudRainFill } from 'react-icons/bs';
 import { connect } from 'umi';
 
 type Props = {
   dispatch: any;
   pivot: GetPivotModelProps;
+  pivotInformation: GetPivotInformationModelProps;
+  central: GetCentralModelProps;
   farm: GetFarmModelProps;
+  irpd: GetIrpdModelProps;
+  repeater: GetRepeaterModelProps;
 };
 
 const DeviceList: React.FC<Props> = (props) => {
@@ -58,8 +79,11 @@ const DeviceList: React.FC<Props> = (props) => {
       '.ant-list-item .ant-list-item-meta': {
         marginBlockEnd: 0,
       },
-      '.ant-tabs-nav-wrap': {
-        paddingLeft: 12,
+      '.ant-tabs-tab+.ant-tabs-tab': {
+        margin: '0 0 0 16px',
+      },
+      '.ant-tabs-tab-btn': {
+        paddingInline: 8,
       },
     };
   });
@@ -81,126 +105,92 @@ const DeviceList: React.FC<Props> = (props) => {
     };
   });
 
-  const dataSource = [
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Central 1</span>
-          </Col>
-          <Col>
-             <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Central 2</span>
-          </Col>
-          <Col>
-             <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-  ];
+  const dataSource = props.central?.result?.map((item) => ({
+    title: (
+      <Row justify="space-between" style={{ width: '100%' }}>
+        <Col>
+          <span>{item.name}</span>
+        </Col>
+         
+      </Row>
+    ),
+    content: (
+      <Space direction="vertical"> 
+        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+      </Space>
+    ),
+  }));
 
-  const dataSource2 = [
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Pivô 1</span>
-          </Col>
-          <Col>
-            <Tag color="#2db7f5">V5</Tag>
-            <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Pivô 2</span>
-          </Col>
-          <Col>
-            <Tag color="#2db7f5">V5</Tag>
-            <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Pivô 3</span>
-          </Col>
-          <Col>
-            <Tag color="#2db7f5">V5</Tag>
-            <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Pivô 4</span>
-          </Col>
-          <Col>
-            <Tag color="#2db7f5">V5</Tag>
-            <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-  ];
+  const dataSource2 = props.pivotInformation.result?.map((item) => ({
+    title: (
+      <Row justify="space-between" style={{ width: '100%' }}>
+        <Col>
+          <span>{props.pivot.result.list?.find((subItem) => subItem.id === item.id)?.name}</span>
+        </Col>
+        <Col>
+          <Tag color="#2db7f5">V5</Tag>
+          <Tag color="#f50">Sem Comunicação</Tag>
+        </Col>
+      </Row>
+    ),
+    content: (
+      <Space direction="vertical">
+        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Tooltip title="Pluviometro">
+            <BsCloudRainFill style={{ fontSize: 20 }} />
+          </Tooltip>{' '}
+          - mm
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Tooltip title="Ângulo">
+            <RedoOutlined style={{ fontSize: 20 }} />
+          </Tooltip>{' '}
+          {Math.round(item.referenceAngle)}°
+        </span>
+        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+      </Space>
+    ),
+  }));
 
-  const dataSource3 = [
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Repetidor 1</span>
-          </Col>
-          <Col>
-            <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Repetidor 2</span>
-          </Col>
-          <Col>
-            <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-    {
-      title: (
-        <Row justify="space-between" style={{ width: '100%' }}>
-          <Col>
-            <span>Repetidor 2</span>
-          </Col>
-          <Col>
-            <Tag color="#f50">Sem Comunicação</Tag>
-          </Col>
-        </Row>
-      ),
-    },
-  ];
+
+  const dataSource3 = props.repeater.result?.map((item) => ({
+    title: (
+      <Row justify="space-between" style={{ width: '100%' }}>
+        <Col>
+          <span>{item.name}</span>
+        </Col> 
+      </Row>
+    ),
+    content: (
+      <Space direction="vertical">
+        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+      </Space>
+    ),
+  }));
+
+
+  const dataSource4 = props.irpd.result?.map((item) => ({
+    title: (
+      <Row justify="space-between" style={{ width: '100%' }}>
+        <Col>
+          <span>{item.name}</span>
+        </Col> 
+      </Row>
+    ),
+    content: (
+      <Space direction="vertical">
+       
+        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Tooltip title="Ângulo">
+            <ClockCircleOutlined  style={{ fontSize: 20 }} />
+          </Tooltip>{' '}
+          - bar
+        </span>
+        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+      </Space>
+    ),
+  }));
+
 
   const getList = (dataSource: any) => {
     return (
@@ -212,15 +202,7 @@ const DeviceList: React.FC<Props> = (props) => {
           dataSource={dataSource}
           metas={{
             title: {},
-            content: {
-              render: () => {
-                return (
-                  <Space direction="vertical">
-                    <Typography.Text type="secondary">22 mar 13:00</Typography.Text>
-                  </Space>
-                );
-              },
-            },
+            content: {},
           }}
         />
       </div>
@@ -230,7 +212,7 @@ const DeviceList: React.FC<Props> = (props) => {
   const items = [
     {
       key: '1',
-      label: `Central`,
+      label: `Centrais`,
       children: getList(dataSource),
     },
     {
@@ -240,7 +222,17 @@ const DeviceList: React.FC<Props> = (props) => {
     },
     {
       key: '3',
-      label: `Repetidor`,
+      label: `Repetidores`,
+      children: getList(dataSource3),
+    },
+    {
+      key: '4',
+      label: `Bombas`,
+      children: getList(dataSource4),
+    },
+    {
+      key: '5',
+      label: `Medidores`,
       children: getList(dataSource3),
     },
   ];
@@ -309,7 +301,27 @@ const DeviceList: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(({ pivot, farm }: { pivot: any; farm: any }) => ({
-  pivot,
-  farm,
-}))(DeviceList);
+export default connect(
+  ({
+    pivot,
+    farm,
+    pivotInformation,
+    central,
+    irpd,
+    repeater
+  }: {
+    pivot: any;
+    farm: any;
+    pivotInformation: any;
+    central: any;
+    irpd: any;
+    repeater: any;
+  }) => ({
+    pivot,
+    farm,
+    pivotInformation,
+    central,
+    irpd,
+    repeater
+  }),
+)(DeviceList);
