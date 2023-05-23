@@ -182,6 +182,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 hasMarker={true}
                 irrigationStatus={4}
                 dashed={false}
+                name={item.name}
                 updated={item.updated}
               />
             ))
@@ -204,6 +205,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 key={'water-pump' + index}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
+                name={item.name}
+                updated={item.updated}
                 id={item.id}
               />
             ))

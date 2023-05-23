@@ -180,6 +180,7 @@ export default {
                     lpmGpsStreamLat: 30,
                     zoom: 15,
                     updated: new Date(payload.list[index].updated).toLocaleString(),
+                    name: item.name
                 })
             }
 

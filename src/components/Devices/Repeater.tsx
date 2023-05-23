@@ -1,6 +1,7 @@
 import { RadarChartOutlined } from '@ant-design/icons';
-import { OverlayView, OverlayViewF } from '@react-google-maps/api';
-import React from 'react';
+import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
+import { Typography } from 'antd';
+import React, { useState } from 'react';
 
 export type RepeaterProps = {
   id: number | string;
@@ -15,6 +16,7 @@ export type RepeaterProps = {
 const RepeaterDevice: React.FC<RepeaterProps> = (props) => {
   /** Props */
   const { centerLat, centerLng } = props;
+  const [infoWindowVisible, setInfoWindowVisible] = useState(false);
 
   return (
     <>
@@ -22,8 +24,36 @@ const RepeaterDevice: React.FC<RepeaterProps> = (props) => {
         position={{ lat: centerLat, lng: centerLng }}
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       >
-        <RadarChartOutlined style={{fontSize: 28, color: 'white'}}/>
+        <div
+          onMouseLeave={() => setInfoWindowVisible(false)}
+          onMouseEnter={() => setInfoWindowVisible(true)}
+        >
+          <RadarChartOutlined style={{ fontSize: 28, color: 'white' }} />
+        </div>
       </OverlayViewF>
+      {infoWindowVisible ? (
+        <InfoWindowF
+          position={{
+            lat: centerLat,
+            lng: centerLng,
+          }}
+          options={{
+            zIndex: 12,
+          }}
+          zIndex={12}
+        >
+          <div
+            onMouseLeave={() => setInfoWindowVisible(false)}
+            style={{
+              opacity: 0.75,
+              padding: 12,
+            }}
+          >
+            <Typography.Title level={5}>{props.name}</Typography.Title>
+            <Typography.Text>{props.updated}</Typography.Text>
+          </div>
+        </InfoWindowF>
+      ) : null}
     </>
   );
 };
