@@ -1,7 +1,9 @@
+import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
 import { useWindowWidth } from '@react-hook/window-size';
 import { Dispatch } from '@umijs/max';
@@ -16,6 +18,8 @@ export type RenderPivotsProps = {
   farm: GetFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
   irpd: GetIrpdModelProps;
+  central: GetCentralModelProps;
+  repeater: GetRepeaterModelProps;
 };
 
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
@@ -95,6 +99,28 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
               />
             ))
           : null}
+        {!props.central.loading
+          ? props.central.result?.map((item) => (
+              <DotDevice
+                id={item.id}
+                key={item.id}
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                pivotColor="yellow"
+              />
+            ))
+          : null}
+        {!props.repeater.loading
+          ? props.repeater.result?.map((item) => (
+              <DotDevice
+                id={item.id}
+                key={item.id}
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                pivotColor="blue"
+              />
+            ))
+          : null}
       </GoogleMap>
     </>
   );
@@ -106,15 +132,21 @@ export default connect(
     farm,
     meterSystem,
     irpd,
+    central,
+    repeater,
   }: {
     pivotInformation: any;
     farm: any;
     meterSystem: any;
     irpd: any;
+    central: any;
+    repeater: any;
   }) => ({
     pivotInformation,
     farm,
     meterSystem,
     irpd,
+    central,
+    repeater,
   }),
 )(RenderDotDevices);

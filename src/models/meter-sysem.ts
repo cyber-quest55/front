@@ -13,7 +13,7 @@ export default {
   namespace: 'meterSystem',
 
   state: {
-    result: {},
+    result: [],
     loaded: false,
     loading: true,
     error: {},
@@ -64,7 +64,9 @@ export default {
         mapper.push({ 
             id: item.id,
             centerLat: parseFloat(latLng[0]), 
-            centerLng: parseFloat(latLng[1]) 
+            centerLng: parseFloat(latLng[1]),
+            name: payload.list[index].name,
+            updated: new Date(payload.list[index].updated).toLocaleString(),
         }); 
       }
 

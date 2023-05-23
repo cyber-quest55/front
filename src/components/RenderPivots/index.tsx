@@ -12,6 +12,8 @@ import React, { useEffect, useState } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
+import { GetRepeaterModelProps } from '@/models/repeaters';
+import RepeaterDevice from '../Devices/Repeater';
 
 export type RenderPivotsProps = {
   dispatch: Dispatch;
@@ -20,6 +22,7 @@ export type RenderPivotsProps = {
   farm: GetFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
   irpd: GetIrpdModelProps;
+  repeater: GetRepeaterModelProps;
 };
 
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
@@ -32,6 +35,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const [showPivots, setShowPivots] = useState(true);
   const [showPump, setShowPump] = useState(true);
   const [showMetter, setShowMetter] = useState(true);
+  const [showRepeaters, setShowRepeaters] = useState(true);
 
   const containerStyle = {
     width: '100%',
@@ -120,6 +124,19 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               <Typography.Text>Medidores </Typography.Text>
             </Space>
           </ProCard>
+
+          <ProCard
+            ghost
+            style={{
+              background: 'white',
+              padding: 8,
+            }}
+          >
+            <Space>
+              <Switch onChange={(e) => setShowRepeaters(e)} defaultChecked size="small" />
+              <Typography.Text>Repetidores </Typography.Text>
+            </Space>
+          </ProCard>
         </Space>
       ) : null}
 
@@ -175,6 +192,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 key={'meter-system' + index}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
+                name={item.name}
+                updated={item.updated}
                 id={item.id}
               />
             ))
@@ -185,6 +204,18 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 key={'water-pump' + index}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
+                id={item.id}
+              />
+            ))
+          : null}
+        {!props.repeater.loading && showRepeaters
+          ? props.repeater.result?.map((item, index) => (
+              <RepeaterDevice
+                key={'reepater' + index}
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                name={item.name}
+                updated={item.updated}
                 id={item.id}
               />
             ))
@@ -200,15 +231,18 @@ export default connect(
     farm,
     meterSystem,
     irpd,
+    repeater,
   }: {
     pivotInformation: any;
     farm: any;
     meterSystem: any;
     irpd: any;
+    repeater: any;
   }) => ({
     pivotInformation,
     farm,
     meterSystem,
     irpd,
+    repeater,
   }),
 )(RenderPivots);

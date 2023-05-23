@@ -1,8 +1,15 @@
- import { getCentral } from '@/services/central';
+import { getCentral } from '@/services/central';
 import { AxiosError } from '@umijs/max';
 
+interface Central {
+  id: number;
+  centerLat: number;
+  centerLng: number;
+  name: string;
+  updated: string;
+}
 export interface GetCentralModelProps {
-  result: Models.Central[];
+  result: Central[];
   loading: boolean;
   loaded: boolean;
   error: any;
@@ -44,25 +51,27 @@ export default {
         loading: true,
       };
     },
-    queryCentralSuccess(state: GetCentralModelProps, { payload }: { payload: API.GetCentralResponse }) {
+    queryCentralSuccess(
+      state: GetCentralModelProps,
+      { payload }: { payload: API.GetCentralResponse },
+    ) {
       const mapper = [];
 
       /**
        * Observações:
        * Validar o latestPanelStream
        * Validar latestGpsPosition linha 184, 196
-       */ 
-        const item = payload.list ;
+       */
+      const item = payload.list;
 
-        const latLng = item.location.split(',');
-        mapper.push({
-          id: item.id,
-          centerLat: parseFloat(latLng[0]),
-          centerLng: parseFloat(latLng[1]),
-          name: item.name,
-          updated: new Date(item.updated).toLocaleString()
-        });
-      
+      const latLng = item.location.split(',');
+      mapper.push({
+        id: item.id,
+        centerLat: parseFloat(latLng[0]),
+        centerLng: parseFloat(latLng[1]),
+        name: item.name,
+        updated: new Date(item.updated).toLocaleString(),
+      });
 
       return {
         ...state,

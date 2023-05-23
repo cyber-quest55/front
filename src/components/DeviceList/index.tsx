@@ -1,10 +1,17 @@
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
+import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
-import { CaretDownOutlined, ClockCircleOutlined, RedoOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  CaretDownOutlined,
+  ClockCircleOutlined,
+  InsertRowRightOutlined,
+  RedoOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';
@@ -34,6 +41,7 @@ type Props = {
   farm: GetFarmModelProps;
   irpd: GetIrpdModelProps;
   repeater: GetRepeaterModelProps;
+  meterSystem: GetMeterSystemModelProps;
 };
 
 const DeviceList: React.FC<Props> = (props) => {
@@ -111,11 +119,10 @@ const DeviceList: React.FC<Props> = (props) => {
         <Col>
           <span>{item.name}</span>
         </Col>
-         
       </Row>
     ),
     content: (
-      <Space direction="vertical"> 
+      <Space direction="vertical">
         <Typography.Text type="secondary">{item.updated}</Typography.Text>
       </Space>
     ),
@@ -152,13 +159,12 @@ const DeviceList: React.FC<Props> = (props) => {
     ),
   }));
 
-
   const dataSource3 = props.repeater.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
           <span>{item.name}</span>
-        </Col> 
+        </Col>
       </Row>
     ),
     content: (
@@ -168,21 +174,19 @@ const DeviceList: React.FC<Props> = (props) => {
     ),
   }));
 
-
   const dataSource4 = props.irpd.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
           <span>{item.name}</span>
-        </Col> 
+        </Col>
       </Row>
     ),
     content: (
       <Space direction="vertical">
-       
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Tooltip title="Ângulo">
-            <ClockCircleOutlined  style={{ fontSize: 20 }} />
+            <ClockCircleOutlined style={{ fontSize: 20 }} />
           </Tooltip>{' '}
           - bar
         </span>
@@ -191,6 +195,26 @@ const DeviceList: React.FC<Props> = (props) => {
     ),
   }));
 
+  const dataSource5 = props.meterSystem.result?.map((item) => ({
+    title: (
+      <Row justify="space-between" style={{ width: '100%' }}>
+        <Col>
+          <span>{item.name}</span>
+        </Col>
+      </Row>
+    ),
+    content: (
+      <Space direction="vertical">
+        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Tooltip title="Ângulo">
+            <InsertRowRightOutlined style={{ fontSize: 20 }} />
+          </Tooltip>{' '}
+          220% (0.50)
+        </span>
+        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+      </Space>
+    ),
+  }));
 
   const getList = (dataSource: any) => {
     return (
@@ -233,7 +257,7 @@ const DeviceList: React.FC<Props> = (props) => {
     {
       key: '5',
       label: `Medidores`,
-      children: getList(dataSource3),
+      children: getList(dataSource5),
     },
   ];
 
@@ -308,7 +332,8 @@ export default connect(
     pivotInformation,
     central,
     irpd,
-    repeater
+    repeater,
+    meterSystem,
   }: {
     pivot: any;
     farm: any;
@@ -316,12 +341,14 @@ export default connect(
     central: any;
     irpd: any;
     repeater: any;
+    meterSystem: any;
   }) => ({
     pivot,
     farm,
     pivotInformation,
     central,
     irpd,
-    repeater
+    repeater,
+    meterSystem,
   }),
 )(DeviceList);
