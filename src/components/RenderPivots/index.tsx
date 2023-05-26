@@ -75,6 +75,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
     }
   }, [props.pivotInformation.loaded]);
 
+  console.log(props.pivotInformation?.result)
+
   return (
     <>
       {onlyWidth > 1210 ? (
@@ -157,7 +159,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
         zoom={zoom}
       >
         {!props.pivotInformation.loading && showPivots
-          ? props.pivotInformation.result?.map((item) => (
+          ? props.pivotInformation?.result?.map((item) => (
               <CirclePivot
                 id={item.id}
                 key={item.id}
@@ -169,7 +171,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 referencedLng={item.referencedLng}
                 gpsLat={item.gpsLat}
                 gpsLong={item.gpsLong}
-                pivotColor="#FF0000"
+                pivotColor={item.pivotColor}
                 lineColor="#fff"
                 referenceAngle={item.referenceAngle}
                 irrigationDirection={item.irrigationDirection}
@@ -184,6 +186,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 dashed={false}
                 name={item.name}
                 updated={item.updated}
+                statusText={item.statusText}
               />
             ))
           : null}

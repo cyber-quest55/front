@@ -60,7 +60,6 @@ const AddPivotAlarmForm = () => {
             }}
             modalProps={{
                 destroyOnClose: true,
-                onCancel: () => console.log('run'),
             }}
             grid
             rowProps={{ gutter: [12, 12] }}

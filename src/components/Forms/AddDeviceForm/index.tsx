@@ -442,12 +442,9 @@ const AddDeviceForm = () => {
                 if (step === 0 && v.device) {
                     setStep(1)
                 }
-                if (step === 1)
-                    console.log('there ')
             }}
             modalProps={{
                 destroyOnClose: true,
-                onCancel: () => console.log('run'),
             }}
         >
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>

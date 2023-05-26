@@ -22,8 +22,7 @@ export default {
     effects: {
         *queryPivot(
             { payload }: { payload: API.GetPivotByFarmParam },
-            { call, put }: { call: any, put: any }) {
-            console.log('enter there')
+            { call, put }: { call: any, put: any }) { 
             yield put({ type: 'queryPivotStart' });
 
             try {

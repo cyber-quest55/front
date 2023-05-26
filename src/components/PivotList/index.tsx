@@ -149,7 +149,7 @@ const PivotList: React.FC<Props> = (props) => {
         </Col>
         <Col>
           <Tag color="#2db7f5">V5</Tag>
-          <Tag color="#f50">Sem Comunicação</Tag>
+          <Tag color={item.pivotColor}>{item.statusText}</Tag>
         </Col>
       </Row>
     ),

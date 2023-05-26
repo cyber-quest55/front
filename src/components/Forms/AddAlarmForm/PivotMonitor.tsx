@@ -59,8 +59,7 @@ const AddPivotMonitorAlarmForm = () => {
                 setStep(step + 1)
             }}
             modalProps={{
-                destroyOnClose: true,
-                onCancel: () => console.log('run'),
+                destroyOnClose: true, 
             }}
             grid
             rowProps={{ gutter: [12, 12] }}

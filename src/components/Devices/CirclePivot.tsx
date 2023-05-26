@@ -36,6 +36,7 @@ export type CirclePivotProps = {
   irrigationStatus: 4 | 6 | 33;
   updated: string;
   name: string;
+  statusText: string;
 };
 
 const circleOptions = {

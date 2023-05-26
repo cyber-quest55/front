@@ -52,10 +52,7 @@ const DeviceList: React.FC<Props> = (props) => {
   useEffect(() => {}, [props.farm]);
 
   useEffect(() => {}, [params]);
-
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+ 
 
   const classNameScrollable = useEmotionCss(({}) => {
     return {
@@ -318,7 +315,7 @@ const DeviceList: React.FC<Props> = (props) => {
       </Row>
       <Row align="middle" style={{ padding: '0px 0px', width: '100%' }}>
         <Col xs={24}>
-          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+          <Tabs defaultActiveKey="1" items={items}  />
         </Col>
       </Row>
     </div>

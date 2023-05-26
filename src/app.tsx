@@ -48,7 +48,6 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-const onLoad = () => console.log('script loaded')
 const loaderId = uniqid('loader-')
 
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
@@ -90,8 +89,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       // if (initialState?.loading) return <PageLoading />;
       return <App>
         <LoadScript
-          id={loaderId}
-          onLoad={onLoad}
+          id={loaderId} 
 
           loadingElement={<div>loadinqwewqeg</div>}
           googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
