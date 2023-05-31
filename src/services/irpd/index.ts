@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
  
-/** GET /farms/${farmId}/irpdsystems/ */
+/** GET /farms/${farmId}/irpd/ */
 export async function getIrpds(props: API.GetIrpdParams, options?: { [key: string]: any }) {
   return request<{
     data: API.GetFarmResponse;

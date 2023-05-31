@@ -6,13 +6,12 @@ import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
 import { useWindowWidth } from '@react-hook/window-size';
-import { Dispatch } from '@umijs/max';
 import { connect } from 'dva';
 import React, { useEffect, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
 
 export type RenderPivotsProps = {
-  dispatch: Dispatch;
+  dispatch: any;
   zoom: number;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;

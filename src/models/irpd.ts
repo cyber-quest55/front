@@ -1,6 +1,6 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter'; 
 import { getIrpds } from '@/services/irpd';
-import { AxiosError } from '@umijs/max';
+import { AxiosError } from "axios";
 
 export interface GetIrpdModelProps {
   result: LakeLevelMeterProps[];

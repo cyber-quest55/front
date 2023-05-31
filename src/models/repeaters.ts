@@ -1,6 +1,6 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter'; 
 import { getRepeaters } from '@/services/repeaters';
-import { AxiosError } from '@umijs/max';
+import { AxiosError } from "axios";
 
 export interface GetRepeaterModelProps {
   result: LakeLevelMeterProps[];

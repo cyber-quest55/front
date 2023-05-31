@@ -1,13 +1,12 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GoogleMap } from '@react-google-maps/api';
-import { Dispatch } from '@umijs/max';
 import { connect } from 'dva';
 import { FunctionComponent, useEffect, useState } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 
 type Props = {
-  dispatch: Dispatch;
+  dispatch: any;
   zoom: number;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;
@@ -62,7 +61,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
             referencedLng={item.referencedLng}
             gpsLat={item.gpsLat}
             gpsLong={item.gpsLong}
-            pivotColor="#FF0000"
+            pivotColor={item.pivotColor}
             lineColor="#fff"
             referenceAngle={item.referenceAngle}
             irrigationDirection={item.irrigationDirection}

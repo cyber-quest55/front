@@ -10,6 +10,7 @@ const Settings: ProLayoutProps & {
   colorPrimary: '#00b96b',
   layout: 'side',
   collapsed: true,
+  theme: "light",
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
@@ -20,15 +21,11 @@ const Settings: ProLayoutProps & {
   iconfontUrl: '',
   splitMenus: false,
 
-  token: {
-    colorTextAppListIcon: 'white',
-    colorBgAppListIconHover: 'white',
-    colorTextAppListIconHover: 'white',
+  token: { 
 
     sider: {
       colorMenuBackground: '#2f4050', 
-      colorTextSubMenuSelected: 'black',
-      colorTextMenu: 'white', 
+      colorTextSubMenuSelected: 'black', 
     },
     pageContainer: {
       paddingBlockPageContainerContent: 0,

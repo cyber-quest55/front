@@ -2,21 +2,21 @@ import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { GetRepeaterModelProps } from '@/models/repeaters';
 import { ProCard } from '@ant-design/pro-components';
 import { GoogleMap } from '@react-google-maps/api';
 import { useWindowWidth } from '@react-hook/window-size';
-import { Dispatch, useParams } from '@umijs/max';
+import { useParams } from '@umijs/max';
 import { Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
 import React, { useEffect, useState } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
-import WaterPumpDevice from '../Devices/WaterPump';
-import { GetRepeaterModelProps } from '@/models/repeaters';
 import RepeaterDevice from '../Devices/Repeater';
+import WaterPumpDevice from '../Devices/WaterPump';
 
 export type RenderPivotsProps = {
-  dispatch: Dispatch;
+  dispatch: any;
   zoom: number;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;
@@ -74,8 +74,6 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
       setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
     }
   }, [props.pivotInformation.loaded]);
-
-  console.log(props.pivotInformation?.result)
 
   return (
     <>

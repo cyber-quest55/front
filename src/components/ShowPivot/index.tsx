@@ -1,3 +1,5 @@
+import { GetDeviceHistoryModelProps } from '@/models/device-history';
+import { GetDeviceReportModelProps } from '@/models/device-report';
 import { GetPivotModelProps } from '@/models/pivot';
 import { PivotStatusColor } from '@/utils/pivot-status';
 import {
@@ -10,15 +12,15 @@ import {
   EditFilled,
   HistoryOutlined,
   RedoOutlined,
-  SearchOutlined,
   ThunderboltFilled,
 } from '@ant-design/icons';
 import { Column, G2, Line, Pie } from '@ant-design/plots';
-import { ProCard, ProTable, StatisticCard, TableDropdown } from '@ant-design/pro-components';
+import { ProCard, ProTable, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
-import { Button, Col, Input, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
-import { useState } from 'react';
+import { useParams } from '@umijs/max';
+import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
+import { useEffect, useState } from 'react';
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { GrObjectGroup } from 'react-icons/gr';
@@ -26,19 +28,42 @@ import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
+import { GetPivotInformationModelProps } from '@/models/pivot-information';
 
 const { Statistic } = StatisticCard;
 
 type Props = {
   pivot: GetPivotModelProps;
+  deviceReport: GetDeviceReportModelProps;
+  deviceHistory: GetDeviceHistoryModelProps;
+  pivotInformation: GetPivotInformationModelProps;
   dispatch: any;
 };
 
 const ShowPivot: React.FC<Props> = (props) => {
+  const params = useParams();
   const onlyWidth = useWindowWidth();
 
   const [tab, setTab] = useState('tab1');
   const [option, setOption] = useState<undefined | number>(undefined);
+
+  useEffect(() => {
+    props.dispatch({
+      type: 'deviceReport/queryDeviceReport',
+      payload: {
+        id: parseInt(params.id as string),
+        params: {},
+      },
+    });
+
+    props.dispatch({
+      type: 'deviceHistory/queryDeviceHistory',
+      payload: {
+        id: parseInt(params.id as string),
+        params: {},
+      },
+    });
+  }, [params]);
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -76,40 +101,33 @@ const ShowPivot: React.FC<Props> = (props) => {
     };
   });
 
+  const classNameTableProCard = useEmotionCss(() => {
+    return {
+      '.ant-pro-card-body': {
+        paddingInline: '4px',
+      }, 
+    };
+  });
+
   const G = G2.getEngine('canvas');
 
   const data = [
     {
       type: 'Horas em pico',
-      value: 100,
+      value: parseInt(
+        props.deviceReport.result?.energy_consumption?.fora_de_ponta?.hours.toString(),
+      ),
     },
     {
       type: 'Horas em fora de pico',
-      value: 100,
+      value: parseInt(props.deviceReport.result?.energy_consumption?.reduzido?.hours?.toString()),
     },
     {
       type: 'Horas em reduzido',
-      value: 200,
+      value: parseInt(props.deviceReport.result?.energy_consumption?.ponta?.hours.toString()),
       color: 'red',
     },
   ];
-
-  const tableListDataSource: any[] = [];
-
-  const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
-
-  for (let i = 0; i < 50; i += 1) {
-    tableListDataSource.push({
-      key: i,
-      name: 'AppName-' + i,
-      containers: Math.floor(Math.random() * 20),
-      callNumber: Math.floor(Math.random() * 2000),
-      progress: Math.ceil(Math.random() * 100) + 1,
-      creator: creators[Math.floor(Math.random() * creators.length)],
-      createdAt: Date.now() - Math.floor(Math.random() * 100000),
-      memo: i % 2 === 1 ? '很长很长很长很长很长很长很长的文字要展示但是要留下尾巴' : '简短备注文案',
-    });
-  }
 
   const onChangeDevice = (e: string) => {
     props.dispatch({
@@ -123,7 +141,11 @@ const ShowPivot: React.FC<Props> = (props) => {
     2: 'Queda de energia',
     3: 'Desalinhado',
     4: 'Oscilação de energia',
-  };
+  }; 
+
+  const item = props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
+
+ 
   return (
     <>
       <Modal
@@ -137,60 +159,7 @@ const ShowPivot: React.FC<Props> = (props) => {
           <Col xs={24} md={12} style={{ height: 360 }}>
             <DeviceMapsRender height={400} />
           </Col>
-          <Col xs={24} md={12}>
-            <ProTable<any>
-              columns={[
-                {
-                  title: '应用名称',
-                  dataIndex: 'name',
-                  render: (_) => <a>{_}</a>,
-
-                  filterDropdown: () => (
-                    <div style={{ padding: 8 }}>
-                      <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }} />
-                    </div>
-                  ),
-                  filterIcon: (filtered) => (
-                    <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-                  ),
-                },
-                {
-                  title: '状态',
-                  dataIndex: 'status',
-                  initialValue: 'all',
-                  filters: true,
-                  onFilter: true,
-                  valueEnum: {
-                    all: { text: '全部', status: 'Default' },
-                    close: { text: '关闭', status: 'Default' },
-                    running: { text: '运行中', status: 'Processing' },
-                    online: { text: '已上线', status: 'Success' },
-                    error: { text: '异常', status: 'Error' },
-                  },
-                },
-                {
-                  title: '备注',
-                  dataIndex: 'memo',
-                  ellipsis: true,
-                  copyable: true,
-                },
-              ]}
-              request={() => {
-                return Promise.resolve({
-                  data: tableListDataSource,
-                  success: true,
-                });
-              }}
-              rowKey="key"
-              pagination={{
-                pageSize: 6,
-              }}
-              options={false}
-              search={false}
-              dateFormatter="string"
-              toolbar={{}}
-            />
-          </Col>
+          <Col xs={24} md={12}></Col>
         </Row>
       </Modal>
       <ProCard
@@ -221,7 +190,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                 </Button>
               </Space>
             }
-            status={<Tag color={PivotStatusColor.off}>PIVOT PARADO</Tag>}
+            status={<Tag color={PivotStatusColor.off}>{item?.statusText}</Tag>}
             deviceSelector={
               <Select
                 className={classNameSelect}
@@ -236,6 +205,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                 }
                 onChange={onChangeDevice}
                 options={props.pivot.result.list?.map((item) => ({
+                
                   value: item.id,
                   label: item.name,
                 }))}
@@ -312,7 +282,7 @@ const ShowPivot: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Falta de pressão',
-                value: 8,
+                value: props.deviceReport.result?.unexpected_stops?.lack_of_pressure,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -324,7 +294,7 @@ const ShowPivot: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Queda de energia',
-                value: 0,
+                value: props.deviceReport.result?.unexpected_stops?.energy_blackot,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -341,7 +311,7 @@ const ShowPivot: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Desalinhado',
-                value: 0,
+                value: props.deviceReport.result?.unexpected_stops?.misalignment,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -353,7 +323,7 @@ const ShowPivot: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Oscilação de energia',
-                value: 0,
+                value: props.deviceReport.result?.unexpected_stops?.power_surge,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -375,7 +345,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                   onClick={() => {}}
                   statistic={{
                     title: 'Volume total',
-                    value: '100.604,31',
+                    value: props.deviceReport.result?.flow?.total_m3h.toFixed(2),
                     suffix: 'm³',
                   }}
                 />
@@ -383,7 +353,7 @@ const ShowPivot: React.FC<Props> = (props) => {
                 <StatisticCard
                   statistic={{
                     title: 'Horas trabalhadas',
-                    value: '152,03',
+                    value: props.deviceReport.result?.hours_count?.wet_total_hours.toFixed(3),
                     suffix: 'h',
                   }}
                 />
@@ -480,6 +450,7 @@ const ShowPivot: React.FC<Props> = (props) => {
           <ProCard split="horizontal" colSpan={{ xs: 24, lg: 24 }}>
             <ProCard
               colSpan={{ xs: 24, lg: 24 }}
+              wrap
               split={onlyWidth > 767 ? 'vertical' : 'horizontal'}
               style={{ height: onlyWidth > 767 ? 350 : '100%' }}
             >
@@ -547,7 +518,9 @@ const ShowPivot: React.FC<Props> = (props) => {
                     <StatisticCard
                       statistic={{
                         title: 'Mínimo',
-                        value: '465.67',
+                        value: props.deviceReport.result?.voltage_min
+                          ? props.deviceReport.result?.voltage_min[0]
+                          : 0,
                         suffix: 'V',
                       }}
                     />
@@ -556,7 +529,9 @@ const ShowPivot: React.FC<Props> = (props) => {
                     <StatisticCard
                       statistic={{
                         title: 'Médio',
-                        value: '465.67',
+                        value: props.deviceReport.result?.voltage_med
+                          ? props.deviceReport.result?.voltage_med[0]
+                          : 0,
                         suffix: 'V',
                       }}
                     />
@@ -565,7 +540,9 @@ const ShowPivot: React.FC<Props> = (props) => {
                     <StatisticCard
                       statistic={{
                         title: 'Máximo',
-                        value: '465.67',
+                        value: props.deviceReport.result?.voltage_max
+                          ? props.deviceReport.result?.voltage_max[0]
+                          : 0,
                         suffix: 'V',
                       }}
                     />
@@ -579,352 +556,16 @@ const ShowPivot: React.FC<Props> = (props) => {
               chart={
                 <Line
                   height={320}
-                  data={[
-                    {
-                      Date: '2010-01',
-                      scales: 1998,
-                    },
-                    {
-                      Date: '2010-02',
-                      scales: 1850,
-                    },
-                    {
-                      Date: '2010-03',
-                      scales: 1720,
-                    },
-                    {
-                      Date: '2010-04',
-                      scales: 1818,
-                    },
-                    {
-                      Date: '2010-05',
-                      scales: 1920,
-                    },
-                    {
-                      Date: '2010-06',
-                      scales: 1802,
-                    },
-                    {
-                      Date: '2010-07',
-                      scales: 1945,
-                    },
-                    {
-                      Date: '2010-08',
-                      scales: 1856,
-                    },
-                    {
-                      Date: '2010-09',
-                      scales: 2107,
-                    },
-                    {
-                      Date: '2010-10',
-                      scales: 2140,
-                    },
-                    {
-                      Date: '2010-11',
-                      scales: 2311,
-                    },
-                    {
-                      Date: '2010-12',
-                      scales: 1972,
-                    },
-                    {
-                      Date: '2011-01',
-                      scales: 1760,
-                    },
-                    {
-                      Date: '2011-02',
-                      scales: 1824,
-                    },
-                    {
-                      Date: '2011-03',
-                      scales: 1801,
-                    },
-                    {
-                      Date: '2011-04',
-                      scales: 2001,
-                    },
-                    {
-                      Date: '2011-05',
-                      scales: 1640,
-                    },
-                    {
-                      Date: '2011-06',
-                      scales: 1502,
-                    },
-                    {
-                      Date: '2011-07',
-                      scales: 1621,
-                    },
-                    {
-                      Date: '2011-08',
-                      scales: 1480,
-                    },
-                    {
-                      Date: '2011-09',
-                      scales: 1549,
-                    },
-                    {
-                      Date: '2011-10',
-                      scales: 1390,
-                    },
-                    {
-                      Date: '2011-11',
-                      scales: 1325,
-                    },
-                    {
-                      Date: '2011-12',
-                      scales: 1250,
-                    },
-                    {
-                      Date: '2012-01',
-                      scales: 1394,
-                    },
-                    {
-                      Date: '2012-02',
-                      scales: 1406,
-                    },
-                    {
-                      Date: '2012-03',
-                      scales: 1578,
-                    },
-                    {
-                      Date: '2012-04',
-                      scales: 1465,
-                    },
-                    {
-                      Date: '2012-05',
-                      scales: 1689,
-                    },
-                    {
-                      Date: '2012-06',
-                      scales: 1755,
-                    },
-                    {
-                      Date: '2012-07',
-                      scales: 1495,
-                    },
-                    {
-                      Date: '2012-08',
-                      scales: 1508,
-                    },
-                    {
-                      Date: '2012-09',
-                      scales: 1433,
-                    },
-                    {
-                      Date: '2012-10',
-                      scales: 1344,
-                    },
-                    {
-                      Date: '2012-11',
-                      scales: 1201,
-                    },
-                    {
-                      Date: '2012-12',
-                      scales: 1065,
-                    },
-                    {
-                      Date: '2013-01',
-                      scales: 1255,
-                    },
-                    {
-                      Date: '2013-02',
-                      scales: 1429,
-                    },
-                    {
-                      Date: '2013-03',
-                      scales: 1398,
-                    },
-                    {
-                      Date: '2013-04',
-                      scales: 1678,
-                    },
-                    {
-                      Date: '2013-05',
-                      scales: 1524,
-                    },
-                    {
-                      Date: '2013-06',
-                      scales: 1688,
-                    },
-                    {
-                      Date: '2013-07',
-                      scales: 1500,
-                    },
-                    {
-                      Date: '2013-08',
-                      scales: 1670,
-                    },
-                    {
-                      Date: '2013-09',
-                      scales: 1734,
-                    },
-                    {
-                      Date: '2013-10',
-                      scales: 1699,
-                    },
-                    {
-                      Date: '2013-11',
-                      scales: 1508,
-                    },
-                    {
-                      Date: '2013-12',
-                      scales: 1680,
-                    },
-                    {
-                      Date: '2014-01',
-                      scales: 1750,
-                    },
-                    {
-                      Date: '2014-02',
-                      scales: 1602,
-                    },
-                    {
-                      Date: '2014-03',
-                      scales: 1834,
-                    },
-                    {
-                      Date: '2014-04',
-                      scales: 1722,
-                    },
-                    {
-                      Date: '2014-05',
-                      scales: 1430,
-                    },
-                    {
-                      Date: '2014-06',
-                      scales: 1280,
-                    },
-                    {
-                      Date: '2014-07',
-                      scales: 1367,
-                    },
-                    {
-                      Date: '2014-08',
-                      scales: 1155,
-                    },
-                    {
-                      Date: '2014-09',
-                      scales: 1289,
-                    },
-                    {
-                      Date: '2014-10',
-                      scales: 1104,
-                    },
-                    {
-                      Date: '2014-11',
-                      scales: 1246,
-                    },
-                    {
-                      Date: '2014-12',
-                      scales: 1098,
-                    },
-                    {
-                      Date: '2015-01',
-                      scales: 1189,
-                    },
-                    {
-                      Date: '2015-02',
-                      scales: 1276,
-                    },
-                    {
-                      Date: '2015-03',
-                      scales: 1033,
-                    },
-                    {
-                      Date: '2015-04',
-                      scales: 956,
-                    },
-                    {
-                      Date: '2015-05',
-                      scales: 845,
-                    },
-                    {
-                      Date: '2015-06',
-                      scales: 1089,
-                    },
-                    {
-                      Date: '2015-07',
-                      scales: 944,
-                    },
-                    {
-                      Date: '2015-08',
-                      scales: 1043,
-                    },
-                    {
-                      Date: '2015-09',
-                      scales: 893,
-                    },
-                    {
-                      Date: '2015-10',
-                      scales: 840,
-                    },
-                    {
-                      Date: '2015-11',
-                      scales: 934,
-                    },
-                    {
-                      Date: '2015-12',
-                      scales: 810,
-                    },
-                    {
-                      Date: '2016-01',
-                      scales: 782,
-                    },
-                    {
-                      Date: '2016-02',
-                      scales: 1089,
-                    },
-                    {
-                      Date: '2016-03',
-                      scales: 745,
-                    },
-                    {
-                      Date: '2016-04',
-                      scales: 680,
-                    },
-                    {
-                      Date: '2016-05',
-                      scales: 802,
-                    },
-                    {
-                      Date: '2016-06',
-                      scales: 697,
-                    },
-                    {
-                      Date: '2016-07',
-                      scales: 583,
-                    },
-                    {
-                      Date: '2016-08',
-                      scales: 456,
-                    },
-                    {
-                      Date: '2016-09',
-                      scales: 524,
-                    },
-                    {
-                      Date: '2016-10',
-                      scales: 398,
-                    },
-                    {
-                      Date: '2016-11',
-                      scales: 278,
-                    },
-                    {
-                      Date: '2016-12',
-                      scales: 195,
-                    },
-                    {
-                      Date: '2017-01',
-                      scales: 145,
-                    },
-                    {
-                      Date: '2017-02',
-                      scales: 207,
-                    },
-                  ]}
+                  data={
+                    props.deviceReport.result?.voltage_array
+                      ? props.deviceReport.result?.voltage_array?.map((item) => {
+                          return {
+                            Date: new Date(item.date).toISOString().split('T')[0],
+                            scales: item.voltage,
+                          };
+                        })
+                      : []
+                  }
                   padding="auto"
                   xField="Date"
                   yField="scales"
@@ -937,8 +578,9 @@ const ShowPivot: React.FC<Props> = (props) => {
             />
           </ProCard>
         </ProCard>
-        <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost>
+        <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost className={classNameTableProCard}>
           <ProCard
+            style={{ minHeight: 1077 }}
             title={
               <Row justify="space-between" style={{ width: '100%' }}>
                 <Col>Histórico</Col>
@@ -959,92 +601,38 @@ const ShowPivot: React.FC<Props> = (props) => {
                   children: (
                     <ProTable<any>
                       rowSelection={{
-                        // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
-                        // 注释该行则默认不显示下拉选项
                         defaultSelectedRowKeys: [1],
                       }}
                       columns={[
                         {
-                          title: '排序',
-                          dataIndex: 'index',
-                          valueType: 'indexBorder',
-                          width: 48,
-                        },
-                        {
-                          title: '应用名称',
-                          dataIndex: 'name',
-                          render: (_) => <a>{_}</a>,
-                          // 自定义筛选项功能具体实现请参考 https://ant.design/components/table-cn/#components-table-demo-custom-filter-panel
-                          filterDropdown: () => (
-                            <div style={{ padding: 8 }}>
-                              <Input style={{ width: 188, marginBlockEnd: 8, display: 'block' }} />
-                            </div>
-                          ),
-                          filterIcon: (filtered) => (
-                            <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
-                          ),
-                        },
-                        {
-                          title: '创建者',
-                          dataIndex: 'creator',
-                          valueEnum: {
-                            all: { text: '全部' },
-                            付小小: { text: '付小小' },
-                            曲丽丽: { text: '曲丽丽' },
-                            林东东: { text: '林东东' },
-                            陈帅帅: { text: '陈帅帅' },
-                            兼某某: { text: '兼某某' },
+                          title: 'Ocorrência',
+                          dataIndex: 'date',
+
+                          render: (value, item) => {
+                            return <>{new Date(item.created).toLocaleDateString()}</>;
                           },
                         },
                         {
-                          title: '状态',
-                          dataIndex: 'status',
-                          initialValue: 'all',
-                          filters: true,
-                          onFilter: true,
-                          valueEnum: {
-                            all: { text: '全部', status: 'Default' },
-                            close: { text: '关闭', status: 'Default' },
-                            running: { text: '运行中', status: 'Processing' },
-                            online: { text: '已上线', status: 'Success' },
-                            error: { text: '异常', status: 'Error' },
+                          title: 'Tipo',
+                          dataIndex: 'date',
+                          responsive: ['lg'],
+                          render: () => {
+                            return <>Atualização</>;
                           },
                         },
                         {
-                          title: '备注',
-                          dataIndex: 'memo',
-                          ellipsis: true,
-                          copyable: true,
-                        },
-                        {
-                          title: '操作',
-                          width: 180,
-                          key: 'option',
-                          valueType: 'option',
-                          render: () => [
-                            <a key="link">链路</a>,
-                            <a key="link2">报警</a>,
-                            <a key="link3">监控</a>,
-                            <TableDropdown
-                              key="actionGroup"
-                              menus={[
-                                { key: 'copy', name: '复制' },
-                                { key: 'delete', name: '删除' },
-                              ]}
-                            />,
-                          ],
+                          title: 'Status',
+                          dataIndex: 'date',
+                          render: () => {
+                            return <>Programado | Avanço | Molhado | 62%</>;
+                          },
                         },
                       ]}
-                      request={() => {
-                        return Promise.resolve({
-                          data: tableListDataSource,
-                          success: true,
-                        });
-                      }}
+                      dataSource={props.deviceHistory.result}
                       rowKey="key"
                       pagination={{
                         showQuickJumper: true,
-                        pageSize: 16,
+                        pageSize: 14,
                       }}
                       search={false}
                       dateFormatter="string"
@@ -1072,8 +660,7 @@ const ShowPivot: React.FC<Props> = (props) => {
             style={{ marginTop: 16 }}
             title="Comparativo de Pressão (bar)"
             chart={
-              <Line
-                height={320}
+              <Column
                 data={[
                   {
                     Date: '2010-01',
@@ -1420,13 +1007,21 @@ const ShowPivot: React.FC<Props> = (props) => {
                     scales: 207,
                   },
                 ]}
+                height={320}
                 padding="auto"
                 xField="Date"
                 yField="scales"
                 xAxis={{
-                  tickCount: 5,
+                  label: {
+                    autoRotate: false,
+                  },
                 }}
-                slider={false}
+                slider={{
+                  start: 0,
+                  end: 1,
+                  maxLimit: 0.1,
+                  minLimit: 0.1,
+                }}
               />
             }
             colSpan={{ xs: 24, md: 24 }}
@@ -1436,68 +1031,25 @@ const ShowPivot: React.FC<Props> = (props) => {
         <StatisticCard
           title="Gráfico de Lâmina"
           chart={
-            <Column
-              data={[
-                {
-                  type: '1-3秒',
-                  value: 0.16,
-                },
-                {
-                  type: '4-10秒',
-                  value: 0.125,
-                },
-                {
-                  type: '11-30秒',
-                  value: 0.24,
-                },
-                {
-                  type: '31-60秒',
-                  value: 0.19,
-                },
-                {
-                  type: '1-3分',
-                  value: 0.22,
-                },
-                {
-                  type: '3-10分',
-                  value: 0.05,
-                },
-                {
-                  type: '10-30分',
-                  value: 0.01,
-                },
-                {
-                  type: '30+分',
-                  value: 0.015,
-                },
-              ]}
-              xField={'type'}
-              yField={'value'}
-              seriesField={''}
-              color={({ type }) => {
-                if (type === '10-30分' || type === '30+分') {
-                  return '#F4664A';
-                }
-
-                return '#5B8FF9';
-              }}
-              label={{
-                content: (originData: any): any => {
-                  const val = parseFloat(originData.value);
-
-                  if (val < 0.05) {
-                    return (val * 100).toFixed(1) + '%';
-                  }
-                },
-                offset: 10,
-              }}
-              legend={false}
+            <Line
+              height={320}
+              data={
+                props.deviceReport.result.water_blade?.by_angle
+                  ? props.deviceReport.result.water_blade?.by_angle.map((item, index) => {
+                      return {
+                        'Ângulo': index + 1,
+                        value: item,
+                      };
+                    })
+                  : []
+              }
+              padding="auto"
+              xField="Ângulo"
+              yField="value"
               xAxis={{
-                label: {
-                  autoHide: true,
-                  autoRotate: false,
-                },
+                tickCount: 5,
               }}
+              slider={false}
             />
           }
           colSpan={{ xs: 24, lg: 24 }}
@@ -1507,6 +1059,22 @@ const ShowPivot: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(({ pivot }: { pivot: any }) => ({
-  pivot,
-}))(ShowPivot);
+export default connect(
+  ({
+    pivot,
+    deviceReport,
+    deviceHistory,
+    pivotInformation,
+
+  }: {
+    pivot: any;
+    deviceReport: any;
+    deviceHistory: any;
+    pivotInformation: any;
+  }) => ({
+    pivot,
+    deviceReport,
+    deviceHistory,
+    pivotInformation,
+  }),
+)(ShowPivot);

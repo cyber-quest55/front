@@ -56,7 +56,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
   });
 
   useEffect(() => {
-    console.log('isConnected: ', isConnected);
   }, [isConnected]);
 
   const className = useEmotionCss(({}) => {

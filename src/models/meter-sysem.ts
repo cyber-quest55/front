@@ -1,6 +1,6 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getMeterSystem } from '@/services/metersystem';
-import { AxiosError } from '@umijs/max';
+import { AxiosError } from 'axios';
 
 export interface GetMeterSystemModelProps {
   result: LakeLevelMeterProps[];

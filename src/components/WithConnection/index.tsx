@@ -1,13 +1,12 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetFarmConnectionModelProps } from '@/models/farm-connection';
 import { LoadingOutlined, WifiOutlined } from '@ant-design/icons';
-import { Dispatch } from '@umijs/max';
 import { Badge, Tooltip } from 'antd';
 import { connect } from 'dva';
 import React, { useEffect } from 'react';
 
 export type WithConnectionProps = {
-  dispatch: Dispatch;
+  dispatch: any;
   farm: GetFarmModelProps;
   farmConnection: GetFarmConnectionModelProps;
 };

@@ -1,6 +1,6 @@
 import { getPivots } from "@/services/pivot"; 
-import { AxiosError } from "@umijs/max";
-export interface GetPivotModelProps {
+import { AxiosError } from "axios";
+ export interface GetPivotModelProps {
     result: API.GetPivotByFarmResponse;
     loading: boolean;
     loaded: boolean;

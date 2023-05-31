@@ -143,7 +143,7 @@ const PivotList: React.FC<Props> = (props) => {
 
   const dataSource = props.pivotInformation.result?.map((item) => ({
     title: (
-      <Row justify="space-between" style={{ width: '100%' }}>
+      <Row key={`row-pivot-information-${item.id}`} justify="space-between" style={{ width: '100%' }}>
         <Col>
           <span>{props.pivot.result.list?.find((subItem) => subItem.id === item.id)?.name}</span>
         </Col>
@@ -154,7 +154,7 @@ const PivotList: React.FC<Props> = (props) => {
       </Row>
     ),
     content: (
-      <Space direction="vertical">
+      <Space key={`row-pivot-information-space-${item.id}`} direction="vertical">
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Tooltip title="Pluviometro">
             <BsCloudRainFill style={{ fontSize: 20 }} />
