@@ -22,6 +22,7 @@ import { BsCloudRainFill } from 'react-icons/bs';
 import { connect } from 'umi';
 import AddDeviceForm from '../Forms/AddDeviceForm';
 import WithConnection from '../WithConnection';
+import { DeviceType } from '@/utils/enums';
 
 type Props = {
   dispatch: any;
@@ -32,6 +33,15 @@ type Props = {
   irpd: GetIrpdModelProps;
   repeater: GetRepeaterModelProps;
   meterSystem: GetMeterSystemModelProps;
+};
+
+const scrollToBottom = () => {
+  setTimeout(() => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: 'smooth',
+    });
+  }, 500);
 };
 
 const PivotList: React.FC<Props> = (props) => {
@@ -105,8 +115,8 @@ const PivotList: React.FC<Props> = (props) => {
       },
       position: 'relative',
       '.ant-pro-card-body': {
-        paddingBlock: 0
-      }
+        paddingBlock: 0,
+      },
     };
   });
 
@@ -141,9 +151,24 @@ const PivotList: React.FC<Props> = (props) => {
     };
   });
 
+  const onSetDevice = (type: string, deviceId: string) => {
+    props.dispatch({
+      type: 'selectedDevice/setSelectedDevice',
+      payload: { type, deviceId, farmId: params.id },
+    });
+  };
+
   const dataSource = props.pivotInformation.result?.map((item) => ({
     title: (
-      <Row key={`row-pivot-information-${item.id}`} justify="space-between" style={{ width: '100%' }}>
+      <Row
+        onClick={() => {
+          onSetDevice(DeviceType.Pivot, item.id.toString());
+          scrollToBottom();
+        }}
+        key={`row-pivot-information-${item.id}`}
+        justify="space-between"
+        style={{ width: '100%' }}
+      >
         <Col>
           <span>{props.pivot.result.list?.find((subItem) => subItem.id === item.id)?.name}</span>
         </Col>
@@ -174,7 +199,14 @@ const PivotList: React.FC<Props> = (props) => {
 
   const dataSource2 = props.repeater.result?.map((item) => ({
     title: (
-      <Row justify="space-between" style={{ width: '100%' }}>
+      <Row
+        onClick={() => {
+          onSetDevice(DeviceType.Repeater, item.id.toString());
+          scrollToBottom();
+        }}
+        justify="space-between"
+        style={{ width: '100%' }}
+      >
         <Col>
           <span>{item.name}</span>
         </Col>
@@ -189,7 +221,14 @@ const PivotList: React.FC<Props> = (props) => {
 
   const dataSource3 = props.irpd.result?.map((item) => ({
     title: (
-      <Row justify="space-between" style={{ width: '100%' }}>
+      <Row
+        onClick={() => {
+          onSetDevice(DeviceType.Pump, item.id.toString());
+          scrollToBottom();
+        }}
+        justify="space-between"
+        style={{ width: '100%' }}
+      >
         <Col>
           <span>{item.name}</span>
         </Col>
@@ -210,7 +249,14 @@ const PivotList: React.FC<Props> = (props) => {
 
   const dataSource4 = props.meterSystem.result?.map((item) => ({
     title: (
-      <Row justify="space-between" style={{ width: '100%' }}>
+      <Row
+        onClick={() => {
+          onSetDevice(DeviceType.Meter, item.id.toString());
+          scrollToBottom();
+        }}
+        justify="space-between"
+        style={{ width: '100%' }}
+      >
         <Col>
           <span>{item.name}</span>
         </Col>

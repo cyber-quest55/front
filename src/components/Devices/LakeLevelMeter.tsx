@@ -1,3 +1,4 @@
+import { DeviceType } from '@/utils/enums';
 import { Liquid } from '@ant-design/charts';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
 import { Typography } from 'antd';
@@ -11,6 +12,7 @@ export type LakeLevelMeterProps = {
   lineColor?: string;
   name: string;
   updated: string;
+  onSelect?: any;
 };
 
 const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
@@ -21,10 +23,12 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
   return (
     <>
       <OverlayViewF
+        
         position={{ lat: centerLat, lng: centerLng }}
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       >
         <div
+          onClick={() => props?.onSelect(DeviceType.Meter, props.id)}
           onMouseLeave={() => setInfoWindowVisible(false)}
           onMouseEnter={() => setInfoWindowVisible(true)}
         >

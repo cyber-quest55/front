@@ -1,4 +1,4 @@
-import { getDeviceReports } from '@/services/device-report';
+import { getDeviceReports } from '@/services/device';
 import { AxiosError } from 'axios';
  
 

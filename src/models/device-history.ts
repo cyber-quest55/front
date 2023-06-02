@@ -1,4 +1,4 @@
-import { getDeviceHistory } from '@/services/device-history';
+import { getDeviceHistory } from '@/services/device';
 import { AxiosError } from 'axios';
 
 export interface GetDeviceHistoryModelProps {

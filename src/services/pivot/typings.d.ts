@@ -13,15 +13,27 @@ declare namespace API {
     list: Models.Pivot[];
   };
 
-  type GetPivotInformationParam = { 
+  type GetPivotsInformationParam = { 
     id: number; 
     params: any
   }
 
-  type GetPivotInformationResponse = { 
+  type GetPivotsInformationResponse = { 
     current: number;
     pageSize: number;
     total: number;
     list: Models.PivotInformation[];
+  }
+
+  type GetPivotByIdInformationParam = { 
+    farmId: string; 
+    pivotId: string;
+  }
+
+  type GetPivotByIdInformationResponse = { 
+    current: number;
+    pageSize: number;
+    total: number;
+    list: Models.PivotInformation;
   }
 }

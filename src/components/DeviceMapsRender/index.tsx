@@ -51,6 +51,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
       {!props.pivotInformation.loading ? (
         item !== undefined ? (
           <CirclePivot
+            onSelect={() => null}
             id={item.id}
             key={item.id}
             protocol={item.protocol}

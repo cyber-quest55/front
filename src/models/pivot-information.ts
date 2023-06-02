@@ -23,7 +23,7 @@ export default {
 
   effects: {
     *queryPivotInformation(
-      { payload }: { payload: API.GetPivotInformationParam },
+      { payload }: { payload: API.GetPivotsInformationParam },
       { call, put }: { call: any; put: any },
     ) {
       yield put({ type: 'queryPivotInformationStart' });
@@ -80,7 +80,7 @@ export default {
 
     queryPivotInformationSuccess(
       state: GetPivotInformationModelProps,
-      { payload }: { payload: API.GetPivotInformationResponse },
+      { payload }: { payload: API.GetPivotsInformationResponse },
     ) {
       const mapper: CirclePivotProps[] = [];
 

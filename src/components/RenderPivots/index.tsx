@@ -15,6 +15,15 @@ import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import RepeaterDevice from '../Devices/Repeater';
 import WaterPumpDevice from '../Devices/WaterPump';
 
+const scrollToBottom = () => {
+  setTimeout(() => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: 'smooth',
+    });
+  }, 500); 
+};
+
 export type RenderPivotsProps = {
   dispatch: any;
   zoom: number;
@@ -74,6 +83,14 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
       setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
     }
   }, [props.pivotInformation.loaded]);
+
+  const onSetDevice = (type: string, deviceId: string) => {
+    props.dispatch({
+      type: 'selectedDevice/setSelectedDevice',
+      payload: { type, deviceId, farmId: params.id },
+    });
+    scrollToBottom()
+  };
 
   return (
     <>
@@ -185,6 +202,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 statusText={item.statusText}
+                onSelect={onSetDevice}
               />
             ))
           : null}
@@ -197,6 +215,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 id={item.id}
+                onSelect={onSetDevice}
               />
             ))
           : null}
@@ -209,6 +228,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 id={item.id}
+                onSelect={onSetDevice}
               />
             ))
           : null}
@@ -221,6 +241,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 id={item.id}
+                onSelect={onSetDevice}
               />
             ))
           : null}

@@ -2,6 +2,7 @@ import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
 import { Typography } from 'antd';
 import React, { useState } from 'react';
 import Image from '../../../public/images/devices/water-pump.png';
+import { DeviceType } from '@/utils/enums';
 
 export type WaterPumpProps = {
   id: number | string;
@@ -11,6 +12,7 @@ export type WaterPumpProps = {
   lineColor?: string;
   name: string;
   updated: string;
+  onSelect?: any;
 };
 
 const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
@@ -25,6 +27,7 @@ const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       >
         <div
+          onClick={() => props?.onSelect(DeviceType.Pump, props.id)}
           onMouseLeave={() => setInfoWindowVisible(false)}
           onMouseEnter={() => setInfoWindowVisible(true)}
         >

@@ -1,16 +1,17 @@
+import PivotReport from '@/components/DeviceReport/Pivot';
+import MeterReport from '@/components/DeviceReport/Meter';
 import PivotList from '@/components/PivotList';
 import RenderPivots from '@/components/RenderPivots';
-import ShowPivot from '@/components/ShowPivot';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
+import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
-import { useMount } from 'ahooks';
+import { useUnmount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
-import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import { FunctionComponent, ReactNode } from 'react';
 
 type Props = {
   dispatch?: any;
@@ -18,14 +19,14 @@ type Props = {
   google?: any;
   pivot: GetPivotModelProps;
   farm: GetFarmModelProps;
+  selectedDevice: SelectedDeviceModelProps;
 };
-
-const socket = io('http://localhost:8001', { autoConnect: false });
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const onlyWidth = useWindowWidth();
-  const [isConnected, setIsConnected] = useState(false);
+  //const [isConnected, setIsConnected] = useState(false);
 
+  /**
   useMount(() => {
     socket.connect();
 
@@ -34,29 +35,45 @@ const Welcome: FunctionComponent<Props> = (props) => {
     function onDisconnect() {
       setIsConnected(false);
     }
- 
-    socket.on('msg', (data: any) => {  
+
+    socket.on('msg', (data: any) => {
       props.dispatch({
         type: 'pivotInformation/setNewPivotInformation',
-        payload: data
-      })
+        payload: data,
+      });
     });
 
-    socket.on('connect', () => { 
+    socket.on('connect', () => {
       setIsConnected(true);
     });
-    
-    socket.on('disconnect', onDisconnect); 
+
+    socket.on('disconnect', onDisconnect);
 
     return () => {
       socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect); 
-      socket.off('msg'); 
+      socket.off('disconnect', onDisconnect);
+      socket.off('msg');
     };
   });
+ */
 
-  useEffect(() => {
-  }, [isConnected]);
+  const getDeviceBySelected = (selected: string) => {
+    switch (selected) {
+      case 'pivot': {
+        return <PivotReport />;
+      }
+      case 'meter': { 
+        return <MeterReport/>;
+      }
+    }
+  };
+
+  useUnmount(() => {
+    props.dispatch({
+      type: 'selectedDevice/setDeviceClose',
+      payload: {},
+    });
+  });
 
   const className = useEmotionCss(({}) => {
     return onlyWidth > 767
@@ -121,7 +138,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
     {
       key: '3',
       label: `Tab 3`,
-      children: <ShowPivot />,
+      children: getDeviceBySelected(props.selectedDevice.type),
     },
   ];
 
@@ -153,22 +170,27 @@ const Welcome: FunctionComponent<Props> = (props) => {
           )}
         </>
       </Col>
-      {onlyWidth > 767 ? (
-        <Col
-          xs={24}
-          style={{
-            padding: '15px 15px',
-            minHeight: 'calc(100vh - 116px)',
-          }}
-        >
-          <ShowPivot />
-        </Col>
+      {props.selectedDevice.open ? (
+        onlyWidth > 767 ? (
+          <Col
+            xs={24}
+            style={{
+              padding: '15px 15px',
+              minHeight: 'calc(100vh - 116px)',
+            }}
+          >
+            {getDeviceBySelected(props.selectedDevice.type)}
+          </Col>
+        ) : null
       ) : null}
     </Row>
   );
 };
 
-export default connect(({ pivot, farm }: { pivot: any; farm: any }) => ({
-  pivot,
-  farm,
-}))(Welcome);
+export default connect(
+  ({ pivot, farm, selectedDevice }: { pivot: any; farm: any; selectedDevice: any }) => ({
+    pivot,
+    farm,
+    selectedDevice,
+  }),
+)(Welcome);

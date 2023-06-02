@@ -1,3 +1,4 @@
+import { DeviceType } from '@/utils/enums';
 import { Circle, InfoWindowF, Marker, Polygon, Polyline } from '@react-google-maps/api';
 import { Typography } from 'antd';
 import React, { useState } from 'react';
@@ -37,12 +38,13 @@ export type CirclePivotProps = {
   updated: string;
   name: string;
   statusText: string;
+  onSelect: any;
 };
 
 const circleOptions = {
-  strokeOpacity: 0.8,
-  strokeWeight: 2,
-  fillOpacity: 0.4,
+  strokeOpacity: 1,
+  strokeWeight: 3,
+  fillOpacity: 0.5,
   clickable: false,
   draggable: false,
   editable: false,
@@ -258,6 +260,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
           {/** Draw circle */}
           {props.type === 'central' ? (
             <Circle
+              onClick={() => props?.onSelect(DeviceType.Pivot, props.id)}
               center={{ lat: centerLat, lng: centerLng }}
               options={{
                 ...circleOptions,

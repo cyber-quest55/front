@@ -40,8 +40,9 @@ type Props = {
   dispatch: any;
 };
 
-const ShowPivot: React.FC<Props> = (props) => {
+const PivotReport: React.FC<Props> = (props) => {
   const params = useParams();
+  const G = G2.getEngine('canvas');
   const onlyWidth = useWindowWidth();
 
   const [tab, setTab] = useState('tab1');
@@ -109,7 +110,6 @@ const ShowPivot: React.FC<Props> = (props) => {
     };
   });
 
-  const G = G2.getEngine('canvas');
 
   const data = [
     {
@@ -145,7 +145,6 @@ const ShowPivot: React.FC<Props> = (props) => {
 
   const item = props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
 
- 
   return (
     <>
       <Modal
@@ -1077,4 +1076,4 @@ export default connect(
     deviceHistory,
     pivotInformation,
   }),
-)(ShowPivot);
+)(PivotReport);

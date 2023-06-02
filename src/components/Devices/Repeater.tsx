@@ -1,3 +1,4 @@
+import { DeviceType } from '@/utils/enums';
 import { RadarChartOutlined } from '@ant-design/icons';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
 import { Typography } from 'antd';
@@ -11,6 +12,7 @@ export type RepeaterProps = {
   lineColor?: string;
   name: string;
   updated: string;
+  onSelect?: any;
 };
 
 const RepeaterDevice: React.FC<RepeaterProps> = (props) => {
@@ -25,6 +27,7 @@ const RepeaterDevice: React.FC<RepeaterProps> = (props) => {
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       >
         <div
+          onClick={() => props?.onSelect(DeviceType.Repeater, props.id)}
           onMouseLeave={() => setInfoWindowVisible(false)}
           onMouseEnter={() => setInfoWindowVisible(true)}
         >

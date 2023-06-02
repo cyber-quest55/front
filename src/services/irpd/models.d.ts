@@ -1,6 +1,6 @@
 declare namespace Models {
   /** Model of Irpd request */
-  export type Irpd =  {
+  export type Irpd = {
     id: number;
     latest_irpd_stream: any;
     latest_irpd_pressure_stream: any;
@@ -172,5 +172,73 @@ declare namespace Models {
     updated: string;
     regenerate_reports: boolean;
     farm: number;
-  } ;
+  };
+
+  export type IrpdHistory = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<{
+      irpd_stream_v5: {
+        id: number;
+        uuid: string;
+        created_on_hardware: boolean;
+        created: string;
+        updated: string;
+        arrived: string;
+        message_status: number;
+        message_error: string;
+        message_packets: Array<number>;
+        message_subtype: string;
+        content: {
+          pump_hourmeter: {
+            hours: number;
+            minutes: number;
+          };
+          pump_last_start_time: {
+            start_day: number;
+            start_hour: number;
+            start_year: number;
+            start_month: number;
+            start_minutes: number;
+          };
+          imanage_master_status: {
+            status: number;
+          };
+        };
+        content_hash: number;
+        created_by: any;
+        device: number;
+        irpd: number;
+      };
+    }>;
+  };
+
+  export type IrpdWaterConsumption = {
+    from: string
+    to: string
+    value: number
+  }
+
+  export type IrpdTable = {
+    count: number
+    current_page: number
+    next: string
+    previous: any
+    results: Array<{
+      id: number
+      start_date: string
+      end_date: string
+      hour_p: number
+      hour_hfp: number
+      hour_r: number
+      hour_total: number
+      cumulative_volume: number
+      created: string
+      updated: string
+      irpd: number
+    }>
+  }
+  
 }
