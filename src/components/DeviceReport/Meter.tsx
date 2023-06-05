@@ -1,5 +1,5 @@
 import { GetDeviceHistoryModelProps } from '@/models/device-history';
-import { GetDeviceReportModelProps } from '@/models/device-report';
+import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { PivotStatusColor } from '@/utils/pivot-status';
@@ -33,10 +33,17 @@ const { Statistic } = StatisticCard;
 
 type Props = {
   pivot: GetPivotModelProps;
-  deviceReport: GetDeviceReportModelProps;
-  deviceHistory: GetDeviceHistoryModelProps;
+  pivotReport: GetPivotReportModelProps;
+  pivotHistory: GetDeviceHistoryModelProps;
   pivotInformation: GetPivotInformationModelProps;
   dispatch: any;
+};
+
+const failureTitle: any = {
+  1: 'Falta de pressão',
+  2: 'Queda de energia',
+  3: 'Desalinhado',
+  4: 'Oscilação de energia',
 };
 
 const MeterReport: React.FC<Props> = (props) => {
@@ -48,7 +55,7 @@ const MeterReport: React.FC<Props> = (props) => {
 
   useEffect(() => {
     props.dispatch({
-      type: 'deviceReport/queryDeviceReport',
+      type: 'pivotReport/queryPivotReport',
       payload: {
         id: parseInt(params.id as string),
         params: {},
@@ -56,7 +63,7 @@ const MeterReport: React.FC<Props> = (props) => {
     });
 
     props.dispatch({
-      type: 'deviceHistory/queryDeviceHistory',
+      type: 'pivotHistory/queryDeviceHistory',
       payload: {
         id: parseInt(params.id as string),
         params: {},
@@ -115,12 +122,12 @@ const MeterReport: React.FC<Props> = (props) => {
     });
   };
 
-  const failureTitle: any = {
-    1: 'Falta de pressão',
-    2: 'Queda de energia',
-    3: 'Desalinhado',
-    4: 'Oscilação de energia',
-  };
+  const destroyOnClick = () =>  {
+    props.dispatch({
+      type: 'selectedDevice/setDeviceClose',
+      payload: {},
+    });
+  }
 
   const item =
     props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
@@ -164,9 +171,7 @@ const MeterReport: React.FC<Props> = (props) => {
                 <Button icon={<EditFilled />} href="https://www.google.com">
                   Edit
                 </Button>
-                <Button icon={<CloseCircleFilled />} href="https://www.google.com">
-                  Close
-                </Button>
+                <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>Close</Button>
               </Space>
             }
             status={<Tag color={PivotStatusColor.off}>{item?.statusText}</Tag>}
@@ -260,7 +265,7 @@ const MeterReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Falta de pressão',
-                value: props.deviceReport.result?.unexpected_stops?.lack_of_pressure,
+                value: props.pivotReport.result?.unexpected_stops?.lack_of_pressure,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -272,7 +277,7 @@ const MeterReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Queda de energia',
-                value: props.deviceReport.result?.unexpected_stops?.energy_blackot,
+                value: props.pivotReport.result?.unexpected_stops?.energy_blackot,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -289,7 +294,7 @@ const MeterReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Desalinhado',
-                value: props.deviceReport.result?.unexpected_stops?.misalignment,
+                value: props.pivotReport.result?.unexpected_stops?.misalignment,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -301,7 +306,7 @@ const MeterReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Oscilação de energia',
-                value: props.deviceReport.result?.unexpected_stops?.power_surge,
+                value: props.pivotReport.result?.unexpected_stops?.power_surge,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -359,7 +364,7 @@ const MeterReport: React.FC<Props> = (props) => {
                           },
                         },
                       ]}
-                      dataSource={props.deviceHistory.result}
+                      dataSource={props.pivotHistory.result}
                       rowKey="key"
                       pagination={{
                         showQuickJumper: true,
@@ -395,18 +400,18 @@ const MeterReport: React.FC<Props> = (props) => {
 export default connect(
   ({
     pivot,
-    deviceReport,
-    deviceHistory,
+    pivotReport,
+    pivotHistory,
     pivotInformation,
   }: {
     pivot: any;
-    deviceReport: any;
-    deviceHistory: any;
+    pivotReport: any;
+    pivotHistory: any;
     pivotInformation: any;
   }) => ({
     pivot,
-    deviceReport,
-    deviceHistory,
+    pivotReport,
+    pivotHistory,
     pivotInformation,
   }),
 )(MeterReport);

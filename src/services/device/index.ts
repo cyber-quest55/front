@@ -14,14 +14,14 @@ export async function getDeviceHistory(
   });
 }
 
-/** GET /farms/${farmId}/deviceReport/ */
-export async function getDeviceReports(
-  props: API.GetDeviceReportParams,
+/** GET /farms/${farmId}/pivotReport/ */
+export async function getPivotReports(
+  props: API.GetPivotReportParams,
   options?: { [key: string]: any },
 ) {
   return request<{
     data: API.GetFarmResponse;
-  }>(`/farms/${props.id}/deviceReport`, {
+  }>(`/farms/${props.id}/pivotReport`, {
     method: 'GET',
   });
 }

@@ -87,8 +87,8 @@ declare namespace Models {
     }>;
   };
 
-  /** Model of DeviceReport request */
-  export type DeviceReport = {
+  /** Model of PivotReport request */
+  export type PivotReport = {
     pivot_id: number;
     start_date: string;
     end_date: string;

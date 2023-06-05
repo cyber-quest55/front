@@ -212,6 +212,7 @@ export default {
           updated: new Date(payload.list[index].updated).toLocaleString(),
           name: item.name,
           statusText: statusText,
+          onSelect: () => null
         });
       }
 

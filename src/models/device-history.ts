@@ -9,7 +9,7 @@ export interface GetDeviceHistoryModelProps {
 }
 
 export default {
-  namespace: 'deviceHistory',
+  namespace: 'pivotHistory',
 
   state: {
     result: [],

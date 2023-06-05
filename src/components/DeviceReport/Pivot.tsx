@@ -1,6 +1,7 @@
 import { GetDeviceHistoryModelProps } from '@/models/device-history';
-import { GetDeviceReportModelProps } from '@/models/device-report';
+import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { GetPivotModelProps } from '@/models/pivot';
+import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { PivotStatusColor } from '@/utils/pivot-status';
 import {
   CalendarOutlined,
@@ -28,15 +29,23 @@ import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
-import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { SelectedDeviceModelProps } from '@/models/selected-device';
 
 const { Statistic } = StatisticCard;
 
+const failureTitle: any = {
+  1: 'Falta de pressão',
+  2: 'Queda de energia',
+  3: 'Desalinhado',
+  4: 'Oscilação de energia',
+};
+
 type Props = {
   pivot: GetPivotModelProps;
-  deviceReport: GetDeviceReportModelProps;
-  deviceHistory: GetDeviceHistoryModelProps;
+  pivotReport: GetPivotReportModelProps;
+  pivotHistory: GetDeviceHistoryModelProps;
   pivotInformation: GetPivotInformationModelProps;
+  selectedDevice: SelectedDeviceModelProps;
   dispatch: any;
 };
 
@@ -48,23 +57,23 @@ const PivotReport: React.FC<Props> = (props) => {
   const [tab, setTab] = useState('tab1');
   const [option, setOption] = useState<undefined | number>(undefined);
 
-  useEffect(() => {
-    props.dispatch({
-      type: 'deviceReport/queryDeviceReport',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-
-    props.dispatch({
-      type: 'deviceHistory/queryDeviceHistory',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-  }, [params]);
+  const data = [
+    {
+      type: 'Horas em pico',
+      value: parseInt(
+        props.pivotReport.result?.energy_consumption?.fora_de_ponta?.hours.toString(),
+      ),
+    },
+    {
+      type: 'Horas em fora de pico',
+      value: parseInt(props.pivotReport.result?.energy_consumption?.reduzido?.hours?.toString()),
+    },
+    {
+      type: 'Horas em reduzido',
+      value: parseInt(props.pivotReport.result?.energy_consumption?.ponta?.hours.toString()),
+      color: 'red',
+    },
+  ];
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -106,28 +115,9 @@ const PivotReport: React.FC<Props> = (props) => {
     return {
       '.ant-pro-card-body': {
         paddingInline: '4px',
-      }, 
+      },
     };
   });
-
-
-  const data = [
-    {
-      type: 'Horas em pico',
-      value: parseInt(
-        props.deviceReport.result?.energy_consumption?.fora_de_ponta?.hours.toString(),
-      ),
-    },
-    {
-      type: 'Horas em fora de pico',
-      value: parseInt(props.deviceReport.result?.energy_consumption?.reduzido?.hours?.toString()),
-    },
-    {
-      type: 'Horas em reduzido',
-      value: parseInt(props.deviceReport.result?.energy_consumption?.ponta?.hours.toString()),
-      color: 'red',
-    },
-  ];
 
   const onChangeDevice = (e: string) => {
     props.dispatch({
@@ -136,14 +126,43 @@ const PivotReport: React.FC<Props> = (props) => {
     });
   };
 
-  const failureTitle: any = {
-    1: 'Falta de pressão',
-    2: 'Queda de energia',
-    3: 'Desalinhado',
-    4: 'Oscilação de energia',
-  }; 
+  const destroyOnClick = () => {
+    props.dispatch({
+      type: 'selectedDevice/setDeviceClose',
+      payload: {},
+    });
+  };
 
-  const item = props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
+  const item =
+    props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
+
+  useEffect(() => {
+    props.dispatch({
+      type: 'pivotReport/queryPivotReport',
+      payload: {
+        id: parseInt(params.id as string),
+        params: {},
+      },
+    });
+
+    props.dispatch({
+      type: 'pivotHistory/queryDeviceHistory',
+      payload: {
+        id: parseInt(params.id as string),
+        params: {},
+      },
+    });
+  }, [params]);
+
+  useEffect(() => {
+    props.dispatch({
+      type: 'pivotReport/queryPivotReport',
+      payload: {
+        id: parseInt(params.id as string),
+        params: {},
+      },
+    });
+  }, [params, props.selectedDevice]);
 
   return (
     <>
@@ -178,13 +197,11 @@ const PivotReport: React.FC<Props> = (props) => {
           <DevicePanel
             actions={
               <Space>
-                <Button icon={<GiPadlockOpen />} href="https://www.google.com" />
-                <Button icon={<GiSolidLeaf />} href="https://www.google.com" />
-                <Button icon={<CloudFilled />} href="https://www.google.com" />
-                <Button icon={<EditFilled />} href="https://www.google.com">
-                  Edit
-                </Button>
-                <Button icon={<CloseCircleFilled />} href="https://www.google.com">
+                <Button icon={<GiPadlockOpen />} />
+                <Button icon={<GiSolidLeaf />} />
+                <Button icon={<CloudFilled />} />
+                <Button icon={<EditFilled />}>Edit</Button>
+                <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
                   Close
                 </Button>
               </Space>
@@ -204,7 +221,6 @@ const PivotReport: React.FC<Props> = (props) => {
                 }
                 onChange={onChangeDevice}
                 options={props.pivot.result.list?.map((item) => ({
-                
                   value: item.id,
                   label: item.name,
                 }))}
@@ -281,7 +297,7 @@ const PivotReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Falta de pressão',
-                value: props.deviceReport.result?.unexpected_stops?.lack_of_pressure,
+                value: props.pivotReport.result?.unexpected_stops?.lack_of_pressure,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -293,7 +309,7 @@ const PivotReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Queda de energia',
-                value: props.deviceReport.result?.unexpected_stops?.energy_blackot,
+                value: props.pivotReport.result?.unexpected_stops?.energy_blackot,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -310,7 +326,7 @@ const PivotReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Desalinhado',
-                value: props.deviceReport.result?.unexpected_stops?.misalignment,
+                value: props.pivotReport.result?.unexpected_stops?.misalignment,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -322,7 +338,7 @@ const PivotReport: React.FC<Props> = (props) => {
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
                 title: 'Oscilação de energia',
-                value: props.deviceReport.result?.unexpected_stops?.power_surge,
+                value: props.pivotReport.result?.unexpected_stops?.power_surge,
                 description: (
                   <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
                 ),
@@ -344,7 +360,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   onClick={() => {}}
                   statistic={{
                     title: 'Volume total',
-                    value: props.deviceReport.result?.flow?.total_m3h.toFixed(2),
+                    value: props.pivotReport.result?.flow?.total_m3h.toFixed(2),
                     suffix: 'm³',
                   }}
                 />
@@ -352,7 +368,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 <StatisticCard
                   statistic={{
                     title: 'Horas trabalhadas',
-                    value: props.deviceReport.result?.hours_count?.wet_total_hours.toFixed(3),
+                    value: props.pivotReport.result?.hours_count?.wet_total_hours.toFixed(3),
                     suffix: 'h',
                   }}
                 />
@@ -517,8 +533,8 @@ const PivotReport: React.FC<Props> = (props) => {
                     <StatisticCard
                       statistic={{
                         title: 'Mínimo',
-                        value: props.deviceReport.result?.voltage_min
-                          ? props.deviceReport.result?.voltage_min[0]
+                        value: props.pivotReport.result?.voltage_min
+                          ? props.pivotReport.result?.voltage_min[0]
                           : 0,
                         suffix: 'V',
                       }}
@@ -528,8 +544,8 @@ const PivotReport: React.FC<Props> = (props) => {
                     <StatisticCard
                       statistic={{
                         title: 'Médio',
-                        value: props.deviceReport.result?.voltage_med
-                          ? props.deviceReport.result?.voltage_med[0]
+                        value: props.pivotReport.result?.voltage_med
+                          ? props.pivotReport.result?.voltage_med[0]
                           : 0,
                         suffix: 'V',
                       }}
@@ -539,8 +555,8 @@ const PivotReport: React.FC<Props> = (props) => {
                     <StatisticCard
                       statistic={{
                         title: 'Máximo',
-                        value: props.deviceReport.result?.voltage_max
-                          ? props.deviceReport.result?.voltage_max[0]
+                        value: props.pivotReport.result?.voltage_max
+                          ? props.pivotReport.result?.voltage_max[0]
                           : 0,
                         suffix: 'V',
                       }}
@@ -556,8 +572,8 @@ const PivotReport: React.FC<Props> = (props) => {
                 <Line
                   height={320}
                   data={
-                    props.deviceReport.result?.voltage_array
-                      ? props.deviceReport.result?.voltage_array?.map((item) => {
+                    props.pivotReport.result?.voltage_array
+                      ? props.pivotReport.result?.voltage_array?.map((item) => {
                           return {
                             Date: new Date(item.date).toISOString().split('T')[0],
                             scales: item.voltage,
@@ -627,7 +643,7 @@ const PivotReport: React.FC<Props> = (props) => {
                           },
                         },
                       ]}
-                      dataSource={props.deviceHistory.result}
+                      dataSource={props.pivotHistory.result}
                       rowKey="key"
                       pagination={{
                         showQuickJumper: true,
@@ -1033,10 +1049,10 @@ const PivotReport: React.FC<Props> = (props) => {
             <Line
               height={320}
               data={
-                props.deviceReport.result.water_blade?.by_angle
-                  ? props.deviceReport.result.water_blade?.by_angle.map((item, index) => {
+                props.pivotReport.result.water_blade?.by_angle
+                  ? props.pivotReport.result.water_blade?.by_angle.map((item, index) => {
                       return {
-                        'Ângulo': index + 1,
+                        Ângulo: index + 1,
                         value: item,
                       };
                     })
@@ -1061,19 +1077,21 @@ const PivotReport: React.FC<Props> = (props) => {
 export default connect(
   ({
     pivot,
-    deviceReport,
-    deviceHistory,
+    pivotReport,
+    pivotHistory,
     pivotInformation,
-
+    selectedDevice,
   }: {
     pivot: any;
-    deviceReport: any;
-    deviceHistory: any;
+    pivotReport: any;
+    pivotHistory: any;
     pivotInformation: any;
+    selectedDevice: any;
   }) => ({
     pivot,
-    deviceReport,
-    deviceHistory,
+    pivotReport,
+    pivotHistory,
     pivotInformation,
+    selectedDevice,
   }),
 )(PivotReport);

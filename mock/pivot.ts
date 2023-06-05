@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { GetPivotsInformationResponse, GetPivotsResponse } from './data/pivot';
+import { GetPivotReportResponse } from './data/device';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -10,6 +11,10 @@ const waitTime = (time: number = 100) => {
 };
 
 export default {
+  'GET /farms/:farmId/pivotReport/': async (req: Request, res: Response) => {
+    await waitTime(2000)
+    res.status(200).send(GetPivotReportResponse);
+  },
 
   'GET /farms/:farmId/pivots/light': async (req: Request, res: Response) => {
     await waitTime(2000)

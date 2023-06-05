@@ -13,14 +13,14 @@ declare namespace API {
     list: Models.DeviceHistory;
   };
 
-  type GetDeviceReportParams = {
+  type GetPivotReportParams = {
     id: string;
   };
 
-  type GetDeviceReportResponse = {
+  type GetPivotReportResponse = {
     current: number;
     pageSize: number;
     total: number;
-    list: Models.DeviceReport[];
+    list: Models.PivotReport[];
   };
 }
