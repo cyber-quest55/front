@@ -1,5 +1,6 @@
 import PivotReport from '@/components/DeviceReport/Pivot';
 import MeterReport from '@/components/DeviceReport/Meter';
+import PumpReport from '@/components/DeviceReport/Pump';
 import PivotList from '@/components/PivotList';
 import RenderPivots from '@/components/RenderPivots';
 import { GetFarmModelProps } from '@/models/farm';
@@ -12,6 +13,7 @@ import { useUnmount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode } from 'react';
+import { DeviceType } from '@/utils/enums';
 
 type Props = {
   dispatch?: any;
@@ -59,11 +61,14 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   const getDeviceBySelected = (selected: string) => {
     switch (selected) {
-      case 'pivot': {
+      case DeviceType.Pivot: {
         return <PivotReport />;
       }
-      case 'meter': { 
+      case DeviceType.Meter: { 
         return <MeterReport/>;
+      }
+      case DeviceType.Pump: { 
+        return <PumpReport />;
       }
     }
   };

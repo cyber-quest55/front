@@ -5,6 +5,7 @@ import { getPivotStatus } from '@/utils/get-pivot-status';
 import { AxiosError } from 'axios';
 
 export interface GetPivotByIdModelProps {
+  unformated: Models.PivotInformation;
   result: CirclePivotProps;
   loading: boolean;
   loaded: boolean;
@@ -16,6 +17,7 @@ export default {
 
   state: {
     result: {},
+    unformated: {},
     loaded: false,
     loading: true,
     error: {},
@@ -54,9 +56,9 @@ export default {
 
     queryPivotByIdSuccess(
       state: GetPivotByIdModelProps,
-      { payload }: { payload: API.GetPivotByIdInformationResponse },
+      { payload }: { payload: Models.PivotInformation },
     ) {
-      const item = payload.list;
+      const item = payload;
 
       /** Props */
       let irrigationDirection = 1;
@@ -74,7 +76,7 @@ export default {
       let statusText = '';
 
       /** Invalid drawer pivot */
-      if (item.automation_type === 0 || item.automation_type === 1) {
+      if (item?.automation_type === 0 || item?.automation_type === 1) {
         if (item.protocol === 5) {
           if (
             !item.controllerstream_panel ||
@@ -144,9 +146,6 @@ export default {
         pivotColor = getPivotColor(
           item.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
         );
-      }
-
-      if (item.controllerstream_panel?.content?.irrigation_status?.irrigation_status) {
         statusText = getPivotStatus(
           item.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
         );
@@ -179,12 +178,13 @@ export default {
         name: item.name,
         statusText: statusText,
         onSelect: () => null,
-      }
+      };
 
       return {
         ...state,
         loading: false,
         loaded: true,
+        pivotInformation: payload,
         result: mapper,
         error: {},
       };

@@ -11,7 +11,12 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+import dayjs from 'dayjs';
+import weekday from "dayjs/plugin/weekday"
+import localeData from "dayjs/plugin/localeData"
 
+dayjs.extend(weekday)
+dayjs.extend(localeData)
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
@@ -98,7 +103,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
           <LoadScript
             id={loaderId}
             loadingElement={<div>loadinqwewqeg</div>}
-            googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+            googleMapsApiKey=""
           >
             {children}
           </LoadScript>

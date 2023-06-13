@@ -22,15 +22,16 @@ export async function getIrpdById(props: API.GetIrpdByIdParams, options?: { [key
 export async function getIrpdHistory(props: API.GetIrpdHistoryParams, options?: { [key: string]: any }) {
   return request<{
     data: Models.IrpdHistory;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
-    method: 'GET', 
-  });
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/history`, {
+    method: 'GET',
+    params: options 
+  },);
 }
 
 export async function getIrpdWaterConsumption(props: API.GetIrpdWaterConsumptionParams, options?: { [key: string]: any }) {
   return request<{
     data: Models.IrpdWaterConsumption[];
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/water-consumption/${props.waterId}/`, {
     method: 'GET', 
   });
 }

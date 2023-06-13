@@ -36,4 +36,28 @@ declare namespace API {
     total: number;
     list: Models.PivotInformation;
   }
+
+  type GetPivotHistoryParams = {
+    farmId: string;
+    pivotId: string;
+  };
+
+  type GetPivotHistoryResponse = {
+    current: number;
+    pageSize: number;
+    total: number;
+    list: Models.PivotHistory;
+  };
+
+  type GetPivotReportParams = {
+    farmId: string;
+    pivotId: string;
+  };
+
+  type GetPivotReportResponse = {
+    current: number;
+    pageSize: number;
+    total: number;
+    list: Models.PivotReport[];
+  };
 }

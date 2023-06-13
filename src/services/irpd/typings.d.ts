@@ -18,16 +18,12 @@ declare namespace API {
     irpdId: string;
   };
 
-  type GetIrpdByIdResponse = {
-    current: number;
-    pageSize: number;
-    total: number;
-    list: Models.Irpd;
-  };
+  type GetIrpdByIdResponse =  Models.IrpdHistory
 
   type GetIrpdHistoryParams = {
     farmId: string;
     irpdId: string;
+    params: any;
   };
 
   type GetIrpdHistoryResponse = {
@@ -40,6 +36,7 @@ declare namespace API {
   type GetIrpdWaterConsumptionParams = {
     farmId: string;
     irpdId: string;
+    waterId: string;
   };
 
   type GetIrpdWaterConsumptionResponse = {

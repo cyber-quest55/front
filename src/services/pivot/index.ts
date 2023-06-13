@@ -10,6 +10,7 @@ export async function getPivots(data: API.GetPivotByFarmParam, options?: { [key:
     method: 'GET', 
   });
 }
+
 /** GET /farms/${farmId}/pivots/paginated */
 export async function getPivotsWithInformations(data: API.GetPivotsInformationParam, options?: { [key: string]: any }) {
   return request<{
@@ -18,12 +19,37 @@ export async function getPivotsWithInformations(data: API.GetPivotsInformationPa
     method: 'GET', 
   });
 }
+
 /** GET /farms/${farmId}/pivots/${pivotId} */
 export async function getPivotById(data: API.GetPivotByIdInformationParam, options?: { [key: string]: any }) {
   return request<{
     data: API.GetPivotByIdInformationResponse;
   }>(`${data.farmId}/pivots/${data.pivotId}/`, {
     method: 'GET', 
+  });
+}
+
+/** GET /farms/${farmId}/history/device/ */
+export async function getPivotHistory(
+  props: API.GetPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetFarmResponse;
+  }>(`/farms/${props.farmId}/history/${props.pivotId}/history/`, {
+    method: 'GET',
+  });
+}
+
+/** GET /farms/${farmId}/pivotReport/ */
+export async function getPivotReports(
+  props: API.GetPivotReportParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetFarmResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/report/`, {
+    method: 'GET',
   });
 }
 

@@ -1,4 +1,4 @@
-import { getPivotReports } from '@/services/device';
+import { getPivotReports } from '@/services/pivot';
 import { AxiosError } from 'axios';
  
 

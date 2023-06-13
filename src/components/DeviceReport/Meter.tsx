@@ -1,4 +1,4 @@
-import { GetDeviceHistoryModelProps } from '@/models/device-history';
+import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
@@ -34,7 +34,7 @@ const { Statistic } = StatisticCard;
 type Props = {
   pivot: GetPivotModelProps;
   pivotReport: GetPivotReportModelProps;
-  pivotHistory: GetDeviceHistoryModelProps;
+  pivotHistory: GetPivotHistoryModelProps;
   pivotInformation: GetPivotInformationModelProps;
   dispatch: any;
 };
@@ -63,7 +63,7 @@ const MeterReport: React.FC<Props> = (props) => {
     });
 
     props.dispatch({
-      type: 'pivotHistory/queryDeviceHistory',
+      type: 'pivotHistory/queryPivotHistory',
       payload: {
         id: parseInt(params.id as string),
         params: {},

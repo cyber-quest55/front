@@ -1,7 +1,8 @@
-import { GetDeviceHistoryModelProps } from '@/models/device-history';
-import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { GetPivotModelProps } from '@/models/pivot';
+import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { GetPivotReportModelProps } from '@/models/pivot-report';
+import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { PivotStatusColor } from '@/utils/pivot-status';
 import {
   CalendarOutlined,
@@ -19,9 +20,8 @@ import { Column, G2, Line, Pie } from '@ant-design/plots';
 import { ProCard, ProTable, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
-import { useParams } from '@umijs/max';
 import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { GrObjectGroup } from 'react-icons/gr';
@@ -29,7 +29,6 @@ import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
-import { SelectedDeviceModelProps } from '@/models/selected-device';
 
 const { Statistic } = StatisticCard;
 
@@ -43,14 +42,13 @@ const failureTitle: any = {
 type Props = {
   pivot: GetPivotModelProps;
   pivotReport: GetPivotReportModelProps;
-  pivotHistory: GetDeviceHistoryModelProps;
+  pivotHistory: GetPivotHistoryModelProps;
   pivotInformation: GetPivotInformationModelProps;
   selectedDevice: SelectedDeviceModelProps;
   dispatch: any;
 };
 
 const PivotReport: React.FC<Props> = (props) => {
-  const params = useParams();
   const G = G2.getEngine('canvas');
   const onlyWidth = useWindowWidth();
 
@@ -135,34 +133,6 @@ const PivotReport: React.FC<Props> = (props) => {
 
   const item =
     props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
-
-  useEffect(() => {
-    props.dispatch({
-      type: 'pivotReport/queryPivotReport',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-
-    props.dispatch({
-      type: 'pivotHistory/queryDeviceHistory',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-  }, [params]);
-
-  useEffect(() => {
-    props.dispatch({
-      type: 'pivotReport/queryPivotReport',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-  }, [params, props.selectedDevice]);
 
   return (
     <>
@@ -1049,8 +1019,8 @@ const PivotReport: React.FC<Props> = (props) => {
             <Line
               height={320}
               data={
-                props.pivotReport.result.water_blade?.by_angle
-                  ? props.pivotReport.result.water_blade?.by_angle.map((item, index) => {
+                props.pivotReport.result?.water_blade?.by_angle
+                  ? props.pivotReport.result?.water_blade?.by_angle.map((item, index) => {
                       return {
                         Ângulo: index + 1,
                         value: item,
@@ -1077,18 +1047,22 @@ const PivotReport: React.FC<Props> = (props) => {
 export default connect(
   ({
     pivot,
+    pivotById,
     pivotReport,
     pivotHistory,
     pivotInformation,
     selectedDevice,
+
   }: {
     pivot: any;
+    pivotById: any,
     pivotReport: any;
     pivotHistory: any;
     pivotInformation: any;
     selectedDevice: any;
   }) => ({
     pivot,
+    pivotById,
     pivotReport,
     pivotHistory,
     pivotInformation,
