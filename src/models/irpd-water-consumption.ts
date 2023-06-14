@@ -25,7 +25,6 @@ export default {
       yield put({ type: 'queryIrpdWaterStart' });
       try {
         const { data } = yield call(getIrpdWaterConsumption, payload);
-
         yield put({ type: 'queryIrpdWaterSuccess', payload: data });
       } catch (error: any) {
         yield put({ type: 'queryIrpdWaterError', payload: error });
@@ -52,7 +51,7 @@ export default {
         ...state,
         loading: false,
         loaded: true,
-        result: payload.list.map((item: any, index: number) => ({
+        result: payload.map((item: any, index: number) => ({
           ...item,
           key: `row-key-table-${index}`,
         })),

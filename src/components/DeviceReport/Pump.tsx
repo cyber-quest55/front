@@ -1,3 +1,6 @@
+import PumpEnergyConsumptionChart from '@/components/Charts/PumpEnergyComsumption';
+import IrpdActivityEventTable from '@/components/Tables/IrpdActivityEventTable';
+import IrpdActivityHistoricTable from '@/components/Tables/IrpdActivityHistoricTable';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
 import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
@@ -7,7 +10,6 @@ import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
 import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
-import { Column, G2 } from '@ant-design/plots';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
@@ -18,8 +20,6 @@ import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
-import IrpdActivityHistoricTable from '../Tables/IrpdActivityHistoricTable';
-import IrpdActivityEventTable from '../Tables/IrpdActivityEventTable';
 
 const failureTitle: any = {
   1: 'Falta de pressão',
@@ -42,8 +42,6 @@ type Props = {
 const PumpReport: React.FC<Props> = (props) => {
   const params = useParams();
   const onlyWidth = useWindowWidth();
-
-  console.log('here', props.pivotHistory, props.irpdById)
 
   const [tab, setTab] = useState('tab1');
   const [option, setOption] = useState<undefined | number>(undefined);
@@ -83,21 +81,6 @@ const PumpReport: React.FC<Props> = (props) => {
         paddingInline: '4px',
       },
     };
-  });
-
-  G2.registerInteraction('element-link', {
-    start: [
-      {
-        trigger: 'interval:mouseenter',
-        action: 'element-link-by-color:link',
-      },
-    ],
-    end: [
-      {
-        trigger: 'interval:mouseleave',
-        action: 'element-link-by-color:unlink',
-      },
-    ],
   });
 
   const onChangeDevice = (e: string) => {
@@ -222,63 +205,7 @@ const PumpReport: React.FC<Props> = (props) => {
           </ProCard>
           <StatisticCard
             title="Gráfico de Consumo"
-            chart={
-              <Column
-                height={320}
-                color={({ type }) => {
-                  if (type === 'Horas em pico') {
-                    return '#ff4d4f';
-                  } else if (type === 'Horas em fora de pico') {
-                    return '#4169E1';
-                  }
-                  return '#40E0D0';
-                }}
-                data={[
-                  { "year": "2013", "type": "Horas em pico", "value": 92.1 },
-                  { "year": "2013", "type": "Horas em fora de pico", "value": 145.1 },
-                  { "year": "2013", "type": "Na Faixa", "value": 110.6 }, 
-                  { "year": "2014", "type": "Horas em pico", "value": 91.8 },
-                  { "year": "2014", "type": "Horas em fora de pico", "value": 140.9 },
-                  { "year": "2014", "type": "Na Faixa", "value": 99.0 }, 
-                  { "year": "2015", "type": "Horas em pico", "value": 87.1 },
-                  { "year": "2015", "type": "Horas em fora de pico", "value": 139.4 },
-                  { "year": "2015", "type": "Na Faixa", "value": 103.9 }, 
-                  { "year": "2016", "type": "Horas em pico", "value": 80.0 },
-                  { "year": "2016", "type": "Horas em fora de pico", "value": 134.8 },
-                  { "year": "2016", "type": "Na Faixa", "value": 100.0 }, 
-                ]}
-                padding="auto"
-                xField="year"
-                yField="value"
-                seriesField="type"
-                isPercent={true}
-                isStack={true}
-                tooltip={false}
-                interactions={[
-                  {
-                    type: 'element-highlight-by-color',
-                  },
-                  {
-                    type: 'element-link',
-                  },
-                ]}
-                meta={{
-                  value: {
-                    min: 0,
-                    max: 1,
-                  },
-                }}
-                label={{
-                  position: 'middle',
-                  content: (item) => {
-                    return `${(item.value * 100).toFixed(2)}`;
-                  },
-                  style: {
-                    fill: '#fff',
-                  },
-                }}
-              />
-            }
+            chart={<PumpEnergyConsumptionChart />}
             colSpan={{ xs: 24 }}
           />
         </ProCard>
@@ -328,11 +255,10 @@ export default connect(
     pivotInformation,
     selectedDevice,
     iprdWaterConsumption,
-
   }: {
     irpd: any;
     irpdById: any;
-     pivotReport: any;
+    pivotReport: any;
     pivotHistory: any;
     pivotInformation: any;
     selectedDevice: any;
@@ -345,6 +271,5 @@ export default connect(
     pivotInformation,
     selectedDevice,
     iprdWaterConsumption,
-
   }),
 )(PumpReport);
