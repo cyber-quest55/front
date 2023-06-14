@@ -4,3 +4,8 @@ export enum DeviceType {
   'Repeater' = 'repeater',
   'Pump' = 'pump',
 }
+
+export enum PumpHistoryOrigin { 
+  'Command' = 0,
+  'CentralUpdate' = 1
+}

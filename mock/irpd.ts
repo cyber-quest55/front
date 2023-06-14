@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { GetMeterSystemResponse } from './data/metersystem';
-import { GetIrpdByIdResponse, GetIrpdHistoryResponse, GetIrpdResponse, GetIrpdWaterComsumptionResponse } from './data/irpd';
+import { GetIrpdByIdResponse, GetIrpdEventsResponse, GetIrpdHistoryResponse, GetIrpdResponse, GetIrpdWaterComsumptionResponse } from './data/irpd';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -29,5 +29,10 @@ export default {
   'GET /farms/:farmId/irpds/:irpdId/water-consumption/:waterId/': async (req: Request, res: Response) => {
     await waitTime(2000)
     res.status(200).send(GetIrpdWaterComsumptionResponse);
+  },
+
+  'GET /farms/:farmId/irpds/:irpdId/irpd-list': async (req: Request, res: Response) => {
+    await waitTime(2000)
+    res.status(200).send(GetIrpdEventsResponse);
   },
 };

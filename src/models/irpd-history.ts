@@ -1,4 +1,5 @@
 import { getIrpdHistory } from '@/services/irpd';
+import { PumpHistoryOrigin } from '@/utils/enums';
 import { getIrpdCommand } from '@/utils/get-irpd-command';
 import { AxiosError } from 'axios';
 
@@ -14,7 +15,7 @@ export default {
   namespace: 'irpdHistory',
 
   state: {
-    total: 0,
+    total: 1,
     result: [],
     loaded: false,
     loading: true,
@@ -66,7 +67,7 @@ export default {
             return {
               ...item.irpd_action_v5,
               key: `row-key-table-${index}`,
-              origin: 'Atualização da Central',
+              origin: PumpHistoryOrigin.CentralUpdate,
               command: getIrpdCommand(item.irpd_action_v5?.content?.pump_action?.enable as number),
             };
           }
@@ -74,7 +75,7 @@ export default {
             return {
               ...item.irpd_stream_v5,
               key: `row-key-table-${index}`,
-              origin: 'Comando',
+              origin: PumpHistoryOrigin.Command,
               command: getIrpdCommand(item.irpd_stream_v5?.content?.pump_action?.enable as number),
             };
           }

@@ -4,8 +4,7 @@ export const formatDate = (date: string) => {
   const newDate = new Intl.DateTimeFormat('pt', {
     hour12: true,
     day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    month: 'long', 
     minute: 'numeric',
     second: 'numeric',
   }).format(dateF);

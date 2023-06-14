@@ -230,24 +230,5 @@ declare namespace Models {
     type: string
     value: number
   }
-
-  export type IrpdTable = {
-    count: number
-    current_page: number
-    next: string
-    previous: any
-    results: Array<{
-      id: number
-      start_date: string
-      end_date: string
-      hour_p: number
-      hour_hfp: number
-      hour_r: number
-      hour_total: number
-      cumulative_volume: number
-      created: string
-      updated: string
-      irpd: number
-    }>
-  }
+ 
 }

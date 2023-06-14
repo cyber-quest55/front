@@ -19,6 +19,7 @@ import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import IrpdActivityHistoricTable from '../Tables/IrpdActivityHistoricTable';
+import IrpdActivityEventTable from '../Tables/IrpdActivityEventTable';
 
 const failureTitle: any = {
   1: 'Falta de pressão',
@@ -270,7 +271,7 @@ const PumpReport: React.FC<Props> = (props) => {
                 label={{
                   position: 'middle',
                   content: (item) => {
-                    return `${(item.value * 100).toFixed(2)}%`;
+                    return `${(item.value * 100).toFixed(2)}`;
                   },
                   style: {
                     fill: '#fff',
@@ -303,7 +304,7 @@ const PumpReport: React.FC<Props> = (props) => {
                 {
                   label: `Eventos`,
                   key: 'tab2',
-                  children: `内容二`,
+                  children: <IrpdActivityEventTable />,
                 },
               ],
               onChange: (key) => {

@@ -1,8 +1,14 @@
 import { GetIrpdHistoryModelProps } from '@/models/irpd-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { PumpHistoryOrigin } from '@/utils/enums';
 import { formatDate } from '@/utils/get-formated-date';
 import { DownloadOutlined, RedoOutlined } from '@ant-design/icons';
-import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
+import {
+  LightFilter,
+  ProDescriptions,
+  ProFormDateRangePicker,
+  ProTable,
+} from '@ant-design/pro-components';
 import { Button, Col, Pagination, PaginationProps, Row, Space, Tag } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -66,6 +72,13 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
           {
             title: 'Origem',
             dataIndex: 'origin',
+            render: (value, item) => {
+              return (
+                <>
+                  {item.origin === PumpHistoryOrigin.Command ? 'Comando' : 'Atualização da Central'}
+                </>
+              );
+            },
           },
           {
             title: 'Mensagem',
@@ -73,10 +86,6 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
             render: (value, item) => {
               return <Tag>{item.command}</Tag>;
             },
-          },
-          {
-            title: 'Usuário',
-            dataIndex: 'username',
           },
         ]}
         dataSource={props.irpdHistory.result}
@@ -86,6 +95,38 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
         search={false}
         loading={props.irpdHistory.loading}
         dateFormatter="string"
+        expandable={{
+          expandedRowRender: (record) => (
+            <ProDescriptions title={formatDate(record.arrived)}>
+              {record.username ? (
+                <ProDescriptions.Item dataIndex="username" label="Nome" valueType="text">
+                  {record.username}
+                </ProDescriptions.Item>
+              ) : null}
+
+              {record.origin === PumpHistoryOrigin.Command ? (
+                <ProDescriptions.Item
+                  dataIndex="total_flow"
+                  label="Consumo estimado"
+                  valueType="text"
+                >
+                  {record.total_flow?.toFixed(2)}m³
+                </ProDescriptions.Item>
+              ) : null}
+              {record.content?.pump_hourmeter ? (
+                <ProDescriptions.Item dataIndex="pump_hourmeter" label="Horimetro" valueType="text">
+                  {record.content?.pump_hourmeter.hours}h {record.content?.pump_hourmeter.minutes}m
+                </ProDescriptions.Item>
+              ) : null}
+              {record.origin === PumpHistoryOrigin.Command ? (
+                <ProDescriptions.Item dataIndex="pressure" label="Pressão" valueType="text">
+                  {record.pressure?.toFixed(2)}
+                </ProDescriptions.Item>
+              ) : null}
+            </ProDescriptions>
+          ),
+          rowExpandable: (record) => record.name !== 'Not Expandable',
+        }}
         toolbar={{
           title: (
             <LightFilter>

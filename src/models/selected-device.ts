@@ -51,7 +51,11 @@ export default {
             payload: { farmId, irpdId: deviceId, params: {current: 0, pageSize: 15}},
           });
           yield put({
-            type: 'irpdWater/queryIrpdWater',
+            type: 'irpdEvents/queryIrpdEvents',
+            payload: { farmId, irpdId: deviceId, params: {} },
+          });
+          yield put({
+            type: 'irpdWaterConsumption/queryIrpdWater',
             payload: { farmId, irpdId: deviceId, params: {} },
           });
           break;

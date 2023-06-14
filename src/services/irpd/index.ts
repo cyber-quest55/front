@@ -36,10 +36,10 @@ export async function getIrpdWaterConsumption(props: API.GetIrpdWaterConsumption
   });
 }
 
-export async function getIrpdTable(props: API.GetIrpdTableParams, options?: { [key: string]: any }) {
+export async function getIrpdEvents(props: API.GetIrpdEventsParams, options?: { [key: string]: any }) {
   return request<{
-    data: Models.IrpdTable;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
+    data: API.GetIrpdEventsResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/irpd-list`, {
     method: 'GET', 
   });
 }

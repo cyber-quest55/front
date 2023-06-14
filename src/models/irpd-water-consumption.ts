@@ -5,6 +5,7 @@ export interface GetIrpdWaterModelProps {
   result: any;
   loading: boolean;
   loaded: boolean;
+  total: number;
   error: any;
 }
 
@@ -12,6 +13,7 @@ export default {
   namespace: 'irpdWaterConsumption',
 
   state: {
+    total: 0,
     result: [],
     loaded: false,
     loading: true,
