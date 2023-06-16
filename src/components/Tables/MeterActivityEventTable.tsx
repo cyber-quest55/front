@@ -38,7 +38,7 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
     const { startDate, endDate } = range;
 
     props.dispatch({
-      type: 'meterSystemHistory/queryMeterSystemHistory',
+      type: 'meterSystemEvent/queryMeterSystemEvent',
       payload: {
         farmId: props.selectedDevice.farmId,
         irpdId: props.selectedDevice.deviceId,

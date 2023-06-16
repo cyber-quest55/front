@@ -1,7 +1,12 @@
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
-import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
+import {
+  CaretDownOutlined,
+  CloseCircleFilled,
+  EditFilled,
+  InsertRowRightOutlined,
+} from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
@@ -131,12 +136,10 @@ const MeterReport: React.FC<Props> = (props) => {
                 <Space direction="vertical" size="middle">
                   <Space size="middle">
                     <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>1.2 bar</div>
+                      <InsertRowRightOutlined style={{ fontSize: 20 }} />
+                      <div>50.0% (0.50m)</div>
                     </Space>
-                    <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>250V</div>
+                    <Space> 
                     </Space>
                   </Space>
                   <Space size="middle">
@@ -183,6 +186,13 @@ const MeterReport: React.FC<Props> = (props) => {
                 {
                   label: `Eventos`,
                   key: 'tab2',
+                  children: <MeterActivityEventTable />,
+                },
+                {
+                  label: `Relatório`,
+                  key: 'tab3',
+                  disabled: true,
+                  
                   children: <MeterActivityEventTable />,
                 },
               ],
