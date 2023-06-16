@@ -60,6 +60,21 @@ export default {
           });
           break;
         }
+        case DeviceType.Meter: {
+          yield put({
+            type: 'meterSystemById/queryMeterSystemById',
+            payload: { farmId, meterId: deviceId, params: {} },
+          }); 
+          yield put({
+            type: 'meterSystemHistory/queryMeterSystemHistory',
+            payload: { farmId, meterId: deviceId, params: {} },
+          }); 
+          yield put({
+            type: 'meterSystemEvent/queryMeterSystemEvent',
+            payload: { farmId, meterId: deviceId, params: {} },
+          }); 
+          break;
+        }
       }
     },
   },

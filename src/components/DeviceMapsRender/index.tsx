@@ -10,6 +10,7 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
+import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 
 type Props = {
   zoom: number;
@@ -19,6 +20,7 @@ type Props = {
   irpdById: GetIrpdByIdModelProps;
   pivotById: GetPivotByIdModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  meterSystemById: GetMeterSystemByIdModelProps;
   pivotInformation: GetPivotInformationModelProps;
 };
 
@@ -47,8 +49,15 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         }
         break;
       }
+      case DeviceType.Meter: {
+        if (props.meterSystemById.loaded === true) {
+          const item = props.meterSystemById.result;
+          setMapCenter({ lat: item.centerLat, lng: item.centerLng });
+        }
+        break;
+      }
     }
-  }, [props.pivotById.loaded, props.irpdById]);
+  }, [props.pivotById.loaded, props.irpdById.loaded, props.meterSystemById.loaded]);
 
   const renderCorrectDevice = (type: string) => {
     switch (type) {
@@ -105,8 +114,9 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         break;
       }
       case DeviceType.Meter: {
-        const item = props.pivotById.loaded ? props.pivotById.result : undefined;
-        if (props.irpdById.loaded && item !== undefined)
+        const item = props.meterSystemById.loaded ? props.meterSystemById.result : undefined;
+        console.log(item)
+        if (props.meterSystemById.loaded && item !== undefined)
           return (
             <LakeLevelMeterDevice
               key={'meter-system'}
@@ -115,6 +125,8 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               name={item.name}
               updated={item.updated}
               id={item.id}
+              width={200}
+              height={200}
               onSelect={() => null}
             />
           );
@@ -151,18 +163,22 @@ export default connect(
     farm,
     irpdById,
     pivotById,
+    meterSystemById,
+
     selectedDevice,
     pivotInformation,
   }: {
     farm: any;
     irpdById: any;
     pivotById: any;
+    meterSystemById: any;
     selectedDevice: any;
     pivotInformation: any;
   }) => ({
     farm,
     irpdById,
     pivotById,
+    meterSystemById,
     selectedDevice,
     pivotInformation,
   }),

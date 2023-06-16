@@ -1,49 +1,25 @@
-import { GetPivotHistoryModelProps } from '@/models/pivot-history';
-import { GetPivotReportModelProps } from '@/models/pivot-report';
-import { GetPivotModelProps } from '@/models/pivot';
-import { GetPivotInformationModelProps } from '@/models/pivot-information';
-import { PivotStatusColor } from '@/utils/pivot-status';
-import {
-    CalendarOutlined,
-    CaretDownOutlined,
-    ClockCircleOutlined,
-    CloseCircleFilled,
-    CloudFilled,
-    DownloadOutlined,
-    EditFilled,
-    HistoryOutlined,
-    RedoOutlined,
-    ThunderboltFilled,
-} from '@ant-design/icons';
-import { ProCard, ProTable, StatisticCard } from '@ant-design/pro-components';
+import { GetMeterSystemModelProps } from '@/models/meter-sysem';
+import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { DeviceType } from '@/utils/enums';
+import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
+import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
 import { useParams } from '@umijs/max';
-import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
-import { BsFillCloudRainFill } from 'react-icons/bs';
-import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
-import { GrObjectGroup } from 'react-icons/gr';
+import { Button, Select, Space, Tag } from 'antd';
+import { useState } from 'react';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
+import MeterWaterLevel from '../Charts/MeterWaterLevel';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
-
-const { Statistic } = StatisticCard;
+import MeterActivityEventTable from '../Tables/MeterActivityEventTable';
+import MeterActivityHistoricTable from '../Tables/MeterActivityHistoricTable';
 
 type Props = {
-  pivot: GetPivotModelProps;
-  pivotReport: GetPivotReportModelProps;
-  pivotHistory: GetPivotHistoryModelProps;
-  pivotInformation: GetPivotInformationModelProps;
+  meterSystem: GetMeterSystemModelProps;
+  selectedDevice: SelectedDeviceModelProps;
   dispatch: any;
-};
-
-const failureTitle: any = {
-  1: 'Falta de pressão',
-  2: 'Queda de energia',
-  3: 'Desalinhado',
-  4: 'Oscilação de energia',
 };
 
 const MeterReport: React.FC<Props> = (props) => {
@@ -51,42 +27,16 @@ const MeterReport: React.FC<Props> = (props) => {
   const onlyWidth = useWindowWidth();
 
   const [tab, setTab] = useState('tab1');
-  const [option, setOption] = useState<undefined | number>(undefined);
-
-  useEffect(() => {
-    props.dispatch({
-      type: 'pivotReport/queryPivotReport',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-
-    props.dispatch({
-      type: 'pivotHistory/queryPivotHistory',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-  }, [params]);
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
+      minHeight: '100vh',
       '.ant-pro-card-title ': {
         width: '100%',
       },
       [`@media screen and (max-width: ${token.screenMD}px)`]: {
         overflowY: 'auto',
         maxHeight: 'calc(100vh - 110px)',
-      },
-    };
-  });
-
-  const className = useEmotionCss(() => {
-    return {
-      '.ant-pro-card-title ': {
-        width: '100%',
       },
     };
   });
@@ -116,273 +66,124 @@ const MeterReport: React.FC<Props> = (props) => {
   });
 
   const onChangeDevice = (e: string) => {
+    const deviceId = props.meterSystem.result.find((item) => item.id === parseInt(e))?.id;
+
     props.dispatch({
-      type: 'pivot/setSelectedPivot',
-      payload: props.pivot.result.list.find((item) => item.id === parseInt(e)),
+      type: 'selectedDevice/setSelectedDevice',
+      payload: { type: DeviceType.Meter, deviceId, farmId: params.id },
     });
   };
 
-  const destroyOnClick = () =>  {
+  const destroyOnClick = () => {
     props.dispatch({
       type: 'selectedDevice/setDeviceClose',
       payload: {},
     });
-  }
-
-  const item =
-    props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
+  };
 
   return (
     <>
-      <Modal
-        width={1020}
-        title={option !== undefined ? failureTitle[option] : failureTitle[1]}
-        onCancel={() => setOption(undefined)}
-        open={option ? true : false}
-        destroyOnClose
-      >
-        <Row>
-          <Col xs={24} md={12} style={{ height: 360 }}>
-            <DeviceMapsRender height={400} />
-          </Col>
-          <Col xs={24} md={12}></Col>
-        </Row>
-      </Modal>
       <ProCard
         className={generalClassName}
         ghost
         style={{ marginBlockStart: 8 }}
-        gutter={[16, 16]}
+        gutter={[8, 8]}
         wrap
       >
-        <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 5 }} style={{ height: 275 }}>
-          <DeviceMapsRender height={275} />
+        <ProCard ghost colSpan={{ xs: 24, md: 14 }} style={{ height: 275 }} wrap gutter={[16, 16]}>
+          <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
+            <DeviceMapsRender height={275} />
+          </ProCard>
+          <ProCard
+            colSpan={{ xs: 24, md: 16, xxl: 15 }}
+            style={{ height: onlyWidth > 767 ? 275 : '100%' }}
+          >
+            <DevicePanel
+              actions={
+                <Space>
+                  <Button icon={<EditFilled />}>Edit</Button>
+                  <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
+                    Close
+                  </Button>
+                </Space>
+              }
+              status={<Tag color={'#115186'}>{'LIGADA APÓS QUEDA DE ENERGIA'}</Tag>}
+              deviceSelector={
+                <Select
+                  className={classNameSelect}
+                  suffixIcon={<CaretDownOutlined />}
+                  bordered={false}
+                  showSearch
+                  value={props.meterSystem?.result[0].name.toString() as string}
+                  size="large"
+                  style={{ width: '100%' }}
+                  filterOption={(input, option) =>
+                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                  onChange={onChangeDevice}
+                  options={props.meterSystem.result?.map((item) => ({
+                    value: item.id,
+                    label: item.name,
+                  }))}
+                />
+              }
+              extra={
+                <Space direction="vertical" size="middle">
+                  <Space size="middle">
+                    <Space>
+                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
+                      <div>1.2 bar</div>
+                    </Space>
+                    <Space>
+                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
+                      <div>250V</div>
+                    </Space>
+                  </Space>
+                  <Space size="middle">
+                    <Space>
+                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
+                      <div>1.2 bar</div>
+                    </Space>
+                    <Space>
+                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
+                      <div>250V</div>
+                    </Space>
+                  </Space>
+                </Space>
+              }
+              lastCommunication="19 May 10:15"
+              deviceActions={
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}></Space>
+              }
+            />
+          </ProCard>
+          <StatisticCard ghost colSpan={{ xs: 24 }}>
+            <MeterWaterLevel />
+          </StatisticCard>
         </ProCard>
-        <ProCard
-          colSpan={{ xs: 24, md: 16, xxl: 9 }}
-          style={{ height: onlyWidth > 767 ? 275 : '100%' }}
-        >
-          <DevicePanel
-            actions={
-              <Space>
-                <Button icon={<GiPadlockOpen />} href="https://www.google.com" />
-                <Button icon={<GiSolidLeaf />} href="https://www.google.com" />
-                <Button icon={<CloudFilled />} href="https://www.google.com" />
-                <Button icon={<EditFilled />} href="https://www.google.com">
-                  Edit
-                </Button>
-                <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>Close</Button>
-              </Space>
-            }
-            status={<Tag color={PivotStatusColor.off}>{item?.statusText}</Tag>}
-            deviceSelector={
-              <Select
-                className={classNameSelect}
-                suffixIcon={<CaretDownOutlined />}
-                bordered={false}
-                showSearch
-                value={props.pivot.selectedPivot?.name?.toString()}
-                size="large"
-                style={{ width: '100%' }}
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                onChange={onChangeDevice}
-                options={props.pivot.result.list?.map((item) => ({
-                  value: item.id,
-                  label: item.name,
-                }))}
-              />
-            }
-            extra={
-              <Space direction="vertical" size="middle">
-                <Space size="middle">
-                  <Space>
-                    <Tooltip title="Voltagem">
-                      <ThunderboltFilled />
-                    </Tooltip>
 
-                    <div>220 V</div>
-                  </Space>
-                  <Space>
-                    <Tooltip title="Barras">
-                      <HistoryOutlined />
-                    </Tooltip>
-                    <div>1.2 bar</div>
-                  </Space>
-                </Space>
-                <Space size="middle">
-                  <Space>
-                    <Tooltip title="Chuva hoje">
-                      <BsFillCloudRainFill />
-                    </Tooltip>
-                    <div>10 mm </div>
-                  </Space>
-                  <Space>
-                    <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                    <div>1.2 bar</div>
-                  </Space>
-                </Space>
-                <Space size="middle">
-                  <Space>
-                    <Tooltip title="Grupo">
-                      <GrObjectGroup />
-                    </Tooltip>
-                    <div>10 mm </div>
-                  </Space>
-                  <Space>
-                    <ClockCircleOutlined />
-                    <div>262h 33min</div>
-                  </Space>
-                </Space>
-              </Space>
-            }
-            lastCommunication="19 May 10:15"
-            deviceActions={
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <Button type="primary" style={{ width: onlyWidth > 767 ? '200px' : '100%' }}>
-                  Start Pivot
-                </Button>
-                <Button type="default" danger style={{ width: onlyWidth > 767 ? '200px' : '100%' }}>
-                  Stop Pivot
-                </Button>
-              </Space>
-            }
-          />
-        </ProCard>
         <ProCard
-          split={onlyWidth > 767 ? 'vertical' : 'horizontal'}
-          colSpan={{ xs: 24, md: 24, xxl: 10 }}
+          colSpan={{ xs: 24, lg: 10 }}
           wrap
+          ghost
+          className={classNameTableProCard}
+          gutter={[0, 16]}
         >
           <ProCard
-            split={onlyWidth > 1600 ? 'horizontal' : onlyWidth > 767 ? 'vertical' : 'horizontal'}
-            colSpan={{ xs: 24, md: 12, xxl: 12 }}
-          >
-            <StatisticCard
-              bodyStyle={{ cursor: 'pointer' }}
-              onClick={() => setOption(1)}
-              style={{ height: 'calc(275px / 2)' }}
-              statistic={{
-                title: 'Falta de pressão',
-                value: props.pivotReport.result?.unexpected_stops?.lack_of_pressure,
-                description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
-                ),
-              }}
-            />
-            <StatisticCard
-              bodyStyle={{ cursor: 'pointer' }}
-              onClick={() => setOption(2)}
-              style={{ height: 'calc(275px / 2)' }}
-              statistic={{
-                title: 'Queda de energia',
-                value: props.pivotReport.result?.unexpected_stops?.energy_blackot,
-                description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
-                ),
-              }}
-            />
-          </ProCard>
-          <ProCard
-            split={onlyWidth > 1600 ? 'horizontal' : onlyWidth > 767 ? 'vertical' : 'horizontal'}
-            colSpan={{ xs: 24, md: 12, xxl: 12 }}
-          >
-            <StatisticCard
-              bodyStyle={{ cursor: 'pointer' }}
-              onClick={() => setOption(3)}
-              style={{ height: 'calc(275px / 2)' }}
-              statistic={{
-                title: 'Desalinhado',
-                value: props.pivotReport.result?.unexpected_stops?.misalignment,
-                description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
-                ),
-              }}
-            />
-            <StatisticCard
-              bodyStyle={{ cursor: 'pointer' }}
-              onClick={() => setOption(4)}
-              style={{ height: 'calc(275px / 2)' }}
-              statistic={{
-                title: 'Oscilação de energia',
-                value: props.pivotReport.result?.unexpected_stops?.power_surge,
-                description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
-                ),
-              }}
-            />
-          </ProCard>
-        </ProCard>
-        <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost className={classNameTableProCard}>
-          <ProCard
-            style={{ minHeight: 1077 }}
-            title={
-              <Row justify="space-between" style={{ width: '100%' }}>
-                <Col>Histórico</Col>
-                <Col style={{ display: 'flex', gap: 12 }}>
-                  <Button icon={<DownloadOutlined />}>Exportar</Button>
-                  <Button icon={<CalendarOutlined />}></Button>
-                  <Button icon={<RedoOutlined />}></Button>
-                </Col>
-              </Row>
-            }
+            title="Histórico"
             tabs={{
               tabPosition: 'top',
               activeKey: tab,
               items: [
                 {
-                  label: `Eventos`,
+                  label: `Atividade`,
                   key: 'tab1',
-                  children: (
-                    <ProTable<any>
-                      rowSelection={{
-                        defaultSelectedRowKeys: [1],
-                      }}
-                      columns={[
-                        {
-                          title: 'Ocorrência',
-                          dataIndex: 'date',
-
-                          render: (value, item) => {
-                            return <>{new Date(item.created).toLocaleDateString()}</>;
-                          },
-                        },
-                        {
-                          title: 'Tipo',
-                          dataIndex: 'date',
-                          responsive: ['lg'],
-                          render: () => {
-                            return <>Atualização</>;
-                          },
-                        },
-                        {
-                          title: 'Status',
-                          dataIndex: 'date',
-                          render: () => {
-                            return <>Programado | Avanço | Molhado | 62%</>;
-                          },
-                        },
-                      ]}
-                      dataSource={props.pivotHistory.result}
-                      rowKey="key"
-                      pagination={{
-                        showQuickJumper: true,
-                        pageSize: 14,
-                      }}
-                      search={false}
-                      dateFormatter="string"
-                      toolbar={{
-                        title: 'Lista de eventos',
-                        tooltip: '这是一个标题提示',
-                      }}
-                    />
-                  ),
+                  children: <MeterActivityHistoricTable />,
                 },
                 {
-                  label: `Lâminas`,
+                  label: `Eventos`,
                   key: 'tab2',
-                  children: `内容二`,
+                  children: <MeterActivityEventTable />,
                 },
               ],
               onChange: (key) => {
@@ -398,20 +199,8 @@ const MeterReport: React.FC<Props> = (props) => {
 };
 
 export default connect(
-  ({
-    pivot,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
-  }: {
-    pivot: any;
-    pivotReport: any;
-    pivotHistory: any;
-    pivotInformation: any;
-  }) => ({
-    pivot,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
+  ({ selectedDevice, meterSystem }: { selectedDevice: any; meterSystem: any }) => ({
+    selectedDevice,
+    meterSystem,
   }),
 )(MeterReport);

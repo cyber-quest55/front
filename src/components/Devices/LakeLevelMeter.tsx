@@ -13,6 +13,8 @@ export type LakeLevelMeterProps = {
   name: string;
   updated: string;
   onSelect?: any;
+  width?: number;
+  height?: number;
 };
 
 const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
@@ -23,7 +25,6 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
   return (
     <>
       <OverlayViewF
-        
         position={{ lat: centerLat, lng: centerLng }}
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       >
@@ -33,10 +34,13 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
           onMouseEnter={() => setInfoWindowVisible(true)}
         >
           <Liquid
-            width={75}
-            height={75}
+            width={props.width ? props.width : 75}
+            height={props.width ? props.width : 75}
             percent={0.25}
-            style={{ marginTop: -37.5, marginLeft: -37.5 }}
+            style={{
+              marginTop: props.height ? -(props.height / 2) : -37.5,
+              marginLeft: props.width ? -(props.width / 2) : -37.5,
+            }}
             statistic={{ content: { style: { color: 'white', fontSize: '12px' } } }}
             outline={{
               border: 1,

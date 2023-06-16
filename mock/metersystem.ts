@@ -21,22 +21,22 @@ export default {
     res.status(200).send(GetMeterSystemResponse);
   },
 
-  'GET /farms/:farmId/metersystems/${meterId}/': async (req: Request, res: Response) => {
+  'GET /farms/:farmId/metersystems/:meterId/': async (req: Request, res: Response) => {
     await waitTime(2000);
     res.status(200).send(GetMeterSystemByIdResponse);
   },
 
-  'GET /farms/:farmId/meter/${meterId}/history/': async (req: Request, res: Response) => {
+  'GET /farms/:farmId/metersystems/:meterId/history/': async (req: Request, res: Response) => {
     await waitTime(2000);
     res.status(200).send(GetMeterSystemHistoryResponse);
   },
 
-  'GET /farms/:farmId/meter/${meterId}/lake-level/': async (req: Request, res: Response) => {
+  'GET /farms/:farmId/metersystems/:meterId/lake-level/': async (req: Request, res: Response) => {
     await waitTime(2000);
     res.status(200).send(GetMeterSystemWaterLevelResponse);
   },
 
-  'GET /farms/:farmId/meter/${meterId}/water-level-history/': async (
+  'GET /farms/:farmId/metersystems/:meterId/water-level-history/': async (
     req: Request,
     res: Response,
   ) => {

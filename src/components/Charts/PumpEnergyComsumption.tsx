@@ -1,5 +1,6 @@
 import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
 import { Column, G2 } from '@ant-design/charts';
+import { Spin } from 'antd';
 import { connect } from 'umi';
 
 type Props = {
@@ -22,50 +23,52 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
       },
     ],
   });
-  
+
   return (
-    <Column
-      height={320}
-      color={({ type }) => {
-        if (type === 'Horas em pico') {
-          return '#ff4d4f';
-        } else if (type === 'Horas em fora de pico') {
-          return '#4169E1';
-        }
-        return '#40E0D0';
-      }}
-      data={props.irpdWaterConsumption.result}
-      padding="auto"
-      xField="year"
-      yField="value"
-      seriesField="type"
-      isPercent={true}
-      isStack={true}
-      tooltip={false}
-      interactions={[
-        {
-          type: 'element-highlight-by-color',
-        },
-        {
-          type: 'element-link',
-        },
-      ]}
-      meta={{
-        value: {
-          min: 0,
-          max: 1,
-        },
-      }}
-      label={{
-        position: 'middle',
-        content: (item) => {
-          return `${(item.value * 100).toFixed(2)}`;
-        },
-        style: {
-          fill: '#fff',
-        },
-      }}
-    />
+    <Spin spinning={props.irpdWaterConsumption.loading}>
+      <Column
+        height={320}
+        color={({ type }) => {
+          if (type === 'Horas em pico') {
+            return '#ff4d4f';
+          } else if (type === 'Horas em fora de pico') {
+            return '#4169E1';
+          }
+          return '#40E0D0';
+        }}
+        data={props.irpdWaterConsumption.result}
+        padding="auto"
+        xField="year"
+        yField="value"
+        seriesField="type"
+        isPercent={true}
+        isStack={true}
+        tooltip={false}
+        interactions={[
+          {
+            type: 'element-highlight-by-color',
+          },
+          {
+            type: 'element-link',
+          },
+        ]}
+        meta={{
+          value: {
+            min: 0,
+            max: 1,
+          },
+        }}
+        label={{
+          position: 'middle',
+          content: (item) => {
+            return `${(item.value * 100).toFixed(2)}`;
+          },
+          style: {
+            fill: '#fff',
+          },
+        }}
+      />
+    </Spin>
   );
 };
 

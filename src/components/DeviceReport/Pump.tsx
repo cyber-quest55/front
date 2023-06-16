@@ -4,9 +4,6 @@ import IrpdActivityHistoricTable from '@/components/Tables/IrpdActivityHistoricT
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
 import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
-import { GetPivotHistoryModelProps } from '@/models/pivot-history';
-import { GetPivotInformationModelProps } from '@/models/pivot-information';
-import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
 import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
@@ -14,27 +11,19 @@ import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
 import { useParams } from '@umijs/max';
-import { Button, Col, Modal, Row, Select, Space, Tag } from 'antd';
+import { Button, Select, Space, Tag } from 'antd';
 import { useState } from 'react';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 
-const failureTitle: any = {
-  1: 'Falta de pressão',
-  2: 'Queda de energia',
-  3: 'Desalinhado',
-  4: 'Oscilação de energia',
-};
+ 
 
 type Props = {
   irpd: GetIrpdModelProps;
   irpdById: GetIrpdByIdModelProps;
-  iprdWaterConsumption: GetIrpdWaterModelProps;
-  pivotReport: GetPivotReportModelProps;
-  pivotHistory: GetPivotHistoryModelProps;
-  pivotInformation: GetPivotInformationModelProps;
+  iprdWaterConsumption: GetIrpdWaterModelProps; 
   selectedDevice: SelectedDeviceModelProps;
   dispatch: any;
 };
@@ -44,8 +33,7 @@ const PumpReport: React.FC<Props> = (props) => {
   const onlyWidth = useWindowWidth();
 
   const [tab, setTab] = useState('tab1');
-  const [option, setOption] = useState<undefined | number>(undefined);
-
+ 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
       minHeight: '100vh',
@@ -103,21 +91,7 @@ const PumpReport: React.FC<Props> = (props) => {
   };
 
   return (
-    <>
-      <Modal
-        width={1020}
-        title={option !== undefined ? failureTitle[option] : failureTitle[1]}
-        onCancel={() => setOption(undefined)}
-        open={option ? true : false}
-        destroyOnClose
-      >
-        <Row>
-          <Col xs={24} md={12} style={{ height: 360 }}>
-            <DeviceMapsRender height={400} />
-          </Col>
-          <Col xs={24} md={12}></Col>
-        </Row>
-      </Modal>
+    <> 
       <ProCard
         className={generalClassName}
         ghost
@@ -249,26 +223,17 @@ const PumpReport: React.FC<Props> = (props) => {
 export default connect(
   ({
     irpd,
-    irpdById,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
+    irpdById, 
     selectedDevice,
     iprdWaterConsumption,
   }: {
     irpd: any;
-    irpdById: any;
-    pivotReport: any;
-    pivotHistory: any;
-    pivotInformation: any;
+    irpdById: any; 
     selectedDevice: any;
     iprdWaterConsumption: any;
   }) => ({
     irpd,
-    irpdById,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
+    irpdById, 
     selectedDevice,
     iprdWaterConsumption,
   }),
