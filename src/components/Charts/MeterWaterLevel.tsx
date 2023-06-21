@@ -1,6 +1,6 @@
 import { GetMeterSystemWaterLevelModelProps } from '@/models/meter-water-level';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { Area } from '@ant-design/charts';
+import { Area, Mix } from '@ant-design/charts';
 import { LightFilter, ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
 import { Spin } from 'antd';
 import dayjs from 'dayjs';
@@ -42,6 +42,51 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
     update();
   }, [range]);
 
+  const config = {
+    appendPadding: 8,
+    tooltip: {
+      shared: true,
+    },
+    syncViewPadding: true,
+    plots: [
+      {
+        type: 'line',
+        options: {
+          data: props.meterSystemWaterLevel.loaded
+            ? props.meterSystemWaterLevel.result.map((item: any) => ({ ...item, value: 100 }))
+            : [],
+          xField: 'from',
+          yField: 'value',
+          xAxis: false,
+          yAxis: {
+            type: 'log',
+            max: 100000,
+          },
+          label: {
+            offsetY: -8,
+          },
+          meta: {
+            value: {
+              alias: '平均租金(元)',
+            },
+          },
+          color: '#FF6B3B',
+        },
+      },
+      {
+        type: 'Area',
+        options: {
+          yAxis: {},
+          height: 320,
+          data: props.meterSystemWaterLevel.loaded ? props.meterSystemWaterLevel.result : [],
+          padding: 'auto',
+          xField: 'from',
+          yField: 'value',
+        },
+      },
+    ],
+  };
+
   return (
     <StatisticCard
       title="Gráfico de Nível"
@@ -61,13 +106,68 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       }
       chart={
         <Spin spinning={props.meterSystemWaterLevel.loading}>
-          <Area
-            height={320}
-            data={props.meterSystemWaterLevel.loaded ? props.meterSystemWaterLevel.result : []}
-            padding="auto"
-            xField="from"
-            yField="value"
-          />
+          <Mix
+            appendPadding={8}
+            tooltip={{
+              shared: true,
+            }}
+            syncViewPadding={true}
+            plots={[
+              {
+                type: 'line',
+                options: {
+                  data: props.meterSystemWaterLevel.loaded
+                    ? props.meterSystemWaterLevel.result.map((item: any) => ({ ...item, value: 380 }))
+                    : [],
+                  xField: 'from',
+                  yField: 'value', 
+                  yAxis: { 
+                    max: 400, 
+                
+                  },
+                   
+                  meta: {
+                    value: {
+                      alias: 'Valor Maximo',
+                    },
+                  },
+                  color: 'red',
+                },
+              },
+              {
+                type: 'line',
+                options: {
+                  data: props.meterSystemWaterLevel.loaded
+                    ? props.meterSystemWaterLevel.result.map((item: any) => ({ ...item, value: 100 }))
+                    : [],
+                  xField: 'from',
+                  yField: 'value', 
+                  yAxis: { 
+                    max: 400, 
+                    
+                  },
+                   
+                  meta: {
+                    value: {
+                      alias: 'Valor Mínimo',
+                    },
+                  },
+                  color: '#FF6B3B',
+                },
+              },
+              {
+                type: 'area',
+                options: {
+                  yAxis: {},
+                  height: 320,
+                  data: props.meterSystemWaterLevel.loaded ? props.meterSystemWaterLevel.result : [],
+                  padding: 'auto',
+                  xField: 'from',
+                  yField: 'value',
+                },
+              },
+            ]}
+          /> 
         </Spin>
       }
     ></StatisticCard>

@@ -1,6 +1,6 @@
 import { DeviceType } from '@/utils/enums';
 import { Circle, InfoWindowF, Marker, Polygon, Polyline } from '@react-google-maps/api';
-import { Typography } from 'antd';
+import { Space, Tag, Typography } from 'antd';
 import React, { useState } from 'react';
 import {
   computeDistanceBetween,
@@ -39,6 +39,7 @@ export type CirclePivotProps = {
   name: string;
   statusText: string;
   onSelect: any;
+  infoWindow?: boolean;
 };
 
 const circleOptions = {
@@ -232,7 +233,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
         />
       ) : null}
       {/** Draw Info Window */}
-      {infoWindowVisible ? (
+      {infoWindowVisible && props.infoWindow ? (
         <InfoWindowF
           position={{
             lat: centerLat,
@@ -243,15 +244,11 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
           }}
           zIndex={12}
         >
-          <div
-            style={{
-              opacity: 0.75,
-              padding: 12,
-            }}
-          >
+          <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
             <Typography.Title level={5}>{props.name}</Typography.Title>
+            <Tag color={props.pivotColor}>{props.statusText}</Tag>
             <Typography.Text>{props.updated}</Typography.Text>
-          </div>
+          </Space>
         </InfoWindowF>
       ) : null}
 

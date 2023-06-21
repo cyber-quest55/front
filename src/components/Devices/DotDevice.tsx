@@ -10,6 +10,7 @@ export type CirclePivotProps = {
   updated: string;
   pivotColor?: string;
   lineColor?: string;
+  infoWindow?: boolean;
 };
 
 const circleOptions = {

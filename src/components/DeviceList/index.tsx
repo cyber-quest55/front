@@ -52,7 +52,6 @@ const DeviceList: React.FC<Props> = (props) => {
   useEffect(() => {}, [props.farm]);
 
   useEffect(() => {}, [params]);
- 
 
   const classNameScrollable = useEmotionCss(({}) => {
     return {
@@ -280,42 +279,45 @@ const DeviceList: React.FC<Props> = (props) => {
             onChange={(e) => {
               history.push(e.toString());
             }}
-            options={props.farm.result.list?.map((item) => ({ value: item.id, label: item.name }))}
-          />{' '}
+            options={props.farm.result.list?.map((item) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+          />
         </Col>
         <Col>
-          <Popover
-            trigger="click"
-            placement="bottom"
-            content={
-              <Space direction="vertical">
-                <Space>
-                  <Switch size="small" title="adssa" />
-                  <Typography.Text>Manter Linhas</Typography.Text>
+          <Space >
+            <Button style={{ width: '100%'  }}>Buscar Rádios</Button>
+            <Popover
+              trigger="click"
+              placement="bottom"
+              content={
+                <Space direction="vertical">
+                  <Space>
+                    <Switch size="small" title="adssa" />
+                    <Typography.Text>Manter Linhas</Typography.Text>
+                  </Space>
+                  <Space>
+                    <Switch size="small" title="adssa" />
+                    <Typography.Text>Mostrar GPS</Typography.Text>
+                  </Space>
+                  <Space>
+                    <Switch size="small" title="adssa" />
+                    <Typography.Text>Relevo</Typography.Text>
+                  </Space>
                 </Space>
-                <Space>
-                  <Switch size="small" title="adssa" />
-                  <Typography.Text>Mostrar GPS</Typography.Text>
-                </Space>
-                <Space>
-                  <Switch size="small" title="adssa" />
-                  <Typography.Text>Relevo</Typography.Text>
-                </Space>
-                <Button size="small" style={{ width: '100%', marginTop: 8 }}>
-                  Buscar Rádios
-                </Button>
-              </Space>
-            }
-          >
-            <Button size="middle" ghost>
-              <SettingOutlined style={{ color: 'black' }} />
-            </Button>
-          </Popover>
+              }
+            >
+              <Button size="middle" ghost>
+                <SettingOutlined style={{ color: 'black' }} />
+              </Button>
+            </Popover>
+          </Space>
         </Col>
       </Row>
       <Row align="middle" style={{ padding: '0px 0px', width: '100%' }}>
         <Col xs={24}>
-          <Tabs defaultActiveKey="1" items={items}  />
+          <Tabs defaultActiveKey="1" items={items} />
         </Col>
       </Row>
     </div>

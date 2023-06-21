@@ -24,7 +24,7 @@ export const DevicePanel: React.FC<Props> = (props) => {
                     <Col>{props.status}</Col>
                     <Col>{props.actions}</Col>
                 </Row>
-                <Row style={{ maxWidth: 175 }}>
+                <Row style={{ maxWidth: 250}}>
                     <Col style={{ width: '100%' }}>
                         {props.deviceSelector}
                     </Col>

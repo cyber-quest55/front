@@ -115,7 +115,6 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
       }
       case DeviceType.Meter: {
         const item = props.meterSystemById.loaded ? props.meterSystemById.result : undefined;
-        console.log(item)
         if (props.meterSystemById.loaded && item !== undefined)
           return (
             <LakeLevelMeterDevice
@@ -150,6 +149,9 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         zoomControl: false,
         scaleControl: false,
         panControl: false,
+        disableDoubleClickZoom: true,
+        draggable: false,
+        fullscreenControl: false
       }}
       zoom={14.5}
     >

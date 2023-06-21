@@ -198,12 +198,12 @@ const PumpReport: React.FC<Props> = (props) => {
               activeKey: tab,
               items: [
                 {
-                  label: `Atividade`,
+                  label: `Eventos`,
                   key: 'tab1',
                   children: <IrpdActivityHistoricTable />,
                 },
                 {
-                  label: `Eventos`,
+                  label: `Operações`,
                   key: 'tab2',
                   children: <IrpdActivityEventTable />,
                 },

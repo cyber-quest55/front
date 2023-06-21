@@ -4,6 +4,7 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { ProCard } from '@ant-design/pro-components';
+import Field from '@ant-design/pro-field';
 import { GoogleMap } from '@react-google-maps/api';
 import { useWindowWidth } from '@react-hook/window-size';
 import { useParams } from '@umijs/max';
@@ -21,7 +22,7 @@ const scrollToBottom = () => {
       top: window.innerHeight,
       behavior: 'smooth',
     });
-  }, 500); 
+  }, 500);
 };
 
 export type RenderPivotsProps = {
@@ -89,7 +90,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
       type: 'selectedDevice/setSelectedDevice',
       payload: { type, deviceId, farmId: params.id },
     });
-    scrollToBottom()
+    scrollToBottom();
   };
 
   return (
@@ -103,6 +104,27 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             left: 453,
           }}
         >
+          <ProCard
+            ghost
+            style={{
+              background: 'white',
+              padding: 8,
+            }}
+          >
+            <Field
+              text="open"
+              mode="edit"
+              valueType="radioButton"
+              fieldProps={{ size: 'small' }}
+              valueEnum={{
+                open: {
+                  text: 'Google',
+                  status: 'Default',
+                },
+                all: { text: 'Sputnik', disabled: true },
+              }}
+            ></Field>
+          </ProCard>
           <ProCard
             ghost
             style={{
@@ -203,6 +225,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 updated={item.updated}
                 statusText={item.statusText}
                 onSelect={onSetDevice}
+                infoWindow
               />
             ))
           : null}
@@ -216,6 +239,9 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 updated={item.updated}
                 id={item.id}
                 onSelect={onSetDevice}
+                deviceColor={item.deviceColor}
+                statusText={item.statusText}
+                infoWindow
               />
             ))
           : null}
@@ -229,6 +255,9 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 updated={item.updated}
                 id={item.id}
                 onSelect={onSetDevice}
+                deviceColor={item.deviceColor}
+                statusText={item.statusText}
+                infoWindow
               />
             ))
           : null}
@@ -241,7 +270,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 id={item.id}
-                onSelect={onSetDevice}
+                onSelect={() => null}
               />
             ))
           : null}

@@ -1,20 +1,22 @@
 import { DeviceType } from '@/utils/enums';
 import { Liquid } from '@ant-design/charts';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
-import { Typography } from 'antd';
+import { Space, Tag, Typography } from 'antd';
 import React, { useState } from 'react';
 
 export type LakeLevelMeterProps = {
   id: number | string;
   centerLat: number;
   centerLng: number;
-  pivotColor?: string;
+  deviceColor?: string;
   lineColor?: string;
   name: string;
   updated: string;
   onSelect?: any;
   width?: number;
   height?: number;
+  infoWindow?: boolean;
+  statusText?: string;
 };
 
 const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
@@ -52,7 +54,7 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
           />
         </div>
       </OverlayViewF>
-      {infoWindowVisible ? (
+      {infoWindowVisible && props.infoWindow ? (
         <InfoWindowF
           position={{
             lat: centerLat,
@@ -63,16 +65,11 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
           }}
           zIndex={12}
         >
-          <div
-            onMouseLeave={() => setInfoWindowVisible(false)}
-            style={{
-              opacity: 0.75,
-              padding: 12,
-            }}
-          >
+          <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
             <Typography.Title level={5}>{props.name}</Typography.Title>
+            <Tag color={props.deviceColor}>{props.statusText}</Tag>
             <Typography.Text>{props.updated}</Typography.Text>
-          </div>
+          </Space>
         </InfoWindowF>
       ) : null}
     </>

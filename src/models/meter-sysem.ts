@@ -1,5 +1,7 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getMeterSystem } from '@/services/metersystem';
+import { getIrpdColor } from '@/utils/get-irpd-color';
+import { getMeterStatus } from '@/utils/get-meter-status';
 import { AxiosError } from 'axios';
 
 export interface GetMeterSystemModelProps {
@@ -59,6 +61,7 @@ export default {
  
       for (let index = 0; index < payload.list.length; index++) {
         const item = payload.list[index];
+        const status = item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status
 
         const latLng = item.position.split(',');
         mapper.push({ 
@@ -67,6 +70,8 @@ export default {
             centerLng: parseFloat(latLng[1]),
             name: payload.list[index].name,
             updated: new Date(payload.list[index].updated).toLocaleString(),
+            deviceColor: getIrpdColor(status),
+            statusText: getMeterStatus(status),
         }); 
       }
 

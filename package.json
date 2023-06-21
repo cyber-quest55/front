@@ -70,6 +70,7 @@
     "react-helmet-async": "^1.3.0",
     "react-icons": "^4.8.0",
     "react-scroll": "^1.8.9",
+    "react-static-google-map": "^0.9.0",
     "react-svg": "^16.1.8",
     "socket.io-client": "^2.3.0",
     "spherical-geometry-js": "^3.0.0",

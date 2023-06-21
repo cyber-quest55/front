@@ -1385,16 +1385,16 @@ export const GetIrpdWaterComsumptionResponse: IResponse<API.GetIrpdHistoryRespon
   data: [
     { year: '2013', type: 'Horas em pico', value: 92.1 },
     { year: '2013', type: 'Horas em fora de pico', value: 145.1 },
-    { year: '2013', type: 'Na Faixa', value: 110.6 },
+    { year: '2013', type: 'Horas em reduzido', value: 110.6 },
     { year: '2014', type: 'Horas em pico', value: 91.8 },
     { year: '2014', type: 'Horas em fora de pico', value: 140.9 },
-    { year: '2014', type: 'Na Faixa', value: 99.0 },
+    { year: '2014', type: 'Horas em reduzido', value: 99.0 },
     { year: '2015', type: 'Horas em pico', value: 87.1 },
     { year: '2015', type: 'Horas em fora de pico', value: 139.4 },
-    { year: '2015', type: 'Na Faixa', value: 103.9 },
+    { year: '2015', type: 'Horas em reduzido', value: 103.9 },
     { year: '2016', type: 'Horas em pico', value: 80.0 },
     { year: '2016', type: 'Horas em fora de pico', value: 134.8 },
-    { year: '2016', type: 'Na Faixa', value: 100.0 },
+    { year: '2016', type: 'Horas em reduzido', value: 100.0 },
   ],
 });
 

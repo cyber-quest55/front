@@ -1,18 +1,20 @@
+import { DeviceType } from '@/utils/enums';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
-import { Typography } from 'antd';
+import { Space, Tag, Typography } from 'antd';
 import React, { useState } from 'react';
 import Image from '../../../public/images/devices/water-pump.png';
-import { DeviceType } from '@/utils/enums';
 
 export type WaterPumpProps = {
   id: number | string;
   centerLat: number;
   centerLng: number;
-  pivotColor?: string;
+  deviceColor?: string;
   lineColor?: string;
+  statusText?: string;
   name: string;
   updated: string;
   onSelect?: any;
+  infoWindow?: boolean;
 };
 
 const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
@@ -34,7 +36,7 @@ const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
           <img src={Image} style={{ width: 44, height: 44 }} />
         </div>
       </OverlayViewF>
-      {infoWindowVisible ? (
+      {infoWindowVisible && props.infoWindow ? (
         <InfoWindowF
           position={{
             lat: centerLat,
@@ -45,16 +47,11 @@ const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
           }}
           zIndex={12}
         >
-          <div
-            onMouseLeave={() => setInfoWindowVisible(false)}
-            style={{
-              opacity: 0.75,
-              padding: 12,
-            }}
-          >
+          <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
             <Typography.Title level={5}>{props.name}</Typography.Title>
+            <Tag color={props.deviceColor}>{props.statusText}</Tag>
             <Typography.Text>{props.updated}</Typography.Text>
-          </div>
+          </Space>
         </InfoWindowF>
       ) : null}
     </>

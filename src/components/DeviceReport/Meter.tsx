@@ -13,7 +13,6 @@ import { useWindowWidth } from '@react-hook/window-size';
 import { useParams } from '@umijs/max';
 import { Button, Select, Space, Tag } from 'antd';
 import { useState } from 'react';
-import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import MeterWaterLevel from '../Charts/MeterWaterLevel';
 import DeviceMapsRender from '../DeviceMapsRender';
@@ -139,18 +138,13 @@ const MeterReport: React.FC<Props> = (props) => {
                       <InsertRowRightOutlined style={{ fontSize: 20 }} />
                       <div>50.0% (0.50m)</div>
                     </Space>
-                    <Space> 
-                    </Space>
+                    <Space></Space>
                   </Space>
-                  <Space size="middle">
-                    <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>1.2 bar</div>
-                    </Space>
-                    <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>250V</div>
-                    </Space>
+                  <Space size="small">
+                    <Space style={{color: 'red'}}>Valor máximo: 100%</Space>
+                  </Space>
+                  <Space size="small">
+                    <Space style={{color: 'orange'}}>Valor mínimo: 47%</Space>
                   </Space>
                 </Space>
               }
@@ -179,12 +173,12 @@ const MeterReport: React.FC<Props> = (props) => {
               activeKey: tab,
               items: [
                 {
-                  label: `Atividade`,
+                  label: `Eventos`,
                   key: 'tab1',
                   children: <MeterActivityHistoricTable />,
                 },
                 {
-                  label: `Eventos`,
+                  label: `Operações`,
                   key: 'tab2',
                   children: <MeterActivityEventTable />,
                 },
@@ -192,7 +186,7 @@ const MeterReport: React.FC<Props> = (props) => {
                   label: `Relatório`,
                   key: 'tab3',
                   disabled: true,
-                  
+
                   children: <MeterActivityEventTable />,
                 },
               ],

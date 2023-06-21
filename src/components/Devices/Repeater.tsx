@@ -53,7 +53,6 @@ const RepeaterDevice: React.FC<RepeaterProps> = (props) => {
             }}
           >
             <Typography.Title level={5}>{props.name}</Typography.Title>
-            <Typography.Text>{props.updated}</Typography.Text>
           </div>
         </InfoWindowF>
       ) : null}
