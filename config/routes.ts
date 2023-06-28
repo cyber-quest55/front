@@ -26,7 +26,7 @@ export default [
 
   {
     path: '/farms/',
-    name: 'Fazenda', 
+    name: 'Control', 
     icon: 'formOutlined',
     routes: [
       {
@@ -43,7 +43,7 @@ export default [
   },
   {
     path: 'devices/farms/:id/',
-    name: 'Dispositivos',
+    name: 'Radio',
     icon: 'deploymentUnitOutlined',
     component: './Devices',
   },
@@ -51,11 +51,7 @@ export default [
     path: '/notifications/',
     name: 'Notificações',
     icon: 'bellOutlined',
-    component: './Notifications',
-    menu: {
-      key: '/notifications/',
-      name: 'Notificações'
-    }
+    component: './Notifications', 
   },
   {
     path: '/admin',
@@ -76,7 +72,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/users/login',
+    redirect: '/farms/id',
   },
   {
     path: '*',

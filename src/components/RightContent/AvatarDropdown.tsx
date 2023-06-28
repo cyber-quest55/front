@@ -8,6 +8,7 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
+import { useWindowWidth } from '@react-hook/window-size';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -18,9 +19,12 @@ export const AvatarName = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   return <span className="anticon">{currentUser?.name}</span>;
-};
+
+ };
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
+  const onlyWidth = useWindowWidth();
+ 
   /**
    * 退出登录，并且将当前的 url 保存
    */
@@ -40,8 +44,9 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       });
     }
   };
+
   const actionClassName = useEmotionCss(({ token }) => {
-    return {
+    return { 
       display: 'flex',
       height: '48px',
       marginLeft: 'auto',
@@ -55,6 +60,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       },
     };
   });
+
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
@@ -62,12 +68,12 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       const { key } = event;
       if (key === 'logout') {
         flushSync(() => {
-          setInitialState((s) => ({ ...s, currentUser: undefined }));
+          setInitialState((s) => ({ ...s, currentUser: undefined, } as any));
         });
         loginOut();
         return;
       }
-      history.push(`/account/${key}`);
+      //  history.push(`/account/${key}`);
     },
     [setInitialState],
   );
@@ -115,8 +121,39 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: '退出登录',
+      label: 'Sair',
     },
+    onlyWidth < 762 || initialState?.collapsed? 
+    {
+      key: 'TESTE',
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          focusable="false"
+          width="1em"
+          height="1em"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z "
+            className="css-c4d79v"
+          />
+        </svg>
+      ),
+      label: 'Idioma',
+      children: [
+        {
+          key: '3-1',
+          label: '5d menu item',
+        },
+        {
+          key: '3-2',
+          label: '6th menu item',
+        },
+      ],
+    }: null,
   ];
 
   return (

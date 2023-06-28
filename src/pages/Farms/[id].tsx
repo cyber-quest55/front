@@ -1,19 +1,19 @@
-import PivotReport from '@/components/DeviceReport/Pivot';
 import MeterReport from '@/components/DeviceReport/Meter';
+import PivotReport from '@/components/DeviceReport/Pivot';
 import PumpReport from '@/components/DeviceReport/Pump';
 import PivotList from '@/components/PivotList';
 import RenderPivots from '@/components/RenderPivots';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { DeviceType } from '@/utils/enums';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
 import { useUnmount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
-import { FunctionComponent, ReactNode } from 'react';
-import { DeviceType } from '@/utils/enums';
+import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 
 type Props = {
   dispatch?: any;
@@ -26,6 +26,7 @@ type Props = {
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const onlyWidth = useWindowWidth();
+  const [activeKey, setActiveKey] = useState('1');
   //const [isConnected, setIsConnected] = useState(false);
 
   /**
@@ -64,10 +65,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
       case DeviceType.Pivot: {
         return <PivotReport />;
       }
-      case DeviceType.Meter: { 
-        return <MeterReport/>;
+      case DeviceType.Meter: {
+        return <MeterReport />;
       }
-      case DeviceType.Pump: { 
+      case DeviceType.Pump: {
         return <PumpReport />;
       }
     }
@@ -143,9 +144,16 @@ const Welcome: FunctionComponent<Props> = (props) => {
     {
       key: '3',
       label: `Tab 3`,
+      disabled: !props.selectedDevice.open,
       children: getDeviceBySelected(props.selectedDevice.type),
     },
   ];
+
+  useEffect(() => {
+    if (props.selectedDevice.open && onlyWidth < 767) {
+      setActiveKey("3");
+    }
+  }, [props.selectedDevice]);
 
   return (
     <Row>
@@ -170,7 +178,13 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
           {onlyWidth > 767 ? null : (
             <div className={classNameFixedMobile}>
-              <Tabs defaultActiveKey="1" items={items} tabPosition="bottom" />
+              <Tabs
+                defaultActiveKey="1"
+                activeKey={activeKey}
+                onChange={(key) => setActiveKey(key)}
+                items={items}
+                tabPosition="bottom"
+              />
             </div>
           )}
         </>

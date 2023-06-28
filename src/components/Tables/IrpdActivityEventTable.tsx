@@ -1,7 +1,7 @@
 import { GetIrpdEventsModelProps } from '@/models/irpd-events';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { formatDate } from '@/utils/get-formated-date';
-import { DownloadOutlined, RedoOutlined } from '@ant-design/icons';
+import { DownloadOutlined } from '@ant-design/icons';
 import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
 import { Button, Col, Pagination, PaginationProps, Row, Space } from 'antd';
 import dayjs from 'dayjs';
@@ -104,9 +104,7 @@ const IrpdActivityEventTable: React.FC<Props> = (props) => {
           filter: (
             <Space>
               <Button icon={<DownloadOutlined />}>Exportar</Button>
-              <Button loading={props.irpdEvents.loading} onClick={update} icon={<RedoOutlined />}>
-                Atualizar
-              </Button>
+  
             </Space>
           ),
         }}

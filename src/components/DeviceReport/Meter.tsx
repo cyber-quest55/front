@@ -5,7 +5,6 @@ import {
   CaretDownOutlined,
   CloseCircleFilled,
   EditFilled,
-  InsertRowRightOutlined,
 } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -18,7 +17,6 @@ import MeterWaterLevel from '../Charts/MeterWaterLevel';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import MeterActivityEventTable from '../Tables/MeterActivityEventTable';
-import MeterActivityHistoricTable from '../Tables/MeterActivityHistoricTable';
 
 type Props = {
   meterSystem: GetMeterSystemModelProps;
@@ -34,13 +32,13 @@ const MeterReport: React.FC<Props> = (props) => {
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
-      minHeight: '100vh',
+      height: '100vh',
       '.ant-pro-card-title ': {
         width: '100%',
       },
       [`@media screen and (max-width: ${token.screenMD}px)`]: {
         overflowY: 'auto',
-        maxHeight: 'calc(100vh - 110px)',
+        height : 'calc(100vh - 110px)',
       },
     };
   });
@@ -94,7 +92,7 @@ const MeterReport: React.FC<Props> = (props) => {
         gutter={[8, 8]}
         wrap
       >
-        <ProCard ghost colSpan={{ xs: 24, md: 14 }} style={{ height: 275 }} wrap gutter={[16, 16]}>
+        <ProCard ghost colSpan={{ xs: 24, md: 14 }}   wrap gutter={[16, 16]}>
           <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
             <DeviceMapsRender height={275} />
           </ProCard>
@@ -111,7 +109,7 @@ const MeterReport: React.FC<Props> = (props) => {
                   </Button>
                 </Space>
               }
-              status={<Tag color={'#115186'}>{'LIGADA APÓS QUEDA DE ENERGIA'}</Tag>}
+              status={<Tag color={'#115186'}>{'25.0% (0.25m)'}</Tag>}
               deviceSelector={
                 <Select
                   className={classNameSelect}
@@ -133,13 +131,7 @@ const MeterReport: React.FC<Props> = (props) => {
               }
               extra={
                 <Space direction="vertical" size="middle">
-                  <Space size="middle">
-                    <Space>
-                      <InsertRowRightOutlined style={{ fontSize: 20 }} />
-                      <div>50.0% (0.50m)</div>
-                    </Space>
-                    <Space></Space>
-                  </Space>
+                  
                   <Space size="small">
                     <Space style={{color: 'red'}}>Valor máximo: 100%</Space>
                   </Space>
@@ -171,20 +163,15 @@ const MeterReport: React.FC<Props> = (props) => {
             tabs={{
               tabPosition: 'top',
               activeKey: tab,
-              items: [
+              items: [ 
                 {
-                  label: `Eventos`,
+                  label: `Medições`,
                   key: 'tab1',
-                  children: <MeterActivityHistoricTable />,
-                },
-                {
-                  label: `Operações`,
-                  key: 'tab2',
                   children: <MeterActivityEventTable />,
                 },
                 {
                   label: `Relatório`,
-                  key: 'tab3',
+                  key: 'tab2',
                   disabled: true,
 
                   children: <MeterActivityEventTable />,

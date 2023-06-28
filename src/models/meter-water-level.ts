@@ -61,6 +61,7 @@ export default {
         loaded: true,
         result: payload.map((item: any, index: number) => ({
           ...item,
+          value: item.value /100,
           from: formatDateTime(item.from),
           key: `row-key-table-water-level-${index}`,
         })),

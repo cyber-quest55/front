@@ -1,7 +1,9 @@
 import { GetMeterSystemWaterLevelModelProps } from '@/models/meter-water-level';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { Area, Mix } from '@ant-design/charts';
+import { Mix } from '@ant-design/charts';
 import { LightFilter, ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useWindowWidth } from '@react-hook/window-size';
 import { Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -14,6 +16,22 @@ type Props = {
 };
 
 const MeterWaterLevelChart: React.FC<Props> = (props) => {
+  const onlyWidth = useWindowWidth();
+
+  const className = useEmotionCss(({ token }) => {
+    return {
+      '.ant-pro-card-header': {
+        [`@media screen and (max-width: ${token.screenMD}px)`]: {
+          display: 'block',
+        },
+      },
+      '.ant-pro-card-body': {
+        [`@media screen and (max-width: ${token.screenMD}px)`]: {
+          paddingInline: 12,
+        },
+      },
+    };
+  });
   const [range, setRange] = useState({
     startDate: dayjs(),
     endDate: dayjs(),
@@ -42,56 +60,12 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
     update();
   }, [range]);
 
-  const config = {
-    appendPadding: 8,
-    tooltip: {
-      shared: true,
-    },
-    syncViewPadding: true,
-    plots: [
-      {
-        type: 'line',
-        options: {
-          data: props.meterSystemWaterLevel.loaded
-            ? props.meterSystemWaterLevel.result.map((item: any) => ({ ...item, value: 100 }))
-            : [],
-          xField: 'from',
-          yField: 'value',
-          xAxis: false,
-          yAxis: {
-            type: 'log',
-            max: 100000,
-          },
-          label: {
-            offsetY: -8,
-          },
-          meta: {
-            value: {
-              alias: '平均租金(元)',
-            },
-          },
-          color: '#FF6B3B',
-        },
-      },
-      {
-        type: 'Area',
-        options: {
-          yAxis: {},
-          height: 320,
-          data: props.meterSystemWaterLevel.loaded ? props.meterSystemWaterLevel.result : [],
-          padding: 'auto',
-          xField: 'from',
-          yField: 'value',
-        },
-      },
-    ],
-  };
-
   return (
     <StatisticCard
+      className={className}
       title="Gráfico de Nível"
       extra={
-        <LightFilter style={{ width: 360 }}>
+        <LightFilter style={{ width: onlyWidth > 767 ? 360 : 275 }}>
           <ProFormDateRangePicker
             name="startdate"
             label={<strong>Periodo</strong>}
@@ -107,9 +81,10 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       chart={
         <Spin spinning={props.meterSystemWaterLevel.loading}>
           <Mix
-            appendPadding={8}
+            appendPadding={0}
             tooltip={{
               shared: true,
+              
             }}
             syncViewPadding={true}
             plots={[
@@ -117,15 +92,20 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
                 type: 'line',
                 options: {
                   data: props.meterSystemWaterLevel.loaded
-                    ? props.meterSystemWaterLevel.result.map((item: any) => ({ ...item, value: 380 }))
+                    ? props.meterSystemWaterLevel.result.map((item: any) => ({
+                        ...item,
+                        value: 380 / 100,
+                      }))
                     : [],
                   xField: 'from',
-                  yField: 'value', 
-                  yAxis: { 
-                    max: 400, 
-                
+                  yField: 'value',
+                  yAxis: {
+                    max: 400 / 100,
+                    label: {
+                      formatter: (item: string) => `${item} m`,
+                    },
                   },
-                   
+
                   meta: {
                     value: {
                       alias: 'Valor Maximo',
@@ -138,15 +118,20 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
                 type: 'line',
                 options: {
                   data: props.meterSystemWaterLevel.loaded
-                    ? props.meterSystemWaterLevel.result.map((item: any) => ({ ...item, value: 100 }))
+                    ? props.meterSystemWaterLevel.result.map((item: any) => ({
+                        ...item,
+                        value: 100 / 100,
+                      }))
                     : [],
                   xField: 'from',
-                  yField: 'value', 
-                  yAxis: { 
-                    max: 400, 
-                    
+                  yField: 'value',
+                  yAxis: {
+                    max: 400 / 100,
+                    label: {
+                      formatter: (item: string) => `${item} m`,
+                    },
                   },
-                   
+
                   meta: {
                     value: {
                       alias: 'Valor Mínimo',
@@ -158,16 +143,27 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
               {
                 type: 'area',
                 options: {
-                  yAxis: {},
+                  yAxis: {
+                    label: {
+                      formatter: (item: string) => `${item} m`,
+                    },
+                  },
                   height: 320,
-                  data: props.meterSystemWaterLevel.loaded ? props.meterSystemWaterLevel.result : [],
+                  data: props.meterSystemWaterLevel.loaded
+                    ? props.meterSystemWaterLevel.result
+                    : [],
                   padding: 'auto',
                   xField: 'from',
                   yField: 'value',
+                  meta: {
+                    value: {
+                      alias: 'Valor',
+                    },
+                  },
                 },
               },
             ]}
-          /> 
+          />
         </Spin>
       }
     ></StatisticCard>

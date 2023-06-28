@@ -5,19 +5,16 @@ import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { PivotStatusColor } from '@/utils/pivot-status';
 import {
-  CalendarOutlined,
   CaretDownOutlined,
   ClockCircleOutlined,
   CloseCircleFilled,
   CloudFilled,
-  DownloadOutlined,
   EditFilled,
   HistoryOutlined,
-  RedoOutlined,
   ThunderboltFilled,
 } from '@ant-design/icons';
 import { G2, Line, Pie } from '@ant-design/plots';
-import { ProCard, ProTable, StatisticCard } from '@ant-design/pro-components';
+import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
 import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
@@ -27,6 +24,8 @@ import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
+import PivotEventTable from '../Tables/PivotEventTable';
+import PivotOperationTable from '../Tables/PivotOperationTable';
 
 const { Statistic } = StatisticCard;
 
@@ -783,13 +782,13 @@ const PivotReport: React.FC<Props> = (props) => {
   const data = [
     {
       type: 'Horas em pico',
-      value: parseInt(
-        props.pivotReport.result?.energy_consumption?.ponta?.hours.toString(),
-      ),
+      value: parseInt(props.pivotReport.result?.energy_consumption?.ponta?.hours.toString()),
     },
     {
       type: 'Horas em fora de pico',
-      value: parseInt(props.pivotReport.result?.energy_consumption?.fora_de_ponta?.hours?.toString()),
+      value: parseInt(
+        props.pivotReport.result?.energy_consumption?.fora_de_ponta?.hours?.toString(),
+      ),
     },
     {
       type: 'Horas em reduzido',
@@ -1169,7 +1168,69 @@ const PivotReport: React.FC<Props> = (props) => {
             />
           </ProCard>
 
-          <ProCard split="horizontal" colSpan={{ xs: 24, lg: 24 }}>
+          <ProCard
+            split="horizontal"
+            colSpan={{ xs: 24, lg: 24 }}
+            style={{ height: onlyWidth > 767 ? 350 : '100%' }}
+          >
+            <StatisticCard
+              colSpan={{ xs: 24, lg: 24 }}
+              style={{ width: '100%' }}
+              title="Custo total de energia (R$)"
+              chart={
+                <Pie
+                  height={275}
+                  appendPadding={10}
+                  data={data}
+                  angleField="value"
+                  colorField="type"
+                  radius={1}
+                  legend={{
+                    position: 'right',
+                    layout: 'vertical',
+                  }}
+                  autoFit
+                  innerRadius={0.6}
+                  statistic={{
+                    title: false,
+                    content: {
+                      style: {
+                        whiteSpace: 'pre-wrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontSize: '16px',
+                      },
+                      content: 'R$130,00\nTotal',
+                    },
+                  }}
+                  color={({ type }) => {
+                    if (type === 'Horas em pico') {
+                      return '#ff4d4f';
+                    } else if (type === 'Horas em fora de pico') {
+                      return '#4169E1';
+                    }
+                    return '#40E0D0';
+                  }}
+                  label={{
+                    type: 'inner',
+                    offset: '-50%',
+                    content: '{value}',
+                    style: {
+                      textAlign: 'center',
+                      fontSize: 13,
+                    },
+                  }}
+                  interactions={[
+                    {
+                      type: 'element-selected',
+                    },
+                    {
+                      type: 'element-active',
+                    },
+                  ]}
+                />
+              }
+            />
             <ProCard
               colSpan={{ xs: 24, lg: 24 }}
               wrap
@@ -1177,63 +1238,48 @@ const PivotReport: React.FC<Props> = (props) => {
               style={{ height: onlyWidth > 767 ? 350 : '100%' }}
             >
               <StatisticCard
+                title={'Tensões do Pivô '}
                 colSpan={{ xs: 24, lg: 16 }}
                 style={{ width: '100%' }}
-                title="Custo total de energia (R$)"
                 chart={
-                  <Pie
-                    height={250}
-                    appendPadding={10}
-                    data={data}
-                    angleField="value"
-                    colorField="type"
-                    radius={1}
+                  <Line
                     legend={{
-                      position: 'right',
-                      layout: 'vertical',
+                      position: 'top',
                     }}
-                    autoFit
-                    innerRadius={0.6}
-                    statistic={{
-                      title: false,
-                      content: {
-                        style: {
-                          whiteSpace: 'pre-wrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          fontSize: '16px',
-                        },
-                        content: 'R$130,00\nTotal',
+                    tooltip={{
+                      formatter: (datum) => {
+                        return {
+                          name: 'Tensão',
+                          value: `${parseFloat(datum.scales).toFixed(2)}(V)`,
+                        };
                       },
                     }}
-                    color={({ type }) => {
-                      if (type === 'Horas em pico') {
-                        return '#ff4d4f';
-                      } else if (type === 'Horas em fora de pico') {
-                        return '#4169E1';
-                      }
-                      return '#40E0D0';
-                    }}
-                    label={{
-                      type: 'inner',
-                      offset: '-50%',
-                      content: '{value}',
-                      style: {
-                        textAlign: 'center',
-                        fontSize: 13,
+                    height={260}
+                    data={
+                      props.pivotReport.result?.voltage_array
+                        ? props.pivotReport.result?.voltage_array?.map((item) => {
+                            return {
+                              Date: new Date(item.date).toISOString().split('T')[0],
+                              scales: item.voltage,
+                            };
+                          })
+                        : []
+                    }
+                    padding="auto"
+                    xField="Date"
+                    yField="scales"
+                    yAxis={{
+                      label: {
+                        formatter: (v) => `${parseInt(v)}V`,
                       },
                     }}
-                    interactions={[
-                      {
-                        type: 'element-selected',
-                      },
-                      {
-                        type: 'element-active',
-                      },
-                    ]}
+                    xAxis={{
+                      tickCount: 5,
+                    }}
+                    slider={false}
                   />
                 }
-              />
+              ></StatisticCard>
               <ProCard split="vertical" colSpan={{ xs: 24, lg: 8 }}>
                 <ProCard split="horizontal">
                   <ProCard split="horizontal">
@@ -1272,59 +1318,12 @@ const PivotReport: React.FC<Props> = (props) => {
                 </ProCard>
               </ProCard>
             </ProCard>
-            <StatisticCard
-              title={'Tensões do Pivô (V)'}
-              colSpan={{ xs: 24, lg: 24 }}
-              chart={
-                <Line
-                  legend={{
-                    position: 'top',
-                  }}
-                  tooltip={{
-                    formatter: (datum) => {
-                      return {
-                        name: 'Tensão (V)',
-                        value: parseFloat(datum.scales).toFixed(2),
-                      };
-                    },
-                  }}
-              
-                  height={320}
-                  data={
-                    props.pivotReport.result?.voltage_array
-                      ? props.pivotReport.result?.voltage_array?.map((item) => {
-                          return {
-                            Date: new Date(item.date).toISOString().split('T')[0],
-                            scales: item.voltage,
-                          };
-                        })
-                      : []
-                  }
-                  padding="auto"
-                  xField="Date"
-                  yField="scales"
-                  xAxis={{
-                    tickCount: 5,
-                  }}
-                  slider={false}
-                />
-              }
-            />
           </ProCard>
         </ProCard>
         <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost className={classNameTableProCard}>
           <ProCard
-            style={{ minHeight: 1077 }}
-            title={
-              <Row justify="space-between" style={{ width: '100%' }}>
-                <Col>Histórico</Col>
-                <Col style={{ display: 'flex', gap: 12 }}>
-                  <Button icon={<DownloadOutlined />}>Exportar</Button>
-                  <Button icon={<CalendarOutlined />}></Button>
-                  <Button icon={<RedoOutlined />}></Button>
-                </Col>
-              </Row>
-            }
+            style={{ minHeight: 1032 }}
+            title="Histórico"
             tabs={{
               tabPosition: 'top',
               activeKey: tab,
@@ -1332,53 +1331,12 @@ const PivotReport: React.FC<Props> = (props) => {
                 {
                   label: `Eventos`,
                   key: 'tab1',
-                  children: (
-                    <ProTable<any>
-                      columns={[
-                        {
-                          title: 'Ocorrência',
-                          dataIndex: 'date',
-
-                          render: (value, item) => {
-                            return <>{new Date(item.created).toLocaleDateString()}</>;
-                          },
-                        },
-                        {
-                          title: 'Tipo',
-                          dataIndex: 'date',
-                          responsive: ['lg'],
-                          render: () => {
-                            return <>Atualização</>;
-                          },
-                        },
-                        {
-                          title: 'Status',
-                          dataIndex: 'date',
-                          render: () => {
-                            return <>Programado | Avanço | Molhado | 62%</>;
-                          },
-                        },
-                      ]}
-                      dataSource={props.pivotHistory.result}
-                      rowKey="key"
-                      pagination={{
-                        showQuickJumper: true,
-                        pageSize: 14,
-                      }}
-                      search={false}
-                      dateFormatter="string"
-                      toolbar={{
-                        title: 'Lista de eventos',
-                        tooltip: '这是一个标题提示',
-                      }}
-                      
-                    />
-                  ),
+                  children: <PivotEventTable />,
                 },
                 {
-                  label: `Lâminas`,
+                  label: `Operações`,
                   key: 'tab2',
-                  children: `内容二`,
+                  children: <PivotOperationTable />,
                 },
               ],
               onChange: (key) => {
@@ -1390,18 +1348,17 @@ const PivotReport: React.FC<Props> = (props) => {
 
           <StatisticCard
             style={{ marginTop: 16 }}
-            title="Comparativo de Pressão (bar)"
+            title="Comparativo de Pressão"
             chart={
               <Line
                 tooltip={{
                   formatter: (datum) => {
                     return {
                       name: datum.name,
-                      value: parseFloat(datum.value).toFixed(2),
+                      value: `${parseFloat(datum.value).toFixed(2)} bar`,
                     };
                   },
                 }}
-            
                 data={getComparative()}
                 xField="angle"
                 height={320}
@@ -1409,7 +1366,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 seriesField="name"
                 yAxis={{
                   label: {
-                    formatter: (v) => `${parseFloat(v).toFixed(1)}`,
+                    formatter: (v) => `${parseFloat(v).toFixed(1)} bar`,
                   },
                 }}
                 legend={false}
@@ -1435,12 +1392,11 @@ const PivotReport: React.FC<Props> = (props) => {
               tooltip={{
                 formatter: (datum) => {
                   return {
-                    name:`Pressão no ângulo ${datum.Ângulo}°` ,
+                    name: `Pressão no ângulo ${datum.Ângulo}°`,
                     value: parseFloat(datum.value).toFixed(2),
                   };
                 },
               }}
-          
               data={
                 props.pivotReport.result?.water_blade?.by_angle
                   ? props.pivotReport.result?.water_blade?.by_angle.map((item, index) => {

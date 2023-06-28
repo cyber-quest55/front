@@ -20,7 +20,7 @@ export const DevicePanel: React.FC<Props> = (props) => {
     return (
         <>
             <Space direction="vertical" style={{ width: '100%' }} size="large">
-                <Row justify="space-between" align="middle">
+                <Row justify="space-between" align="middle" gutter={[12, 12]}>
                     <Col>{props.status}</Col>
                     <Col>{props.actions}</Col>
                 </Row>

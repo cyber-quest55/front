@@ -18,12 +18,10 @@ import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 
- 
-
 type Props = {
   irpd: GetIrpdModelProps;
   irpdById: GetIrpdByIdModelProps;
-  iprdWaterConsumption: GetIrpdWaterModelProps; 
+  iprdWaterConsumption: GetIrpdWaterModelProps;
   selectedDevice: SelectedDeviceModelProps;
   dispatch: any;
 };
@@ -33,16 +31,16 @@ const PumpReport: React.FC<Props> = (props) => {
   const onlyWidth = useWindowWidth();
 
   const [tab, setTab] = useState('tab1');
- 
+
   const generalClassName = useEmotionCss(({ token }) => {
     return {
-      minHeight: '100vh',
+      height: '100vh',
       '.ant-pro-card-title ': {
         width: '100%',
       },
       [`@media screen and (max-width: ${token.screenMD}px)`]: {
         overflowY: 'auto',
-        maxHeight: 'calc(100vh - 110px)',
+        height: 'calc(100vh - 110px)',
       },
     };
   });
@@ -91,7 +89,7 @@ const PumpReport: React.FC<Props> = (props) => {
   };
 
   return (
-    <> 
+    <>
       <ProCard
         className={generalClassName}
         ghost
@@ -99,7 +97,7 @@ const PumpReport: React.FC<Props> = (props) => {
         gutter={[8, 8]}
         wrap
       >
-        <ProCard ghost colSpan={{ xs: 24, md: 14 }} style={{ height: 275 }} wrap gutter={[16, 16]}>
+        <ProCard ghost colSpan={{ xs: 24, md: 14 }} wrap gutter={[16, 16]}>
           <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
             <DeviceMapsRender height={275} />
           </ProCard>
@@ -186,7 +184,6 @@ const PumpReport: React.FC<Props> = (props) => {
 
         <ProCard
           colSpan={{ xs: 24, lg: 10 }}
-          wrap
           ghost
           className={classNameTableProCard}
           gutter={[0, 16]}
@@ -223,17 +220,17 @@ const PumpReport: React.FC<Props> = (props) => {
 export default connect(
   ({
     irpd,
-    irpdById, 
+    irpdById,
     selectedDevice,
     iprdWaterConsumption,
   }: {
     irpd: any;
-    irpdById: any; 
+    irpdById: any;
     selectedDevice: any;
     iprdWaterConsumption: any;
   }) => ({
     irpd,
-    irpdById, 
+    irpdById,
     selectedDevice,
     iprdWaterConsumption,
   }),

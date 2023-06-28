@@ -1,31 +1,35 @@
-import { AvatarDropdown, AvatarName, Footer, SelectLang } from '@/components';
+import { AvatarDropdown, AvatarName, SelectLang } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/user/index';
-import { LinkOutlined } from '@ant-design/icons';
+import { LinkOutlined, UserOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { LoadScript } from '@react-google-maps/api';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import { App } from 'antd';
+import dayjs from 'dayjs';
+import localeData from 'dayjs/plugin/localeData';
+import weekday from 'dayjs/plugin/weekday';
 import uniqid from 'uniqid';
 import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
-const isDev = process.env.NODE_ENV === 'development';
+import Logo from '../public/images/logo/icon-logo-white-192x192.png';
+import FarmSelect from './components/FarmSelect';
+import { errorConfig } from './requestErrorConfig'; 
+ const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
-import dayjs from 'dayjs';
-import weekday from "dayjs/plugin/weekday"
-import localeData from "dayjs/plugin/localeData"
 
-dayjs.extend(weekday)
-dayjs.extend(localeData)
+dayjs.extend(weekday);
+dayjs.extend(localeData);
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<{
+  collapsed: boolean,
   settings?: Partial<LayoutSettings>;
   currentUser?: Models.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<Models.CurrentUser | undefined>;
 }> {
+  
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({
@@ -41,40 +45,65 @@ export async function getInitialState(): Promise<{
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
+      collapsed: true,
       fetchUserInfo,
       currentUser,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
   return {
+    collapsed: true,
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
-}
+} 
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 const loaderId = uniqid('loader-');
 
-export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-  return { 
-    ...initialState?.settings,
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState}) => { 
 
-    actionsRender: () => [
-      <div key="SelectLang" style={{ color: 'white' }}>
-        <SelectLang />
-      </div>,
-      // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
-    ], 
-    
-    breakpoint: 'xs', 
-     avatarProps: {
-      src: initialState?.currentUser?.avatar,
-      title: <AvatarName />,
-      render: (_, avatarChildren) => {
+  return {
+    ...initialState?.settings,  
+    defaultCollapsed: true,
+    collapsed: initialState?.collapsed,
+    onCollapse: () => {
+      setInitialState({...initialState, collapsed: !initialState?.collapsed})
+    },
+    actionsRender: ({ collapsed, isMobile }) => {
+      if(collapsed && !isMobile) {
+         return []
+      }
+
+      if(collapsed && isMobile){ 
+        return [
+          <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
+            <SelectLang />
+          </div>,
+          // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
+        ]
+      }
+
+      return [
+        <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
+          <SelectLang />
+        </div>,
+        // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
+      ]
+      
+    }, 
+
+    logo: Logo, 
+    breakpoint: 'xs',
+    avatarProps: {
+      style: { color: 'rgba(255,255,255,0.75)' },
+      src: <UserOutlined />,
+      title: <AvatarName />, 
+      render: (props: any, avatarChildren: any,  ) => {
+        console.log(props)
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
-    menuFooterRender: (props) => props?.collapsed? null: <Footer />,
  
     onPageChange: () => {
       const { location } = history;
@@ -92,6 +121,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         ]
       : [],
     menuHeaderRender: undefined,
+
+    menuExtraRender: ({ collapsed }) => !collapsed && <FarmSelect />,
+
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
@@ -100,11 +132,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
         <App>
-          <LoadScript
-            id={loaderId}
-            loadingElement={<div>loadinqwewqeg</div>}
-            googleMapsApiKey=""
-          >
+          <LoadScript id={loaderId} loadingElement={<div>Carregando</div>} googleMapsApiKey="">
             {children}
           </LoadScript>
         </App>
@@ -116,6 +144,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
   };
 };
+
 
 /**
  * @name request 配置，可以配置错误处理

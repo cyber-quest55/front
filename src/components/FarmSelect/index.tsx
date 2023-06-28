@@ -1,101 +1,75 @@
 import { GetFarmModelProps } from '@/models/farm';
-import { LoadingOutlined } from '@ant-design/icons';
-import { useMount } from 'ahooks';
-import { Divider, Dropdown, Input, Space, theme } from 'antd';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { Select } from 'antd';
 import { connect } from 'dva';
-import React, { } from 'react';
-import { useEffect } from 'react';
-import { GiFarmTractor } from "react-icons/gi";
-import { Link, useParams } from '@umijs/max';
+import React, { useEffect } from 'react';
 
 export type FarmSelectProps = {
   name: string;
-  farm: GetFarmModelProps;
+  farm: GetFarmModelProps;  
   dispatch: any;
 };
 
-const { useToken } = theme;
-
 const FarmSelect: React.FC<FarmSelectProps> = (props) => {
-  const { token } = useToken();
-  const params = useParams()
+ 
+  const [farms, setFarms] = React.useState<Models.Farm[]>([]);
+  const [value] = React.useState<string>('');
 
-  const [farms, setFarms] = React.useState<Models.Farm[]>([])
-  const [value, setValue] = React.useState<string>('')
-
-  const contentStyle = {
-    backgroundColor: token.colorBgElevated,
-    borderRadius: token.borderRadiusLG,
-    boxShadow: token.boxShadowSecondary,
-  };
-
-  const menuStyle = {
-    boxShadow: 'none',
-  };
-
-  useMount(() => {
-    if (!props.farm.loaded)
-      props.dispatch({
-        type: 'farm/queryFarm',
-        payload: { id: params.id }
-      })
-  })
-
+ 
   /** When change the farm list*/
   useEffect(() => {
-    if (props.farm.loaded)
-      setFarms(props.farm.result.list as [])
-  }, [props.farm])
-
+    if (props.farm.loaded) setFarms(props.farm.result.list as []);
+  }, [props.farm]);
 
   /** To filter the farm list */
   useEffect(() => {
-    const toLower = value.toLowerCase()
-    const reg = new RegExp(toLower + '.*')
-    const newFarms = props.farm?.result?.list?.filter(item => item.name.toLowerCase().match(reg))
-    setFarms(newFarms)
-  }, [value])
+    const toLower = value.toLowerCase();
+    const reg = new RegExp(toLower + '.*');
+    const newFarms = props.farm?.result?.list?.filter((item) => item.name.toLowerCase().match(reg));
+    setFarms(newFarms);
+  }, [value]);
 
-  useEffect(() => {
-    props.dispatch({
-      type: 'farm/setSelectedFarm',
-      payload: props.farm.result?.list?.find(f => f.id === parseInt(params.id as string))
-    })
-  }, [params])
+  const classNameSelect = useEmotionCss(({token}) => {
+    return {
+      width: '100%', 
+      marginTop: 12,
+      border: '1px solid rgba(255,255,255,0.75)',
+      borderRadius: '6px',
+      '.ant-select-selection-item': {
+        fontWeight: 600,
+        fontSize: 14,
+        paddingInlineEnd: '35px !important',
+        color: 'rgba(255,255,255,0.75)',
 
-  const render = farms?.map((item) => ({
-    key: item.id,
-    label: <Link to={`/farms/${item.id}`}><span>{item.name}</span></Link>
-  }))
+      },
+      '.ant-select-selector': { 
+      },
+      '.ant-select-arrow': {
+        color: token.colorTextLightSolid,
+        fontSize: 16,
+      },
+    };
+  });
 
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setValue(value)
-  }
-  return props.farm.loading ? <LoadingOutlined /> :
-    <Dropdown
-      trigger={['click']}
-      placement='topRight'
-      menu={{ items: render }}
-      dropdownRender={(menu) => (
-        <div style={contentStyle}><Divider style={{ margin: 0 }} />
-          <Space style={{ padding: 8 }}>
-            Fazendas
-          </Space>
-          <Divider style={{ margin: 0 }} />
-
-          {React.cloneElement(menu as React.ReactElement, { style: menuStyle })}
-          <Divider style={{ margin: 0 }} />
-          <Space style={{ padding: 8 }}>
-            <Input onChange={onChangeInput} value={value} />
-          </Space>
-        </div>
-      )}
-    >
-      <GiFarmTractor style={{ width: 22, height: 22 }} />
-    </Dropdown>
+  return (
+    <Select
+      loading={props.farm.loading}
+      className={classNameSelect}
+       showSearch
+      bordered={false}
+      value={props.farm.selectedFarm?.name?.toString()}
+      size="large"
+      filterOption={(input, option) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+      }
+      options={props.farm.result.list?.map((item) => ({
+        value: item.id,
+        label: item.name,
+      }))}
+    />
+  );
 };
 
 export default connect(({ farm }: { farm: any }) => ({
   farm,
-}))(FarmSelect);  
+}))(FarmSelect);

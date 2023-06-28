@@ -39,7 +39,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const params = useParams();
   const onlyWidth = useWindowWidth();
 
-  const [zoom, setZoom] = useState(14);
+  const [zoom, setZoom] = useState(13);
   const [map, setMap] = useState<any>(null);
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
   const [showPivots, setShowPivots] = useState(true);
@@ -49,7 +49,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
 
   const containerStyle = {
     width: '100%',
-    height: onlyWidth > 1210 ? '100vh' : 'calc(100vh -  102px)',
+    height: onlyWidth > 767 ? '100vh' : 'calc(100vh -  102px)',
   };
 
   useEffect(() => {

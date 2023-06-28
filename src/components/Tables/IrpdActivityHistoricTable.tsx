@@ -2,7 +2,7 @@ import { GetIrpdHistoryModelProps } from '@/models/irpd-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { PumpHistoryOrigin } from '@/utils/enums';
 import { formatDate } from '@/utils/get-formated-date';
-import { DownloadOutlined, RedoOutlined } from '@ant-design/icons';
+import { DownloadOutlined } from '@ant-design/icons';
 import {
   LightFilter,
   ProDescriptions,
@@ -146,9 +146,6 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
           filter: (
             <Space>
               <Button icon={<DownloadOutlined />}>Exportar</Button>
-              <Button loading={props.irpdHistory.loading} onClick={update} icon={<RedoOutlined />}>
-                Atualizar
-              </Button>
             </Space>
           ),
         }}
