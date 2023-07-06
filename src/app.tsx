@@ -56,7 +56,7 @@ export async function getInitialState(): Promise<{
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
-// testing 2
+// testing 3
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 const loaderId = uniqid('loader-');
 
