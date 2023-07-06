@@ -88,7 +88,6 @@
     "@types/react-dom": "^18.0.11",
     "@types/react-helmet": "^6.1.6",
     "@types/react-scroll": "^1.8.7",
-    "@types/socket.io-client": "^2.3.0",
     "@types/uniqid": "^5.3.2",
     "@umijs/fabric": "^2.14.1",
     "@umijs/lint": "^4.0.52",
