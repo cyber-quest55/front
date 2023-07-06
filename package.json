@@ -72,7 +72,6 @@
     "react-scroll": "^1.8.9",
     "react-static-google-map": "^0.9.0",
     "react-svg": "^16.1.8",
-    "socket.io-client": "^2.3.0",
     "spherical-geometry-js": "^3.0.0",
     "uniqid": "^5.4.0"
   },

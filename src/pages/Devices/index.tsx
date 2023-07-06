@@ -95,7 +95,7 @@ const Devices: FunctionComponent<Props> = (props) => {
           {onlyWidth > 767 ? (
             <Spin spinning={props.pivot.loading || props.farm.loading}>
               <div style={{ width: '100%', height: '100vh' }}>
-                <RenderDotDevices />
+                <RenderDotDevices  />
               </div>
               <ProCard className={className}>
                 <DeviceList />

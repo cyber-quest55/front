@@ -104,6 +104,9 @@ export default defineConfig({
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
   },
+  codeSplitting: {
+    jsStrategy: 'granularChunks'
+  },
   /**
    * @name antd 插件
    * @description 内置了 babel import 插件

@@ -1,7 +1,12 @@
 export default {
-  "menu.Fazenda": "Farm",
+  "menu.Control": "Control",
   "menu.Notificações": "Notifications",
   "menu.Dispositivos": "Devices",
-  "menu.Fazenda.Criar Fazenda": "Create Farm",
-  "menu.Fazenda.Sua Fazenda": "Your Farm"
+  "menu.Control.Criar Fazenda": "Create Farm",
+  "menu.Control.Sua Fazenda": "Your Farm",
+  "menu.Radio": "Radio",
+  "menu.Clima": "Climate",
+  "menu.Relatórios": "Reports",
+  "menu.Relatórios.Relatório do Negócio": "Business Report",
+  "menu.Relatórios.Relatório da Fazenda": "Farm Report",
 };

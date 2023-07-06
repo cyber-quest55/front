@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
  * @name umi 的路由配置
  * @description 只支持 path,component,routes,redirect,wrappers,name,icon 的配置
  * @param path  path 只支持两种占位符配置，第一种是动态参数 :id 的形式，第二种是 * 通配符，通配符只能出现路由字符串的最后。
@@ -26,19 +25,37 @@ export default [
 
   {
     path: '/farms/',
-    name: 'Control', 
+    name: 'Control',
     icon: 'formOutlined',
     routes: [
       {
         path: '/farms/:id',
-        name: 'Sua Fazenda', 
+        name: 'Sua Fazenda',
         component: './Farms/[id].tsx',
       },
       {
         path: '/farms/create',
         name: 'Criar Fazenda',
         component: './Farms/create.tsx',
-        },
+      },
+    ],
+  },
+  {
+    path: '/report/',
+    name: 'Relatórios',
+    icon: 'pieChartOutlined',
+    component: './Devices',
+    routes: [
+      {
+        path: '/report/farms/:id',
+        name: 'Relatório do Negócio',
+        component: './Farms/[id].tsx',
+      },
+      {
+        path: '/report/farms/create',
+        name: 'Relatório da Fazenda',
+        component: './Farms/create.tsx',
+      },
     ],
   },
   {
@@ -47,12 +64,20 @@ export default [
     icon: 'deploymentUnitOutlined',
     component: './Devices',
   },
+
   {
     path: '/notifications/',
     name: 'Notificações',
     icon: 'bellOutlined',
-    component: './Notifications', 
+    component: './Notifications',
   },
+  {
+    path: '/climate/farms/:id/',
+    name: 'Clima',
+    icon: 'heatMapOutlined',
+    component: './Climate',
+  },
+
   {
     path: '/admin',
     name: 'admin',

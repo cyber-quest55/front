@@ -13,8 +13,8 @@ import uniqid from 'uniqid';
 import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect';
-import { errorConfig } from './requestErrorConfig'; 
- const isDev = process.env.NODE_ENV === 'development';
+import { errorConfig } from './requestErrorConfig';
+const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
 dayjs.extend(weekday);
@@ -23,13 +23,12 @@ dayjs.extend(localeData);
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<{
-  collapsed: boolean,
+  collapsed: boolean;
   settings?: Partial<LayoutSettings>;
   currentUser?: Models.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<Models.CurrentUser | undefined>;
 }> {
-  
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({
@@ -56,32 +55,31 @@ export async function getInitialState(): Promise<{
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
-} 
+}
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 const loaderId = uniqid('loader-');
 
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState}) => { 
-
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    ...initialState?.settings,  
+    ...initialState?.settings,
     defaultCollapsed: true,
     collapsed: initialState?.collapsed,
     onCollapse: () => {
-      setInitialState({...initialState, collapsed: !initialState?.collapsed})
+      setInitialState({ ...initialState, collapsed: !initialState?.collapsed });
     },
     actionsRender: ({ collapsed, isMobile }) => {
-      if(collapsed && !isMobile) {
-         return []
+      if (collapsed && !isMobile) {
+        return [];
       }
 
-      if(collapsed && isMobile){ 
+      if (collapsed && isMobile) {
         return [
           <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
             <SelectLang />
           </div>,
           // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
-        ]
+        ];
       }
 
       return [
@@ -89,22 +87,20 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState}) =>
           <SelectLang />
         </div>,
         // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
-      ]
-      
-    }, 
+      ];
+    },
 
-    logo: Logo, 
+    logo: Logo,
     breakpoint: 'xs',
     avatarProps: {
-      style: { color: 'rgba(255,255,255,0.75)' },
+      style: { color: 'rgba(255,255,255,0.75)', padding: 0 },
       src: <UserOutlined />,
-      title: <AvatarName />, 
-      render: (props: any, avatarChildren: any,  ) => {
-        console.log(props)
+      title: <AvatarName />,
+      render: (props: any, avatarChildren: any) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
- 
+
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
@@ -132,7 +128,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState}) =>
       // if (initialState?.loading) return <PageLoading />;
       return (
         <App>
-          <LoadScript id={loaderId} loadingElement={<div>Carregando</div>} googleMapsApiKey="">
+          <LoadScript libraries={["visualization"]} id={loaderId} loadingElement={<div>Carregando</div>} googleMapsApiKey="">
             {children}
           </LoadScript>
         </App>
@@ -144,7 +140,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState}) =>
     },
   };
 };
-
 
 /**
  * @name request 配置，可以配置错误处理
