@@ -148,13 +148,13 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
                       formatter: (item: string) => `${item} m`,
                     },
                   },
-                  height: 320,
+                  // height: 320 as any,
                   data: props.meterSystemWaterLevel.loaded
                     ? props.meterSystemWaterLevel.result
                     : [],
                   padding: 'auto',
                   xField: 'from',
-                  yField: 'value',
+                  yField: 'value' as any,
                   meta: {
                     value: {
                       alias: 'Valor',

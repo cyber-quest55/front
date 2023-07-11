@@ -25,6 +25,7 @@ export default () => {
         setInitialState((s) => ({
           ...s,
           currentUser: userInfo,
+          collapsed: initialState?.collapsed? true: false
         }));
       });
     }
