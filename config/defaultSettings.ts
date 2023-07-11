@@ -13,6 +13,7 @@ const Settings: ProLayoutProps & {
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
+  siderMenuType:'group',
   colorWeak: false,
   title: 'Irricontrol',
   pwa: true, 
@@ -38,10 +39,10 @@ const Settings: ProLayoutProps & {
       colorTextMenuSelected: "#fff",
       colorTextMenu: '#fff',
     },
-
+ 
     sider: {
       colorBgCollapsedButton: '#fff',
-    
+      
       colorTextCollapsedButtonHover: 'rgba(0,0,0,0.65)',
       colorTextCollapsedButton: 'rgba(0,0,0,0.45)',
       colorMenuBackground: '#2f4050',
@@ -59,6 +60,5 @@ const Settings: ProLayoutProps & {
     },
     
   },
-};
-
+}; 
 export default Settings;
