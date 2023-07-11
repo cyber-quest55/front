@@ -6,11 +6,13 @@ import RenderPivots from '@/components/RenderPivots';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { DeviceType } from '@/utils/enums';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useWindowWidth } from '@react-hook/window-size';
-import { useUnmount } from 'ahooks';
+import {  history, useParams } from '@umijs/max';
+import { useMount, useUnmount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
@@ -22,11 +24,14 @@ type Props = {
   pivot: GetPivotModelProps;
   farm: GetFarmModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  selectedFarm: SelectedFarmModelProps;
 };
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const onlyWidth = useWindowWidth();
   const [activeKey, setActiveKey] = useState('1');
+  const params = useParams();
+
   //const [isConnected, setIsConnected] = useState(false);
 
   /**
@@ -73,6 +78,30 @@ const Welcome: FunctionComponent<Props> = (props) => {
       }
     }
   };
+
+  useEffect(() => {
+    if ( props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [props.selectedFarm]);
+
+
+  useEffect(() => {
+    if ( params.id === ':id' && props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [params, props.selectedFarm]);
+
+
+  useMount(() => {
+    if (!props.farm.loaded)
+      props.dispatch({
+        type: 'farm/queryFarm',
+        payload: { id: params.id },
+      });
+  });
 
   useUnmount(() => {
     props.dispatch({
@@ -151,7 +180,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     if (props.selectedDevice.open && onlyWidth < 767) {
-      setActiveKey("3");
+      setActiveKey('3');
     }
   }, [props.selectedDevice]);
 
@@ -207,9 +236,20 @@ const Welcome: FunctionComponent<Props> = (props) => {
 };
 
 export default connect(
-  ({ pivot, farm, selectedDevice }: { pivot: any; farm: any; selectedDevice: any }) => ({
+  ({
     pivot,
     farm,
     selectedDevice,
+    selectedFarm,
+  }: {
+    pivot: any;
+    farm: any;
+    selectedDevice: any;
+    selectedFarm: any;
+  }) => ({
+    pivot,
+    farm,
+    selectedDevice,
+    selectedFarm,
   }),
 )(Welcome);

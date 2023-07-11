@@ -24,6 +24,23 @@ export const AvatarName = () => {
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
   const onlyWidth = useWindowWidth();
 
+  const className = useEmotionCss(({}) => {
+    return {
+      [`.ant-pro-card-body`]: {
+        paddingInline: '0px !important',
+      },
+      '.ant-pro-list-row-title': {
+        width: '100%',
+      },
+      '.ant-list-item .ant-list-item-meta': {
+        marginBlockEnd: 0,
+      },
+      '.anticon': {
+        color: 'rgba(255, 255, 255, 0.75)'
+      },
+    };
+  });
+
   /**
    * 退出登录，并且将当前的 url 保存
    */
@@ -158,6 +175,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
 
   return (
     <HeaderDropdown
+      className={className}
       menu={{
         selectedKeys: [],
         onClick: onMenuClick,
