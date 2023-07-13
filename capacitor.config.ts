@@ -1,11 +1,12 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'br.com.irricontrol',
-  appName: 'Irricontrol',
-  bundledWebRuntime: false,
+  appId: 'com.example.app',
+  appName: 'ant-design-pro',
   webDir: 'dist',
-  cordova: {},
+  server: {
+    androidScheme: 'https'
+  }
 };
 
 export default config;

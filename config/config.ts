@@ -160,5 +160,5 @@ export default defineConfig({
   requestRecord: {},
   define: { 
     "MAPS_KEY": "&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU", 
-  }
+  }, 
 });

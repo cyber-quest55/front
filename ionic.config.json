@@ -1,7 +1,0 @@
-{
-  "name": "Irricontrol",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react"
-}

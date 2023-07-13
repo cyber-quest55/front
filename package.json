@@ -21,7 +21,7 @@
     "openapi": "max openapi",
     "prepare": "husky install",
     "prettier": "prettier -c --write \"**/**.{js,jsx,tsx,ts,less,md,json}\"",
-    "preview": "npm run build && max preview --port 8000",
+    "preview": "npm run build  && max preview --port 8000",
     "record": "cross-env NODE_ENV=development REACT_APP_ENV=test max record --scene=login",
     "serve": "umi-serve",
     "start": "cross-env UMI_ENV=dev max dev",
@@ -32,7 +32,14 @@
     "test": "jest",
     "test:coverage": "npm run jest -- --coverage",
     "test:update": "npm run jest -- -u",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "init": "cap init",
+    "add-ios": "cap add ios",
+    "add-android": "cap add android",
+    "android": "max dev --android",
+    "ios": "max dev --ios",
+    "build-android": "max build --android",
+    "build-ios": "max build --ios"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
@@ -50,15 +57,9 @@
     "@ant-design/icons": "^4.8.0",
     "@ant-design/pro-components": "^2.4.4",
     "@ant-design/use-emotion-css": "1.0.4",
-    "@capacitor/android": "5.1.1",
-    "@capacitor/app": "5.0.5",
-    "@capacitor/core": "5.1.1",
-    "@capacitor/haptics": "5.0.5",
-    "@capacitor/ios": "5.1.1",
-    "@capacitor/keyboard": "5.0.5",
-    "@capacitor/status-bar": "5.0.5",
-    "@ionic/react": "^7.0.0",
-    "@ionic/react-router": "^7.0.0",
+    "@capacitor/android": "^5.1.1",
+    "@capacitor/core": "^5.1.1",
+    "@capacitor/ios": "^5.1.1",
     "@react-google-maps/api": "^2.18.1",
     "@react-hook/window-size": "^3.1.1",
     "@umijs/route-utils": "^2.2.2",
@@ -86,7 +87,7 @@
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.1.5",
-    "@capacitor/cli": "5.1.1",
+    "@capacitor/cli": "^5.1.1",
     "@testing-library/react": "^13.4.0",
     "@types/classnames": "^2.3.1",
     "@types/express": "^4.17.17",
@@ -102,8 +103,6 @@
     "@umijs/fabric": "^2.14.1",
     "@umijs/lint": "^4.0.52",
     "@umijs/max": "^4.0.59",
-    "@vitejs/plugin-legacy": "^4.0.2",
-    "@vitejs/plugin-react": "^4.0.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.34.0",
     "express": "^4.18.2",
@@ -117,9 +116,8 @@
     "swagger-ui-dist": "^4.15.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
-    "umi-presets-pro": "^2.0.2",
-    "vite": "^4.3.9",
-    "vitest": "^0.32.2"
+    "umi-plugin-capacitor": "^0.0.9",
+    "umi-presets-pro": "^2.0.2"
   },
   "engines": {
     "node": ">=12.0.0"

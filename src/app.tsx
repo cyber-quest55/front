@@ -15,7 +15,7 @@ import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
+const loginPath = '/farms/:id';
 
 type Libraries  = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[]
 
