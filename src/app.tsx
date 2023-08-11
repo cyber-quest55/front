@@ -17,7 +17,7 @@ import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
-type Libraries  = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[]
+type Libraries = ('drawing' | 'geometry' | 'localContext' | 'places' | 'visualization')[];
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
@@ -33,17 +33,14 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser({
-        skipErrorHandler: true,
-      });
-      return msg.data.profile;
+      const msg = await queryCurrentUser({});
+      return msg.profile;
     } catch (error) {
-      console.log('chegou aqui2')
       history.push(loginPath);
     }
     return undefined;
   };
-  
+
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
@@ -54,7 +51,6 @@ export async function getInitialState(): Promise<{
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
-  console.log('chegou aqui')
   return {
     collapsed: true,
     fetchUserInfo,
@@ -64,7 +60,7 @@ export async function getInitialState(): Promise<{
 // testing 4
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 const loaderId = uniqid('loader-');
-const libraries:  Libraries = ['visualization']
+const libraries: Libraries = ['visualization'];
 
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
@@ -95,8 +91,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
       ];
     },
-    siderMenuType: initialState?.collapsed? 'sub': 'group',
-    
+    siderMenuType: initialState?.collapsed ? 'sub' : 'group',
+
     logo: Logo,
     breakpoint: 'xs',
     avatarProps: {
@@ -110,7 +106,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 
     onPageChange: () => {
       const { location } = history;
-      console.log(initialState?.currentUser)
+      console.log(initialState?.currentUser);
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
@@ -135,7 +131,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // if (initialState?.loading) return <PageLoading />;
       return (
         <App>
-          <LoadScript libraries={libraries}   id={loaderId} loadingElement={<div>Carregando</div>} googleMapsApiKey="">
+          <LoadScript
+            libraries={libraries}
+            id={loaderId}
+            loadingElement={<div>Carregando</div>}
+            googleMapsApiKey=""
+          >
             {children}
           </LoadScript>
         </App>

@@ -26,6 +26,7 @@ export default () => {
         const msg: any = await queryCurrentUser({
           skipErrorHandler: true,
         });
+        console.log('funcionou1', msg)
         return msg.profile;
       } catch  {
         

@@ -4,6 +4,7 @@ import Mock from 'mockjs';
 export const GetCurrentUserResponse: IResponse<API.LoginResult> = Mock.mock({
     profile: {
       id: 1851,
+      name: "geremias",
       birth: null,
       country: 'BR',
       state: null,
