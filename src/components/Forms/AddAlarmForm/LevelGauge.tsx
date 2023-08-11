@@ -2,7 +2,7 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import { Button, Col, Form, Row, Space, Steps } from "antd";
 import { TinyArea } from '@ant-design/plots';
 import { useState } from "react";
-import { useWindowWidth } from '@react-hook/window-size'
+
 
 import {
     ModalForm,
@@ -15,11 +15,11 @@ import {
     ProFormText,
     ProFormTimePicker
 } from "@ant-design/pro-components";
+import { useScreenHook } from "@/hooks/screen";
 
 const AddLevelGaugeForm = () => {
     const [form] = Form.useForm<any>();
-    const onlyWidth = useWindowWidth()
-
+    const { lg } = useScreenHook();
     const [step, setStep] = useState(0)
 
     const data = [
@@ -45,7 +45,7 @@ const AddLevelGaugeForm = () => {
             }}
             trigger={
                 <Button
-                    size={onlyWidth > 1100 ? "large" : "middle"}
+                    size={lg ? "large" : "middle"}
                     type="primary"
                     icon={<PlusCircleFilled />}>
                     Adicionar Alarme

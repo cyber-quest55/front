@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { GetMeterSystemResponse } from './data/metersystem';
 import { GetRepeaterResponse } from './data/repeater';
 
 const waitTime = (time: number = 100) => {

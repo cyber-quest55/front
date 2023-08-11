@@ -1,3 +1,4 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
@@ -5,7 +6,7 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap, HeatmapLayer } from '@react-google-maps/api';
-import { useWindowWidth } from '@react-hook/window-size';
+;
 import { connect } from 'dva';
 import React, { useState } from 'react';
 
@@ -21,7 +22,7 @@ export type RenderPivotsProps = {
 };
 
 const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
-  const onlyWidth = useWindowWidth();
+  const { xl } = useScreenHook();
 
   const [zoom, setZoom] = useState(14);
   const [map, setMap] = useState<any>(null);
@@ -29,7 +30,7 @@ const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
 
   const containerStyle = {
     width: '100%',
-    height: onlyWidth > 1210 ? '100vh' : 'calc(100vh -  102px)',
+    height: xl ? '100vh' : 'calc(100vh -  102px)',
   };
 
   const data = [

@@ -6,7 +6,7 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { ProCard } from '@ant-design/pro-components';
 import Field from '@ant-design/pro-field';
 import { GoogleMap } from '@react-google-maps/api';
-import { useWindowWidth } from '@react-hook/window-size';
+;
 import { useParams } from '@umijs/max';
 import { Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
@@ -15,6 +15,7 @@ import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import RepeaterDevice from '../Devices/Repeater';
 import WaterPumpDevice from '../Devices/WaterPump';
+import { useScreenHook } from '@/hooks/screen';
 
 const scrollToBottom = () => {
   setTimeout(() => {
@@ -37,7 +38,7 @@ export type RenderPivotsProps = {
 
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const params = useParams();
-  const onlyWidth = useWindowWidth();
+  const { md, xl } = useScreenHook();
 
   const [zoom, setZoom] = useState(13);
   const [map, setMap] = useState<any>(null);
@@ -46,10 +47,10 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const [showPump, setShowPump] = useState(true);
   const [showMetter, setShowMetter] = useState(true);
   const [showRepeaters, setShowRepeaters] = useState(true);
-
+ 
   const containerStyle = {
     width: '100%',
-    height: onlyWidth > 767 ? '100vh' : 'calc(100vh -  102px)',
+    height: md ? '100vh' : 'calc(100vh -  102px)',
   };
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
 
   return (
     <>
-      {onlyWidth > 1210 ? (
+      {xl ? (
         <Space
           style={{
             position: 'absolute',

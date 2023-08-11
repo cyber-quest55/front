@@ -1,8 +1,9 @@
+import { useScreenHook } from '@/hooks/screen';
 import { TinyArea } from '@ant-design/charts';
 import { BellOutlined, DeleteFilled, EditFilled } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
+;
 import { Button, Col, Row, Space, Switch, Tag, Typography } from 'antd';
 import React, { ReactNode, ReactText, useState } from 'react';
 
@@ -32,6 +33,8 @@ export type AlarmPivotMonitorListProps = {
 };
 
 const LevelGaugeList: React.FC<AlarmPivotMonitorListProps> = (props) => {
+    const { lg } = useScreenHook();
+
     const data = [
         264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539, 243, 226, 192,
     ];
@@ -71,8 +74,6 @@ const LevelGaugeList: React.FC<AlarmPivotMonitorListProps> = (props) => {
 
         };
     })
-
-    const onlyWidth = useWindowWidth()
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
 
@@ -185,9 +186,9 @@ const LevelGaugeList: React.FC<AlarmPivotMonitorListProps> = (props) => {
                     },
                     actions: {
                         render: () => [
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
-                            <Button size={onlyWidth > 1100 ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
-                            <Switch size={onlyWidth > 1100 ? "default" : "small"} key="1-swtich" />
+                            <Button size={lg ? "middle" : "small"} key="1-btn-" icon={<EditFilled />} />,
+                            <Button size={lg ? "middle" : "small"} key="2-btn-" icon={<DeleteFilled />} />,
+                            <Switch size={lg ? "default" : "small"} key="1-swtich" />
                         ],
                     },
                     subTitle: {

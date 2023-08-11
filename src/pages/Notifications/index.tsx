@@ -4,7 +4,7 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Tabs } from 'antd';
 import React, { useState } from 'react';
-import { useWindowWidth } from '@react-hook/window-size'
+
 import AlarmPivotList from '@/components/Lists/Alarm/AlarmPivotList';
 import AlarmPivotMonitorList from '@/components/Lists/Alarm/AlarmPivotMonitorList';
 import AddPivotMonitorAlarmForm from '@/components/Forms/AddAlarmForm/PivotMonitor';
@@ -18,9 +18,10 @@ import WaterGroupForm from '@/components/Forms/AddAlarmForm/WaterGroup';
 import AlarmServiceOrdersList from '@/components/Lists/Alarm/ServiceOrdersList';
 import ServiceOrdersForm from '@/components/Forms/AddAlarmForm/ServiceOrders';
 import AddFlowMetterAlarmForm from '@/components/Forms/AddAlarmForm/FlowMetter';
+import { useScreenHook } from '@/hooks/screen';
 
 const NoFoundPage: React.FC = () => {
-    const onlyWidth = useWindowWidth()
+    const { lg } = useScreenHook();
 
     const defaultData = [
         {
@@ -554,8 +555,8 @@ const NoFoundPage: React.FC = () => {
                 <ProCard>
                     <Tabs
                         defaultActiveKey="0"
-                        tabPosition={onlyWidth > 1100 ? "left" : "top"}
-                        style={{ maxHeight: onlyWidth > 1100 ? '100vh' : '100%' }}
+                        tabPosition={lg ? "left" : "top"}
+                        style={{ maxHeight: lg ? '100vh' : '100%' }}
                         items={tabs as any}
                     >
 

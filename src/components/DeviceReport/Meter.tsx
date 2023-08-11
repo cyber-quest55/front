@@ -1,14 +1,10 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
-import {
-  CaretDownOutlined,
-  CloseCircleFilled,
-  EditFilled,
-} from '@ant-design/icons';
+import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { useParams } from '@umijs/max';
 import { Button, Select, Space, Tag } from 'antd';
 import { useState } from 'react';
@@ -26,7 +22,7 @@ type Props = {
 
 const MeterReport: React.FC<Props> = (props) => {
   const params = useParams();
-  const onlyWidth = useWindowWidth();
+  const { md } = useScreenHook();
 
   const [tab, setTab] = useState('tab1');
 
@@ -38,7 +34,7 @@ const MeterReport: React.FC<Props> = (props) => {
       },
       [`@media screen and (max-width: ${token.screenMD}px)`]: {
         overflowY: 'auto',
-        height : 'calc(100vh - 110px)',
+        height: 'calc(100vh - 110px)',
       },
     };
   });
@@ -92,13 +88,13 @@ const MeterReport: React.FC<Props> = (props) => {
         gutter={[8, 8]}
         wrap
       >
-        <ProCard ghost colSpan={{ xs: 24, md: 14 }}   wrap gutter={[16, 16]}>
+        <ProCard ghost colSpan={{ xs: 24, md: 14 }} wrap gutter={[16, 16]}>
           <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
             <DeviceMapsRender height={275} />
           </ProCard>
           <ProCard
             colSpan={{ xs: 24, md: 16, xxl: 15 }}
-            style={{ height: onlyWidth > 767 ? 275 : '100%' }}
+            style={{ height: md ? 275 : '100%' }}
           >
             <DevicePanel
               actions={
@@ -131,12 +127,11 @@ const MeterReport: React.FC<Props> = (props) => {
               }
               extra={
                 <Space direction="vertical" size="middle">
-                  
                   <Space size="small">
-                    <Space style={{color: 'red'}}>Valor máximo: 100%</Space>
+                    <Space style={{ color: 'red' }}>Valor máximo: 100%</Space>
                   </Space>
                   <Space size="small">
-                    <Space style={{color: 'orange'}}>Valor mínimo: 47%</Space>
+                    <Space style={{ color: 'orange' }}>Valor mínimo: 47%</Space>
                   </Space>
                 </Space>
               }
@@ -163,7 +158,7 @@ const MeterReport: React.FC<Props> = (props) => {
             tabs={{
               tabPosition: 'top',
               activeKey: tab,
-              items: [ 
+              items: [
                 {
                   label: `Medições`,
                   key: 'tab1',

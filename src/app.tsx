@@ -15,7 +15,7 @@ import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/farms/:id';
+const loginPath = '/user/login';
 
 type Libraries  = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[]
 
@@ -27,21 +27,23 @@ dayjs.extend(localeData);
 export async function getInitialState(): Promise<{
   collapsed: boolean;
   settings?: Partial<LayoutSettings>;
-  currentUser?: Models.CurrentUser;
+  currentUser?: any;
   loading?: boolean;
-  fetchUserInfo?: () => Promise<Models.CurrentUser | undefined>;
+  fetchUserInfo?: () => Promise<any | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({
         skipErrorHandler: true,
       });
-      return msg.data;
+      return msg.data.profile;
     } catch (error) {
+      console.log('chegou aqui2')
       history.push(loginPath);
     }
     return undefined;
   };
+  
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
@@ -52,6 +54,7 @@ export async function getInitialState(): Promise<{
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
+  console.log('chegou aqui')
   return {
     collapsed: true,
     fetchUserInfo,
@@ -107,6 +110,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 
     onPageChange: () => {
       const { location } = history;
+      console.log(initialState?.currentUser)
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }

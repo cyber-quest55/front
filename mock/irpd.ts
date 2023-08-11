@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { GetMeterSystemResponse } from './data/metersystem';
 import { GetIrpdByIdResponse, GetIrpdEventsResponse, GetIrpdHistoryResponse, GetIrpdResponse, GetIrpdWaterComsumptionResponse } from './data/irpd';
 
 const waitTime = (time: number = 100) => {

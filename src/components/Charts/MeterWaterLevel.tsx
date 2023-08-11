@@ -1,9 +1,9 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetMeterSystemWaterLevelModelProps } from '@/models/meter-water-level';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { Mix } from '@ant-design/charts';
 import { LightFilter, ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const MeterWaterLevelChart: React.FC<Props> = (props) => {
-  const onlyWidth = useWindowWidth();
+  const { md } = useScreenHook();
 
   const className = useEmotionCss(({ token }) => {
     return {
@@ -65,7 +65,7 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       className={className}
       title="Gráfico de Nível"
       extra={
-        <LightFilter style={{ width: onlyWidth > 767 ? 360 : 275 }}>
+        <LightFilter style={{ width: md ? 360 : 275 }}>
           <ProFormDateRangePicker
             name="startdate"
             label={<strong>Periodo</strong>}

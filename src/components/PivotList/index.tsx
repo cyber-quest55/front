@@ -1,3 +1,4 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
@@ -15,7 +16,6 @@ import {
 } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { Link, useParams } from '@umijs/max';
 import { Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
 import React, { useEffect } from 'react';
@@ -48,27 +48,7 @@ const scrollToBottom = () => {
 
 const PivotList: React.FC<Props> = (props) => {
   const params = useParams();
-  const onlyWidth = useWindowWidth();
-
-
-  useEffect(() => { 
-    props.dispatch({
-      type: 'pivot/queryPivot',
-      payload: { id: parseInt(params.id as string) },
-    });
-
-    props.dispatch({
-      type: 'central/queryCentral',
-      payload: { id: parseInt(params.id as string) },
-    });
-
-    props.dispatch({
-      type: 'repeater/queryRepeater',
-      payload: { id: parseInt(params.id as string) },
-    });
-  }, [params]);
-
-
+  const { md } = useScreenHook();
 
   const classNameScrollable = useEmotionCss(({}) => {
     return {
@@ -118,6 +98,24 @@ const PivotList: React.FC<Props> = (props) => {
     };
   });
 
+
+  useEffect(() => {
+    props.dispatch({
+      type: 'pivot/queryPivot',
+      payload: { id: parseInt(params.id as string) },
+    });
+
+    props.dispatch({
+      type: 'central/queryCentral',
+      payload: { id: parseInt(params.id as string) },
+    });
+
+    props.dispatch({
+      type: 'repeater/queryRepeater',
+      payload: { id: parseInt(params.id as string) },
+    });
+  }, [params]);
+
   const onSetDevice = (type: string, deviceId: string) => {
     props.dispatch({
       type: 'selectedDevice/setSelectedDevice',
@@ -144,21 +142,20 @@ const PivotList: React.FC<Props> = (props) => {
         </Col>
       </Row>
     ),
-    extra:
-      onlyWidth < 767 ? (
-        <div style={{ marginRight: 12 }}>
-          <StaticGoogleMap
-            size="100x100"
-            className="img-fluid"
-            apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-            maptype="satellite"
-            zoom={13}
-            center={`${item.centerLat},${item.centerLng}`}
-          >
-            <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
-          </StaticGoogleMap>
-        </div>
-      ) : null,
+    extra: !md ? (
+      <div style={{ marginRight: 12 }}>
+        <StaticGoogleMap
+          size="100x100"
+          className="img-fluid"
+          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+          maptype="satellite"
+          zoom={13}
+          center={`${item.centerLat},${item.centerLng}`}
+        >
+          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
+        </StaticGoogleMap>
+      </div>
+    ) : null,
     content: (
       <Space key={`row-pivot-information-space-${item.id}`} direction="vertical">
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -186,21 +183,20 @@ const PivotList: React.FC<Props> = (props) => {
         </Col>
       </Row>
     ),
-    extra:
-      onlyWidth < 767 ? (
-        <div style={{ marginRight: 12 }}>
-          <StaticGoogleMap
-            size="100x100"
-            className="img-fluid"
-            apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-            maptype="satellite"
-            zoom={13}
-            center={`${item.centerLat},${item.centerLng}`}
-          >
-            <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
-          </StaticGoogleMap>
-        </div>
-      ) : null,
+    extra: !md ? (
+      <div style={{ marginRight: 12 }}>
+        <StaticGoogleMap
+          size="100x100"
+          className="img-fluid"
+          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+          maptype="satellite"
+          zoom={13}
+          center={`${item.centerLat},${item.centerLng}`}
+        >
+          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
+        </StaticGoogleMap>
+      </div>
+    ) : null,
     content: (
       <Space direction="vertical">
         <Typography.Text type="secondary">{item.updated}</Typography.Text>
@@ -223,21 +219,20 @@ const PivotList: React.FC<Props> = (props) => {
         </Col>
       </Row>
     ),
-    extra:
-      onlyWidth < 767 ? (
-        <div style={{ marginRight: 12 }}>
-          <StaticGoogleMap
-            size="100x100"
-            className="img-fluid"
-            apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-            maptype="satellite"
-            zoom={13}
-            center={`${item.centerLat},${item.centerLng}`}
-          >
-            <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
-          </StaticGoogleMap>
-        </div>
-      ) : null,
+    extra: !md ? (
+      <div style={{ marginRight: 12 }}>
+        <StaticGoogleMap
+          size="100x100"
+          className="img-fluid"
+          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+          maptype="satellite"
+          zoom={13}
+          center={`${item.centerLat},${item.centerLng}`}
+        >
+          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
+        </StaticGoogleMap>
+      </div>
+    ) : null,
     content: (
       <Space direction="vertical">
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -266,21 +261,20 @@ const PivotList: React.FC<Props> = (props) => {
         </Col>
       </Row>
     ),
-    extra:
-      onlyWidth < 767 ? (
-        <div style={{ marginRight: 12 }}>
-          <StaticGoogleMap
-            size="100x100"
-            className="img-fluid"
-            apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-            maptype="satellite"
-            zoom={13}
-            center={`${item.centerLat},${item.centerLng}`}
-          >
-            <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
-          </StaticGoogleMap>
-        </div>
-      ) : null,
+    extra: !md ? (
+      <div style={{ marginRight: 12 }}>
+        <StaticGoogleMap
+          size="100x100"
+          className="img-fluid"
+          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+          maptype="satellite"
+          zoom={13}
+          center={`${item.centerLat},${item.centerLng}`}
+        >
+          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
+        </StaticGoogleMap>
+      </div>
+    ) : null,
     content: (
       <Space direction="vertical">
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -310,6 +304,8 @@ const PivotList: React.FC<Props> = (props) => {
     );
   };
 
+
+  console.log('chegou aqui qww')
   return (
     <div className={className}>
       <Row justify="space-between" align="middle" style={{ padding: '0px 16px' }}>
@@ -378,7 +374,7 @@ export default connect(
     irpd,
     repeater,
     meterSystem,
-    selectedFarm
+    selectedFarm,
   }: {
     pivot: any;
     farm: any;

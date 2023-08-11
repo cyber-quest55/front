@@ -2,11 +2,14 @@
 /* eslint-disable */
 
 declare namespace API {
-  type LoginParams = {
-    email?: string;
-    username?: string;
-    password: string;
+  type LoginParams = {};
+
+  type LoginResult = {
+    token: string
+    user: number
+    profile: number
+    reseller: boolean
+    resellers: Array<any>
   };
 
-  type LoginResult = Models.Auth;
 }

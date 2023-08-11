@@ -1,10 +1,11 @@
 import PivotList from '@/components/PivotList';
 import RenderPivots from '@/components/RenderPivots';
+import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
+;
 import { Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode } from 'react';
@@ -18,7 +19,7 @@ type Props = {
 };
 
 const MapsRender: FunctionComponent<Props> = (props) => {
-  const onlyWidth = useWindowWidth();
+  const { xl } = useScreenHook();
 
   const className = useEmotionCss(({}) => {
     return {
@@ -74,7 +75,7 @@ const MapsRender: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      {onlyWidth > 1210 ? (
+      {xl ? (
         <Spin spinning={props.pivot.loading || props.farm.loading}>
           <div style={{ width: '100%', height: ' 100vh' }}>
             <RenderPivots />
@@ -85,7 +86,7 @@ const MapsRender: FunctionComponent<Props> = (props) => {
         </Spin>
       ) : null}
 
-      {onlyWidth > 1210 ? null : (
+      {xl ? null : (
         <div className={classNameFixedMobile}>
           <Tabs defaultActiveKey="1" items={items} tabPosition="bottom" />
         </div>

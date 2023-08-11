@@ -5,10 +5,11 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
-import { useWindowWidth } from '@react-hook/window-size';
+;
 import { connect } from 'dva';
 import React, { useEffect, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
+import { useScreenHook } from '@/hooks/screen';
 
 export type RenderPivotsProps = {
   dispatch: any;
@@ -22,7 +23,7 @@ export type RenderPivotsProps = {
 };
 
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
-  const onlyWidth = useWindowWidth();
+  const { xl } = useScreenHook();
 
   const [zoom, setZoom] = useState(14);
   const [map, setMap] = useState<any>(null);
@@ -30,7 +31,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
 
   const containerStyle = {
     width: '100%',
-    height: onlyWidth > 1210 ? '100vh' : 'calc(100vh -  102px)',
+    height: xl ? '100vh' : 'calc(100vh -  102px)',
   };
 
   useEffect(() => {

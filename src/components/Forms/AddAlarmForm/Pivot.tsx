@@ -12,11 +12,12 @@ import {
     ProFormText,
     ProFormTimePicker
 } from "@ant-design/pro-components";
-import { useWindowWidth } from '@react-hook/window-size'
+import { useScreenHook } from "@/hooks/screen";
+
 
 const AddPivotAlarmForm = () => {
     const [form] = Form.useForm<any>();
-    const onlyWidth = useWindowWidth()
+    const { lg } = useScreenHook();
 
     const [step, setStep] = useState(0)
 
@@ -45,7 +46,7 @@ const AddPivotAlarmForm = () => {
             }}
             trigger={
                 <Button
-                    size={onlyWidth > 1100 ? "large" : "middle"}
+                    size={lg ? "large" : "middle"}
                     type="primary"
                     icon={<PlusCircleFilled />}>
                     Adicionar Alarme

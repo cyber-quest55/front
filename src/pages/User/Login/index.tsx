@@ -8,10 +8,10 @@ import { Button, Col, ConfigProvider, Row, Space, Typography } from 'antd';
 import { flushSync } from 'react-dom';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
- 
+import { currentUser as queryCurrentUser } from '@/services/user/index';
+
 
 export default () => { 
-
   /** Requests */
   const loginReq = useRequest(login, { manual: true });
 
@@ -19,7 +19,22 @@ export default () => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
+
+    const queryUser = async () => {
+      try {
+        // Need Change
+        const msg: any = await queryCurrentUser({
+          skipErrorHandler: true,
+        });
+        return msg.profile;
+      } catch  {
+        
+      }
+      return undefined;
+    };
+    
+    const userInfo = await queryUser();
+
     if (userInfo) {
       flushSync(() => {
         setInitialState((s) => ({
@@ -32,9 +47,9 @@ export default () => {
   };
 
   const handleSubmit = async (values: any) => {
-    const response: any = await loginReq.run({ ...values });
+    await loginReq.run({ ...values });
     await fetchUserInfo();
-    history.push(`/farms/${response.farm_id}`);
+    history.push(`/farms/:id`);
     return true
   };
 
@@ -95,8 +110,8 @@ export default () => {
                   size='large'
                   name="validate_other"
                   initialValues={{
-                    name: '',
-                    password: '',
+                    name: process.env.NODE_ENV === 'development'  ? "admin": "",
+                    password: process.env.NODE_ENV === 'development'  ? "ant.design": "",
                   }}
                   onValuesChange={( ) => {  }}
                   onFinish={handleSubmit}
