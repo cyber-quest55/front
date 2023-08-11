@@ -56,9 +56,9 @@ export default {
       { payload }: { payload: API.GetIrpdByIdResponse },
     ) {
       const item = payload;
-      const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status
+      const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status;
       const latLng = item.position.split(',');
-       const mapper = {
+      const mapper = {
         id: item.id,
         centerLat: parseFloat(latLng[0]),
         centerLng: parseFloat(latLng[1]),

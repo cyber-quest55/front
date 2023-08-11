@@ -104,7 +104,6 @@ const IrpdActivityEventTable: React.FC<Props> = (props) => {
           filter: (
             <Space>
               <Button icon={<DownloadOutlined />}>Exportar</Button>
-  
             </Space>
           ),
         }}

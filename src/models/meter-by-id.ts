@@ -36,7 +36,10 @@ export default {
   },
 
   reducers: {
-    queryMeterSystemByIdError(state: GetMeterSystemByIdModelProps, { payload }: { payload: AxiosError }) {
+    queryMeterSystemByIdError(
+      state: GetMeterSystemByIdModelProps,
+      { payload }: { payload: AxiosError },
+    ) {
       return {
         ...state,
         error: payload.response?.data,
@@ -54,7 +57,7 @@ export default {
       { payload }: { payload: API.GetMeterSystemByIdResponse },
     ) {
       const item = payload;
-      const status = item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status
+      const status = item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status;
 
       const latLng = item.position.split(',');
 

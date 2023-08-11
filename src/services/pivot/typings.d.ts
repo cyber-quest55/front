@@ -6,36 +6,36 @@ declare namespace API {
     id: number;
   };
 
-  type GetPivotByFarmResponse =  {
+  type GetPivotByFarmResponse = {
     current: number;
     pageSize: number;
     total: number;
     list: Models.Pivot[];
   };
 
-  type GetPivotsInformationParam = { 
-    id: number; 
-    params: any
-  }
+  type GetPivotsInformationParam = {
+    id: number;
+    params: any;
+  };
 
-  type GetPivotsInformationResponse = { 
+  type GetPivotsInformationResponse = {
     current: number;
     pageSize: number;
     total: number;
     list: Models.PivotInformation[];
-  }
+  };
 
-  type GetPivotByIdInformationParam = { 
-    farmId: string; 
+  type GetPivotByIdInformationParam = {
+    farmId: string;
     pivotId: string;
-  }
+  };
 
-  type GetPivotByIdInformationResponse = { 
+  type GetPivotByIdInformationResponse = {
     current: number;
     pageSize: number;
     total: number;
     list: Models.PivotInformation;
-  }
+  };
 
   type GetPivotHistoryParams = {
     farmId: string;

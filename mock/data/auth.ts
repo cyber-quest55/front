@@ -8,4 +8,3 @@ export const GetLoginResponse: IResponse<API.LoginResult> = Mock.mock({
   reseller: true,
   resellers: [],
 });
-

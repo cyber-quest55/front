@@ -80,7 +80,7 @@ const DeviceList: React.FC<Props> = (props) => {
       fontSize: 16,
       fontWeight: 'bold',
       maxWidth: '100%',
-      overflow: 'hidden'
+      overflow: 'hidden',
     };
   });
 
@@ -242,8 +242,8 @@ const DeviceList: React.FC<Props> = (props) => {
       >
         <Col>
           <Space>
-             <span className={classNameSelect}>{props.selectedFarm?.name?.toString()}</span>
-            <Button  size='small'>Buscar Rádios</Button>
+            <span className={classNameSelect}>{props.selectedFarm?.name?.toString()}</span>
+            <Button size="small">Buscar Rádios</Button>
             <Popover
               trigger="click"
               placement="bottom"

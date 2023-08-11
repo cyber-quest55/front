@@ -98,7 +98,6 @@ const PivotList: React.FC<Props> = (props) => {
     };
   });
 
-
   useEffect(() => {
     props.dispatch({
       type: 'pivot/queryPivot',
@@ -304,8 +303,7 @@ const PivotList: React.FC<Props> = (props) => {
     );
   };
 
-
-  console.log('chegou aqui qww')
+  console.log('chegou aqui qww');
   return (
     <div className={className}>
       <Row justify="space-between" align="middle" style={{ padding: '0px 16px' }}>

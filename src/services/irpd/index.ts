@@ -2,12 +2,11 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
- 
 export async function getIrpds(props: API.GetIrpdParams, options?: { [key: string]: any }) {
   return request<{
     data: API.GetIrpdResponse;
   }>(`/farms/${props.id}/irpd`, {
-    method: 'GET', 
+    method: 'GET',
   });
 }
 
@@ -15,32 +14,40 @@ export async function getIrpdById(props: API.GetIrpdByIdParams, options?: { [key
   return request<{
     data: API.GetIrpdByIdResponse;
   }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
-    method: 'GET', 
+    method: 'GET',
   });
 }
 
-export async function getIrpdHistory(props: API.GetIrpdHistoryParams, options?: { [key: string]: any }) {
+export async function getIrpdHistory(
+  props: API.GetIrpdHistoryParams,
+  options?: { [key: string]: any },
+) {
   return request<{
     data: Models.IrpdHistory;
   }>(`/farms/${props.farmId}/irpds/${props.irpdId}/history`, {
     method: 'GET',
-    params: options 
-  },);
+    params: options,
+  });
 }
 
-export async function getIrpdWaterConsumption(props: API.GetIrpdWaterConsumptionParams, options?: { [key: string]: any }) {
+export async function getIrpdWaterConsumption(
+  props: API.GetIrpdWaterConsumptionParams,
+  options?: { [key: string]: any },
+) {
   return request<{
     data: Models.IrpdWaterConsumption[];
   }>(`/farms/${props.farmId}/irpds/${props.irpdId}/water-consumption/${props.waterId}/`, {
-    method: 'GET', 
+    method: 'GET',
   });
 }
 
-export async function getIrpdEvents(props: API.GetIrpdEventsParams, options?: { [key: string]: any }) {
+export async function getIrpdEvents(
+  props: API.GetIrpdEventsParams,
+  options?: { [key: string]: any },
+) {
   return request<{
     data: API.GetIrpdEventsResponse;
   }>(`/farms/${props.farmId}/irpds/${props.irpdId}/irpd-list`, {
-    method: 'GET', 
+    method: 'GET',
   });
 }
-

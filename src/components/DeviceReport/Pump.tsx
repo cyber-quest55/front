@@ -101,10 +101,7 @@ const PumpReport: React.FC<Props> = (props) => {
           <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
             <DeviceMapsRender height={275} />
           </ProCard>
-          <ProCard
-            colSpan={{ xs: 24, md: 16, xxl: 15 }}
-            style={{ height: md ? 275 : '100%' }}
-          >
+          <ProCard colSpan={{ xs: 24, md: 16, xxl: 15 }} style={{ height: md ? 275 : '100%' }}>
             <DevicePanel
               actions={
                 <Space>

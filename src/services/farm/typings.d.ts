@@ -8,7 +8,7 @@ declare namespace API {
     current: number;
     pageSize: number;
     total: number;
-    list: Models.Farm[]
+    list: Models.Farm[];
   };
 
   type GetFarmConnectionParams = {
@@ -16,5 +16,4 @@ declare namespace API {
   };
 
   type GetFarmConnectionResponse = Models.FarmConnection;
-
 }

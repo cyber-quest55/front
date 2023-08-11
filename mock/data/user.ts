@@ -1,37 +1,36 @@
-import { IResponse } from "mock/response";
+import { IResponse } from 'mock/response';
 import Mock from 'mockjs';
 
 export const GetCurrentUserResponse: IResponse<API.LoginResult> = Mock.mock({
-    profile: {
-      id: 1851,
-      name: "geremias",
-      birth: null,
-      country: 'BR',
-      state: null,
-      city: null,
-      district: null,
-      address_1: null,
-      address_2: null,
-      number: null,
-      postal_code: null,
-      prefix_cell_phone: null,
-      cell_phone: null,
-      phone: null,
-      cpf: null,
-      updated: '2023-04-05T15:33:14.971410-03:00',
-      language: 'pt-br',
-      is_accept_policy: true,
-      accept_policy_date: '2023-03-08T10:36:31.490000-03:00',
-      zendesk_customer_id: null,
-      reset_password: false,
-      user: 2050,
-      accept_policy_version: 1,
-      email: 'wellington.ferreira@irricontrol.com.br',
-    },
-  });
-  
+  profile: {
+    id: 1851,
+    name: 'geremias',
+    birth: null,
+    country: 'BR',
+    state: null,
+    city: null,
+    district: null,
+    address_1: null,
+    address_2: null,
+    number: null,
+    postal_code: null,
+    prefix_cell_phone: null,
+    cell_phone: null,
+    phone: null,
+    cpf: null,
+    updated: '2023-04-05T15:33:14.971410-03:00',
+    language: 'pt-br',
+    is_accept_policy: true,
+    accept_policy_date: '2023-03-08T10:36:31.490000-03:00',
+    zendesk_customer_id: null,
+    reset_password: false,
+    user: 2050,
+    accept_policy_version: 1,
+    email: 'wellington.ferreira@irricontrol.com.br',
+  },
+});
 
-  /**
+/**
    * {
       success: true,
       data: {

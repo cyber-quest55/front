@@ -2,7 +2,7 @@ import { CirclePivotProps } from '@/components/Devices/CirclePivot';
 import { getPivotsWithInformations } from '@/services/pivot';
 import { getPivotColor } from '@/utils/get-pivot-color';
 import { getPivotStatus } from '@/utils/get-pivot-status';
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 export interface GetPivotInformationModelProps {
   result: CirclePivotProps[];
@@ -45,15 +45,15 @@ export default {
 
       const index = result.findIndex((item) => item.id === payload.id);
 
-      const newResult = [ ...result ];
+      const newResult = [...result];
 
       newResult[index].statusText = getPivotStatus(
         payload.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
-      ); 
+      );
 
       newResult[index].pivotColor = getPivotColor(
         payload.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
-      ); 
+      );
 
       yield put({ type: 'setNewPivotInformationSuccess', payload: newResult });
     },
@@ -212,7 +212,7 @@ export default {
           updated: new Date(payload.list[index].updated).toLocaleString(),
           name: item.name,
           statusText: statusText,
-          onSelect: () => null
+          onSelect: () => null,
         });
       }
 

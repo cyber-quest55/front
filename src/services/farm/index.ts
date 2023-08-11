@@ -7,15 +7,18 @@ export async function getFarms(options?: { [key: string]: any }) {
   return request<{
     data: API.GetFarmResponse;
   }>('/farms', {
-    method: 'GET', 
+    method: 'GET',
   });
 }
 
 /** GET /farms/${farmId}/central_panel/status/ */
-export async function getFarmConnection(props: API.GetFarmConnectionParams, options?: { [key: string]: any }) {
+export async function getFarmConnection(
+  props: API.GetFarmConnectionParams,
+  options?: { [key: string]: any },
+) {
   return request<{
     data: API.GetFarmResponse;
   }>(`/farms/${props.id}/central_panel/status`, {
-    method: 'GET', 
+    method: 'GET',
   });
 }

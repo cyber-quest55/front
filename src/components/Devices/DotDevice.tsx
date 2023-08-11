@@ -58,13 +58,12 @@ const DotDevice: React.FC<CirclePivotProps> = (props) => {
         >
           <div
             style={{
-               opacity: 0.75,
+              opacity: 0.75,
               padding: 12,
             }}
           >
             <Typography.Title level={5}>{props.name}</Typography.Title>
-            <Typography.Text  >{props.updated}</Typography.Text>
-
+            <Typography.Text>{props.updated}</Typography.Text>
           </div>
         </InfoWindowF>
       ) : null}

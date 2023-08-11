@@ -5,11 +5,11 @@ declare namespace Models {
     name: string;
     is_administrator: boolean;
     payment_status: number;
-    timezone: string
-    pivots: Models.Pivot[]
-  }; 
+    timezone: string;
+    pivots: Models.Pivot[];
+  };
 
-  type FarmConnection = { 
+  type FarmConnection = {
     is_online: boolean;
-  }
+  };
 }

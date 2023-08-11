@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { connect } from 'umi';
 
 type Props = {
-  dispatch: any; 
-  pivotHistory: GetPivotHistoryModelProps; 
+  dispatch: any;
+  pivotHistory: GetPivotHistoryModelProps;
 };
 
 const PivotOperationTable: React.FC<Props> = (props) => {
@@ -18,7 +18,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
   });
 
   const onDateChange = () => {};
-  
+
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <ProTable<any>
@@ -50,14 +50,14 @@ const PivotOperationTable: React.FC<Props> = (props) => {
             dataIndex: 'date',
 
             render: () => {
-              return <>23/06 00:33  115°</>;
+              return <>23/06 00:33 115°</>;
             },
           },
           {
             title: 'Fim',
             dataIndex: 'date',
 
-            render: (value, item) => {
+            render: () => {
               return <>23/06 16:03 250°</>;
             },
           },
@@ -97,7 +97,6 @@ const PivotOperationTable: React.FC<Props> = (props) => {
         options={false}
         search={false}
         dateFormatter="string"
-         
       />
       <Row justify="end">
         <Col>

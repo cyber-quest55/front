@@ -1,3 +1,4 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
@@ -16,7 +17,6 @@ import {
 import { G2, Line, Pie } from '@ant-design/plots';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-;
 import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
 import { useState } from 'react';
 import { BsFillCloudRainFill } from 'react-icons/bs';
@@ -26,8 +26,6 @@ import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import PivotEventTable from '../Tables/PivotEventTable';
 import PivotOperationTable from '../Tables/PivotOperationTable';
-import { useScreenHook } from '@/hooks/screen';
-
 const { Statistic } = StatisticCard;
 
 const GetPivotPressureComparative = {
@@ -775,7 +773,7 @@ type Props = {
 
 const PivotReport: React.FC<Props> = (props) => {
   const G = G2.getEngine('canvas');
-   const {  md, xxl } = useScreenHook();
+  const { md, xxl } = useScreenHook();
 
   const [tab, setTab] = useState('tab1');
   const [option, setOption] = useState<undefined | number>(undefined);
@@ -906,10 +904,7 @@ const PivotReport: React.FC<Props> = (props) => {
         <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 5 }} style={{ height: 275 }}>
           <DeviceMapsRender height={275} />
         </ProCard>
-        <ProCard
-          colSpan={{ xs: 24, md: 16, xxl: 9 }}
-          style={{ height: md ? 275 : '100%' }}
-        >
+        <ProCard colSpan={{ xs: 24, md: 16, xxl: 9 }} style={{ height: md ? 275 : '100%' }}>
           <DevicePanel
             actions={
               <Space>
@@ -989,11 +984,7 @@ const PivotReport: React.FC<Props> = (props) => {
             }
           />
         </ProCard>
-        <ProCard
-          split={md ? 'vertical' : 'horizontal'}
-          colSpan={{ xs: 24, md: 24, xxl: 10 }}
-          wrap
-        >
+        <ProCard split={md ? 'vertical' : 'horizontal'} colSpan={{ xs: 24, md: 24, xxl: 10 }} wrap>
           <ProCard
             split={xxl ? 'horizontal' : md ? 'vertical' : 'horizontal'}
             colSpan={{ xs: 24, md: 12, xxl: 12 }}

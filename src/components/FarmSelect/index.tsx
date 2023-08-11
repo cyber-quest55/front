@@ -10,7 +10,6 @@ export type FarmSelectProps = {
   farm: GetFarmModelProps;
   dispatch: any;
   selectedFarm: SelectedFarmModelProps;
-
 };
 
 const FarmSelect: React.FC<FarmSelectProps> = (props) => {
@@ -20,7 +19,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
       marginTop: 16,
       border: '1px solid rgba(255,255,255,0.75)',
       marginBottom: 12,
-       borderRadius: '6px',
+      borderRadius: '6px',
       '.ant-select-selection-item': {
         fontWeight: 600,
         fontSize: 14,

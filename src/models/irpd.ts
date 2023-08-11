@@ -1,8 +1,8 @@
-import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter'; 
+import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getIrpds } from '@/services/irpd';
 import { getIrpdColor } from '@/utils/get-irpd-color';
 import { getIrpdStatus } from '@/utils/get-irpd-status';
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 export interface GetIrpdModelProps {
   result: LakeLevelMeterProps[];
@@ -58,7 +58,7 @@ export default {
 
       for (let index = 0; index < payload.list.length; index++) {
         const item = payload.list[index];
-        const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status
+        const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status;
         const latLng = item.position.split(',');
         mapper.push({
           id: item.id,

@@ -179,7 +179,7 @@ declare namespace Models {
     farm: number;
     base: number;
   };
- 
+
   export type MeterSystemHistory = {
     count: number;
     current_page: number;

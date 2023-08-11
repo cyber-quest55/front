@@ -11,7 +11,7 @@ const waitTime = (time: number = 100) => {
 
 export default {
   'GET /farms/:farmId/central': async (req: Request, res: Response) => {
-    await waitTime(2000)
+    await waitTime(2000);
     res.status(200).send(GetCentralResponse);
   },
 };

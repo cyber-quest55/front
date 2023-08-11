@@ -48,7 +48,7 @@ export default {
           });
           yield put({
             type: 'irpdHistory/queryIrpdHistory',
-            payload: { farmId, irpdId: deviceId, params: {current: 0, pageSize: 15}},
+            payload: { farmId, irpdId: deviceId, params: { current: 0, pageSize: 15 } },
           });
           yield put({
             type: 'irpdEvents/queryIrpdEvents',
@@ -64,15 +64,15 @@ export default {
           yield put({
             type: 'meterSystemById/queryMeterSystemById',
             payload: { farmId, meterId: deviceId, params: {} },
-          }); 
+          });
           yield put({
             type: 'meterSystemHistory/queryMeterSystemHistory',
             payload: { farmId, meterId: deviceId, params: {} },
-          }); 
+          });
           yield put({
             type: 'meterSystemEvent/queryMeterSystemEvent',
             payload: { farmId, meterId: deviceId, params: {} },
-          }); 
+          });
           break;
         }
       }

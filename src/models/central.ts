@@ -1,5 +1,5 @@
 import { getCentral } from '@/services/central';
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 interface Central {
   id: number;

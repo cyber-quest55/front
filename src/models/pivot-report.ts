@@ -1,6 +1,5 @@
 import { getPivotReports } from '@/services/pivot';
 import { AxiosError } from 'axios';
- 
 
 export interface GetPivotReportModelProps {
   result: Models.PivotReport;

@@ -227,48 +227,48 @@ declare namespace API {
   };
 
   type GetMeterSystemHistoryResponse = {
-    count: number
-    current_page: number
-    next: string
-    previous: string
+    count: number;
+    current_page: number;
+    next: string;
+    previous: string;
     results: Array<{
       CentralStream?: {
-        id: number
-        created: string
-        updated: string
-        status: number
-        uuid: string
-        farm: number
-      }
+        id: number;
+        created: string;
+        updated: string;
+        status: number;
+        uuid: string;
+        farm: number;
+      };
       IMeterStream_event?: {
-        id: number
-        uuid: string
-        created_on_hardware: boolean
-        created: string
-        updated: string
-        arrived: string
-        message_status: number
-        message_error: string
-        message_packets: Array<number>
-        message_subtype: string
+        id: number;
+        uuid: string;
+        created_on_hardware: boolean;
+        created: string;
+        updated: string;
+        arrived: string;
+        message_status: number;
+        message_error: string;
+        message_packets: Array<number>;
+        message_subtype: string;
         content: {
           pump_hourmeter: {
-            hours: number
-            minutes: number
-          }
+            hours: number;
+            minutes: number;
+          };
           imanage_master_status: {
-            status: number
-          }
-        }
-        flow: number
-        offset_applied: boolean
-        content_hash: number
-        created_by: any
-        device: number
-        equipment: number
-      }
-    }>
-  }
+            status: number;
+          };
+        };
+        flow: number;
+        offset_applied: boolean;
+        content_hash: number;
+        created_by: any;
+        device: number;
+        equipment: number;
+      };
+    }>;
+  };
 
   type GetMeterSystemWaterLevelParams = {
     farmId: string;
@@ -288,22 +288,22 @@ declare namespace API {
   };
 
   type GetMeterSystemTableResponse = {
-    count: number
-    current_page: number
-    next: string
-    previous: string
+    count: number;
+    current_page: number;
+    next: string;
+    previous: string;
     results: Array<{
-      created: string
+      created: string;
       content: {
         imanage_master_status: {
-          status: number
-        }
+          status: number;
+        };
         imanage_sensor_measure_value: Array<{
-          value: number
-          number_editing: number
-        }>
-      }
-      flow: number
-    }>
-  }
-}  
+          value: number;
+          number_editing: number;
+        }>;
+      };
+      flow: number;
+    }>;
+  };
+}

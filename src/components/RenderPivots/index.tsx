@@ -1,3 +1,4 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
@@ -6,7 +7,6 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { ProCard } from '@ant-design/pro-components';
 import Field from '@ant-design/pro-field';
 import { GoogleMap } from '@react-google-maps/api';
-;
 import { useParams } from '@umijs/max';
 import { Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
@@ -15,8 +15,6 @@ import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import RepeaterDevice from '../Devices/Repeater';
 import WaterPumpDevice from '../Devices/WaterPump';
-import { useScreenHook } from '@/hooks/screen';
-
 const scrollToBottom = () => {
   setTimeout(() => {
     window.scrollTo({
@@ -47,7 +45,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const [showPump, setShowPump] = useState(true);
   const [showMetter, setShowMetter] = useState(true);
   const [showRepeaters, setShowRepeaters] = useState(true);
- 
+
   const containerStyle = {
     width: '100%',
     height: md ? '100vh' : 'calc(100vh -  102px)',

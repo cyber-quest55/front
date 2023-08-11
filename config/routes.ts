@@ -26,7 +26,7 @@ export default [
   {
     path: '/farms/',
     name: 'Control',
-    icon: 'formOutlined', 
+    icon: 'formOutlined',
     routes: [
       {
         path: '/farms/:id',
@@ -77,7 +77,7 @@ export default [
     icon: 'heatMapOutlined',
     component: './Climate',
   },
- 
+
   {
     path: '/',
     redirect: '/farms/id',

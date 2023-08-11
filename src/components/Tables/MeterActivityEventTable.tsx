@@ -80,14 +80,14 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
             title: 'Nível do Reservatório',
             dataIndex: 'tankLevel',
             render: (_value, item) => {
-              return  <>{item.tankLevel}m</>;
+              return <>{item.tankLevel}m</>;
             },
           },
           {
             title: 'Vazão',
             dataIndex: 'flowRate',
             render: (_value, item) => {
-              return <>{item.flowRate}m³/h</> ;
+              return <>{item.flowRate}m³/h</>;
             },
           },
         ]}
@@ -117,7 +117,6 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
           filter: (
             <Space>
               <Button icon={<DownloadOutlined />}>Exportar</Button>
-           
             </Space>
           ),
         }}

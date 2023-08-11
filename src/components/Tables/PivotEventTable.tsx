@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { connect } from 'umi';
 
 type Props = {
-  dispatch: any; 
-  pivotHistory: GetPivotHistoryModelProps; 
+  dispatch: any;
+  pivotHistory: GetPivotHistoryModelProps;
 };
 
 const PivotEventTable: React.FC<Props> = (props) => {
@@ -18,7 +18,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
   });
 
   const onDateChange = () => {};
-  
+
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <ProTable<any>
@@ -75,7 +75,6 @@ const PivotEventTable: React.FC<Props> = (props) => {
         options={false}
         search={false}
         dateFormatter="string"
-         
       />
       <Row justify="end">
         <Col>

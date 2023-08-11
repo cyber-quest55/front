@@ -1,5 +1,6 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
+import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
@@ -10,7 +11,6 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
-import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 
 type Props = {
   zoom: number;
@@ -151,7 +151,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         panControl: false,
         disableDoubleClickZoom: true,
         draggable: false,
-        fullscreenControl: false
+        fullscreenControl: false,
       }}
       zoom={14.5}
     >

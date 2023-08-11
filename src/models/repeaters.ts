@@ -1,6 +1,6 @@
-import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter'; 
+import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getRepeaters } from '@/services/repeaters';
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 export interface GetRepeaterModelProps {
   result: LakeLevelMeterProps[];
@@ -45,7 +45,10 @@ export default {
         loading: true,
       };
     },
-    queryRepeaterSuccess(state: GetRepeaterModelProps, { payload }: { payload: API.GetRepeaterResponse }) {
+    queryRepeaterSuccess(
+      state: GetRepeaterModelProps,
+      { payload }: { payload: API.GetRepeaterResponse },
+    ) {
       const mapper: LakeLevelMeterProps[] = [];
 
       /**

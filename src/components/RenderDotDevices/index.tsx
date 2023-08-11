@@ -1,3 +1,4 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
@@ -5,12 +6,9 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
-;
 import { connect } from 'dva';
 import React, { useEffect, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
-import { useScreenHook } from '@/hooks/screen';
-
 export type RenderPivotsProps = {
   dispatch: any;
   zoom: number;

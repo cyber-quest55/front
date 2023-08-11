@@ -84,7 +84,6 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
             appendPadding={0}
             tooltip={{
               shared: true,
-              
             }}
             syncViewPadding={true}
             plots={[
