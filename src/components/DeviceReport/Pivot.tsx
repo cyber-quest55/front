@@ -26,6 +26,7 @@ import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import PivotEventTable from '../Tables/PivotEventTable';
 import PivotOperationTable from '../Tables/PivotOperationTable';
+import { useTabsHook } from '@/hooks/tabs';
 const { Statistic } = StatisticCard;
 
 const GetPivotPressureComparative = {
@@ -774,8 +775,8 @@ type Props = {
 const PivotReport: React.FC<Props> = (props) => {
   const G = G2.getEngine('canvas');
   const { md, xxl } = useScreenHook();
+  const {tab, setTab} = useTabsHook('tab1');
 
-  const [tab, setTab] = useState('tab1');
   const [option, setOption] = useState<undefined | number>(undefined);
 
   const data = [

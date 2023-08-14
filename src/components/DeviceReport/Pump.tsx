@@ -2,6 +2,7 @@ import PumpEnergyConsumptionChart from '@/components/Charts/PumpEnergyComsumptio
 import IrpdActivityEventTable from '@/components/Tables/IrpdActivityEventTable';
 import IrpdActivityHistoricTable from '@/components/Tables/IrpdActivityHistoricTable';
 import { useScreenHook } from '@/hooks/screen';
+import { useTabsHook } from '@/hooks/tabs';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
 import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
@@ -12,7 +13,6 @@ import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useParams } from '@umijs/max';
 import { Button, Select, Space, Tag } from 'antd';
-import { useState } from 'react';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
@@ -30,7 +30,7 @@ const PumpReport: React.FC<Props> = (props) => {
   const params = useParams();
   const { md } = useScreenHook();
 
-  const [tab, setTab] = useState('tab1');
+  const { tab, setTab } = useTabsHook('tab1');
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {

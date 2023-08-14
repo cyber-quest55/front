@@ -7,12 +7,12 @@ import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useParams } from '@umijs/max';
 import { Button, Select, Space, Tag } from 'antd';
-import { useState } from 'react';
 import { connect } from 'umi';
 import MeterWaterLevel from '../Charts/MeterWaterLevel';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import MeterActivityEventTable from '../Tables/MeterActivityEventTable';
+import { useTabsHook } from '@/hooks/tabs';
 
 type Props = {
   meterSystem: GetMeterSystemModelProps;
@@ -23,8 +23,7 @@ type Props = {
 const MeterReport: React.FC<Props> = (props) => {
   const params = useParams();
   const { md } = useScreenHook();
-
-  const [tab, setTab] = useState('tab1');
+  const {tab, setTab} = useTabsHook('tab1');
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
