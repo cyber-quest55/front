@@ -5,7 +5,7 @@ const useTabsHook: (s: string) => {
   setTab: SetStateAction<any | undefined>;
 } = (s: string) => {
   /**
-   * Stepper Current Step
+   * It defines the current Tab
    */
   const [tab, setTab] = useState<string>(s);
   return { tab, setTab };

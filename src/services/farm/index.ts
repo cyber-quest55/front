@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
 /** GET /farms */
-export async function getFarms(options?: { [key: string]: any }) {
+export async function getFarms(options?: API.GetFarmsParams) {
   return request<{
     data: API.GetFarmResponse;
   }>('/farms', {
@@ -17,7 +17,7 @@ export async function getFarmConnection(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: API.GetFarmResponse;
+    data: API.GetFarmConnectionResponse;
   }>(`/farms/${props.id}/central_panel/status`, {
     method: 'GET',
   });

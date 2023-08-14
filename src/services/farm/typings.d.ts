@@ -4,16 +4,19 @@
 declare namespace API {
   type GetFarmsParams = {};
 
-  type GetFarmResponse = {
-    current: number;
-    pageSize: number;
-    total: number;
-    list: Models.Farm[];
-  };
+  type GetFarmResponse = Array<{
+    id: number
+    name: string
+    timezone: string
+    is_administrator: boolean
+    payment_status: number
+  }>
 
   type GetFarmConnectionParams = {
     id: string;
   };
 
-  type GetFarmConnectionResponse = Models.FarmConnection;
+  type GetFarmConnectionResponse = {
+    is_online: boolean;
+  };
 }
