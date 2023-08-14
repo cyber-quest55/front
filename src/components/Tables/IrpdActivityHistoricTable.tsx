@@ -1,3 +1,4 @@
+import { useTableHook } from '@/hooks/table';
 import { GetIrpdHistoryModelProps } from '@/models/irpd-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { PumpHistoryOrigin } from '@/utils/enums';
@@ -10,8 +11,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Col, Pagination, PaginationProps, Row, Space, Tag } from 'antd';
-import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'umi';
 
 type Props = {
@@ -21,16 +21,10 @@ type Props = {
 };
 
 const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
-  const [range, setRange] = useState({
-    startDate: dayjs(),
-    endDate: dayjs(),
-  });
+  const { pageSize, currentPage, range, setPageSize, setCurrentPage, setRange } = useTableHook(50);
 
-  const [current, setCurrent] = useState(0);
-  const [pageSize, setPageSize] = useState(props.irpdHistory.total);
-
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
-    setCurrent(current);
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (currentPage, pageSize) => {
+    setCurrentPage(currentPage);
     setPageSize(pageSize);
   };
 
@@ -49,14 +43,14 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
       payload: {
         farmId: props.selectedDevice.farmId,
         irpdId: props.selectedDevice.deviceId,
-        params: { current, pageSize, startDate, endDate },
+        params: { currentPage, pageSize, startDate, endDate },
       },
     });
   };
 
   useEffect(() => {
     update();
-  }, [range, current, pageSize]);
+  }, [range, currentPage, pageSize]);
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>

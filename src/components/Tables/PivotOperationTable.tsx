@@ -1,9 +1,8 @@
+import { useTableHook } from '@/hooks/table';
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { DownloadOutlined } from '@ant-design/icons';
 import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
 import { Button, Col, Pagination, Row, Space } from 'antd';
-import dayjs from 'dayjs';
-import { useState } from 'react';
 import { connect } from 'umi';
 
 type Props = {
@@ -12,11 +11,7 @@ type Props = {
 };
 
 const PivotOperationTable: React.FC<Props> = (props) => {
-  const [range] = useState({
-    startDate: dayjs(),
-    endDate: dayjs(),
-  });
-
+  const { range } = useTableHook(50);
   const onDateChange = () => {};
 
   return (
