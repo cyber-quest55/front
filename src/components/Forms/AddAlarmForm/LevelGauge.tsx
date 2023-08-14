@@ -1,8 +1,6 @@
 import { PlusCircleFilled } from '@ant-design/icons';
 import { TinyArea } from '@ant-design/plots';
 import { Button, Col, Form, Row, Space, Steps } from 'antd';
-import { useState } from 'react';
-
 import { useScreenHook } from '@/hooks/screen';
 import {
   ModalForm,
@@ -15,11 +13,12 @@ import {
   ProFormText,
   ProFormTimePicker,
 } from '@ant-design/pro-components';
+import { useStepHook } from '@/hooks/step';
 
 const AddLevelGaugeForm = () => {
   const [form] = Form.useForm<any>();
   const { lg } = useScreenHook();
-  const [step, setStep] = useState(0);
+  const {step, setStep} = useStepHook(0);
 
   const data = [
     264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539,

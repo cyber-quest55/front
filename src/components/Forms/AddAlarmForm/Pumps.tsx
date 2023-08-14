@@ -1,4 +1,5 @@
 import { useScreenHook } from '@/hooks/screen';
+import { useStepHook } from '@/hooks/step';
 import { PlusCircleFilled } from '@ant-design/icons';
 import {
   ModalForm,
@@ -12,13 +13,12 @@ import {
   ProFormTimePicker,
 } from '@ant-design/pro-components';
 import { Button, Col, Form, Row, Space, Steps } from 'antd';
-import { useState } from 'react';
-
+ 
 const AddPumpAlarmForm = () => {
   const [form] = Form.useForm<any>();
   const { lg } = useScreenHook();
 
-  const [step, setStep] = useState(0);
+  const {step, setStep} = useStepHook(0);
 
   const listOptions = [
     { title: 'Quedas de energia', name: 'p1', children: undefined },

@@ -5,16 +5,27 @@ interface Range {
   startDate: dayjs.Dayjs;
   endDate: dayjs.Dayjs;
 }
-const useTableHook: (pageSize: number) => {
+const useTableHook: (pSize: number) => {
   pageSize: number;
   range: Range;
   currentPage: number;
   setPageSize: SetStateAction<any | undefined>;
   setRange: SetStateAction<any | undefined>;
   setCurrentPage: SetStateAction<any | undefined>;
-} = () => {
+} = (pSize: number) => {
+  /**
+   * It define the page size on pagination
+   */
   const [pageSize, setPageSize] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(pageSize);
+
+  /**
+   * It define the pagination current
+   */
+  const [currentPage, setCurrentPage] = useState<number>(pSize);
+
+  /**
+   * It define the date range of tables
+   */
   const [range, setRange] = useState<Range>({ startDate: dayjs(), endDate: dayjs() });
 
   return {
@@ -22,8 +33,8 @@ const useTableHook: (pageSize: number) => {
     setPageSize,
     range,
     setRange,
-    currentPage, 
-    setCurrentPage
+    currentPage,
+    setCurrentPage,
   };
 };
 

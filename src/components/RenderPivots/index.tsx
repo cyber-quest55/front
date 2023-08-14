@@ -1,3 +1,4 @@
+import { useMapHook } from '@/hooks/map';
 import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
@@ -37,10 +38,11 @@ export type RenderPivotsProps = {
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const params = useParams();
   const { md, xl } = useScreenHook();
+  const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
+    lat: 0,
+    lng: 0,
+  });
 
-  const [zoom, setZoom] = useState(13);
-  const [map, setMap] = useState<any>(null);
-  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
   const [showPivots, setShowPivots] = useState(true);
   const [showPump, setShowPump] = useState(true);
   const [showMetter, setShowMetter] = useState(true);

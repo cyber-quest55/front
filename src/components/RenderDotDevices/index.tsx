@@ -1,3 +1,4 @@
+import { useMapHook } from '@/hooks/map';
 import { useScreenHook } from '@/hooks/screen';
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
@@ -7,7 +8,7 @@ import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import DotDevice from '../Devices/DotDevice';
 export type RenderPivotsProps = {
   dispatch: any;
@@ -22,10 +23,11 @@ export type RenderPivotsProps = {
 
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   const { xl } = useScreenHook();
-
-  const [zoom, setZoom] = useState(14);
-  const [map, setMap] = useState<any>(null);
-  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
+  
+  const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
+    lat: 0,
+    lng: 0,
+  });
 
   const containerStyle = {
     width: '100%',

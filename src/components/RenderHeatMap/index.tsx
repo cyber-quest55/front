@@ -1,3 +1,4 @@
+import { useMapHook } from '@/hooks/map';
 import { useScreenHook } from '@/hooks/screen';
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
@@ -7,7 +8,7 @@ import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap, HeatmapLayer } from '@react-google-maps/api';
 import { connect } from 'dva';
-import React, { useState } from 'react';
+import React from 'react';
 export type RenderPivotsProps = {
   dispatch: any;
   zoom: number;
@@ -21,10 +22,7 @@ export type RenderPivotsProps = {
 
 const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
   const { xl } = useScreenHook();
-
-  const [zoom, setZoom] = useState(14);
-  const [map, setMap] = useState<any>(null);
-  const [mapCenter] = useState({ lat: 49.2811663, lng: -123.1162367 });
+  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(14, { lat: 49.2811663, lng: -123.1162367 });
 
   const containerStyle = {
     width: '100%',

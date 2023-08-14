@@ -1,3 +1,4 @@
+import { useStepHook } from '@/hooks/step';
 import { PlusCircleFilled } from '@ant-design/icons';
 import {
   CheckCard,
@@ -9,8 +10,7 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { Button, Col, Form, Row, Steps } from 'antd';
-import { useState } from 'react';
-
+ 
 const AddDeviceForm = () => {
   const [form] = Form.useForm<{
     device: number;
@@ -19,7 +19,7 @@ const AddDeviceForm = () => {
     potency: string;
   }>();
 
-  const [step, setStep] = useState(0);
+  const {step, setStep} = useStepHook(0);
 
   const automationPivotForm = (
     <Row gutter={[12, 12]}>
