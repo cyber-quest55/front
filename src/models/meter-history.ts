@@ -30,8 +30,8 @@ export default {
       const { farmId, meterId, params } = payload;
       yield put({ type: 'queryMeterSystemHistoryStart' });
       try {
-        const { data } = yield call(getMeterSystemHistory, { farmId, meterId }, params);
-        yield put({ type: 'queryMeterSystemHistorySuccess', payload: data });
+        const response: API.GetMeterSystemHistoryResponse = yield call(getMeterSystemHistory, { farmId, meterId }, params);
+        yield put({ type: 'queryMeterSystemHistorySuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemHistoryError', payload: error });
       }

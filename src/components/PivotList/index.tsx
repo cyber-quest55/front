@@ -134,7 +134,7 @@ const PivotList: React.FC<Props> = (props) => {
         style={{ width: '100%' }}
       >
         <Col>
-          <span>{props.pivot.result.list?.find((subItem) => subItem.id === item.id)?.name}</span>
+          <span>{props.pivot.result?.find((subItem) => subItem.id === item.id)?.name}</span>
         </Col>
         <Col>
           <Tag color={item.pivotColor}>{item.statusText}</Tag>
@@ -303,7 +303,6 @@ const PivotList: React.FC<Props> = (props) => {
     );
   };
 
-  console.log('chegou aqui qww');
   return (
     <div className={className}>
       <Row justify="space-between" align="middle" style={{ padding: '0px 16px' }}>

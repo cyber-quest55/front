@@ -37,7 +37,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
   const onChange = (value: any) => {
     props.dispatch({
       type: 'selectedFarm/setSelectedFarm',
-      payload: props.farm.result.list.find((item) => item.id === value),
+      payload: props.farm.result.find((item) => item.id === value),
     });
   };
 
@@ -53,7 +53,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
       filterOption={(input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
       }
-      options={props.farm.result.list?.map((item) => ({
+      options={props.farm.result?.map((item) => ({
         value: item.id,
         label: item.name,
       }))}

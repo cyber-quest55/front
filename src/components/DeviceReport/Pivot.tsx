@@ -844,7 +844,7 @@ const PivotReport: React.FC<Props> = (props) => {
   const onChangeDevice = (e: string) => {
     props.dispatch({
       type: 'pivot/setSelectedPivot',
-      payload: props.pivot.result.list.find((item) => item.id === parseInt(e)),
+      payload: props.pivot.result.find((item) => item.id === parseInt(e)),
     });
   };
 
@@ -932,7 +932,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                 }
                 onChange={onChangeDevice}
-                options={props.pivot.result.list?.map((item) => ({
+                options={props.pivot?.result.map((item) => ({
                   value: item.id,
                   label: item.name,
                 }))}

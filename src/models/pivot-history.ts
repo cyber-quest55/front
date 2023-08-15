@@ -22,9 +22,9 @@ export default {
     *queryPivotHistory({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryPivotHistoryStart' });
       try {
-        const { data } = yield call(getPivotHistory, payload);
+        const response: API.GetPivotHistoryResponse = yield call(getPivotHistory, payload);
 
-        yield put({ type: 'queryPivotHistorySuccess', payload: data });
+        yield put({ type: 'queryPivotHistorySuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryPivotHistoryError', payload: error });
       }
@@ -45,7 +45,7 @@ export default {
         loading: true,
       };
     },
-    queryPivotHistorySuccess(state: GetPivotHistoryModelProps, { payload }: { payload: any }) {
+    queryPivotHistorySuccess(state: GetPivotHistoryModelProps, { payload }: { payload: API.GetPivotHistoryResponse }) {
       return {
         ...state,
         loading: false,

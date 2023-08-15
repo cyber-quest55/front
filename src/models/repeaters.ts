@@ -23,8 +23,8 @@ export default {
     *queryRepeater({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryRepeaterStart' });
       try {
-        const { data } = yield call(getRepeaters, payload);
-        yield put({ type: 'queryRepeaterSuccess', payload: data });
+        const response: API.GetRepeaterResponse = yield call(getRepeaters, payload);
+        yield put({ type: 'queryRepeaterSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryRepeaterError', payload: error });
       }
@@ -57,16 +57,16 @@ export default {
        * Validar latestGpsPosition linha 184, 196
        */
 
-      for (let index = 0; index < payload.list.length; index++) {
-        const item = payload.list[index];
+      for (let index = 0; index < payload.length; index++) {
+        const item = payload[index];
 
         const latLng = item.position.split(',');
         mapper.push({
           id: item.id,
           centerLat: parseFloat(latLng[0]),
           centerLng: parseFloat(latLng[1]),
-          name: payload.list[index].name,
-          updated: new Date(payload.list[index].updated).toLocaleString(),
+          name: payload[index].name,
+          updated: new Date(payload[index].updated).toLocaleString(),
         });
       }
 

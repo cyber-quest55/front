@@ -27,8 +27,8 @@ export default {
     *queryMeterSystemById({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryMeterSystemByIdStart' });
       try {
-        const { data } = yield call(getMeterSystemById, payload);
-        yield put({ type: 'queryMeterSystemByIdSuccess', payload: data });
+        const response: API.GetMeterSystemByIdResponse = yield call(getMeterSystemById, payload);
+        yield put({ type: 'queryMeterSystemByIdSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemByIdError', payload: error });
       }

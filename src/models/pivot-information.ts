@@ -28,8 +28,8 @@ export default {
     ) {
       yield put({ type: 'queryPivotInformationStart' });
       try {
-        const { data } = yield call(getPivotsWithInformations, payload, payload.params);
-        yield put({ type: 'queryPivotInformationSuccess', payload: data });
+        const response: API.GetPivotsInformationResponse = yield call(getPivotsWithInformations, payload, payload.params);
+        yield put({ type: 'queryPivotInformationSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryPivotInformationError', payload: error });
       }
@@ -89,8 +89,8 @@ export default {
        * Validar o latestPanelStream
        * Validar latestGpsPosition linha 184, 196
        */
-      for (let index = 0; index < payload.list.length; index++) {
-        const item = payload.list[index];
+      for (let index = 0; index < payload.length; index++) {
+        const item = payload[index];
 
         /** Props */
         let irrigationDirection = 1;
@@ -209,12 +209,14 @@ export default {
           lpmGpsStreamLng: 30,
           lpmGpsStreamLat: 30,
           zoom: 15,
-          updated: new Date(payload.list[index].updated).toLocaleString(),
+          updated: new Date(payload[index].updated).toLocaleString(),
           name: item.name,
           statusText: statusText,
           onSelect: () => null,
         });
       }
+
+
 
       return {
         ...state,

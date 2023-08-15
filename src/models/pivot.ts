@@ -27,8 +27,9 @@ export default {
       yield put({ type: 'queryPivotStart' });
 
       try {
-        const { data } = yield call(getPivots, payload);
-        yield put({ type: 'queryPivotSuccess', payload: data });
+        const response:  API.GetPivotByFarmResponse = yield call(getPivots, payload);
+
+        yield put({ type: 'queryPivotSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryPivotError', payload: error });
       }
@@ -53,12 +54,14 @@ export default {
       state: GetPivotModelProps,
       { payload }: { payload: API.GetPivotByFarmResponse },
     ) {
+
+
       return {
         ...state,
         loading: false,
         loaded: true,
         result: payload,
-        selectedPivot: payload.list[0],
+        selectedPivot: payload[0],
         error: {},
       };
     },

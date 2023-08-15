@@ -26,8 +26,8 @@ export default {
     ) {
       yield put({ type: 'queryMeterSystemWaterLevelStart' });
       try {
-        const { data } = yield call(getMeterSystemWaterLevel, payload);
-        yield put({ type: 'queryMeterSystemWaterLevelSuccess', payload: data });
+        const response: API.GetMeterSystemWaterLevelResponse = yield call(getMeterSystemWaterLevel, payload);
+        yield put({ type: 'queryMeterSystemWaterLevelSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemWaterLevelError', payload: error });
       }

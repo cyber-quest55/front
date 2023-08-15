@@ -31,7 +31,6 @@ const getAccess = () => {
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
   'GET /auth/currentUser': (req: Request, res: Response) => {
-    console.log('chegou aqui');
     res.send(GetCurrentUserResponse);
   },
 

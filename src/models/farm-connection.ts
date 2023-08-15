@@ -26,8 +26,8 @@ export default {
       yield put({ type: 'queryFarmConnectionStart' });
 
       try {
-        const { data } = yield call(getFarmConnection, payload.id);
-        yield put({ type: 'queryFarmConnectionSuccess', payload: data });
+        const response: API.GetFarmConnectionResponse = yield call(getFarmConnection, payload.id);
+        yield put({ type: 'queryFarmConnectionSuccess', payload: response });
       } catch (error) {
         yield put({ type: 'queryFarmConnectionError', payload: error });
       }

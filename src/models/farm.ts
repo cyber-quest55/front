@@ -13,7 +13,7 @@ export default {
   namespace: 'farm',
 
   state: {
-    result: {},
+    result: [],
     loaded: false,
     loading: true,
     selectedFarm: {},
@@ -24,9 +24,9 @@ export default {
     *queryFarm({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryFarmStart' });
       try {
-        const { data } = yield call(getFarms, payload);
-        const selectedFarm = data.list[0];
-        yield put({ type: 'queryFarmSuccess', payload: { data, id: payload.id } });
+        const response: API.GetFarmResponse = yield call(getFarms, payload);
+        const selectedFarm = response[0];
+        yield put({ type: 'queryFarmSuccess', payload: { data: response, id: payload.id } });
 
         yield put({ type: 'selectedFarm/setSelectedFarm', payload: selectedFarm });
       } catch (error: any) {
@@ -53,11 +53,12 @@ export default {
       state: GetFarmModelProps,
       { payload }: { payload: { data: API.GetFarmResponse; id: string } },
     ) {
+
       return {
         ...state,
         loading: false,
         loaded: true,
-        selectedFarm: payload.data.list[0],
+        selectedFarm: payload.data[0],
         result: payload.data,
         error: {},
       };

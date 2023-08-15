@@ -29,8 +29,8 @@ export default {
     *queryIrpdById({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdByIdStart' });
       try {
-        const { data } = yield call(getIrpdById, payload);
-        yield put({ type: 'queryIrpdByIdSuccess', payload: data });
+        const response: API.GetIrpdByIdResponse = yield call(getIrpdById, payload);
+        yield put({ type: 'queryIrpdByIdSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdByIdError', payload: error });
       }

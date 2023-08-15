@@ -82,6 +82,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   useEffect(() => {
     if (props.pivotInformation.loaded === true) {
       const pivot = props.pivotInformation.result[0];
+
       setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
     }
   }, [props.pivotInformation.loaded]);

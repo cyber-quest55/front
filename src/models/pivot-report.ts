@@ -22,8 +22,8 @@ export default {
     *queryPivotReport({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryPivotReportStart' });
       try {
-        const { data } = yield call(getPivotReports, payload);
-        yield put({ type: 'queryPivotReportSuccess', payload: data });
+        const response: API.GetPivotReportResponse = yield call(getPivotReports, payload);
+        yield put({ type: 'queryPivotReportSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryPivotReportError', payload: error });
       }

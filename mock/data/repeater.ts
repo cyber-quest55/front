@@ -1,11 +1,7 @@
 import Mock from 'mockjs';
 import { IResponse } from '../response';
 
-export const GetRepeaterResponse: IResponse<API.GetRepeaterResponse> = Mock.mock({
-  current: 0,
-  pageSize: 10,
-  total: 1000,
-  list: [
+export const GetRepeaterResponse: IResponse<API.GetRepeaterResponse> = Mock.mock( [
     {
       id: 2,
       repeater: {
@@ -64,4 +60,4 @@ export const GetRepeaterResponse: IResponse<API.GetRepeaterResponse> = Mock.mock
       base: 4834,
     },
   ],
-});
+);
