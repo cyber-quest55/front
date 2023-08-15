@@ -5,7 +5,7 @@ import { getMeterStatus } from '@/utils/get-meter-status';
 import { AxiosError } from 'axios';
 
 export interface GetMeterSystemByIdModelProps {
-  unformated: Models.MeterSystem;
+  unformated: API.GetMeterSystemByIdResponse;
   result: LakeLevelMeterProps;
   loading: boolean;
   loaded: boolean;

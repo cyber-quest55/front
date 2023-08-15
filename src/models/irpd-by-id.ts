@@ -5,7 +5,7 @@ import { getIrpdStatus } from '@/utils/get-irpd-status';
 import { AxiosError } from 'axios';
 
 export interface GetIrpdByIdModelProps {
-  unformated: Models.MeterSystem;
+  unformated: any;
   result: LakeLevelMeterProps;
   pivotColor?: string;
   statusText?: string;

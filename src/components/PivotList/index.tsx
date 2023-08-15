@@ -121,7 +121,7 @@ const PivotList: React.FC<Props> = (props) => {
       payload: { type, deviceId, farmId: params.id },
     });
   };
-
+ 
   const dataSource = props.pivotInformation.result?.map((item) => ({
     title: (
       <Row

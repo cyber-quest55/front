@@ -4,7 +4,7 @@ export interface GetPivotModelProps {
   result: API.GetPivotByFarmResponse;
   loading: boolean;
   loaded: boolean;
-  selectedPivot: Models.Pivot;
+  selectedPivot: any;
   error: any;
 }
 
@@ -12,7 +12,7 @@ export default {
   namespace: 'pivot',
 
   state: {
-    result: {},
+    result: [],
     loaded: false,
     loading: true,
     selectedPivot: {},
@@ -65,7 +65,7 @@ export default {
         error: {},
       };
     },
-    setSelectedPivot(state: GetPivotModelProps, { payload }: { payload: Models.Pivot }) {
+    setSelectedPivot(state: GetPivotModelProps, { payload }: { payload: any }) {
       return {
         ...state,
         selectedPivot: payload,

@@ -99,6 +99,7 @@ const DeviceList: React.FC<Props> = (props) => {
     ),
   }));
 
+ 
    const dataSource2 = props.pivotInformation.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>

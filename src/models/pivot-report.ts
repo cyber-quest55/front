@@ -2,7 +2,7 @@ import { getPivotReports } from '@/services/pivot';
 import { AxiosError } from 'axios';
 
 export interface GetPivotReportModelProps {
-  result: Models.PivotReport;
+  result: API.GetPivotReportResponse;
   loading: boolean;
   loaded: boolean;
   error: any;

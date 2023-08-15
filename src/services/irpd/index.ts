@@ -23,7 +23,7 @@ export async function getIrpdHistory(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: Models.IrpdHistory;
+    data: API.GetIrpdHistoryResponse;
   }>(`/farms/${props.farmId}/irpds/${props.irpdId}/history`, {
     method: 'GET',
     params: options,
@@ -35,7 +35,7 @@ export async function getIrpdWaterConsumption(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: Models.IrpdWaterConsumption[];
+    data: API.GetIrpdWaterConsumptionResponse;
   }>(`/farms/${props.farmId}/irpds/${props.irpdId}/water-consumption/${props.waterId}/`, {
     method: 'GET',
   });

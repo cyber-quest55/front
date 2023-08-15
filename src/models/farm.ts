@@ -5,7 +5,7 @@ export interface GetFarmModelProps {
   result: API.GetFarmResponse;
   loading: boolean;
   loaded: boolean;
-  selectedFarm: Models.Farm;
+  selectedFarm: any;
   error: any;
 }
 
@@ -63,7 +63,7 @@ export default {
         error: {},
       };
     },
-    setSelectedFarm(state: GetFarmModelProps, { payload }: { payload: Models.Farm }) {
+    setSelectedFarm(state: GetFarmModelProps, { payload }: { payload: any }) {
       return {
         ...state,
         selectedFarm: payload,

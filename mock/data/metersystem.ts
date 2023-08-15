@@ -1260,7 +1260,7 @@ export const GetMeterSystemResponse: IResponse<API.GetMeterSystemResponse> = Moc
   },
 ]);
 
-export const GetMeterSystemByIdResponse: IResponse<Models.MeterSystem> = Mock.mock({
+export const GetMeterSystemByIdResponse: IResponse<API.GetMeterSystemByIdResponse> = Mock.mock({
   id: 4,
   imeter_set: [
     {
@@ -1446,7 +1446,7 @@ export const GetMeterSystemByIdResponse: IResponse<Models.MeterSystem> = Mock.mo
   base: 4834,
 });
 
-export const GetMeterSystemHistoryResponse: IResponse<Models.MeterSystemHistory> = Mock.mock({
+export const GetMeterSystemHistoryResponse: IResponse<API.GetMeterSystemHistoryResponse> = Mock.mock({
   count: 243,
   current_page: 21,
   next: 'https://app.irricontrol.net/v3/farms/133/metersystems/7/meter/9/history/?central=true&page=22',
@@ -1626,7 +1626,7 @@ export const GetMeterSystemHistoryResponse: IResponse<Models.MeterSystemHistory>
   ],
 });
 
-export const GetMeterSystemWaterLevelResponse: IResponse<Models.MeterSystemWaterLevel> = Mock.mock([
+export const GetMeterSystemWaterLevelResponse: IResponse<API.GetMeterSystemWaterLevelResponse> = Mock.mock([
   { from: '2023-05-28T22:25:28.566863Z', to: '2023-05-28T22:25:28.566863Z', value: 347 },
   { from: '2023-05-28T21:25:29.448696Z', to: '2023-05-28T21:25:29.448696Z', value: 347 },
   { from: '2023-05-28T20:25:27.040026Z', to: '2023-05-28T20:25:27.040026Z', value: 345 },
@@ -1955,7 +1955,7 @@ export const GetMeterSystemWaterLevelResponse: IResponse<Models.MeterSystemWater
   { from: '2023-05-15T03:25:35.406917Z', to: '2023-05-15T03:25:35.406917Z', value: 360 },
 ]);
 
-export const GetMeterSystemTableResponse: IResponse<Models.MeterSystemTable> = Mock.mock({
+export const GetMeterSystemTableResponse: IResponse<API.GetMeterSystemTableResponse> = Mock.mock({
   count: 130030,
   current_page: 3,
   next: 'https://app.irricontrol.net/v3/farms/133/metersystems/4/meter/6/water-level-history/?page=4',
