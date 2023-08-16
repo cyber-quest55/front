@@ -3,6 +3,7 @@ import { defineConfig } from '@umijs/max';
 
 const { REACT_APP_ENV   } = process.env;
 
+console.log("prod")
 export default defineConfig({
   define: {
     REACT_APP_ENV : REACT_APP_ENV || false,
