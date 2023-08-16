@@ -1,5 +1,4 @@
-﻿import type { RequestOptions } from '@@/plugin-request/request';
-import type { RequestConfig } from '@umijs/max';
+﻿import { type RequestConfig, type RequestOptions } from '@umijs/max';
 import { message, notification } from 'antd';
 
 // 错误处理方案： 错误类型
@@ -26,6 +25,8 @@ interface ResponseStructure {
  */
 export const errorConfig: RequestConfig = {
   // 错误处理： umi@3 的错误处理方案。
+
+  baseURL: 'https://app.irricontrol.net/v3',
   errorConfig: {
     // 错误抛出
     errorThrower: (res) => {
@@ -89,8 +90,12 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      const url = config?.url?.concat('?token = 123');
-      return { ...config, url };
+      const token = localStorage.getItem('token');
+      if (token) {
+        const authHeader = { Authorization: `Bearer ${token}` };
+        return { ...config, headers: authHeader };
+      }
+      return { ...config };
     },
   ],
 
@@ -98,11 +103,7 @@ export const errorConfig: RequestConfig = {
   responseInterceptors: [
     (response) => {
       // 拦截响应数据，进行个性化处理
-      const { data } = response as unknown as ResponseStructure;
 
-      if (data?.success === false) {
-        message.error('请求失败！');
-      }
       return response;
     },
   ],

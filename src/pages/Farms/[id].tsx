@@ -16,6 +16,7 @@ import { useMount, useUnmount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { history, } from '@umijs/max';
 
 type Props = {
   dispatch?: any;
@@ -79,12 +80,12 @@ const Welcome: FunctionComponent<Props> = (props) => {
     }
   };
 
-  //useEffect(() => {
-  //  if ( props.selectedFarm.id !== 0) {
-  //    history.push(`${props.selectedFarm.id}`);
-  //    return;
-  //  }
-  //}, [props.selectedFarm]);
+  useEffect(() => {
+    if ( props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [props.selectedFarm]);
 
   //useEffect(() => {
   //  if ( params.id === ':id' && props.selectedFarm.id !== 0) {

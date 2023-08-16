@@ -89,8 +89,8 @@ export default {
        * Validar o latestPanelStream
        * Validar latestGpsPosition linha 184, 196
        */
-      for (let index = 0; index < payload.length; index++) {
-        const item = payload[index];
+      for (let index = 0; index < payload.results.length; index++) {
+        const item = payload.results[index];
 
         /** Props */
         let irrigationDirection = 1;
@@ -209,14 +209,12 @@ export default {
           lpmGpsStreamLng: 30,
           lpmGpsStreamLat: 30,
           zoom: 15,
-          updated: new Date(payload[index].updated).toLocaleString(),
+          updated: new Date(payload.results[index].updated).toLocaleString(),
           name: item.name,
           statusText: statusText,
           onSelect: () => null,
         });
       }
-
-
 
       return {
         ...state,

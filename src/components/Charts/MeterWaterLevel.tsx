@@ -44,6 +44,8 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
     });
   };
 
+  console.log(props.selectedDevice.otherProps)
+
   const update = () => {
     const { startDate, endDate } = range;
     props.dispatch({
@@ -51,6 +53,8 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       payload: {
         farmId: props.selectedDevice.farmId,
         meterId: props.selectedDevice.deviceId,
+        otherId: props.selectedDevice.otherProps.imeterSetId,
+        
         params: { startDate, endDate },
       },
     });

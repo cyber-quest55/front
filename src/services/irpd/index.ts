@@ -5,7 +5,7 @@ import { request } from '@umijs/max';
 export async function getIrpds(props: API.GetIrpdParams, options?: { [key: string]: any }) {
   return request<{
     data: API.GetIrpdResponse;
-  }>(`/farms/${props.id}/irpd`, {
+  }>(`/farms/${props.id}/irpds`, {
     method: 'GET',
   });
 }

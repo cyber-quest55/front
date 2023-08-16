@@ -397,6 +397,7 @@ declare namespace API {
     farmId: string;
     meterId: string;
     params: any;
+    otherId: string;
   };
 
   type GetMeterSystemHistoryResponse = {
@@ -446,6 +447,7 @@ declare namespace API {
   type GetMeterSystemWaterLevelParams = {
     farmId: string;
     meterId: string;
+    otherId: string;
   };
 
   type GetMeterSystemWaterLevelResponse = Array<{
@@ -457,6 +459,7 @@ declare namespace API {
   type GetMeterSystemTableParams = {
     farmId: string;
     meterId: string;
+    otherId: string;
     params: any;
   };
 

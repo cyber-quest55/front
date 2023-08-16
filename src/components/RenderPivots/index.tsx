@@ -83,14 +83,14 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
     if (props.pivotInformation.loaded === true) {
       const pivot = props.pivotInformation.result[0];
 
-      setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
+      if (pivot) setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
     }
-  }, [props.pivotInformation.loaded]);
+  }, [props.pivotInformation]);
 
-  const onSetDevice = (type: string, deviceId: string) => {
+  const onSetDevice = (type: string, deviceId: string, otherProps: any) => {
     props.dispatch({
       type: 'selectedDevice/setSelectedDevice',
-      payload: { type, deviceId, farmId: params.id },
+      payload: { type, deviceId, farmId: params.id, otherProps },
     });
     scrollToBottom();
   };
@@ -244,6 +244,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 deviceColor={item.deviceColor}
                 statusText={item.statusText}
                 infoWindow
+                imeterSetId={item.imeterSetId}
               />
             ))
           : null}

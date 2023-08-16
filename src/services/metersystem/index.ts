@@ -38,9 +38,12 @@ export async function getMeterSystemWaterLevel(
 ) {
   return request<{
     data: API.GetMeterSystemWaterLevelResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterId}/lake-level/`, {
-    method: 'GET',
-  });
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/lake-level/?date_start=2023-7-16&date_end=2023-8-16`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 export async function getMeterSystemTable(
@@ -49,7 +52,10 @@ export async function getMeterSystemTable(
 ) {
   return request<{
     data: API.GetMeterSystemTableResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterId}/water-level-history/`, {
-    method: 'GET',
-  });
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/water-level-history/`,
+    {
+      method: 'GET',
+    },
+  );
 }

@@ -8,7 +8,8 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { history, SelectLang, useModel, useRequest } from '@umijs/max';
+import { history, SelectLang, useModel } from '@umijs/max';
+import { useRequest } from 'ahooks';
 import { Button, Col, ConfigProvider, Row, Space, Typography } from 'antd';
 import { flushSync } from 'react-dom';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
@@ -46,7 +47,8 @@ export default () => {
   };
 
   const handleSubmit = async (values: any) => {
-    await loginReq.run({ ...values });
+    const data = await loginReq.runAsync({ ...values, method: 'password' });
+    localStorage.setItem('token', data.token);
     await fetchUserInfo();
     history.push(`/farms/:id`);
     return true;
@@ -115,13 +117,16 @@ export default () => {
                   size="large"
                   name="validate_other"
                   initialValues={{
-                    name: process.env.NODE_ENV === 'development' ? 'admin' : '',
+                    email:
+                      process.env.NODE_ENV === 'development'
+                        ? 'wellington.ferreira@irricontrol.com.br'
+                        : '',
                     password: process.env.NODE_ENV === 'development' ? 'ant.design' : '',
                   }}
                   onValuesChange={() => {}}
                   onFinish={handleSubmit}
                 >
-                  <ProFormText width="md" name="name" placeholder="Usuário ou E-mail" />
+                  <ProFormText width="md" name="email" placeholder="Usuário ou E-mail" />
                   <ProFormText.Password width="md" name="password" placeholder="Sua senha" />
                   <Row align="middle" justify="space-between">
                     <Col>

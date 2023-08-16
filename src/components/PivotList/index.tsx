@@ -105,11 +105,6 @@ const PivotList: React.FC<Props> = (props) => {
     });
 
     props.dispatch({
-      type: 'central/queryCentral',
-      payload: { id: parseInt(params.id as string) },
-    });
-
-    props.dispatch({
       type: 'repeater/queryRepeater',
       payload: { id: parseInt(params.id as string) },
     });
@@ -121,7 +116,7 @@ const PivotList: React.FC<Props> = (props) => {
       payload: { type, deviceId, farmId: params.id },
     });
   };
- 
+
   const dataSource = props.pivotInformation.result?.map((item) => ({
     title: (
       <Row
@@ -329,29 +324,47 @@ const PivotList: React.FC<Props> = (props) => {
       </Row>
       <Divider style={{ marginBottom: 0 }} />
       <div className={classNameScrollable} style={{ width: '100%' }}>
-        <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-          Pivôs
-        </Typography.Title>
-        <Divider style={{ marginBottom: 0, marginTop: 0 }} />
-        {getList(dataSource)}
-        <Divider style={{ marginBottom: 0, marginTop: 0 }} />
-        <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-          Repetidores
-        </Typography.Title>
-        <Divider style={{ marginBottom: 0, marginTop: 0 }} />
-        {getList(dataSource2)}
-        <Divider style={{ marginBottom: 0, marginTop: 0 }} />
-        <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-          Bombas
-        </Typography.Title>
-        <Divider style={{ marginBottom: 0, marginTop: 0 }} />
-        {getList(dataSource3)}
-        <Divider style={{ marginBottom: 0, marginTop: 0 }} />
-        <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-          Medidores
-        </Typography.Title>
-        <Divider style={{ marginBottom: 0, marginTop: 0 }} />
-        {getList(dataSource4)}
+        {props.pivot.result.length > 0 ? (
+          <>
+            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
+              Pivôs
+            </Typography.Title>
+            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+            {getList(dataSource)}
+            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+          </>
+        ) : null}
+        {props.repeater.result.length > 0 ? (
+          <>
+            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
+              Repetidores
+            </Typography.Title>
+            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+            {getList(dataSource2)}
+            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+          </>
+        ) : null}
+
+        {props.irpd.result.length > 0 ? (
+          <>
+            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
+              Bombas
+            </Typography.Title>
+            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+            {getList(dataSource3)}
+            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+          </>
+        ) : null}
+
+        {props.meterSystem.result.length > 0 ? (
+          <>
+            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
+              Medidores
+            </Typography.Title>
+            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+            {getList(dataSource4)}
+          </>
+        ) : null}
       </div>
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>

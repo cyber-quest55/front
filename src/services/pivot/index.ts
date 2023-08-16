@@ -6,7 +6,7 @@ import { request } from '@umijs/max';
 export async function getPivots(data: API.GetPivotByFarmParam, options?: { [key: string]: any }) {
   return request<{
     data: API.GetPivotByFarmResponse;
-  }>(`${data.id}/pivots/light/`, {
+  }>(`/farms/${data.id}/pivots/light/`, {
     method: 'GET',
   });
 }
@@ -18,7 +18,7 @@ export async function getPivotsWithInformations(
 ) {
   return request<{
     data: API.GetPivotsInformationResponse;
-  }>(`${data.id}/pivots/paginated/`, {
+  }>(`farms/${data.id}/pivots/paginated/`, {
     method: 'GET',
   });
 }
@@ -30,7 +30,7 @@ export async function getPivotById(
 ) {
   return request<{
     data: API.GetPivotByIdInformationResponse;
-  }>(`${data.farmId}/pivots/${data.pivotId}/`, {
+  }>(`farms/${data.farmId}/pivots/${data.pivotId}/`, {
     method: 'GET',
   });
 }

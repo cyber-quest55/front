@@ -17,6 +17,7 @@ export type LakeLevelMeterProps = {
   height?: number;
   infoWindow?: boolean;
   statusText?: string;
+  imeterSetId?: number;
 };
 
 const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
@@ -31,7 +32,9 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       >
         <div
-          onClick={() => props?.onSelect(DeviceType.Meter, props.id)}
+          onClick={() =>
+            props?.onSelect(DeviceType.Meter, props.id, { imeterSetId: props.imeterSetId })
+          }
           onMouseLeave={() => setInfoWindowVisible(false)}
           onMouseEnter={() => setInfoWindowVisible(true)}
         >
