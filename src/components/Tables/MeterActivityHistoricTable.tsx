@@ -1,11 +1,11 @@
+import { useTableHook } from '@/hooks/table';
 import { GetMeterSystemHistoryModelProps } from '@/models/meter-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { formatDate } from '@/utils/get-formated-date';
 import { DownloadOutlined, RedoOutlined } from '@ant-design/icons';
 import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
 import { Button, Col, Pagination, PaginationProps, Row, Space, Tag } from 'antd';
-import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'umi';
 
 type Props = {
@@ -15,16 +15,10 @@ type Props = {
 };
 
 const MeterActivityHistoricTable: React.FC<Props> = (props) => {
-  const [range, setRange] = useState({
-    startDate: dayjs(),
-    endDate: dayjs(),
-  });
+  const { pageSize, currentPage, range, setPageSize, setCurrentPage, setRange } = useTableHook(50);
 
-  const [current, setCurrent] = useState(0);
-  const [pageSize, setPageSize] = useState(props.meterSystemHistory.total);
-
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
-    setCurrent(current);
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (currentPage, pageSize) => {
+    setCurrentPage(currentPage);
     setPageSize(pageSize);
   };
 
@@ -43,14 +37,14 @@ const MeterActivityHistoricTable: React.FC<Props> = (props) => {
       payload: {
         farmId: props.selectedDevice.farmId,
         irpdId: props.selectedDevice.deviceId,
-        params: { current, pageSize, startDate, endDate },
+        params: { currentPage, pageSize, startDate, endDate },
       },
     });
   };
 
   useEffect(() => {
     update();
-  }, [range, current, pageSize]);
+  }, [range, currentPage, pageSize]);
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>

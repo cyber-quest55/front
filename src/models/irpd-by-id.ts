@@ -5,7 +5,7 @@ import { getIrpdStatus } from '@/utils/get-irpd-status';
 import { AxiosError } from 'axios';
 
 export interface GetIrpdByIdModelProps {
-  unformated: Models.MeterSystem;
+  unformated: any;
   result: LakeLevelMeterProps;
   pivotColor?: string;
   statusText?: string;
@@ -29,8 +29,8 @@ export default {
     *queryIrpdById({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdByIdStart' });
       try {
-        const { data } = yield call(getIrpdById, payload);
-        yield put({ type: 'queryIrpdByIdSuccess', payload: data });
+        const response: API.GetIrpdByIdResponse = yield call(getIrpdById, payload);
+        yield put({ type: 'queryIrpdByIdSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdByIdError', payload: error });
       }
@@ -56,9 +56,9 @@ export default {
       { payload }: { payload: API.GetIrpdByIdResponse },
     ) {
       const item = payload;
-      const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status
+      const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status;
       const latLng = item.position.split(',');
-       const mapper = {
+      const mapper = {
         id: item.id,
         centerLat: parseFloat(latLng[0]),
         centerLng: parseFloat(latLng[1]),

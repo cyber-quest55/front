@@ -80,7 +80,7 @@ const DeviceList: React.FC<Props> = (props) => {
       fontSize: 16,
       fontWeight: 'bold',
       maxWidth: '100%',
-      overflow: 'hidden'
+      overflow: 'hidden',
     };
   });
 
@@ -99,11 +99,12 @@ const DeviceList: React.FC<Props> = (props) => {
     ),
   }));
 
-  const dataSource2 = props.pivotInformation.result?.map((item) => ({
+ 
+   const dataSource2 = props.pivotInformation.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
-          <span>{props.pivot.result.list?.find((subItem) => subItem.id === item.id)?.name}</span>
+          <span>{props.pivot.result?.find((subItem) => subItem.id === item.id)?.name}</span>
         </Col>
         <Col>
           <Tag color="#2db7f5">V5</Tag>
@@ -242,8 +243,8 @@ const DeviceList: React.FC<Props> = (props) => {
       >
         <Col>
           <Space>
-             <span className={classNameSelect}>{props.selectedFarm?.name?.toString()}</span>
-            <Button  size='small'>Buscar Rádios</Button>
+            <span className={classNameSelect}>{props.selectedFarm?.name?.toString()}</span>
+            <Button size="small">Buscar Rádios</Button>
             <Popover
               trigger="click"
               placement="bottom"

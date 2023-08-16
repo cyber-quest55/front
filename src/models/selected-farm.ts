@@ -21,9 +21,7 @@ export default {
 
   effects: {
     *setSelectedFarm({ payload }: { payload: any }, { put }: { put: any }) {
-      
       yield put({ type: 'setSelectedFarmDefinition', payload: payload });
- 
     },
   },
 

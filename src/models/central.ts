@@ -1,5 +1,5 @@
 import { getCentral } from '@/services/central';
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 interface Central {
   id: number;
@@ -29,8 +29,8 @@ export default {
     *queryCentral({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryCentralStart' });
       try {
-        const { data } = yield call(getCentral, payload);
-        yield put({ type: 'queryCentralSuccess', payload: data });
+        const response: API.GetCentralResponse = yield call(getCentral, payload);
+        yield put({ type: 'queryCentralSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryCentralError', payload: error });
       }
@@ -62,7 +62,7 @@ export default {
        * Validar o latestPanelStream
        * Validar latestGpsPosition linha 184, 196
        */
-      const item = payload.list;
+      const item = payload;
 
       const latLng = item.location.split(',');
       mapper.push({

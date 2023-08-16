@@ -10,7 +10,6 @@ export type FarmSelectProps = {
   farm: GetFarmModelProps;
   dispatch: any;
   selectedFarm: SelectedFarmModelProps;
-
 };
 
 const FarmSelect: React.FC<FarmSelectProps> = (props) => {
@@ -20,7 +19,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
       marginTop: 16,
       border: '1px solid rgba(255,255,255,0.75)',
       marginBottom: 12,
-       borderRadius: '6px',
+      borderRadius: '6px',
       '.ant-select-selection-item': {
         fontWeight: 600,
         fontSize: 14,
@@ -38,7 +37,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
   const onChange = (value: any) => {
     props.dispatch({
       type: 'selectedFarm/setSelectedFarm',
-      payload: props.farm.result.list.find((item) => item.id === value),
+      payload: props.farm.result.find((item) => item.id === value),
     });
   };
 
@@ -54,7 +53,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
       filterOption={(input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
       }
-      options={props.farm.result.list?.map((item) => ({
+      options={props.farm.result?.map((item) => ({
         value: item.id,
         label: item.name,
       }))}

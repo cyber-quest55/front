@@ -9,17 +9,17 @@ const Settings: ProLayoutProps & {
   // 拂晓蓝
   colorPrimary: '#00b96b',
   layout: 'side',
-  theme: "light",
+  theme: 'light',
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
-  siderMenuType:'group',
+  siderMenuType: 'group',
   colorWeak: false,
   title: 'Irricontrol',
-  pwa: true, 
+  pwa: true,
   iconfontUrl: '',
   splitMenus: false,
-  token: { 
+  token: {
     pageContainer: {
       paddingBlockPageContainerContent: 0,
       paddingInlinePageContainerContent: 0,
@@ -29,20 +29,20 @@ const Settings: ProLayoutProps & {
     colorTextAppListIconHover: 'rgba(255,255,255,0.95)',
     colorTextAppListIcon: 'rgba(255,255,255,0.85)',
     header: {
-      colorBgHeader: '#2f4050',  
+      colorBgHeader: '#2f4050',
       colorBgMenuItemHover: 'rgba(0,0,0,0.06)',
-      colorBgMenuItemSelected: 'rgba(0,0,0,0.15)', 
-      colorTextMenuSecondary: '#fff', 
-      colorTextMenuActive: '#fff', 
-      colorTextRightActionsItem: "#fff",
-      colorHeaderTitle: "#fff",
-      colorTextMenuSelected: "#fff",
+      colorBgMenuItemSelected: 'rgba(0,0,0,0.15)',
+      colorTextMenuSecondary: '#fff',
+      colorTextMenuActive: '#fff',
+      colorTextRightActionsItem: '#fff',
+      colorHeaderTitle: '#fff',
+      colorTextMenuSelected: '#fff',
       colorTextMenu: '#fff',
     },
- 
+
     sider: {
       colorBgCollapsedButton: '#fff',
-      
+
       colorTextCollapsedButtonHover: 'rgba(0,0,0,0.65)',
       colorTextCollapsedButton: 'rgba(0,0,0,0.45)',
       colorMenuBackground: '#2f4050',
@@ -58,7 +58,6 @@ const Settings: ProLayoutProps & {
       colorTextMenuActive: 'rgba(255,255,255,0.95)',
       colorTextSubMenuSelected: '#fff',
     },
-    
   },
-}; 
+};
 export default Settings;

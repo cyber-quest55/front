@@ -1,3 +1,5 @@
+import { useMapHook } from '@/hooks/map';
+import { useScreenHook } from '@/hooks/screen';
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
@@ -5,11 +7,9 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
-import { useWindowWidth } from '@react-hook/window-size';
 import { connect } from 'dva';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import DotDevice from '../Devices/DotDevice';
-
 export type RenderPivotsProps = {
   dispatch: any;
   zoom: number;
@@ -22,15 +22,16 @@ export type RenderPivotsProps = {
 };
 
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
-  const onlyWidth = useWindowWidth();
-
-  const [zoom, setZoom] = useState(14);
-  const [map, setMap] = useState<any>(null);
-  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
+  const { xl } = useScreenHook();
+  
+  const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
+    lat: 0,
+    lng: 0,
+  });
 
   const containerStyle = {
     width: '100%',
-    height: onlyWidth > 1210 ? '100vh' : 'calc(100vh -  102px)',
+    height: xl ? '100vh' : 'calc(100vh -  102px)',
   };
 
   useEffect(() => {

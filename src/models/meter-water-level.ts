@@ -24,10 +24,16 @@ export default {
       { payload }: { payload: any },
       { call, put }: { call: any; put: any },
     ) {
+      const { farmId, meterId, otherId, params } = payload;
+
       yield put({ type: 'queryMeterSystemWaterLevelStart' });
       try {
-        const { data } = yield call(getMeterSystemWaterLevel, payload);
-        yield put({ type: 'queryMeterSystemWaterLevelSuccess', payload: data });
+        const response: API.GetMeterSystemWaterLevelResponse = yield call(
+          getMeterSystemWaterLevel,
+          { farmId, meterId, otherId },
+          params,
+        );
+        yield put({ type: 'queryMeterSystemWaterLevelSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemWaterLevelError', payload: error });
       }
@@ -61,7 +67,7 @@ export default {
         loaded: true,
         result: payload.map((item: any, index: number) => ({
           ...item,
-          value: item.value /100,
+          value: item.value / 100,
           from: formatDateTime(item.from),
           key: `row-key-table-water-level-${index}`,
         })),

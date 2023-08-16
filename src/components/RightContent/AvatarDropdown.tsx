@@ -1,7 +1,7 @@
+import { useScreenHook } from '@/hooks/screen';
 import { outLogin } from '@/services/auth';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { history, useModel } from '@umijs/max';
 import { Spin } from 'antd';
 import { stringify } from 'querystring';
@@ -18,11 +18,11 @@ export type GlobalHeaderRightProps = {
 export const AvatarName = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
-  return <span className="anticon">{currentUser?.name}</span>;
+  return <span className="anticon">{currentUser?.email.split("@")[0]}</span>;
 };
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
-  const onlyWidth = useWindowWidth();
+  const { md } = useScreenHook();
 
   const className = useEmotionCss(({}) => {
     return {
@@ -36,7 +36,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
         marginBlockEnd: 0,
       },
       '.anticon': {
-        color: 'rgba(255, 255, 255, 0.75)'
+        color: 'rgba(255, 255, 255, 0.75)',
       },
     };
   });
@@ -48,7 +48,6 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     await outLogin();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
-    /** 此方法会跳转到 redirect 参数所在的位置 */
     const redirect = urlParams.get('redirect');
     // Note: There may be security issues, please note
     if (window.location.pathname !== '/user/login' && !redirect) {
@@ -112,7 +111,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser) {
     return loading;
   }
 
@@ -139,7 +138,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       icon: <LogoutOutlined />,
       label: 'Sair',
     },
-    onlyWidth < 762 || initialState?.collapsed
+    !md || initialState?.collapsed
       ? {
           key: 'TESTE',
           icon: (

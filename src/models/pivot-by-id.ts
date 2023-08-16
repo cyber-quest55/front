@@ -5,7 +5,7 @@ import { getPivotStatus } from '@/utils/get-pivot-status';
 import { AxiosError } from 'axios';
 
 export interface GetPivotByIdModelProps {
-  unformated: Models.PivotInformation;
+  unformated: API.GetPivotByIdInformationResponse;
   result: CirclePivotProps;
   loading: boolean;
   loaded: boolean;
@@ -30,8 +30,8 @@ export default {
     ) {
       yield put({ type: 'queryPivotByIdStart' });
       try {
-        const { data } = yield call(getPivotById, payload);
-        yield put({ type: 'queryPivotByIdSuccess', payload: data });
+        const response: API.GetPivotByIdInformationResponse = yield call(getPivotById, payload);
+        yield put({ type: 'queryPivotByIdSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryPivotByIdError', payload: error });
       }
@@ -56,7 +56,7 @@ export default {
 
     queryPivotByIdSuccess(
       state: GetPivotByIdModelProps,
-      { payload }: { payload: Models.PivotInformation },
+      { payload }: { payload: API.GetPivotByIdInformationResponse },
     ) {
       const item = payload;
 

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { GetMeterSystemResponse } from './data/metersystem';
 import { GetRepeaterResponse } from './data/repeater';
 
 const waitTime = (time: number = 100) => {
@@ -12,7 +11,7 @@ const waitTime = (time: number = 100) => {
 
 export default {
   'GET /farms/:farmId/repeaters': async (req: Request, res: Response) => {
-    await waitTime(2000)
+    await waitTime(2000);
     res.status(200).send(GetRepeaterResponse);
   },
 };

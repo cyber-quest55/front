@@ -5,6 +5,7 @@ export interface SelectedDeviceModelProps {
   farmId: string;
   deviceId: string;
   open: boolean;
+  otherProps: any;
   error?: any;
 }
 
@@ -16,14 +17,15 @@ export default {
     farmId: '',
     deviceId: '',
     open: false,
+    otherProps: {},
     error: {},
   },
 
   effects: {
     *setSelectedDevice({ payload }: { payload: any }, { put }: { put: any }) {
-      const { type, farmId, deviceId } = payload;
+      const { type, farmId, deviceId, otherProps } = payload;
 
-      yield put({ type: 'setSelectedDeviceDefinition', payload: { type, farmId, deviceId } });
+      yield put({ type: 'setSelectedDeviceDefinition', payload: { type, farmId, deviceId, otherProps} });
 
       switch (type) {
         case DeviceType.Pivot: {
@@ -48,7 +50,7 @@ export default {
           });
           yield put({
             type: 'irpdHistory/queryIrpdHistory',
-            payload: { farmId, irpdId: deviceId, params: {current: 0, pageSize: 15}},
+            payload: { farmId, irpdId: deviceId, params: { current: 0, pageSize: 15 } },
           });
           yield put({
             type: 'irpdEvents/queryIrpdEvents',
@@ -64,15 +66,15 @@ export default {
           yield put({
             type: 'meterSystemById/queryMeterSystemById',
             payload: { farmId, meterId: deviceId, params: {} },
-          }); 
+          });
           yield put({
             type: 'meterSystemHistory/queryMeterSystemHistory',
-            payload: { farmId, meterId: deviceId, params: {} },
-          }); 
+            payload: { farmId, meterId: deviceId, params: {}, otherId: otherProps.imeterSetId },
+          });
           yield put({
             type: 'meterSystemEvent/queryMeterSystemEvent',
-            payload: { farmId, meterId: deviceId, params: {} },
-          }); 
+            payload: { farmId, meterId: deviceId, params: {}, otherId: otherProps.imeterSetId },
+          });
           break;
         }
       }
@@ -82,15 +84,16 @@ export default {
   reducers: {
     setSelectedDeviceDefinition(
       state: SelectedDeviceModelProps,
-      { payload }: { payload: { type: string; farmId: string; deviceId: string } },
+      { payload }: { payload: { type: string; farmId: string; deviceId: string, otherProps: any } },
     ) {
-      const { type, farmId, deviceId } = payload;
+      const { type, farmId, deviceId, otherProps } = payload;
 
       return {
         ...state,
         type,
         farmId,
         deviceId,
+        otherProps,
         open: true,
       };
     },
@@ -101,6 +104,7 @@ export default {
         farmId: '',
         deviceId: '',
         open: false,
+        otherProps: {},
         error: {},
       };
     },

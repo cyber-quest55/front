@@ -1,4 +1,4 @@
-import { colors } from "./status-color";
+import { colors } from './status-color';
 
 export function getIrpdColor(status: number): string {
   switch (status) {
@@ -42,7 +42,7 @@ export function getIrpdColor(status: number): string {
       return colors.fifth;
     }
     case 249: {
-      return  colors.fifth;
+      return colors.fifth;
     }
     case 0: {
       return colors.fifth;

@@ -1,3 +1,5 @@
+import { useMapHook } from '@/hooks/map';
+import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
@@ -6,7 +8,6 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { ProCard } from '@ant-design/pro-components';
 import Field from '@ant-design/pro-field';
 import { GoogleMap } from '@react-google-maps/api';
-import { useWindowWidth } from '@react-hook/window-size';
 import { useParams } from '@umijs/max';
 import { Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
@@ -15,7 +16,6 @@ import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import RepeaterDevice from '../Devices/Repeater';
 import WaterPumpDevice from '../Devices/WaterPump';
-
 const scrollToBottom = () => {
   setTimeout(() => {
     window.scrollTo({
@@ -37,11 +37,12 @@ export type RenderPivotsProps = {
 
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   const params = useParams();
-  const onlyWidth = useWindowWidth();
+  const { md, xl } = useScreenHook();
+  const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
+    lat: 0,
+    lng: 0,
+  });
 
-  const [zoom, setZoom] = useState(13);
-  const [map, setMap] = useState<any>(null);
-  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
   const [showPivots, setShowPivots] = useState(true);
   const [showPump, setShowPump] = useState(true);
   const [showMetter, setShowMetter] = useState(true);
@@ -49,7 +50,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
 
   const containerStyle = {
     width: '100%',
-    height: onlyWidth > 767 ? '100vh' : 'calc(100vh -  102px)',
+    height: md ? '100vh' : 'calc(100vh -  102px)',
   };
 
   useEffect(() => {
@@ -80,22 +81,28 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
 
   useEffect(() => {
     if (props.pivotInformation.loaded === true) {
-      const pivot = props.pivotInformation.result[0];
-      setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
+      if (props.pivotInformation.loading !== true) {
+        const pivot = props.pivotInformation.result[0];
+        console.log(pivot)
+        if (pivot && pivot.centerLat) {
+          console.log('tp', pivot.centerLat, pivot.centerLng, pivot.name);
+          setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
+        }
+      }
     }
-  }, [props.pivotInformation.loaded]);
+  }, [props.pivotInformation]);
 
-  const onSetDevice = (type: string, deviceId: string) => {
+  const onSetDevice = (type: string, deviceId: string, otherProps: any) => {
     props.dispatch({
       type: 'selectedDevice/setSelectedDevice',
-      payload: { type, deviceId, farmId: params.id },
+      payload: { type, deviceId, farmId: params.id, otherProps },
     });
     scrollToBottom();
   };
 
   return (
     <>
-      {onlyWidth > 1210 ? (
+      {xl ? (
         <Space
           style={{
             position: 'absolute',
@@ -242,6 +249,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 deviceColor={item.deviceColor}
                 statusText={item.statusText}
                 infoWindow
+                imeterSetId={item.imeterSetId}
               />
             ))
           : null}

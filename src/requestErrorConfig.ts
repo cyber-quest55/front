@@ -1,5 +1,4 @@
-﻿import type { RequestOptions } from '@@/plugin-request/request';
-import type { RequestConfig } from '@umijs/max';
+﻿import { type RequestConfig, type RequestOptions } from '@umijs/max';
 import { message, notification } from 'antd';
 
 // 错误处理方案： 错误类型
@@ -19,6 +18,7 @@ interface ResponseStructure {
   showType?: ErrorShowType;
 }
 
+ 
 /**
  * @name 错误处理
  * pro 自带的错误处理， 可以在这里做自己的改动
@@ -26,6 +26,8 @@ interface ResponseStructure {
  */
 export const errorConfig: RequestConfig = {
   // 错误处理： umi@3 的错误处理方案。
+
+  baseURL: API_URL,
   errorConfig: {
     // 错误抛出
     errorThrower: (res) => {
@@ -35,7 +37,7 @@ export const errorConfig: RequestConfig = {
         const error: any = new Error(errorMessage);
         error.name = 'BizError';
         error.info = { errorCode, errorMessage, showType, data };
-        throw error; // 抛出自制的错误
+        throw error; 
       }
     },
     // 错误接收及处理
@@ -89,8 +91,12 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      const url = config?.url?.concat('?token = 123');
-      return { ...config, url };
+      const token = localStorage.getItem('token');
+      if (token) {
+        const authHeader = { Authorization: `Bearer ${token}` };
+        return { ...config, headers: authHeader };
+      }
+      return { ...config };
     },
   ],
 
@@ -98,11 +104,7 @@ export const errorConfig: RequestConfig = {
   responseInterceptors: [
     (response) => {
       // 拦截响应数据，进行个性化处理
-      const { data } = response as unknown as ResponseStructure;
-       
-      if (data?.success === false) {
-        message.error('请求失败！');
-      }
+
       return response;
     },
   ],

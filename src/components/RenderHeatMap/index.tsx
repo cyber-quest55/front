@@ -1,3 +1,5 @@
+import { useMapHook } from '@/hooks/map';
+import { useScreenHook } from '@/hooks/screen';
 import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
@@ -5,10 +7,8 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap, HeatmapLayer } from '@react-google-maps/api';
-import { useWindowWidth } from '@react-hook/window-size';
 import { connect } from 'dva';
-import React, { useState } from 'react';
-
+import React from 'react';
 export type RenderPivotsProps = {
   dispatch: any;
   zoom: number;
@@ -21,15 +21,12 @@ export type RenderPivotsProps = {
 };
 
 const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
-  const onlyWidth = useWindowWidth();
-
-  const [zoom, setZoom] = useState(14);
-  const [map, setMap] = useState<any>(null);
-  const [mapCenter] = useState({ lat: 49.2811663, lng: -123.1162367 });
+  const { xl } = useScreenHook();
+  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(14, { lat: 49.2811663, lng: -123.1162367 });
 
   const containerStyle = {
     width: '100%',
-    height: onlyWidth > 1210 ? '100vh' : 'calc(100vh -  102px)',
+    height: xl ? '100vh' : 'calc(100vh -  102px)',
   };
 
   const data = [
@@ -43,7 +40,7 @@ const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
     { lng: -123.1075819, lat: 49.2796864 },
     { lng: -123.1075819, lat: 49.2796864 },
     { lng: -123.1075819, lat: 49.2796864 },
-    { lng: -123.1259815, lat: 49.2811755 },    
+    { lng: -123.1259815, lat: 49.2811755 },
 
     { lng: -123.0635398, lat: 49.2849098 },
     { lng: -123.0635398, lat: 49.2849098 },
@@ -1600,28 +1597,28 @@ const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
         }}
         zoom={zoom}
       >
-        <HeatmapLayer  
+        <HeatmapLayer
           options={{
             gradient: [
-            'rgba(0, 255, 255, 0)',
-            'rgba(0, 255, 255, 1)',
-            'rgba(0, 191, 255, 1)',
-            'rgba(0, 127, 255, 1)',
-            'rgba(0, 63, 255, 1)',
-            'rgba(0, 0, 255, 1)',
-            'rgba(0, 0, 223, 1)',
-            'rgba(0, 0, 191, 1)',
-            'rgba(0, 0, 159, 1)',
-            'rgba(0, 0, 127, 1)',
-            'rgba(63, 0, 91, 1)',
-            'rgba(127, 0, 63, 1)',
-            'rgba(191, 0, 31, 1)',
-            'rgba(255, 0, 0, 1)'
-          ], 
-          radius: 35,
-          
-          dissipating: true
-        }}
+              'rgba(0, 255, 255, 0)',
+              'rgba(0, 255, 255, 1)',
+              'rgba(0, 191, 255, 1)',
+              'rgba(0, 127, 255, 1)',
+              'rgba(0, 63, 255, 1)',
+              'rgba(0, 0, 255, 1)',
+              'rgba(0, 0, 223, 1)',
+              'rgba(0, 0, 191, 1)',
+              'rgba(0, 0, 159, 1)',
+              'rgba(0, 0, 127, 1)',
+              'rgba(63, 0, 91, 1)',
+              'rgba(127, 0, 63, 1)',
+              'rgba(191, 0, 31, 1)',
+              'rgba(255, 0, 0, 1)',
+            ],
+            radius: 35,
+
+            dissipating: true,
+          }}
           data={data.map((item) => new google.maps.LatLng(item.lat, item.lng))}
         />
       </GoogleMap>

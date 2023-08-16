@@ -11,4 +11,4 @@ export interface IResponse<T> {
 
 export const defaulSuccessResponse: IResponse<any> = {
   success: true,
-}
+};

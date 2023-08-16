@@ -1,10 +1,10 @@
 import DeviceList from '@/components/DeviceList';
 import RenderDotDevices from '@/components/RenderDotDevices';
+import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode } from 'react';
@@ -18,10 +18,10 @@ type Props = {
 };
 
 const Devices: FunctionComponent<Props> = (props) => {
-  const onlyWidth = useWindowWidth();
+  const { md } = useScreenHook();
 
   const className = useEmotionCss(({}) => {
-    return onlyWidth > 767
+    return md
       ? {
           position: 'absolute',
           width: 400,
@@ -87,15 +87,15 @@ const Devices: FunctionComponent<Props> = (props) => {
       <Col
         xs={24}
         style={{
-          height: onlyWidth > 767 ? '100vh' : 'calc(100vh - 56px - 60px)',
+          height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
           position: 'relative',
         }}
       >
         <>
-          {onlyWidth > 767 ? (
+          {md ? (
             <Spin spinning={props.pivot.loading || props.farm.loading}>
               <div style={{ width: '100%', height: '100vh' }}>
-                <RenderDotDevices  />
+                <RenderDotDevices />
               </div>
               <ProCard className={className}>
                 <DeviceList />
@@ -219,7 +219,7 @@ const Devices: FunctionComponent<Props> = (props) => {
                  */}
             </Spin>
           ) : null}
-          {onlyWidth > 767 ? null : (
+          {md ? null : (
             <div className={classNameFixedMobile}>
               <Tabs defaultActiveKey="1" items={items} tabPosition="bottom" />
             </div>

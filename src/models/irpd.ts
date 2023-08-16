@@ -1,8 +1,8 @@
-import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter'; 
+import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getIrpds } from '@/services/irpd';
 import { getIrpdColor } from '@/utils/get-irpd-color';
 import { getIrpdStatus } from '@/utils/get-irpd-status';
-import { AxiosError } from "axios";
+import { AxiosError } from 'axios';
 
 export interface GetIrpdModelProps {
   result: LakeLevelMeterProps[];
@@ -25,8 +25,8 @@ export default {
     *queryIrpd({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdStart' });
       try {
-        const { data } = yield call(getIrpds, payload);
-        yield put({ type: 'queryIrpdSuccess', payload: data });
+        const response: API.GetIrpdResponse = yield call(getIrpds, payload);
+        yield put({ type: 'queryIrpdSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdError', payload: error });
       }
@@ -56,16 +56,16 @@ export default {
        * Validar latestGpsPosition linha 184, 196
        */
 
-      for (let index = 0; index < payload.list.length; index++) {
-        const item = payload.list[index];
-        const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status
+      for (let index = 0; index < payload.length; index++) {
+        const item = payload[index];
+        const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status;
         const latLng = item.position.split(',');
         mapper.push({
           id: item.id,
           centerLat: parseFloat(latLng[0]),
           centerLng: parseFloat(latLng[1]),
-          name: payload.list[index].name,
-          updated: new Date(payload.list[index].updated).toLocaleString(),
+          name: payload[index].name,
+          updated: new Date(payload[index].updated).toLocaleString(),
           deviceColor: getIrpdColor(status),
           statusText: getIrpdStatus(status),
         });
