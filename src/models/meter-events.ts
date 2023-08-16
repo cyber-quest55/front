@@ -27,10 +27,13 @@ export default {
       { call, put }: { call: any; put: any },
     ) {
       const { farmId, meterId, params, otherId } = payload;
-      console.log(farmId, meterId, params, otherId)
       yield put({ type: 'queryMeterSystemEventStart' });
       try {
-        const response: API.GetMeterSystemTableResponse = yield call(getMeterSystemTable, { farmId, meterId, otherId }, params);
+        const response: API.GetMeterSystemTableResponse = yield call(
+          getMeterSystemTable,
+          { farmId, meterId, otherId },
+          params,
+        );
         yield put({ type: 'queryMeterSystemEventSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemEventError', payload: error });

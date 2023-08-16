@@ -108,7 +108,7 @@ const MeterReport: React.FC<Props> = (props) => {
                   suffixIcon={<CaretDownOutlined />}
                   bordered={false}
                   showSearch
-                  value={props.meterSystem?.result[0].name.toString() as string}
+                  value={props.meterSystem?.result[0]?.name?.toString() as string}
                   size="large"
                   style={{ width: '100%' }}
                   filterOption={(input, option) =>

@@ -5,18 +5,21 @@ import PivotList from '@/components/PivotList';
 import RenderPivots from '@/components/RenderPivots';
 import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps } from '@/models/farm';
+import { GetIrpdModelProps } from '@/models/irpd';
+import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
+import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { GetRepeaterModelProps } from '@/models/repeaters';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { DeviceType } from '@/utils/enums';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useParams } from '@umijs/max';
+import { history, useParams } from '@umijs/max';
 import { useMount, useUnmount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
-import { history, } from '@umijs/max';
 
 type Props = {
   dispatch?: any;
@@ -26,6 +29,10 @@ type Props = {
   farm: GetFarmModelProps;
   selectedDevice: SelectedDeviceModelProps;
   selectedFarm: SelectedFarmModelProps;
+  repeater: GetRepeaterModelProps;
+  meterSystem: GetMeterSystemModelProps;
+  pivotInformation: GetPivotInformationModelProps;
+  irpd: GetIrpdModelProps;
 };
 
 const Welcome: FunctionComponent<Props> = (props) => {
@@ -81,7 +88,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
   };
 
   useEffect(() => {
-    if ( props.selectedFarm.id !== 0) {
+    if (props.selectedFarm.id !== 0) {
       history.push(`${props.selectedFarm.id}`);
       return;
     }
@@ -194,7 +201,15 @@ const Welcome: FunctionComponent<Props> = (props) => {
       >
         <>
           {md ? (
-            <Spin spinning={props.pivot.loading || props.farm.loading}>
+            <Spin
+              spinning={
+                props.pivot.loading ||
+                props.farm.loading ||
+                props.irpd.loading ||
+                props.meterSystem.loading ||
+                props.pivotInformation.loading
+              }
+            >
               <div style={{ width: '100%', height: '100vh' }}>
                 <RenderPivots />
               </div>
@@ -237,18 +252,30 @@ const Welcome: FunctionComponent<Props> = (props) => {
 export default connect(
   ({
     pivot,
+    pivotInformation,
     farm,
     selectedDevice,
     selectedFarm,
+    repeater,
+    meterSystem,
+    irpd,
   }: {
     pivot: any;
+    pivotInformation: any;
     farm: any;
     selectedDevice: any;
     selectedFarm: any;
+    repeater: any;
+    meterSystem: any;
+    irpd: any;
   }) => ({
     pivot,
+    pivotInformation,
     farm,
     selectedDevice,
     selectedFarm,
+    repeater,
+    meterSystem,
+    irpd,
   }),
 )(Welcome);

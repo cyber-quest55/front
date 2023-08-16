@@ -73,10 +73,8 @@ export default {
           updated: new Date(payload[index].updated).toLocaleString(),
           deviceColor: getIrpdColor(status),
           statusText: getMeterStatus(status),
-          imeterSetId: item?.imeter_set[0]?.id
+          imeterSetId: item?.imeter_set[0]?.id,
         });
-
-        console.log("testando", item?.imeter_set[0])
       }
 
       return {

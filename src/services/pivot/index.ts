@@ -56,5 +56,6 @@ export async function getPivotReports(
     data: API.GetFarmResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/report/`, {
     method: 'GET',
+    params: options
   });
 }

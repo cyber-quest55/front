@@ -5,8 +5,8 @@ import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
-const { REACT_APP_ENV = 'dev' } = process.env;
-
+const { REACT_APP_ENV } = process.env; 
+console.log('there')
 export default defineConfig({
   /**
    * @name 开启 hash 模式
@@ -155,8 +155,5 @@ export default defineConfig({
   mfsu: {
     strategy: 'normal',
   },
-  requestRecord: {},
-  define: {
-    MAPS_KEY: '&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU',
-  },
+  requestRecord: {}, 
 });

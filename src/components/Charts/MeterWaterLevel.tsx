@@ -44,8 +44,7 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
     });
   };
 
-  console.log(props.selectedDevice.otherProps)
-
+ 
   const update = () => {
     const { startDate, endDate } = range;
     props.dispatch({

@@ -18,6 +18,7 @@ interface ResponseStructure {
   showType?: ErrorShowType;
 }
 
+ 
 /**
  * @name 错误处理
  * pro 自带的错误处理， 可以在这里做自己的改动
@@ -26,7 +27,7 @@ interface ResponseStructure {
 export const errorConfig: RequestConfig = {
   // 错误处理： umi@3 的错误处理方案。
 
-  baseURL: 'https://app.irricontrol.net/v3',
+  baseURL: API_URL,
   errorConfig: {
     // 错误抛出
     errorThrower: (res) => {
@@ -36,7 +37,7 @@ export const errorConfig: RequestConfig = {
         const error: any = new Error(errorMessage);
         error.name = 'BizError';
         error.info = { errorCode, errorMessage, showType, data };
-        throw error; // 抛出自制的错误
+        throw error; 
       }
     },
     // 错误接收及处理

@@ -28,7 +28,11 @@ export default {
     ) {
       yield put({ type: 'queryPivotInformationStart' });
       try {
-        const response: API.GetPivotsInformationResponse = yield call(getPivotsWithInformations, payload, payload.params);
+        const response: API.GetPivotsInformationResponse = yield call(
+          getPivotsWithInformations,
+          payload,
+          payload.params,
+        );
         yield put({ type: 'queryPivotInformationSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryPivotInformationError', payload: error });
@@ -142,19 +146,27 @@ export default {
           const gpsPosition = item.latest_gps_stream?.position?.split(',');
           const centerPosition = item.config.center.split(',');
           const referencePosition = item.config.reference.split(',');
-          centerLat = parseFloat(centerPosition[0]).toFixed(6);
-          centerLng = parseFloat(centerPosition[1]).toFixed(6);
-          referencedLat = parseFloat(referencePosition[0]).toFixed(6);
-          referencedLng = parseFloat(referencePosition[1]).toFixed(6);
-          gpsLat = parseFloat(gpsPosition[0]).toFixed(6);
-          gpsLong = parseFloat(gpsPosition[1]).toFixed(6);
+          centerLat = parseFloat(centerPosition[0]);
+          centerLng = parseFloat(centerPosition[1]);
+          referencedLat = parseFloat(referencePosition[0]);
+          referencedLng = parseFloat(referencePosition[1]);
+          gpsLat = parseFloat(gpsPosition[0]);
+          gpsLong = parseFloat(gpsPosition[1]);
         } else {
-          centerLat = item.controllerconfig.content?.pivot_positions.latitude_center;
-          centerLng = item.controllerconfig.content?.pivot_positions.longitude_center;
-          referencedLat = item.controllerconfig.content?.pivot_positions.latitude_reference;
-          referencedLng = item.controllerconfig.content?.pivot_positions.longitude_reference;
-          gpsLat = item.controllerstream_gps.content?.latitude_longitude_gps?.latitude_gps;
-          gpsLong = item.controllerstream_gps.content?.latitude_longitude_gps?.longitude_gps;
+          centerLat = parseFloat(
+            item.controllerconfig.content?.pivot_positions.latitude_center as any,
+          );
+          centerLng = parseFloat(
+            item.controllerconfig.content?.pivot_positions.longitude_center as any,
+          );
+          referencedLat = parseFloat(item.controllerconfig.content?.pivot_positions.latitude_reference as any);
+          referencedLng = parseFloat(item.controllerconfig.content?.pivot_positions.longitude_reference as any);
+          gpsLat = parseFloat(
+            item.controllerstream_gps.content?.latitude_longitude_gps?.latitude_gps as any,
+          );
+          gpsLong = parseFloat(
+            item.controllerstream_gps.content?.latitude_longitude_gps?.longitude_gps as any,
+          );
         }
 
         stopAngle =
@@ -172,7 +184,7 @@ export default {
           sectorAngle = item.config?.sector_angle;
         }
 
-        let endAngle = item.controllerconfig?.content?.sector?.end_angle;
+        let endAngle = parseFloat(item.controllerconfig?.content?.sector?.end_angle as any);
 
         if (item.controllerstream_panel?.content?.irrigation_status?.irrigation_status) {
           pivotColor = getPivotColor(
@@ -185,6 +197,8 @@ export default {
             item.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
           );
         }
+
+        console.log(gpsLat, gpsLong, centerLat, centerLng, 'ashdsauhdhuashu');
 
         mapper.push({
           id: item.id,
@@ -215,6 +229,8 @@ export default {
           onSelect: () => null,
         });
       }
+
+      console.log(mapper);
 
       return {
         ...state,
