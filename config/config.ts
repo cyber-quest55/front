@@ -6,7 +6,6 @@ import proxy from './proxy';
 import routes from './routes';
 
 const { REACT_APP_ENV } = process.env; 
-console.log('there')
 export default defineConfig({
   /**
    * @name 开启 hash 模式
