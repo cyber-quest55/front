@@ -40,7 +40,7 @@ export default {
           yield put({
             type: 'pivotById/queryPivotById',
             payload: { farmId, pivotId: deviceId, params: {} },
-          });
+          }); 
           break;
         }
         case DeviceType.Pump: {
@@ -87,7 +87,7 @@ export default {
       { payload }: { payload: { type: string; farmId: string; deviceId: string, otherProps: any } },
     ) {
       const { type, farmId, deviceId, otherProps } = payload;
-
+      
       return {
         ...state,
         type,

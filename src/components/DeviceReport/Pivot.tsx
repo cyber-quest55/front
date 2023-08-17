@@ -1,9 +1,11 @@
 import { useScreenHook } from '@/hooks/screen';
+import { useTabsHook } from '@/hooks/tabs';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetPivotReportModelProps } from '@/models/pivot-report';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { DeviceType } from '@/utils/enums';
 import { PivotStatusColor } from '@/utils/pivot-status';
 import {
   CaretDownOutlined,
@@ -15,18 +17,21 @@ import {
   ThunderboltFilled,
 } from '@ant-design/icons';
 import { G2, Line, Pie } from '@ant-design/plots';
-import { ProCard, StatisticCard } from '@ant-design/pro-components';
+import { ProCard, ProSkeleton, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useParams } from '@umijs/max';
 import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
+import SkeletonPieChart from '../Skeletons/PieChart';
+import SkeletonStatistic from '../Skeletons/Statistic';
 import PivotEventTable from '../Tables/PivotEventTable';
 import PivotOperationTable from '../Tables/PivotOperationTable';
-import { useTabsHook } from '@/hooks/tabs';
+
 const { Statistic } = StatisticCard;
 
 const GetPivotPressureComparative = {
@@ -773,11 +778,15 @@ type Props = {
 };
 
 const PivotReport: React.FC<Props> = (props) => {
+  const params = useParams();
   const G = G2.getEngine('canvas');
   const { md, xxl } = useScreenHook();
-  const {tab, setTab} = useTabsHook('tab1');
+  const { tab, setTab } = useTabsHook('tab1');
 
   const [option, setOption] = useState<undefined | number>(undefined);
+  const [device, setDevice] = useState<any>({});
+
+  console.log('refresh');
 
   const data = [
     {
@@ -842,11 +851,20 @@ const PivotReport: React.FC<Props> = (props) => {
   });
 
   const onChangeDevice = (e: string) => {
+    const device = props.pivot.result.find((item) => item.id === parseInt(e));
+
     props.dispatch({
-      type: 'pivot/setSelectedPivot',
-      payload: props.pivot.result.find((item) => item.id === parseInt(e)),
+      type: 'selectedDevice/setSelectedDevice',
+      payload: { type: DeviceType.Pivot, deviceId: device?.id, farmId: params.id },
     });
   };
+
+  useEffect(() => {
+    const device = props.pivot.result.find(
+      (item) => item.id === parseInt(props.selectedDevice.deviceId),
+    );
+    setDevice(device);
+  }, [props.selectedDevice.deviceId]);
 
   const destroyOnClick = () => {
     props.dispatch({
@@ -925,7 +943,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 suffixIcon={<CaretDownOutlined />}
                 bordered={false}
                 showSearch
-                value={props.pivot.selectedPivot?.name?.toString()}
+                value={device?.name?.toString()}
                 size="large"
                 style={{ width: '100%' }}
                 filterOption={(input, option) =>
@@ -991,6 +1009,7 @@ const PivotReport: React.FC<Props> = (props) => {
             colSpan={{ xs: 24, md: 12, xxl: 12 }}
           >
             <StatisticCard
+              loading={props.pivotReport.loading}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(1)}
               style={{ height: 'calc(275px / 2)' }}
@@ -1003,6 +1022,7 @@ const PivotReport: React.FC<Props> = (props) => {
               }}
             />
             <StatisticCard
+              loading={props.pivotReport.loading}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(2)}
               style={{ height: 'calc(275px / 2)' }}
@@ -1020,6 +1040,7 @@ const PivotReport: React.FC<Props> = (props) => {
             colSpan={{ xs: 24, md: 12, xxl: 12 }}
           >
             <StatisticCard
+              loading={props.pivotReport.loading}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(3)}
               style={{ height: 'calc(275px / 2)' }}
@@ -1032,6 +1053,7 @@ const PivotReport: React.FC<Props> = (props) => {
               }}
             />
             <StatisticCard
+              loading={props.pivotReport.loading}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(4)}
               style={{ height: 'calc(275px / 2)' }}
@@ -1056,6 +1078,7 @@ const PivotReport: React.FC<Props> = (props) => {
             <ProCard split={md ? 'vertical' : 'horizontal'}>
               <ProCard split={'horizontal'} wrap>
                 <StatisticCard
+                  loading={props.pivotReport.loading}
                   onClick={() => {}}
                   statistic={{
                     title: 'Volume total',
@@ -1065,6 +1088,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 />
 
                 <StatisticCard
+                  loading={props.pivotReport.loading}
                   statistic={{
                     title: 'Horas trabalhadas',
                     value: props.pivotReport.result?.hours_count?.wet_total_hours.toFixed(3),
@@ -1074,6 +1098,7 @@ const PivotReport: React.FC<Props> = (props) => {
               </ProCard>
               <ProCard split={'horizontal'} wrap>
                 <StatisticCard
+                  loading={props.pivotReport.loading}
                   statistic={{
                     title: 'Volume total mês anterior',
                     value: '99.000,31',
@@ -1081,6 +1106,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   }}
                 />
                 <StatisticCard
+                  loading={props.pivotReport.loading}
                   statistic={{
                     title: 'Horas trabalhadas mês anterior',
                     value: '150,03',
@@ -1091,6 +1117,7 @@ const PivotReport: React.FC<Props> = (props) => {
             </ProCard>
 
             <StatisticCard
+              loading={props.pivotReport.loading && <SkeletonPieChart />}
               style={{ width: '100%' }}
               title="Horas de Trabalho Molhado (h)"
               chart={
@@ -1167,6 +1194,7 @@ const PivotReport: React.FC<Props> = (props) => {
             style={{ height: md ? 350 : '100%' }}
           >
             <StatisticCard
+              loading={props.pivotReport.loading && <SkeletonPieChart />}
               colSpan={{ xs: 24, lg: 24 }}
               style={{ width: '100%' }}
               title="Custo total de energia (R$)"
@@ -1231,6 +1259,7 @@ const PivotReport: React.FC<Props> = (props) => {
               style={{ height: md ? 350 : '100%' }}
             >
               <StatisticCard
+                loading={props.pivotReport.loading}
                 title={'Tensões do Pivô '}
                 colSpan={{ xs: 24, lg: 16 }}
                 style={{ width: '100%' }}
@@ -1277,6 +1306,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 <ProCard split="horizontal">
                   <ProCard split="horizontal">
                     <StatisticCard
+                      loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
                         title: 'Mínimo',
                         value: props.pivotReport.result?.voltage_min
@@ -1288,6 +1318,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   </ProCard>
                   <ProCard split="horizontal">
                     <StatisticCard
+                      loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
                         title: 'Médio',
                         value: props.pivotReport.result?.voltage_med
@@ -1299,6 +1330,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   </ProCard>
                   <ProCard split="horizontal">
                     <StatisticCard
+                      loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
                         title: 'Máximo',
                         value: props.pivotReport.result?.voltage_max
@@ -1313,7 +1345,13 @@ const PivotReport: React.FC<Props> = (props) => {
             </ProCard>
           </ProCard>
         </ProCard>
-        <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost className={classNameTableProCard}>
+        <ProCard
+          loading={props.pivotHistory.loading && <ProSkeleton type="list" />}
+          colSpan={{ xs: 24, lg: 12 }}
+          wrap
+          ghost
+          className={classNameTableProCard}
+        >
           <ProCard
             style={{ minHeight: 1032 }}
             title="Histórico"
@@ -1324,6 +1362,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 {
                   label: `Eventos`,
                   key: 'tab1',
+
                   children: <PivotEventTable />,
                 },
                 {

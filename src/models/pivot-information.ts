@@ -198,8 +198,6 @@ export default {
           );
         }
 
-        console.log(gpsLat, gpsLong, centerLat, centerLng, 'ashdsauhdhuashu');
-
         mapper.push({
           id: item.id,
           irrigationDirection,
@@ -229,8 +227,6 @@ export default {
           onSelect: () => null,
         });
       }
-
-      console.log(mapper);
 
       return {
         ...state,
