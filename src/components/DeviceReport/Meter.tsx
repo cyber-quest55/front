@@ -67,8 +67,9 @@ const MeterReport: React.FC<Props> = (props) => {
 
     props.dispatch({
       type: 'selectedDevice/setSelectedDevice',
-      payload: { type: DeviceType.Meter, deviceId, farmId: params.id },
+      payload: { type: DeviceType.Meter, deviceId, farmId: params.id, },
     });
+
   };
 
   const destroyOnClick = () => {

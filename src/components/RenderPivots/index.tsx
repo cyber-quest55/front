@@ -54,38 +54,11 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   };
 
   useEffect(() => {
-    props.dispatch({
-      type: 'pivotInformation/queryPivotInformation',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-
-    props.dispatch({
-      type: 'meterSystem/queryMeterSystem',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-
-    props.dispatch({
-      type: 'irpd/queryIrpd',
-      payload: {
-        id: parseInt(params.id as string),
-        params: {},
-      },
-    });
-  }, [params]);
-
-  useEffect(() => {
     if (props.pivotInformation.loaded === true) {
       if (props.pivotInformation.loading !== true) {
         const pivot = props.pivotInformation.result[0];
-        console.log(pivot)
+
         if (pivot && pivot.centerLat) {
-          console.log('tp', pivot.centerLat, pivot.centerLng, pivot.name);
           setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
         }
       }

@@ -41,7 +41,7 @@ export default {
       return {
         ...state,
         error: payload.response?.data,
-        loading: false,
+        loading: true,
       };
     },
     queryPivotReportStart(state: GetPivotReportModelProps) {
@@ -56,7 +56,7 @@ export default {
     ) {
       return {
         ...state,
-        loading: false,
+        loading: true,
         loaded: true,
         result: payload,
         error: {},

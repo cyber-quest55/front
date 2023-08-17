@@ -528,7 +528,7 @@ declare namespace API {
     pivotId: string;
   };
 
-  type GetPivotReportResponse = Array<{
+  type GetPivotReportResponse =  {
     pivot_id: number;
     start_date: string;
     end_date: string;
@@ -588,5 +588,5 @@ declare namespace API {
     first_pressure_array_by_angle: any;
     misalignment_array: Array<any>;
     start_pivot_report_aggregate: number;
-  }>;
+  } 
 }

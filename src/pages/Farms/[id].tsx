@@ -87,13 +87,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (props.selectedFarm.id !== 0) {
-      history.push(`${props.selectedFarm.id}`);
-      return;
-    }
-  }, [props.selectedFarm]);
-
   //useEffect(() => {
   //  if ( params.id === ':id' && props.selectedFarm.id !== 0) {
   //    history.push(`${props.selectedFarm.id}`);
@@ -109,12 +102,47 @@ const Welcome: FunctionComponent<Props> = (props) => {
       });
   });
 
+  useEffect(() => {
+    if (props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [props.selectedFarm]);
+
   useUnmount(() => {
     props.dispatch({
       type: 'selectedDevice/setDeviceClose',
       payload: {},
     });
   });
+
+  useEffect(() => {
+    if (params.id !== ':id') {
+      props.dispatch({
+        type: 'pivotInformation/queryPivotInformation',
+        payload: {
+          id: parseInt(params.id as string),
+          params: {},
+        },
+      });
+
+      props.dispatch({
+        type: 'meterSystem/queryMeterSystem',
+        payload: {
+          id: parseInt(params.id as string),
+          params: {},
+        },
+      });
+
+      props.dispatch({
+        type: 'irpd/queryIrpd',
+        payload: {
+          id: parseInt(params.id as string),
+          params: {},
+        },
+      });
+    }
+  }, [params]);
 
   const className = useEmotionCss(({}) => {
     return md
