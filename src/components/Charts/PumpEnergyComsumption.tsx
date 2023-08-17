@@ -44,7 +44,7 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
         isPercent={true}
         isStack={true}
         tooltip={false}
-        legend={{position: "bottom"}}
+        legend={{ position: 'bottom' }}
         interactions={[
           {
             type: 'element-highlight-by-color',

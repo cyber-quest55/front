@@ -5,8 +5,8 @@ export default async () => {
     ...createConfig({
       target: 'browser',
     }),
-  }); 
-  
+  });
+
   return {
     ...config,
     testEnvironmentOptions: {

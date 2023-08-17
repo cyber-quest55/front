@@ -5,7 +5,7 @@ import { getMeterStatus } from '@/utils/get-meter-status';
 import { AxiosError } from 'axios';
 
 export interface GetMeterSystemByIdModelProps {
-  unformated: Models.MeterSystem;
+  unformated: API.GetMeterSystemByIdResponse;
   result: LakeLevelMeterProps;
   loading: boolean;
   loaded: boolean;
@@ -27,8 +27,8 @@ export default {
     *queryMeterSystemById({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryMeterSystemByIdStart' });
       try {
-        const { data } = yield call(getMeterSystemById, payload);
-        yield put({ type: 'queryMeterSystemByIdSuccess', payload: data });
+        const response: API.GetMeterSystemByIdResponse = yield call(getMeterSystemById, payload);
+        yield put({ type: 'queryMeterSystemByIdSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemByIdError', payload: error });
       }
@@ -36,7 +36,10 @@ export default {
   },
 
   reducers: {
-    queryMeterSystemByIdError(state: GetMeterSystemByIdModelProps, { payload }: { payload: AxiosError }) {
+    queryMeterSystemByIdError(
+      state: GetMeterSystemByIdModelProps,
+      { payload }: { payload: AxiosError },
+    ) {
       return {
         ...state,
         error: payload.response?.data,
@@ -54,7 +57,7 @@ export default {
       { payload }: { payload: API.GetMeterSystemByIdResponse },
     ) {
       const item = payload;
-      const status = item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status
+      const status = item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status;
 
       const latLng = item.position.split(',');
 

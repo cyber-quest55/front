@@ -5,11 +5,9 @@ export enum DeviceType {
   'Pump' = 'pump',
 }
 
-export enum PumpHistoryOrigin { 
+export enum PumpHistoryOrigin {
   'Command' = 0,
-  'CentralUpdate' = 1
+  'CentralUpdate' = 1,
 }
 
-export enum MeterSystemOrigin { 
-  
-}
+export enum MeterSystemOrigin {}

@@ -24,8 +24,8 @@ export default {
     *queryIrpdWater({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdWaterStart' });
       try {
-        const { data } = yield call(getIrpdWaterConsumption, payload);
-        yield put({ type: 'queryIrpdWaterSuccess', payload: data });
+        const response: API.GetIrpdWaterConsumptionResponse = yield call(getIrpdWaterConsumption, payload);
+        yield put({ type: 'queryIrpdWaterSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdWaterError', payload: error });
       }

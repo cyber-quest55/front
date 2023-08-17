@@ -1,3 +1,4 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
@@ -16,7 +17,6 @@ import {
 import { G2, Line, Pie } from '@ant-design/plots';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
 import { useState } from 'react';
 import { BsFillCloudRainFill } from 'react-icons/bs';
@@ -26,7 +26,7 @@ import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import PivotEventTable from '../Tables/PivotEventTable';
 import PivotOperationTable from '../Tables/PivotOperationTable';
-
+import { useTabsHook } from '@/hooks/tabs';
 const { Statistic } = StatisticCard;
 
 const GetPivotPressureComparative = {
@@ -774,9 +774,9 @@ type Props = {
 
 const PivotReport: React.FC<Props> = (props) => {
   const G = G2.getEngine('canvas');
-  const onlyWidth = useWindowWidth();
+  const { md, xxl } = useScreenHook();
+  const {tab, setTab} = useTabsHook('tab1');
 
-  const [tab, setTab] = useState('tab1');
   const [option, setOption] = useState<undefined | number>(undefined);
 
   const data = [
@@ -844,7 +844,7 @@ const PivotReport: React.FC<Props> = (props) => {
   const onChangeDevice = (e: string) => {
     props.dispatch({
       type: 'pivot/setSelectedPivot',
-      payload: props.pivot.result.list.find((item) => item.id === parseInt(e)),
+      payload: props.pivot.result.find((item) => item.id === parseInt(e)),
     });
   };
 
@@ -905,10 +905,7 @@ const PivotReport: React.FC<Props> = (props) => {
         <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 5 }} style={{ height: 275 }}>
           <DeviceMapsRender height={275} />
         </ProCard>
-        <ProCard
-          colSpan={{ xs: 24, md: 16, xxl: 9 }}
-          style={{ height: onlyWidth > 767 ? 275 : '100%' }}
-        >
+        <ProCard colSpan={{ xs: 24, md: 16, xxl: 9 }} style={{ height: md ? 275 : '100%' }}>
           <DevicePanel
             actions={
               <Space>
@@ -935,7 +932,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                 }
                 onChange={onChangeDevice}
-                options={props.pivot.result.list?.map((item) => ({
+                options={props.pivot?.result.map((item) => ({
                   value: item.id,
                   label: item.name,
                 }))}
@@ -978,23 +975,19 @@ const PivotReport: React.FC<Props> = (props) => {
             lastCommunication="19 May 10:15"
             deviceActions={
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <Button type="primary" style={{ width: onlyWidth > 767 ? '200px' : '100%' }}>
+                <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
                   Start Pivot
                 </Button>
-                <Button type="default" danger style={{ width: onlyWidth > 767 ? '200px' : '100%' }}>
+                <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
                   Stop Pivot
                 </Button>
               </Space>
             }
           />
         </ProCard>
-        <ProCard
-          split={onlyWidth > 767 ? 'vertical' : 'horizontal'}
-          colSpan={{ xs: 24, md: 24, xxl: 10 }}
-          wrap
-        >
+        <ProCard split={md ? 'vertical' : 'horizontal'} colSpan={{ xs: 24, md: 24, xxl: 10 }} wrap>
           <ProCard
-            split={onlyWidth > 1600 ? 'horizontal' : onlyWidth > 767 ? 'vertical' : 'horizontal'}
+            split={xxl ? 'horizontal' : md ? 'vertical' : 'horizontal'}
             colSpan={{ xs: 24, md: 12, xxl: 12 }}
           >
             <StatisticCard
@@ -1023,7 +1016,7 @@ const PivotReport: React.FC<Props> = (props) => {
             />
           </ProCard>
           <ProCard
-            split={onlyWidth > 1600 ? 'horizontal' : onlyWidth > 767 ? 'vertical' : 'horizontal'}
+            split={xxl ? 'horizontal' : md ? 'vertical' : 'horizontal'}
             colSpan={{ xs: 24, md: 12, xxl: 12 }}
           >
             <StatisticCard
@@ -1054,13 +1047,13 @@ const PivotReport: React.FC<Props> = (props) => {
         </ProCard>
         <ProCard
           title="Consumo de energia"
-          split={onlyWidth > 767 ? 'horizontal' : 'horizontal'}
+          split={md ? 'horizontal' : 'horizontal'}
           headerBordered
           style={{ minHeight: 450 }}
           colSpan={{ xs: 24, lg: 12 }}
         >
           <ProCard split="horizontal" colSpan={{ xs: 24, lg: 24 }}>
-            <ProCard split={onlyWidth > 767 ? 'vertical' : 'horizontal'}>
+            <ProCard split={md ? 'vertical' : 'horizontal'}>
               <ProCard split={'horizontal'} wrap>
                 <StatisticCard
                   onClick={() => {}}
@@ -1171,7 +1164,7 @@ const PivotReport: React.FC<Props> = (props) => {
           <ProCard
             split="horizontal"
             colSpan={{ xs: 24, lg: 24 }}
-            style={{ height: onlyWidth > 767 ? 350 : '100%' }}
+            style={{ height: md ? 350 : '100%' }}
           >
             <StatisticCard
               colSpan={{ xs: 24, lg: 24 }}
@@ -1234,8 +1227,8 @@ const PivotReport: React.FC<Props> = (props) => {
             <ProCard
               colSpan={{ xs: 24, lg: 24 }}
               wrap
-              split={onlyWidth > 767 ? 'vertical' : 'horizontal'}
-              style={{ height: onlyWidth > 767 ? 350 : '100%' }}
+              split={md ? 'vertical' : 'horizontal'}
+              style={{ height: md ? 350 : '100%' }}
             >
               <StatisticCard
                 title={'Tensões do Pivô '}

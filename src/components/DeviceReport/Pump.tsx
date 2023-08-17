@@ -1,6 +1,7 @@
 import PumpEnergyConsumptionChart from '@/components/Charts/PumpEnergyComsumption';
 import IrpdActivityEventTable from '@/components/Tables/IrpdActivityEventTable';
 import IrpdActivityHistoricTable from '@/components/Tables/IrpdActivityHistoricTable';
+import { useScreenHook } from '@/hooks/screen';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
 import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
@@ -9,14 +10,13 @@ import { DeviceType } from '@/utils/enums';
 import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { useParams } from '@umijs/max';
 import { Button, Select, Space, Tag } from 'antd';
-import { useState } from 'react';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
+import { useTabsHook } from '@/hooks/tabs';
 
 type Props = {
   irpd: GetIrpdModelProps;
@@ -28,9 +28,9 @@ type Props = {
 
 const PumpReport: React.FC<Props> = (props) => {
   const params = useParams();
-  const onlyWidth = useWindowWidth();
+  const { md } = useScreenHook();
 
-  const [tab, setTab] = useState('tab1');
+  const {tab, setTab} = useTabsHook('tab1');
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -101,10 +101,7 @@ const PumpReport: React.FC<Props> = (props) => {
           <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
             <DeviceMapsRender height={275} />
           </ProCard>
-          <ProCard
-            colSpan={{ xs: 24, md: 16, xxl: 15 }}
-            style={{ height: onlyWidth > 767 ? 275 : '100%' }}
-          >
+          <ProCard colSpan={{ xs: 24, md: 16, xxl: 15 }} style={{ height: md ? 275 : '100%' }}>
             <DevicePanel
               actions={
                 <Space>
@@ -161,14 +158,10 @@ const PumpReport: React.FC<Props> = (props) => {
               lastCommunication="19 May 10:15"
               deviceActions={
                 <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                  <Button type="primary" style={{ width: onlyWidth > 767 ? '200px' : '100%' }}>
+                  <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
                     Ligar Bomba
                   </Button>
-                  <Button
-                    type="default"
-                    danger
-                    style={{ width: onlyWidth > 767 ? '200px' : '100%' }}
-                  >
+                  <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
                     Parar Bomba
                   </Button>
                 </Space>

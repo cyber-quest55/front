@@ -15,7 +15,7 @@ const clearCache = () => {
           caches.delete(key);
         });
       })
-      .catch(( ) =>  null);
+      .catch(() => null);
   }
 };
 

@@ -1,16 +1,10 @@
-import { IResponse, defaulSuccessResponse } from '../response';
 import Mock from 'mockjs';
+import { IResponse } from '../response';
 
 export const GetLoginResponse: IResponse<API.LoginResult> = Mock.mock({
-    ...defaulSuccessResponse,
-    data: {
-        profile: 1,
-        reseller: false,
-        resellers: [],
-        token: 'we3F24gnb#2_icop',
-        two_factor_authentication: false,
-        farm_id: 310,
-        user: 'John',
-        id: '@integer(0, 300)', 
-    }
-})
+  token: '1a451ec5527acb186befc4f3e2b87bf1fee4896c',
+  user: 2050,
+  profile: 1851,
+  reseller: true,
+  resellers: [],
+});

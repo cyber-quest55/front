@@ -1,9 +1,9 @@
+import { useScreenHook } from '@/hooks/screen';
 import { GetMeterSystemWaterLevelModelProps } from '@/models/meter-water-level';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { Mix } from '@ant-design/charts';
 import { LightFilter, ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useWindowWidth } from '@react-hook/window-size';
 import { Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const MeterWaterLevelChart: React.FC<Props> = (props) => {
-  const onlyWidth = useWindowWidth();
+  const { md } = useScreenHook();
 
   const className = useEmotionCss(({ token }) => {
     return {
@@ -44,6 +44,7 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
     });
   };
 
+ 
   const update = () => {
     const { startDate, endDate } = range;
     props.dispatch({
@@ -51,6 +52,8 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       payload: {
         farmId: props.selectedDevice.farmId,
         meterId: props.selectedDevice.deviceId,
+        otherId: props.selectedDevice.otherProps.imeterSetId,
+        
         params: { startDate, endDate },
       },
     });
@@ -65,7 +68,7 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       className={className}
       title="Gráfico de Nível"
       extra={
-        <LightFilter style={{ width: onlyWidth > 767 ? 360 : 275 }}>
+        <LightFilter style={{ width: md ? 360 : 275 }}>
           <ProFormDateRangePicker
             name="startdate"
             label={<strong>Periodo</strong>}
@@ -84,7 +87,6 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
             appendPadding={0}
             tooltip={{
               shared: true,
-              
             }}
             syncViewPadding={true}
             plots={[
@@ -148,13 +150,13 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
                       formatter: (item: string) => `${item} m`,
                     },
                   },
-                  height: 320,
+                  // height: 320 as any,
                   data: props.meterSystemWaterLevel.loaded
                     ? props.meterSystemWaterLevel.result
                     : [],
                   padding: 'auto',
                   xField: 'from',
-                  yField: 'value',
+                  yField: 'value' as any,
                   meta: {
                     value: {
                       alias: 'Valor',

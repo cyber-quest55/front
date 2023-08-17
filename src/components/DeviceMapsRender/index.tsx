@@ -1,16 +1,17 @@
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
+import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
-import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
+import { useMapHook } from '@/hooks/map';
 
 type Props = {
   zoom: number;
@@ -25,7 +26,7 @@ type Props = {
 };
 
 const DeviceMapsRender: FunctionComponent<Props> = (props) => {
-  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
+  const {  mapCenter, setMapCenter } = useMapHook(0, { lat: 0, lng: 0 });
 
   const containerStyle = {
     width: '100%',
@@ -151,7 +152,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         panControl: false,
         disableDoubleClickZoom: true,
         draggable: false,
-        fullscreenControl: false
+        fullscreenControl: false,
       }}
       zoom={14.5}
     >

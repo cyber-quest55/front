@@ -5,8 +5,8 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
+import { SelectedFarmModelProps } from '@/models/selected-farm';
 import {
-  CaretDownOutlined,
   ClockCircleOutlined,
   InsertRowRightOutlined,
   RedoOutlined,
@@ -14,22 +14,8 @@ import {
 } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { history, useParams } from '@umijs/max';
-import { useMount } from 'ahooks';
-import {
-  Button,
-  Col,
-  Popover,
-  Row,
-  Select,
-  Space,
-  Switch,
-  Tabs,
-  Tag,
-  Tooltip,
-  Typography,
-} from 'antd';
-import React, { useEffect } from 'react';
+import { Button, Col, Popover, Row, Space, Switch, Tabs, Tag, Tooltip, Typography } from 'antd';
+import React from 'react';
 import { BsCloudRainFill } from 'react-icons/bs';
 import { connect } from 'umi';
 
@@ -41,23 +27,16 @@ type Props = {
   farm: GetFarmModelProps;
   irpd: GetIrpdModelProps;
   repeater: GetRepeaterModelProps;
+  selectedFarm: SelectedFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
 };
 
 const DeviceList: React.FC<Props> = (props) => {
-  const params = useParams();
-
-  useMount(() => {});
-
-  useEffect(() => {}, [props.farm]);
-
-  useEffect(() => {}, [params]);
-
   const classNameScrollable = useEmotionCss(({}) => {
     return {
       maxHeight: 'calc(100vh - 350px)',
       [`@media screen and (max-width: 762px)`]: {
-        maxHeight: 'calc(100vh - 283px)',
+        maxHeight: 'calc(100vh - 247px)',
         height: '100vh',
       },
       overflowY: 'auto',
@@ -87,6 +66,9 @@ const DeviceList: React.FC<Props> = (props) => {
         margin: '0 0 0 16px',
       },
       '.ant-tabs-tab-btn': {
+        [`@media screen and (max-width: 762px)`]: {
+          paddingInline: 0,
+        },
         paddingInline: 8,
       },
     };
@@ -94,18 +76,11 @@ const DeviceList: React.FC<Props> = (props) => {
 
   const classNameSelect = useEmotionCss(() => {
     return {
-      '.ant-select-selection-item': {
-        fontWeight: 700,
-        fontSize: 19,
-        paddingInlineEnd: '35px !important',
-      },
-      '.ant-select-selector': {
-        padding: '0 !important',
-      },
-      '.ant-select-arrow': {
-        color: 'black',
-        fontSize: 20,
-      },
+      color: 'black',
+      fontSize: 16,
+      fontWeight: 'bold',
+      maxWidth: '100%',
+      overflow: 'hidden',
     };
   });
 
@@ -124,11 +99,12 @@ const DeviceList: React.FC<Props> = (props) => {
     ),
   }));
 
-  const dataSource2 = props.pivotInformation.result?.map((item) => ({
+ 
+   const dataSource2 = props.pivotInformation.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
-          <span>{props.pivot.result.list?.find((subItem) => subItem.id === item.id)?.name}</span>
+          <span>{props.pivot.result?.find((subItem) => subItem.id === item.id)?.name}</span>
         </Col>
         <Col>
           <Tag color="#2db7f5">V5</Tag>
@@ -266,28 +242,9 @@ const DeviceList: React.FC<Props> = (props) => {
         style={{ padding: '0px 12px', width: '100%' }}
       >
         <Col>
-          <Select
-            className={classNameSelect}
-            suffixIcon={<CaretDownOutlined />}
-            bordered={false}
-            showSearch
-            value={'Fazenda 1'}
-            size="large"
-            filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-            }
-            onChange={(e) => {
-              history.push(e.toString());
-            }}
-            options={props.farm.result.list?.map((item) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-          />
-        </Col>
-        <Col>
-          <Space >
-            <Button style={{ width: '100%'  }}>Buscar Rádios</Button>
+          <Space>
+            <span className={classNameSelect}>{props.selectedFarm?.name?.toString()}</span>
+            <Button size="small">Buscar Rádios</Button>
             <Popover
               trigger="click"
               placement="bottom"
@@ -333,6 +290,7 @@ export default connect(
     irpd,
     repeater,
     meterSystem,
+    selectedFarm,
   }: {
     pivot: any;
     farm: any;
@@ -341,6 +299,7 @@ export default connect(
     irpd: any;
     repeater: any;
     meterSystem: any;
+    selectedFarm: any;
   }) => ({
     pivot,
     farm,
@@ -349,5 +308,6 @@ export default connect(
     irpd,
     repeater,
     meterSystem,
+    selectedFarm,
   }),
 )(DeviceList);

@@ -26,11 +26,15 @@ export default {
       { payload }: { payload: API.GetMeterSystemTableParams },
       { call, put }: { call: any; put: any },
     ) {
-      const { farmId, meterId, params } = payload;
+      const { farmId, meterId, params, otherId } = payload;
       yield put({ type: 'queryMeterSystemEventStart' });
       try {
-        const { data } = yield call(getMeterSystemTable, { farmId, meterId }, params);
-        yield put({ type: 'queryMeterSystemEventSuccess', payload: data });
+        const response: API.GetMeterSystemTableResponse = yield call(
+          getMeterSystemTable,
+          { farmId, meterId, otherId },
+          params,
+        );
+        yield put({ type: 'queryMeterSystemEventSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemEventError', payload: error });
       }

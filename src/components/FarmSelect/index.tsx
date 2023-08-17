@@ -1,49 +1,32 @@
 import { GetFarmModelProps } from '@/models/farm';
+import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Select } from 'antd';
 import { connect } from 'dva';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export type FarmSelectProps = {
   name: string;
-  farm: GetFarmModelProps;  
+  farm: GetFarmModelProps;
   dispatch: any;
+  selectedFarm: SelectedFarmModelProps;
 };
 
 const FarmSelect: React.FC<FarmSelectProps> = (props) => {
- 
-  const [farms, setFarms] = React.useState<Models.Farm[]>([]);
-  const [value] = React.useState<string>('');
-
- 
-  /** When change the farm list*/
-  useEffect(() => {
-    if (props.farm.loaded) setFarms(props.farm.result.list as []);
-  }, [props.farm]);
-
-  /** To filter the farm list */
-  useEffect(() => {
-    const toLower = value.toLowerCase();
-    const reg = new RegExp(toLower + '.*');
-    const newFarms = props.farm?.result?.list?.filter((item) => item.name.toLowerCase().match(reg));
-    setFarms(newFarms);
-  }, [value]);
-
-  const classNameSelect = useEmotionCss(({token}) => {
+  const classNameSelect = useEmotionCss(({ token }) => {
     return {
-      width: '100%', 
-      marginTop: 12,
+      width: '100%',
+      marginTop: 16,
       border: '1px solid rgba(255,255,255,0.75)',
+      marginBottom: 12,
       borderRadius: '6px',
       '.ant-select-selection-item': {
         fontWeight: 600,
         fontSize: 14,
         paddingInlineEnd: '35px !important',
         color: 'rgba(255,255,255,0.75)',
-
       },
-      '.ant-select-selector': { 
-      },
+      '.ant-select-selector': {},
       '.ant-select-arrow': {
         color: token.colorTextLightSolid,
         fontSize: 16,
@@ -51,18 +34,26 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
     };
   });
 
+  const onChange = (value: any) => {
+    props.dispatch({
+      type: 'selectedFarm/setSelectedFarm',
+      payload: props.farm.result.find((item) => item.id === value),
+    });
+  };
+
   return (
     <Select
       loading={props.farm.loading}
       className={classNameSelect}
-       showSearch
+      showSearch
       bordered={false}
-      value={props.farm.selectedFarm?.name?.toString()}
+      onChange={onChange}
+      value={props.selectedFarm?.name?.toString()}
       size="large"
       filterOption={(input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
       }
-      options={props.farm.result.list?.map((item) => ({
+      options={props.farm.result?.map((item) => ({
         value: item.id,
         label: item.name,
       }))}
@@ -70,6 +61,7 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
   );
 };
 
-export default connect(({ farm }: { farm: any }) => ({
+export default connect(({ farm, selectedFarm }: { farm: any; selectedFarm: any }) => ({
   farm,
+  selectedFarm,
 }))(FarmSelect);

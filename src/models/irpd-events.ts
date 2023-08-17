@@ -28,8 +28,8 @@ export default {
       const { farmId, irpdId, params } = payload;
       yield put({ type: 'queryIrpdEventsStart' });
       try {
-        const { data } = yield call(getIrpdEvents, { farmId, irpdId }, params);
-        yield put({ type: 'queryIrpdEventsSuccess', payload: data });
+        const response: API.GetIrpdEventsResponse = yield call(getIrpdEvents, { farmId, irpdId }, params);
+        yield put({ type: 'queryIrpdEventsSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdEventsError', payload: error });
       }

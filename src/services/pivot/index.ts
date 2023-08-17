@@ -6,26 +6,32 @@ import { request } from '@umijs/max';
 export async function getPivots(data: API.GetPivotByFarmParam, options?: { [key: string]: any }) {
   return request<{
     data: API.GetPivotByFarmResponse;
-  }>(`${data.id}/pivots/light/`, {
-    method: 'GET', 
+  }>(`/farms/${data.id}/pivots/light/`, {
+    method: 'GET',
   });
 }
 
 /** GET /farms/${farmId}/pivots/paginated */
-export async function getPivotsWithInformations(data: API.GetPivotsInformationParam, options?: { [key: string]: any }) {
+export async function getPivotsWithInformations(
+  data: API.GetPivotsInformationParam,
+  options?: { [key: string]: any },
+) {
   return request<{
     data: API.GetPivotsInformationResponse;
-  }>(`${data.id}/pivots/paginated/`, {
-    method: 'GET', 
+  }>(`farms/${data.id}/pivots/paginated/`, {
+    method: 'GET',
   });
 }
 
 /** GET /farms/${farmId}/pivots/${pivotId} */
-export async function getPivotById(data: API.GetPivotByIdInformationParam, options?: { [key: string]: any }) {
+export async function getPivotById(
+  data: API.GetPivotByIdInformationParam,
+  options?: { [key: string]: any },
+) {
   return request<{
     data: API.GetPivotByIdInformationResponse;
-  }>(`${data.farmId}/pivots/${data.pivotId}/`, {
-    method: 'GET', 
+  }>(`farms/${data.farmId}/pivots/${data.pivotId}/`, {
+    method: 'GET',
   });
 }
 
@@ -50,6 +56,6 @@ export async function getPivotReports(
     data: API.GetFarmResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/report/`, {
     method: 'GET',
+    params: options
   });
 }
-

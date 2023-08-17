@@ -30,8 +30,8 @@ export default {
       const { farmId, irpdId, params } = payload;
       yield put({ type: 'queryIrpdHistoryStart' });
       try {
-        const { data } = yield call(getIrpdHistory, { farmId, irpdId }, params);
-        yield put({ type: 'queryIrpdHistorySuccess', payload: data });
+        const response: API.GetIrpdHistoryResponse = yield call(getIrpdHistory, { farmId, irpdId }, params);
+        yield put({ type: 'queryIrpdHistorySuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdHistoryError', payload: error });
       }
@@ -54,7 +54,7 @@ export default {
     },
     queryIrpdHistorySuccess(
       state: GetIrpdHistoryModelProps,
-      { payload }: { payload: Models.IrpdHistory },
+      { payload }: { payload: API.GetIrpdHistoryResponse },
     ) {
       return {
         ...state,

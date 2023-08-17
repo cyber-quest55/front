@@ -15,7 +15,7 @@ export async function getMeterSystem(
 
 export async function getMeterSystemById(props: API.GetMeterSystemByIdParams) {
   return request<{
-    data: Models.MeterSystem;
+    data: API.GetMeterSystemByIdResponse;
   }>(`/farms/${props.farmId}/metersystems/${props.meterId}/`, {
     method: 'GET',
   });
@@ -26,7 +26,7 @@ export async function getMeterSystemHistory(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: Models.MeterSystemHistory;
+    data: API.GetMeterSystemHistoryResponse;
   }>(`/farms/${props.farmId}/metersystems/${props.meterId}/history`, {
     method: 'GET',
   });
@@ -37,10 +37,13 @@ export async function getMeterSystemWaterLevel(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: Models.MeterSystemWaterLevel;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterId}/lake-level/`, {
-    method: 'GET',
-  });
+    data: API.GetMeterSystemWaterLevelResponse;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/lake-level/?date_start=2023-7-16&date_end=2023-8-16`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 export async function getMeterSystemTable(
@@ -48,8 +51,11 @@ export async function getMeterSystemTable(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: Models.MeterSystemTable;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterId}/water-level-history/`, {
-    method: 'GET',
-  });
+    data: API.GetMeterSystemTableResponse;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/water-level-history/`,
+    {
+      method: 'GET',
+    },
+  );
 }

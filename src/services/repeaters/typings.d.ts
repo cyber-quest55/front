@@ -6,10 +6,23 @@ declare namespace API {
     id: string;
   };
 
-  type GetRepeaterResponse = {
-    current: number;
-    pageSize: number;
-    total: number;
-    list: Models.Repeater[];
-  };
+  type GetRepeaterResponse = Array< {
+    id: number;
+    repeater: {
+      id: number;
+      type: string;
+      created: string;
+      updated: string;
+      radio_id: string;
+      taken: any;
+    };
+    type: string;
+    name: string;
+    position: string;
+    created: string;
+    updated: string;
+    energy_type?: string;
+    farm: number;
+    base: number;
+  }>
 }

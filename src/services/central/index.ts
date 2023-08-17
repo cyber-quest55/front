@@ -3,9 +3,9 @@
 import { request } from '@umijs/max';
 
 /** GET /farms/${farmId}/ */
-export async function getCentral(props: API.GetIrpdParams, options?: { [key: string]: any }) {
+export async function getCentral(props: API.GetCentralParams, options?: { [key: string]: any }) {
   return request<{
-    data: API.GetFarmResponse;
+    data: API.GetCentralResponse;
   }>(`/farms/${props.id}/central`, {
     method: 'GET',
   });
