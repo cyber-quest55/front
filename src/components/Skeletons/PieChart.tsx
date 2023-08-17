@@ -11,14 +11,13 @@ const SkeletonPieChart: React.FC = () => {
         justifyContent: 'center',
         alignItems: 'center',
         gap: 12,
+        paddingBottom: 14,
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <div style={{width: "30%"}}>
-
-        <Skeleton.Input active block={true}></Skeleton.Input>
+        <div style={{ width: '30%' }}>
+          <Skeleton.Input active block={true}></Skeleton.Input>
         </div>
-
       </div>
       <Skeleton.Avatar active size={250} />
     </div>

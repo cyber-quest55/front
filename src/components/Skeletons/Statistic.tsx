@@ -2,25 +2,40 @@ import { Skeleton } from 'antd';
 import React from 'react';
 
 const SkeletonStatistic: React.FC = () => {
+  const size: any = 5;
+
   return (
     <div
       style={{
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 12,
+        gap: 2,
+        position: "relative"
       }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <div style={{width: "30%"}}>
+    > 
 
-        <Skeleton.Input active block={true}></Skeleton.Input>
-        </div>
-
-      </div>
-      <Skeleton.Avatar active size={250} />
+      <Skeleton.Button
+        style={{ width: '100%' }}
+        active={true}
+        size={size}
+        block={true}
+        shape={'round'}
+      />
+      <Skeleton.Button
+        style={{ width: '100%' }}
+        active={true}
+        size={size}
+        block={true}
+        shape={'round'}
+      />
+      <Skeleton.Button
+        style={{ width: '100%' }}
+        active={true}
+        size={size}
+        block={true}
+        shape={'round'}
+      /> 
     </div>
   );
 };

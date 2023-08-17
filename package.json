@@ -71,6 +71,7 @@
     "antd": "^5.2.2",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.8",
+    "design-system": "^2.5.0",
     "dva": "^2.4.1",
     "lodash": "^4.17.21",
     "mockjs": "^1.1.0",

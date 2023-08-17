@@ -17,7 +17,7 @@ import {
   ThunderboltFilled,
 } from '@ant-design/icons';
 import { G2, Line, Pie } from '@ant-design/plots';
-import { ProCard, StatisticCard } from '@ant-design/pro-components';
+import { ProCard, ProSkeleton, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useParams } from '@umijs/max';
 import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
@@ -27,9 +27,10 @@ import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
+import SkeletonPieChart from '../Skeletons/PieChart';
+import SkeletonStatistic from '../Skeletons/Statistic';
 import PivotEventTable from '../Tables/PivotEventTable';
 import PivotOperationTable from '../Tables/PivotOperationTable';
-import SkeletonPieChart from '../Skeletons/PieChart';
 
 const { Statistic } = StatisticCard;
 
@@ -1116,7 +1117,7 @@ const PivotReport: React.FC<Props> = (props) => {
             </ProCard>
 
             <StatisticCard
-              loading={props.pivotReport.loading && <SkeletonPieChart/>}
+              loading={props.pivotReport.loading && <SkeletonPieChart />}
               style={{ width: '100%' }}
               title="Horas de Trabalho Molhado (h)"
               chart={
@@ -1193,8 +1194,7 @@ const PivotReport: React.FC<Props> = (props) => {
             style={{ height: md ? 350 : '100%' }}
           >
             <StatisticCard
-            
-              loading={props.pivotReport.loading && <SkeletonPieChart/>}
+              loading={props.pivotReport.loading && <SkeletonPieChart />}
               colSpan={{ xs: 24, lg: 24 }}
               style={{ width: '100%' }}
               title="Custo total de energia (R$)"
@@ -1306,7 +1306,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 <ProCard split="horizontal">
                   <ProCard split="horizontal">
                     <StatisticCard
-                      loading={props.pivotReport.loading}
+                      loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
                         title: 'Mínimo',
                         value: props.pivotReport.result?.voltage_min
@@ -1318,7 +1318,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   </ProCard>
                   <ProCard split="horizontal">
                     <StatisticCard
-                      loading={props.pivotReport.loading}
+                      loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
                         title: 'Médio',
                         value: props.pivotReport.result?.voltage_med
@@ -1330,7 +1330,7 @@ const PivotReport: React.FC<Props> = (props) => {
                   </ProCard>
                   <ProCard split="horizontal">
                     <StatisticCard
-                      loading={props.pivotReport.loading}
+                      loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
                         title: 'Máximo',
                         value: props.pivotReport.result?.voltage_max
@@ -1345,7 +1345,13 @@ const PivotReport: React.FC<Props> = (props) => {
             </ProCard>
           </ProCard>
         </ProCard>
-        <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost className={classNameTableProCard}>
+        <ProCard
+          loading={props.pivotHistory.loading && <ProSkeleton type="list" />}
+          colSpan={{ xs: 24, lg: 12 }}
+          wrap
+          ghost
+          className={classNameTableProCard}
+        >
           <ProCard
             style={{ minHeight: 1032 }}
             title="Histórico"
@@ -1356,6 +1362,7 @@ const PivotReport: React.FC<Props> = (props) => {
                 {
                   label: `Eventos`,
                   key: 'tab1',
+
                   children: <PivotEventTable />,
                 },
                 {
