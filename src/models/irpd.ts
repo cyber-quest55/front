@@ -11,6 +11,13 @@ export interface GetIrpdModelProps {
   error: any;
 }
 
+export const queryIrpd = (payload: API.GetIrpdParams) => {
+  return {
+    type: 'irpd/queryIrpd',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'irpd',
 
@@ -22,7 +29,7 @@ export default {
   },
 
   effects: {
-    *queryIrpd({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryIrpd({ payload }: { payload: API.GetIrpdParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdStart' });
       try {
         const response: API.GetIrpdResponse = yield call(getIrpds, payload);

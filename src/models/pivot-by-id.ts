@@ -12,6 +12,13 @@ export interface GetPivotByIdModelProps {
   error: any;
 }
 
+export const queryPivotByIdStart = (payload: API.GetPivotByIdInformationParam) => {
+  return {
+    type: 'pivotById/queryPivotByIdStart',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'pivotById',
 

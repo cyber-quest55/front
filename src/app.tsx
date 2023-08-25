@@ -12,7 +12,7 @@ import weekday from 'dayjs/plugin/weekday';
 import uniqid from 'uniqid';
 import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
-import FarmSelect from './components/FarmSelect';
+import FarmSelect from './components/FarmSelect/FarmSelectContainer';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';

@@ -11,6 +11,13 @@ export interface GetMeterSystemHistoryModelProps {
   total: number;
 }
 
+export const queryMeterSystemHistory = (payload: API.GetMeterSystemHistoryParams) => {
+  return {
+    type: 'meterSystemHistory/queryMeterSystemHistory',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'meterSystemHistory',
 

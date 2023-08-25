@@ -9,6 +9,13 @@ export interface GetIrpdWaterModelProps {
   error: any;
 }
 
+export const queryIrpdWater = (payload: API.GetIrpdWaterConsumptionParams) => {
+  return {
+    type: 'irpdWaterConsumption/queryIrpdWater',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'irpdWaterConsumption',
 
@@ -21,10 +28,16 @@ export default {
   },
 
   effects: {
-    *queryIrpdWater({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryIrpdWater(
+      { payload }: { payload: API.GetIrpdWaterConsumptionParams },
+      { call, put }: { call: any; put: any },
+    ) {
       yield put({ type: 'queryIrpdWaterStart' });
       try {
-        const response: API.GetIrpdWaterConsumptionResponse = yield call(getIrpdWaterConsumption, payload);
+        const response: API.GetIrpdWaterConsumptionResponse = yield call(
+          getIrpdWaterConsumption,
+          payload,
+        );
         yield put({ type: 'queryIrpdWaterSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdWaterError', payload: error });

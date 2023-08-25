@@ -10,6 +10,13 @@ export interface GetMeterSystemEventModelProps {
   total: number;
 }
 
+export const queryMeterSystemEvent = (payload: API.GetMeterSystemTableParams) => {
+  return {
+    type: 'meterSystemEvent/queryMeterSystemEvent',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'meterSystemEvent',
 

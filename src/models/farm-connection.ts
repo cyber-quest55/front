@@ -8,6 +8,14 @@ export interface GetFarmConnectionModelProps {
   error: any;
 }
 
+export const queryFarmConnection = (payload: API.GetFarmConnectionParams ) => {
+  return {
+    type: 'farmConnection/queryFarmConnection',
+    payload: payload,
+  };
+};
+
+
 export default {
   namespace: 'farmConnection',
 

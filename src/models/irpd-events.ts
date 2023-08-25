@@ -9,6 +9,13 @@ export interface GetIrpdEventsModelProps {
   total: number;
 }
 
+export const queryIrpdEvents = (payload: API.GetIrpdEventsParams ) => {
+  return {
+    type: 'irpdEvents/queryIrpdEvents',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'irpdEvents',
 

@@ -66,9 +66,12 @@
     "@capacitor/ios": "^5.1.1",
     "@react-google-maps/api": "^2.18.1",
     "@react-hook/window-size": "^3.1.1",
+    "@types/styled-system": "^5.1.16",
     "@umijs/route-utils": "^2.2.2",
     "ahooks": "^3.7.6",
     "antd": "^5.2.2",
+    "antd-mobile": "^5.32.0",
+    "antd-mobile-icons": "^0.3.0",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.8",
     "design-system": "^2.5.0",
@@ -88,6 +91,7 @@
     "react-static-google-map": "^0.9.0",
     "react-svg": "^16.1.8",
     "spherical-geometry-js": "^3.0.0",
+    "styled-system": "^5.1.5",
     "uniqid": "^5.4.0"
   },
   "devDependencies": {

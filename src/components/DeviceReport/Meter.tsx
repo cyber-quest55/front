@@ -1,6 +1,11 @@
 import { useScreenHook } from '@/hooks/screen';
+import { useTabsHook } from '@/hooks/tabs';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
-import { SelectedDeviceModelProps } from '@/models/selected-device';
+import {
+  SelectedDeviceModelProps,
+  setDeviceClose,
+  setSelectedDevice,
+} from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
 import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
@@ -12,18 +17,18 @@ import MeterWaterLevel from '../Charts/MeterWaterLevel';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import MeterActivityEventTable from '../Tables/MeterActivityEventTable';
-import { useTabsHook } from '@/hooks/tabs';
 
 type Props = {
   meterSystem: GetMeterSystemModelProps;
   selectedDevice: SelectedDeviceModelProps;
-  dispatch: any;
+  setSelectedDevice: typeof setSelectedDevice;
+  setDeviceClose: typeof setDeviceClose;
 };
 
 const MeterReport: React.FC<Props> = (props) => {
   const params = useParams();
   const { md } = useScreenHook();
-  const {tab, setTab} = useTabsHook('tab1');
+  const { tab, setTab } = useTabsHook('tab1');
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -63,20 +68,19 @@ const MeterReport: React.FC<Props> = (props) => {
   });
 
   const onChangeDevice = (e: string) => {
-    const deviceId = props.meterSystem.result.find((item) => item.id === parseInt(e))?.id;
-
-    props.dispatch({
-      type: 'selectedDevice/setSelectedDevice',
-      payload: { type: DeviceType.Meter, deviceId, farmId: params.id, },
-    });
-
+    const device = props.meterSystem.result.find((item) => item.id === parseInt(e));
+    const farmId = params.id as string;
+    if (device && farmId)
+      props.setSelectedDevice({
+        type: DeviceType.Meter,
+        deviceId: device.id,
+        farmId,
+        otherProps: device.imeterSetId,
+      });
   };
 
   const destroyOnClick = () => {
-    props.dispatch({
-      type: 'selectedDevice/setDeviceClose',
-      payload: {},
-    });
+    props.setDeviceClose();
   };
 
   return (
@@ -181,9 +185,14 @@ const MeterReport: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({ selectedDevice, meterSystem }: { selectedDevice: any; meterSystem: any }) => ({
-    selectedDevice,
-    meterSystem,
-  }),
-)(MeterReport);
+const mapStateToProps = ({ selectedDevice, meterSystem }: any) => ({
+  selectedDevice,
+  meterSystem,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  setDeviceClose: () => dispatch(setDeviceClose()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MeterReport);

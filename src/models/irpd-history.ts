@@ -11,6 +11,13 @@ export interface GetIrpdHistoryModelProps {
   total: number;
 }
 
+export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams ) => {
+  return {
+    type: 'irpdHistory/queryIrpdHistory',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'irpdHistory',
 

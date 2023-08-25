@@ -11,6 +11,13 @@ export interface GetPivotInformationModelProps {
   error: any;
 }
 
+export const queryPivotInformation = (payload: API.GetPivotsInformationParam) => {
+  return {
+    type: 'pivotInformation/queryPivotInformation',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'pivotInformation',
 

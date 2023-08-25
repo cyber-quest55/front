@@ -9,6 +9,28 @@ export interface SelectedDeviceModelProps {
   error?: any;
 }
 
+export type SelectedType = { 
+  type: DeviceType; 
+  farmId: string; 
+  deviceId: number; 
+  otherProps: any;
+}
+
+export const setSelectedDevice= (payload: SelectedType) => {
+  return {
+    type: 'selectedDevice/setSelectedDevice',
+    payload: payload,
+  };
+};
+
+
+export const setDeviceClose= () => {
+  return {
+    type: 'selectedDevice/setDeviceClose',
+    payload: {},
+  };
+};
+
 export default {
   namespace: 'selectedDevice',
 
@@ -22,7 +44,7 @@ export default {
   },
 
   effects: {
-    *setSelectedDevice({ payload }: { payload: any }, { put }: { put: any }) {
+    *setSelectedDevice({ payload }: { payload: SelectedType }, { put }: { put: any }) {
       const { type, farmId, deviceId, otherProps } = payload;
 
       yield put({ type: 'setSelectedDeviceDefinition', payload: { type, farmId, deviceId, otherProps} });

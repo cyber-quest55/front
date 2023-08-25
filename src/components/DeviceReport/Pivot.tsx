@@ -4,7 +4,11 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetPivotReportModelProps } from '@/models/pivot-report';
-import { SelectedDeviceModelProps } from '@/models/selected-device';
+import {
+  SelectedDeviceModelProps,
+  setDeviceClose,
+  setSelectedDevice,
+} from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
 import { PivotStatusColor } from '@/utils/pivot-status';
 import {
@@ -27,6 +31,7 @@ import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
+import SkeletonList from '../Skeletons/List';
 import SkeletonPieChart from '../Skeletons/PieChart';
 import SkeletonStatistic from '../Skeletons/Statistic';
 import PivotEventTable from '../Tables/PivotEventTable';
@@ -774,7 +779,8 @@ type Props = {
   pivotHistory: GetPivotHistoryModelProps;
   pivotInformation: GetPivotInformationModelProps;
   selectedDevice: SelectedDeviceModelProps;
-  dispatch: any;
+  setSelectedDevice: typeof setSelectedDevice;
+  setDeviceClose: typeof setDeviceClose;
 };
 
 const PivotReport: React.FC<Props> = (props) => {
@@ -786,7 +792,8 @@ const PivotReport: React.FC<Props> = (props) => {
   const [option, setOption] = useState<undefined | number>(undefined);
   const [device, setDevice] = useState<any>({});
 
-  console.log('refresh');
+  const item =
+    props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
 
   const data = [
     {
@@ -850,15 +857,6 @@ const PivotReport: React.FC<Props> = (props) => {
     };
   });
 
-  const onChangeDevice = (e: string) => {
-    const device = props.pivot.result.find((item) => item.id === parseInt(e));
-
-    props.dispatch({
-      type: 'selectedDevice/setSelectedDevice',
-      payload: { type: DeviceType.Pivot, deviceId: device?.id, farmId: params.id },
-    });
-  };
-
   useEffect(() => {
     const device = props.pivot.result.find(
       (item) => item.id === parseInt(props.selectedDevice.deviceId),
@@ -866,15 +864,21 @@ const PivotReport: React.FC<Props> = (props) => {
     setDevice(device);
   }, [props.selectedDevice.deviceId]);
 
-  const destroyOnClick = () => {
-    props.dispatch({
-      type: 'selectedDevice/setDeviceClose',
-      payload: {},
-    });
+  const onChangeDevice = (e: string) => {
+    const device = props.pivot.result.find((item) => item.id === parseInt(e));
+    const farmId = params.id as string;
+    if (device && farmId)
+      props.setSelectedDevice({
+        type: DeviceType.Meter,
+        deviceId: device.id,
+        farmId,
+        otherProps: {},
+      });
   };
 
-  const item =
-    props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
+  const destroyOnClick = () => {
+    props.setDeviceClose();
+  };
 
   const getComparative = (): any[] => {
     const newList: any = [];
@@ -923,7 +927,11 @@ const PivotReport: React.FC<Props> = (props) => {
         <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 5 }} style={{ height: 275 }}>
           <DeviceMapsRender height={275} />
         </ProCard>
-        <ProCard colSpan={{ xs: 24, md: 16, xxl: 9 }} style={{ height: md ? 275 : '100%' }}>
+        <ProCard
+          loading={props.pivotReport.loading}
+          colSpan={{ xs: 24, md: 16, xxl: 9 }}
+          style={{ height: md ? 275 : '100%' }}
+        >
           <DevicePanel
             actions={
               <Space>
@@ -1345,40 +1353,40 @@ const PivotReport: React.FC<Props> = (props) => {
             </ProCard>
           </ProCard>
         </ProCard>
-        <ProCard
-          loading={props.pivotHistory.loading && <ProSkeleton type="list" />}
-          colSpan={{ xs: 24, lg: 12 }}
-          wrap
-          ghost
-          className={classNameTableProCard}
-        >
+        <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost className={classNameTableProCard}>
           <ProCard
+            loading={props.pivotHistory.loading && <ProSkeleton type="list" />}
             style={{ minHeight: 1032 }}
             title="Histórico"
-            tabs={{
-              tabPosition: 'top',
-              activeKey: tab,
-              items: [
-                {
-                  label: `Eventos`,
-                  key: 'tab1',
+            tabs={
+              props.pivotHistory.loading
+                ? undefined
+                : {
+                    tabPosition: 'top',
+                    activeKey: tab,
+                    items: [
+                      {
+                        label: `Eventos`,
+                        key: 'tab1',
 
-                  children: <PivotEventTable />,
-                },
-                {
-                  label: `Operações`,
-                  key: 'tab2',
-                  children: <PivotOperationTable />,
-                },
-              ],
-              onChange: (key) => {
-                setTab(key);
-              },
-            }}
+                        children: <PivotEventTable />,
+                      },
+                      {
+                        label: `Operações`,
+                        key: 'tab2',
+                        children: <PivotOperationTable />,
+                      },
+                    ],
+                    onChange: (key) => {
+                      setTab(key);
+                    },
+                  }
+            }
             colSpan={{ xs: 24, md: 24 }}
           ></ProCard>
 
           <StatisticCard
+            loading={props.pivotReport.loading && <SkeletonList size={12} rows={13} p={3} />}
             style={{ marginTop: 16 }}
             title="Comparativo de Pressão"
             chart={
@@ -1455,27 +1463,25 @@ const PivotReport: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivot,
-    pivotById,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
-    selectedDevice,
-  }: {
-    pivot: any;
-    pivotById: any;
-    pivotReport: any;
-    pivotHistory: any;
-    pivotInformation: any;
-    selectedDevice: any;
-  }) => ({
-    pivot,
-    pivotById,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
-    selectedDevice,
-  }),
-)(PivotReport);
+const mapStateToProps = ({
+  pivot,
+  pivotById,
+  pivotReport,
+  pivotHistory,
+  pivotInformation,
+  selectedDevice,
+}: any) => ({
+  pivot,
+  pivotById,
+  pivotReport,
+  pivotHistory,
+  pivotInformation,
+  selectedDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  setDeviceClose: () => dispatch(setDeviceClose()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PivotReport);

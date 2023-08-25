@@ -10,7 +10,11 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
-import { SelectedDeviceModelProps } from '@/models/selected-device';
+import {
+  SelectedDeviceModelProps,
+  setDeviceClose,
+  setSelectedDevice,
+} from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { DeviceType } from '@/utils/enums';
 import { ProCard } from '@ant-design/pro-components';
@@ -33,6 +37,8 @@ type Props = {
   meterSystem: GetMeterSystemModelProps;
   pivotInformation: GetPivotInformationModelProps;
   irpd: GetIrpdModelProps;
+  setSelectedDevice: typeof setSelectedDevice;
+  setDeviceClose: typeof setDeviceClose;
 };
 
 const Welcome: FunctionComponent<Props> = (props) => {
@@ -110,10 +116,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
   }, [props.selectedFarm]);
 
   useUnmount(() => {
-    props.dispatch({
-      type: 'selectedDevice/setDeviceClose',
-      payload: {},
-    });
+    props.setDeviceClose();
   });
 
   useEffect(() => {
@@ -143,6 +146,12 @@ const Welcome: FunctionComponent<Props> = (props) => {
       });
     }
   }, [params]);
+
+  useEffect(() => {
+    if (props.selectedDevice.open && !md) {
+      setActiveKey('3');
+    }
+  }, [props.selectedDevice]);
 
   const className = useEmotionCss(({}) => {
     return md
@@ -212,12 +221,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
     },
   ];
 
-  useEffect(() => {
-    if (props.selectedDevice.open && !md) {
-      setActiveKey('3');
-    }
-  }, [props.selectedDevice]);
-
   return (
     <Row>
       <Col
@@ -277,33 +280,29 @@ const Welcome: FunctionComponent<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivot,
-    pivotInformation,
-    farm,
-    selectedDevice,
-    selectedFarm,
-    repeater,
-    meterSystem,
-    irpd,
-  }: {
-    pivot: any;
-    pivotInformation: any;
-    farm: any;
-    selectedDevice: any;
-    selectedFarm: any;
-    repeater: any;
-    meterSystem: any;
-    irpd: any;
-  }) => ({
-    pivot,
-    pivotInformation,
-    farm,
-    selectedDevice,
-    selectedFarm,
-    repeater,
-    meterSystem,
-    irpd,
-  }),
-)(Welcome);
+const mapStateToProps = ({
+  pivot,
+  pivotInformation,
+  farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  meterSystem,
+  irpd,
+}: any) => ({
+  pivot,
+  pivotInformation,
+  farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  meterSystem,
+  irpd,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  setDeviceClose: () => dispatch(setDeviceClose()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

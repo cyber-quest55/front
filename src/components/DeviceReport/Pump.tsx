@@ -2,10 +2,15 @@ import PumpEnergyConsumptionChart from '@/components/Charts/PumpEnergyComsumptio
 import IrpdActivityEventTable from '@/components/Tables/IrpdActivityEventTable';
 import IrpdActivityHistoricTable from '@/components/Tables/IrpdActivityHistoricTable';
 import { useScreenHook } from '@/hooks/screen';
+import { useTabsHook } from '@/hooks/tabs';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
 import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
-import { SelectedDeviceModelProps } from '@/models/selected-device';
+import {
+  SelectedDeviceModelProps,
+  setDeviceClose,
+  setSelectedDevice,
+} from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
 import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
@@ -16,21 +21,21 @@ import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
-import { useTabsHook } from '@/hooks/tabs';
 
 type Props = {
   irpd: GetIrpdModelProps;
   irpdById: GetIrpdByIdModelProps;
   iprdWaterConsumption: GetIrpdWaterModelProps;
   selectedDevice: SelectedDeviceModelProps;
-  dispatch: any;
+  setSelectedDevice: typeof setSelectedDevice;
+  setDeviceClose: typeof setDeviceClose;
 };
 
 const PumpReport: React.FC<Props> = (props) => {
   const params = useParams();
   const { md } = useScreenHook();
 
-  const {tab, setTab} = useTabsHook('tab1');
+  const { tab, setTab } = useTabsHook('tab1');
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -70,22 +75,19 @@ const PumpReport: React.FC<Props> = (props) => {
   });
 
   const onChangeDevice = (e: string) => {
-    const deviceId = props.irpd.result.find((item) => item.id === parseInt(e))?.id;
-    props.dispatch({
-      type: 'selectedDevice/setSelectedDevice',
-      payload: { type: DeviceType.Pump, deviceId, farmId: params.id },
-    });
-    props.dispatch({
-      type: 'pivot/setSelectedPivot',
-      payload: props.irpd.result.find((item) => item.id === parseInt(e)),
-    });
+    const device = props.irpd.result.find((item) => item.id === parseInt(e));
+    const farmId = params.id as string;
+    if (device && farmId)
+      props.setSelectedDevice({
+        type: DeviceType.Meter,
+        deviceId: device.id,
+        farmId,
+        otherProps: {},
+      });
   };
 
   const destroyOnClick = () => {
-    props.dispatch({
-      type: 'selectedDevice/setDeviceClose',
-      payload: {},
-    });
+    props.setDeviceClose();
   };
 
   return (
@@ -210,21 +212,16 @@ const PumpReport: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    irpd,
-    irpdById,
-    selectedDevice,
-    iprdWaterConsumption,
-  }: {
-    irpd: any;
-    irpdById: any;
-    selectedDevice: any;
-    iprdWaterConsumption: any;
-  }) => ({
-    irpd,
-    irpdById,
-    selectedDevice,
-    iprdWaterConsumption,
-  }),
-)(PumpReport);
+const mapStateToProps = ({ irpd, irpdById, selectedDevice, iprdWaterConsumption }: any) => ({
+  irpd,
+  irpdById,
+  selectedDevice,
+  iprdWaterConsumption,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  setDeviceClose: () => dispatch(setDeviceClose()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PumpReport);

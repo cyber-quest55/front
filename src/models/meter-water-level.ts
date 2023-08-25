@@ -9,6 +9,13 @@ export interface GetMeterSystemWaterLevelModelProps {
   error: any;
 }
 
+export const queryMeterSystemWaterLevel = (payload: API.GetMeterSystemWaterLevelParams) => {
+  return {
+    type: 'meterSystemWaterLevel/queryMeterSystemWaterLevel',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'meterSystemWaterLevel',
 
@@ -21,7 +28,7 @@ export default {
 
   effects: {
     *queryMeterSystemWaterLevel(
-      { payload }: { payload: any },
+      { payload }: { payload: API.GetMeterSystemWaterLevelParams },
       { call, put }: { call: any; put: any },
     ) {
       const { farmId, meterId, otherId, params } = payload;

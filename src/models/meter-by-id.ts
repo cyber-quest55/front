@@ -12,6 +12,13 @@ export interface GetMeterSystemByIdModelProps {
   error: any;
 }
 
+export const queryMeterSystemById = (payload: API.GetMeterSystemByIdParams) => {
+  return {
+    type: 'meterSystemById/queryMeterSystemById',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'meterSystemById',
 
@@ -24,7 +31,7 @@ export default {
   },
 
   effects: {
-    *queryMeterSystemById({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryMeterSystemById({ payload }: { payload: API.GetMeterSystemByIdParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryMeterSystemByIdStart' });
       try {
         const response: API.GetMeterSystemByIdResponse = yield call(getMeterSystemById, payload);

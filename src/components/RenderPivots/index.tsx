@@ -5,6 +5,8 @@ import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
+import { setSelectedDevice } from '@/models/selected-device';
+import { DeviceType } from '@/utils/enums';
 import { ProCard } from '@ant-design/pro-components';
 import Field from '@ant-design/pro-field';
 import { GoogleMap } from '@react-google-maps/api';
@@ -26,13 +28,13 @@ const scrollToBottom = () => {
 };
 
 export type RenderPivotsProps = {
-  dispatch: any;
   zoom: number;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
   irpd: GetIrpdModelProps;
   repeater: GetRepeaterModelProps;
+  setSelectedDevice: typeof setSelectedDevice;
 };
 
 const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
@@ -65,11 +67,9 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
     }
   }, [props.pivotInformation]);
 
-  const onSetDevice = (type: string, deviceId: string, otherProps: any) => {
-    props.dispatch({
-      type: 'selectedDevice/setSelectedDevice',
-      payload: { type, deviceId, farmId: params.id, otherProps },
-    });
+  const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
+    const farmId = params.id as string;
+    props.setSelectedDevice({ type, deviceId, farmId, otherProps });
     scrollToBottom();
   };
 
@@ -260,24 +260,16 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivotInformation,
-    farm,
-    meterSystem,
-    irpd,
-    repeater,
-  }: {
-    pivotInformation: any;
-    farm: any;
-    meterSystem: any;
-    irpd: any;
-    repeater: any;
-  }) => ({
-    pivotInformation,
-    farm,
-    meterSystem,
-    irpd,
-    repeater,
-  }),
-)(RenderPivots);
+const mapStateToProps = ({ pivotInformation, farm, meterSystem, irpd, repeater }: any) => ({
+  pivotInformation,
+  farm,
+  meterSystem,
+  irpd,
+  repeater,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RenderPivots);

@@ -5,7 +5,7 @@ import { Space, Tag, Typography } from 'antd';
 import React, { useState } from 'react';
 
 export type LakeLevelMeterProps = {
-  id: number | string;
+  id: number;
   centerLat: number;
   centerLng: number;
   deviceColor?: string;
