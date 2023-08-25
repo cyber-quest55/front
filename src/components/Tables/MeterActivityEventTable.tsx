@@ -1,5 +1,5 @@
 import { useTableHook } from '@/hooks/table';
-import { GetMeterSystemEventModelProps } from '@/models/meter-events';
+import { GetMeterSystemEventModelProps, queryMeterSystemEvent } from '@/models/meter-events';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DownloadOutlined } from '@ant-design/icons';
 import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
@@ -8,9 +8,9 @@ import { useEffect } from 'react';
 import { connect } from 'umi';
 
 type Props = {
-  dispatch: any;
   meterSystemEvent: GetMeterSystemEventModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  queryMeterSystemEvent: typeof queryMeterSystemEvent;
 };
 
 const MeterActivityEventTable: React.FC<Props> = (props) => {
@@ -31,13 +31,11 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
   const update = () => {
     const { startDate, endDate } = range;
 
-    props.dispatch({
-      type: 'meterSystemEvent/queryMeterSystemEvent',
-      payload: {
-        farmId: props.selectedDevice.farmId,
-        irpdId: props.selectedDevice.deviceId,
-        params: { currentPage, pageSize, startDate, endDate },
-      },
+    props.queryMeterSystemEvent({
+      farmId: props.selectedDevice.farmId,
+      meterId: props.selectedDevice.deviceId,
+      otherId: props.selectedDevice.otherProps.imeterSetId,
+      params: { currentPage, pageSize, startDate, endDate },
     });
   };
 
@@ -134,9 +132,13 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({ meterSystemEvent, selectedDevice }: { meterSystemEvent: any; selectedDevice: any }) => ({
-    meterSystemEvent,
-    selectedDevice,
-  }),
-)(MeterActivityEventTable);
+const mapStateToProps = ({ meterSystemEvent, selectedDevice }: any) => ({
+  meterSystemEvent,
+  selectedDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryMeterSystemEvent: (props: any) => dispatch(queryMeterSystemEvent(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MeterActivityEventTable);

@@ -10,8 +10,8 @@ import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
 import React, { useEffect } from 'react';
 import DotDevice from '../Devices/DotDevice';
+
 export type RenderPivotsProps = {
-  dispatch: any;
   zoom: number;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;
@@ -136,27 +136,25 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivotInformation,
-    farm,
-    meterSystem,
-    irpd,
-    central,
-    repeater,
-  }: {
-    pivotInformation: any;
-    farm: any;
-    meterSystem: any;
-    irpd: any;
-    central: any;
-    repeater: any;
-  }) => ({
-    pivotInformation,
-    farm,
-    meterSystem,
-    irpd,
-    central,
-    repeater,
-  }),
-)(RenderDotDevices);
+const mapStateToProps = 
+({
+  pivotInformation,
+  farm,
+  meterSystem,
+  irpd,
+  central,
+  repeater,
+}:  any) => ({
+  pivotInformation,
+  farm,
+  meterSystem,
+  irpd,
+  central,
+  repeater,
+});
+
+
+const mapDispatchToProps = () => ({ 
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RenderDotDevices);

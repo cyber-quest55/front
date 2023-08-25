@@ -10,7 +10,6 @@ import { connect } from 'dva';
 import { FunctionComponent, ReactNode } from 'react';
 
 type Props = {
-  dispatch?: any;
   children: ReactNode;
   google?: any;
   pivot: GetPivotModelProps;
@@ -230,7 +229,11 @@ const Devices: FunctionComponent<Props> = (props) => {
   );
 };
 
-export default connect(({ pivot, farm }: { pivot: any; farm: any }) => ({
+const mapStateToProps = ({ pivot, farm }: { pivot: any; farm: any }) => ({
   pivot,
   farm,
-}))(Devices);
+});
+
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Devices);

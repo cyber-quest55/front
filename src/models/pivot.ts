@@ -8,7 +8,7 @@ export interface GetPivotModelProps {
   error: any;
 }
 
-export const queryPivotReport = (payload: API.GetPivotByFarmParam) => {
+export const queryPivot  = (payload: API.GetPivotByFarmParam) => {
   return {
     type: 'pivot/queryPivot',
     payload: payload,

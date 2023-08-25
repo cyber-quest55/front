@@ -20,7 +20,6 @@ import { BsCloudRainFill } from 'react-icons/bs';
 import { connect } from 'umi';
 
 type Props = {
-  dispatch: any;
   pivot: GetPivotModelProps;
   pivotInformation: GetPivotInformationModelProps;
   central: GetCentralModelProps;
@@ -99,8 +98,7 @@ const DeviceList: React.FC<Props> = (props) => {
     ),
   }));
 
- 
-   const dataSource2 = props.pivotInformation.result?.map((item) => ({
+  const dataSource2 = props.pivotInformation.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
@@ -281,33 +279,26 @@ const DeviceList: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivot,
-    farm,
-    pivotInformation,
-    central,
-    irpd,
-    repeater,
-    meterSystem,
-    selectedFarm,
-  }: {
-    pivot: any;
-    farm: any;
-    pivotInformation: any;
-    central: any;
-    irpd: any;
-    repeater: any;
-    meterSystem: any;
-    selectedFarm: any;
-  }) => ({
-    pivot,
-    farm,
-    pivotInformation,
-    central,
-    irpd,
-    repeater,
-    meterSystem,
-    selectedFarm,
-  }),
-)(DeviceList);
+const mapStateToProps = ({
+  pivot,
+  farm,
+  pivotInformation,
+  central,
+  irpd,
+  repeater,
+  meterSystem,
+  selectedFarm,
+}: any) => ({
+  pivot,
+  farm,
+  pivotInformation,
+  central,
+  irpd,
+  repeater,
+  meterSystem,
+  selectedFarm,
+});
+
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeviceList);

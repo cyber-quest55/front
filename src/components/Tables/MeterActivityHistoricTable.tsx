@@ -1,5 +1,5 @@
 import { useTableHook } from '@/hooks/table';
-import { GetMeterSystemHistoryModelProps } from '@/models/meter-history';
+import { GetMeterSystemHistoryModelProps, queryMeterSystemHistory } from '@/models/meter-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { formatDate } from '@/utils/get-formated-date';
 import { DownloadOutlined, RedoOutlined } from '@ant-design/icons';
@@ -12,6 +12,7 @@ type Props = {
   dispatch: any;
   meterSystemHistory: GetMeterSystemHistoryModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  queryMeterSystemHistory: typeof queryMeterSystemHistory;
 };
 
 const MeterActivityHistoricTable: React.FC<Props> = (props) => {
@@ -32,13 +33,11 @@ const MeterActivityHistoricTable: React.FC<Props> = (props) => {
   const update = () => {
     const { startDate, endDate } = range;
 
-    props.dispatch({
-      type: 'meterSystemHistory/queryMeterSystemHistory',
-      payload: {
-        farmId: props.selectedDevice.farmId,
-        irpdId: props.selectedDevice.deviceId,
-        params: { currentPage, pageSize, startDate, endDate },
-      },
+    props.queryMeterSystemHistory({
+      farmId: props.selectedDevice.farmId,
+      meterId: props.selectedDevice.deviceId,
+      otherId: props.selectedDevice.otherProps.imeterSetId,
+      params: { currentPage, pageSize, startDate, endDate },
     });
   };
 
@@ -128,9 +127,13 @@ const MeterActivityHistoricTable: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({ meterSystemHistory, selectedDevice }: { meterSystemHistory: any; selectedDevice: any }) => ({
-    meterSystemHistory,
-    selectedDevice,
-  }),
-)(MeterActivityHistoricTable);
+const mapStateToProps = ({ meterSystemHistory, selectedDevice }: any) => ({
+  meterSystemHistory,
+  selectedDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryMeterSystemHistory: (props: any) => dispatch(queryMeterSystemHistory(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MeterActivityHistoricTable);

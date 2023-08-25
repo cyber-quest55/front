@@ -4,11 +4,11 @@ import PumpReport from '@/components/DeviceReport/Pump';
 import PivotList from '@/components/PivotList';
 import RenderPivots from '@/components/RenderPivots';
 import { useScreenHook } from '@/hooks/screen';
-import { GetFarmModelProps } from '@/models/farm';
-import { GetIrpdModelProps } from '@/models/irpd';
-import { GetMeterSystemModelProps } from '@/models/meter-sysem';
+import { GetFarmModelProps, queryFarm } from '@/models/farm';
+import { GetIrpdModelProps, queryIrpd } from '@/models/irpd';
+import { GetMeterSystemModelProps, queryMeterSystem } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
-import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import {
   SelectedDeviceModelProps,
@@ -39,6 +39,10 @@ type Props = {
   irpd: GetIrpdModelProps;
   setSelectedDevice: typeof setSelectedDevice;
   setDeviceClose: typeof setDeviceClose;
+  queryFarm: typeof queryFarm;
+  queryPivotInformation: typeof queryPivotInformation;
+  queryMeterSystem: typeof queryMeterSystem;
+  queryIrpd: typeof queryIrpd;
 };
 
 const Welcome: FunctionComponent<Props> = (props) => {
@@ -101,11 +105,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
   //}, [params, props.selectedFarm]);
 
   useMount(() => {
-    if (!props.farm.loaded)
-      props.dispatch({
-        type: 'farm/queryFarm',
-        payload: { id: params.id },
-      });
+    if (!props.farm.loaded) {
+      const id = parseInt(params.id as string);
+      props.queryFarm({ id });
+    }
   });
 
   useEffect(() => {
@@ -121,28 +124,17 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     if (params.id !== ':id') {
-      props.dispatch({
-        type: 'pivotInformation/queryPivotInformation',
-        payload: {
-          id: parseInt(params.id as string),
-          params: {},
-        },
+      props.queryPivotInformation({
+        id: parseInt(params.id as string),
+        params: {},
       });
 
-      props.dispatch({
-        type: 'meterSystem/queryMeterSystem',
-        payload: {
-          id: parseInt(params.id as string),
-          params: {},
-        },
+      props.queryMeterSystem({
+        id: parseInt(params.id as string),
       });
 
-      props.dispatch({
-        type: 'irpd/queryIrpd',
-        payload: {
-          id: parseInt(params.id as string),
-          params: {},
-        },
+      props.queryIrpd({
+        id: parseInt(params.id as string),
       });
     }
   }, [params]);
@@ -303,6 +295,10 @@ const mapStateToProps = ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
   setDeviceClose: () => dispatch(setDeviceClose()),
+  queryFarm: (props: any) => dispatch(queryFarm(props)),
+  queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
+  queryMeterSystem: (props: any) => dispatch(queryMeterSystem(props)),
+  queryIrpd: (props: any) => dispatch(queryIrpd(props)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

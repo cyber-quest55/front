@@ -13,7 +13,7 @@ import {
 } from 'spherical-geometry-js';
 
 export type CirclePivotProps = {
-  id: number | string;
+  id: number;
   protocol: 'v4' | 'v5';
   type: 'sectorial' | 'central';
   centerLat: number;
@@ -210,7 +210,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
     strokeOpacity: 1,
     scale: 2,
   };
- 
+
   const endIrrigationDashedLine = computeOffset(
     centerPositionGMaps,
     referenceRadius,

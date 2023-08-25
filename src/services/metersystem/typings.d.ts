@@ -3,7 +3,7 @@
 
 declare namespace API {
   type GetMeterSystemParams = {
-    id: string;
+    id: number;
   };
 
   type GetMeterSystemResponse = Array<APIModels.MeterSystem>;

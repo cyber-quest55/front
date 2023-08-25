@@ -3,7 +3,7 @@
 
 declare namespace API {
   type GetIrpdParams = {
-    id: string;
+    id: number;
   };
 
   type GetIrpdResponse = Array<APIModels.Irpd>;
