@@ -192,7 +192,7 @@ const DeviceList: React.FC<Props> = (props) => {
         <ProList<any>
           itemLayout="vertical"
           rowKey="id"
-          style={{ paddingBottom: 0, marginBottom: 0 }}
+          style={{paddingBottom: 0,  marginBottom: 0 }}
           dataSource={dataSource}
           metas={{
             title: {},

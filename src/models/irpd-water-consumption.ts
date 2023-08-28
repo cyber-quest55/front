@@ -37,6 +37,7 @@ export default {
         const response: API.GetIrpdWaterConsumptionResponse = yield call(
           getIrpdWaterConsumption,
           payload,
+          payload.params
         );
         yield put({ type: 'queryIrpdWaterSuccess', payload: response });
       } catch (error: any) {

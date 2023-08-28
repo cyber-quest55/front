@@ -9,14 +9,14 @@ declare namespace API {
   type GetIrpdResponse = Array<APIModels.Irpd>;
 
   type GetIrpdByIdParams = {
-    farmId: string;
+    farmId: number;
     irpdId: string;
   };
 
   type GetIrpdByIdResponse = APIModels.IrpdById;
 
   type GetIrpdHistoryParams = {
-    farmId: string;
+    farmId: number;
     irpdId: string;
     params: any;
   };
@@ -24,15 +24,16 @@ declare namespace API {
   type GetIrpdHistoryResponse = APIModels.IrpdHistory;
 
   type GetIrpdWaterConsumptionParams = {
-    farmId: string;
-    irpdId: string;
-    waterId: string;
+    farmId: number;
+    irpdId: numbber;
+    waterId: number;
+    params: any;
   };
 
   type GetIrpdWaterConsumptionResponse = Array<APIModels.IrpdWaterConsumption>;
 
   type GetIrpdEventsParams = {
-    farmId: string;
+    farmId: number;
     irpdId: string;
     params: any;
   };

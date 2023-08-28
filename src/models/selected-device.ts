@@ -1,30 +1,30 @@
 import { DeviceType } from '@/utils/enums';
+import { queryIrpdWater } from './irpd-water-consumption';
 
 export interface SelectedDeviceModelProps {
   type: string;
-  farmId: string;
-  deviceId: string;
+  farmId: number;
+  deviceId: number;
   open: boolean;
   otherProps: any;
   error?: any;
 }
 
-export type SelectedType = { 
-  type: DeviceType; 
-  farmId: string; 
-  deviceId: number; 
+export type SelectedType = {
+  type: DeviceType;
+  farmId: number;
+  deviceId: number;
   otherProps: any;
-}
+};
 
-export const setSelectedDevice= (payload: SelectedType) => {
+export const setSelectedDevice = (payload: SelectedType) => {
   return {
     type: 'selectedDevice/setSelectedDevice',
     payload: payload,
   };
 };
 
-
-export const setDeviceClose= () => {
+export const setDeviceClose = () => {
   return {
     type: 'selectedDevice/setDeviceClose',
     payload: {},
@@ -36,8 +36,8 @@ export default {
 
   state: {
     type: '',
-    farmId: '',
-    deviceId: '',
+    farmId: 0,
+    deviceId: 0,
     open: false,
     otherProps: {},
     error: {},
@@ -45,9 +45,13 @@ export default {
 
   effects: {
     *setSelectedDevice({ payload }: { payload: SelectedType }, { put }: { put: any }) {
+      console.log('chegou aqui')
       const { type, farmId, deviceId, otherProps } = payload;
-
-      yield put({ type: 'setSelectedDeviceDefinition', payload: { type, farmId, deviceId, otherProps} });
+      console.log('otherProps', otherProps)
+      yield put({
+        type: 'setSelectedDeviceDefinition',
+        payload: { type, farmId, deviceId, otherProps },
+      });
 
       switch (type) {
         case DeviceType.Pivot: {
@@ -62,7 +66,7 @@ export default {
           yield put({
             type: 'pivotById/queryPivotById',
             payload: { farmId, pivotId: deviceId, params: {} },
-          }); 
+          });
           break;
         }
         case DeviceType.Pump: {
@@ -74,14 +78,19 @@ export default {
             type: 'irpdHistory/queryIrpdHistory',
             payload: { farmId, irpdId: deviceId, params: { current: 0, pageSize: 15 } },
           });
+
           yield put({
             type: 'irpdEvents/queryIrpdEvents',
             payload: { farmId, irpdId: deviceId, params: {} },
           });
-          yield put({
-            type: 'irpdWaterConsumption/queryIrpdWater',
-            payload: { farmId, irpdId: deviceId, params: {} },
-          });
+
+          yield put(queryIrpdWater({
+            farmId,
+            irpdId: deviceId,
+            waterId: otherProps?.waterId,
+            params: otherProps?.params,
+          }));
+
           break;
         }
         case DeviceType.Meter: {
@@ -106,10 +115,10 @@ export default {
   reducers: {
     setSelectedDeviceDefinition(
       state: SelectedDeviceModelProps,
-      { payload }: { payload: { type: string; farmId: string; deviceId: string, otherProps: any } },
+      { payload }: { payload: { type: string; farmId: number; deviceId: string; otherProps: any } },
     ) {
       const { type, farmId, deviceId, otherProps } = payload;
-      
+
       return {
         ...state,
         type,

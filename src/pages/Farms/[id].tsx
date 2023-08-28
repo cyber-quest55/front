@@ -174,6 +174,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
       background: 'white',
       zIndex: 3,
       ['.ant-tabs-nav-wrap']: {
+        display: 'flex',
         justifyContent: 'center',
       },
       ['.ant-tabs-nav']: {

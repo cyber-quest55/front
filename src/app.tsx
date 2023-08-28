@@ -19,6 +19,15 @@ const loginPath = '/user/login';
 
 type Libraries = ('drawing' | 'geometry' | 'localContext' | 'places' | 'visualization')[];
 
+const consoleError = console.error;
+const SUPPRESSED_WARNINGS = ['Warning:'];
+
+console.error = function filterWarnings(msg, ...args) {
+  if (!SUPPRESSED_WARNINGS.some((entry) => msg.includes(entry))) {
+    consoleError(msg, ...args);
+  }
+};
+
 dayjs.extend(weekday);
 dayjs.extend(localeData);
 /**

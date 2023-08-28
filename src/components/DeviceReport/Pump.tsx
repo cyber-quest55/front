@@ -12,6 +12,7 @@ import {
   setSelectedDevice,
 } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enums';
+import { getCommonDateParam } from '@/utils/getCommonDateParam';
 import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -76,14 +77,17 @@ const PumpReport: React.FC<Props> = (props) => {
 
   const onChangeDevice = (e: string) => {
     const device = props.irpd.result.find((item) => item.id === parseInt(e));
-    const farmId = params.id as string;
-    if (device && farmId)
+
+    const farmId = parseInt(params.id as string);
+
+    if (device && farmId) {
       props.setSelectedDevice({
-        type: DeviceType.Meter,
+        type: DeviceType.Pump,
         deviceId: device.id,
         farmId,
-        otherProps: {},
+        otherProps: { waterId: device.waterId, params: getCommonDateParam(true) },
       });
+    }
   };
 
   const destroyOnClick = () => {

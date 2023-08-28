@@ -16,21 +16,21 @@ declare namespace API {
   type GetPivotsInformationResponse = APIModels.PivotInformation;
 
   type GetPivotByIdInformationParam = {
-    farmId: string;
+    farmId: number;
     pivotId: string;
   };
 
   type GetPivotByIdInformationResponse = APIModels.PivotByIdInformation;
 
   type GetPivotHistoryParams = {
-    farmId: string;
+    farmId: number;
     pivotId: string;
   };
 
   type GetPivotHistoryResponse = APIModels.PivotHistory;
 
   type GetPivotReportParams = {
-    farmId: string;
+    farmId: number;
     pivotId: string;
   };
 

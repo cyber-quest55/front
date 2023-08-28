@@ -9,7 +9,6 @@ import { useEffect } from 'react';
 import { connect } from 'umi';
 
 type Props = {
-  dispatch: any;
   meterSystemHistory: GetMeterSystemHistoryModelProps;
   selectedDevice: SelectedDeviceModelProps;
   queryMeterSystemHistory: typeof queryMeterSystemHistory;

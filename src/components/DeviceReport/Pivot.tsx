@@ -859,17 +859,17 @@ const PivotReport: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const device = props.pivot.result.find(
-      (item) => item.id === parseInt(props.selectedDevice.deviceId),
+      (item) => item.id === props.selectedDevice.deviceId,
     );
     setDevice(device);
   }, [props.selectedDevice.deviceId]);
 
   const onChangeDevice = (e: string) => {
     const device = props.pivot.result.find((item) => item.id === parseInt(e));
-    const farmId = params.id as string;
+    const farmId = parseInt(params.id as string);
     if (device && farmId)
       props.setSelectedDevice({
-        type: DeviceType.Meter,
+        type: DeviceType.Pivot,
         deviceId: device.id,
         farmId,
         otherProps: {},

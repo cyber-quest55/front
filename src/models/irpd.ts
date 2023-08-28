@@ -1,11 +1,11 @@
-import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
+import { WaterPumpProps } from '@/components/Devices/WaterPump';
 import { getIrpds } from '@/services/irpd';
 import { getIrpdColor } from '@/utils/get-irpd-color';
 import { getIrpdStatus } from '@/utils/get-irpd-status';
 import { AxiosError } from 'axios';
 
 export interface GetIrpdModelProps {
-  result: LakeLevelMeterProps[];
+  result: WaterPumpProps[];
   loading: boolean;
   loaded: boolean;
   error: any;
@@ -55,7 +55,7 @@ export default {
       };
     },
     queryIrpdSuccess(state: GetIrpdModelProps, { payload }: { payload: API.GetIrpdResponse }) {
-      const mapper: LakeLevelMeterProps[] = [];
+      const mapper: WaterPumpProps[] = [];
 
       /**
        * Observações:
@@ -75,6 +75,7 @@ export default {
           updated: new Date(payload[index].updated).toLocaleString(),
           deviceColor: getIrpdColor(status),
           statusText: getIrpdStatus(status),
+          waterId: item?.latest_irpd_config_v5?.flow
         });
       }
 

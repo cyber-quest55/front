@@ -68,7 +68,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   }, [props.pivotInformation]);
 
   const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
-    const farmId = params.id as string;
+    const farmId = parseInt(params.id as string);
     props.setSelectedDevice({ type, deviceId, farmId, otherProps });
     scrollToBottom();
   };
@@ -238,6 +238,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 onSelect={onSetDevice}
                 deviceColor={item.deviceColor}
                 statusText={item.statusText}
+                waterId={item.waterId}
                 infoWindow
               />
             ))

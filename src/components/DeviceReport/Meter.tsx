@@ -69,7 +69,7 @@ const MeterReport: React.FC<Props> = (props) => {
 
   const onChangeDevice = (e: string) => {
     const device = props.meterSystem.result.find((item) => item.id === parseInt(e));
-    const farmId = params.id as string;
+    const farmId = parseInt(params.id as string);
     if (device && farmId)
       props.setSelectedDevice({
         type: DeviceType.Meter,

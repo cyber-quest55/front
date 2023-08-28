@@ -26,7 +26,7 @@ export default {
     res.status(200).send(GetPivotsInformationResponse);
   },
 
-  'GET /farms/:farmId/history/:pivotId/history/': async (req: Request, res: Response) => {
+  'GET /farms/:farmId/pivots/:pivotId/history/': async (req: Request, res: Response) => {
     await waitTime(2000);
     res.status(200).send(GetPivotHistoryResponse);
   },

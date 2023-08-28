@@ -9,32 +9,32 @@ declare namespace API {
   type GetMeterSystemResponse = Array<APIModels.MeterSystem>;
 
   type GetMeterSystemByIdParams = {
-    farmId: string;
-    meterId: string;
+    farmId: number;
+    meterId: number;
   };
 
   type GetMeterSystemByIdResponse = APIModels.MeterSystemById
 
   type GetMeterSystemHistoryParams = {
-    farmId: string;
-    meterId: string;
+    farmId: number;
+    meterId: number;
     params: any;
-    otherId: string;
+    otherId: number;
   };
 
   type GetMeterSystemHistoryResponse = APIModels.MeterSystemHistory
 
   type GetMeterSystemWaterLevelParams = {
-    farmId: string;
-    meterId: string;
-    otherId: string;
+    farmId: number;
+    meterId: number;
+    otherId: number;
     params: any;
   };
 
   type GetMeterSystemWaterLevelResponse = Array<APIModels.MeterSystemWaterLevel>;
 
   type GetMeterSystemTableParams = {
-    farmId: string;
+    farmId: number;
     meterId: string;
     otherId: string;
     params: any;

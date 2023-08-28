@@ -25,9 +25,9 @@ import { Marker, StaticGoogleMap } from 'react-static-google-map';
 import { connect } from 'umi';
 import AddDeviceForm from '../Forms/AddDeviceForm';
 import WithConnection from '../WithConnection';
+import { getCommonDateParam } from '@/utils/getCommonDateParam';
 
 type Props = {
-  dispatch: any;
   pivot: GetPivotModelProps;
   pivotInformation: GetPivotInformationModelProps;
   central: GetCentralModelProps;
@@ -108,7 +108,7 @@ const PivotList: React.FC<Props> = (props) => {
   }, [params]);
 
   const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
-    const farmId = params.id as string;
+    const farmId = parseInt(params.id as string);
     if (farmId)
       props.setSelectedDevice({
         type: type,
@@ -203,7 +203,10 @@ const PivotList: React.FC<Props> = (props) => {
     title: (
       <Row
         onClick={() => {
-          onSetDevice(DeviceType.Pump, item.id, {});
+          onSetDevice(DeviceType.Pump, item.id, {
+            waterId: item.waterId,
+            params: getCommonDateParam(true),
+          });
           scrollToBottom();
         }}
         justify="space-between"
@@ -245,7 +248,7 @@ const PivotList: React.FC<Props> = (props) => {
     title: (
       <Row
         onClick={() => {
-          onSetDevice(DeviceType.Meter, item.id, {imeterSetId: item.imeterSetId});
+          onSetDevice(DeviceType.Meter, item.id, { imeterSetId: item.imeterSetId });
           scrollToBottom();
         }}
         justify="space-between"
