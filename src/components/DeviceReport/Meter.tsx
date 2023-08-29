@@ -17,6 +17,7 @@ import MeterWaterLevel from '../Charts/MeterWaterLevel';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanel from '../DevicePanel';
 import MeterActivityEventTable from '../Tables/MeterActivityEventTable';
+import { useEffect, useState } from 'react';
 
 type Props = {
   meterSystem: GetMeterSystemModelProps;
@@ -29,6 +30,7 @@ const MeterReport: React.FC<Props> = (props) => {
   const params = useParams();
   const { md } = useScreenHook();
   const { tab, setTab } = useTabsHook('tab1');
+  const [device, setDevice] = useState<any>({});
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -79,6 +81,11 @@ const MeterReport: React.FC<Props> = (props) => {
       });
   };
 
+  useEffect(() => {
+    const device = props.meterSystem.result.find((item) => item.id === props.selectedDevice.deviceId);
+    setDevice(device);
+  }, [props.selectedDevice.deviceId]);
+
   const destroyOnClick = () => {
     props.setDeviceClose();
   };
@@ -113,7 +120,7 @@ const MeterReport: React.FC<Props> = (props) => {
                   suffixIcon={<CaretDownOutlined />}
                   bordered={false}
                   showSearch
-                  value={props.meterSystem?.result[0]?.name?.toString() as string}
+                  value={device?.name?.toString()}
                   size="large"
                   style={{ width: '100%' }}
                   filterOption={(input, option) =>

@@ -18,6 +18,7 @@ import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useParams } from '@umijs/max';
 import { Button, Select, Space, Tag } from 'antd';
+import { useEffect, useState } from 'react';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
@@ -37,6 +38,7 @@ const PumpReport: React.FC<Props> = (props) => {
   const { md } = useScreenHook();
 
   const { tab, setTab } = useTabsHook('tab1');
+  const [device, setDevice] = useState<any>({});
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -74,6 +76,11 @@ const PumpReport: React.FC<Props> = (props) => {
       },
     };
   });
+
+  useEffect(() => {
+    const device = props.irpd.result.find((item) => item.id === props.selectedDevice.deviceId);
+    setDevice(device);
+  }, [props.selectedDevice.deviceId]);
 
   const onChangeDevice = (e: string) => {
     const device = props.irpd.result.find((item) => item.id === parseInt(e));
@@ -124,7 +131,7 @@ const PumpReport: React.FC<Props> = (props) => {
                   suffixIcon={<CaretDownOutlined />}
                   bordered={false}
                   showSearch
-                  value={props.irpd?.result[0].name.toString() as string}
+                  value={device?.name?.toString()}
                   size="large"
                   style={{ width: '100%' }}
                   filterOption={(input, option) =>
