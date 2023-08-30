@@ -1,7 +1,7 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getIrpdById } from '@/services/irpd/';
-import { getIrpdColor } from '@/utils/get-irpd-color';
-import { getIrpdStatus } from '@/utils/get-irpd-status';
+import { getIrpdColor } from '@/utils/formater/get-irpd-color';
+import { getIrpdStatus } from '@/utils/formater/get-irpd-status';
 import { AxiosError } from 'axios';
 
 export interface GetIrpdByIdModelProps {

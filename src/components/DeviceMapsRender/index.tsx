@@ -5,7 +5,7 @@ import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
 import { FunctionComponent, useEffect } from 'react';

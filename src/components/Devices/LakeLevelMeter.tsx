@@ -1,4 +1,4 @@
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { Liquid } from '@ant-design/charts';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
 import { Space, Tag, Typography } from 'antd';

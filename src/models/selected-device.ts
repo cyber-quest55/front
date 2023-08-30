@@ -1,4 +1,4 @@
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { queryIrpdWater } from './irpd-water-consumption';
 
 export interface SelectedDeviceModelProps {

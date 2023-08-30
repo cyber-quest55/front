@@ -8,7 +8,7 @@ import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import {
   ClockCircleOutlined,
   EditFilled,
@@ -25,7 +25,7 @@ import { Marker, StaticGoogleMap } from 'react-static-google-map';
 import { connect } from 'umi';
 import AddDeviceForm from '../Forms/AddDeviceForm';
 import WithConnection from '../WithConnection';
-import { getCommonDateParam } from '@/utils/getCommonDateParam';
+import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
 
 type Props = {
   pivot: GetPivotModelProps;

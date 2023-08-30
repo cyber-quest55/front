@@ -1,5 +1,5 @@
-import { DeviceType } from '@/utils/enums';
-import { getCommonDateParam } from '@/utils/getCommonDateParam';
+import { DeviceType } from '@/utils/enum/device-type';
+import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
 import { Space, Tag, Typography } from 'antd';
 import React, { useState } from 'react';

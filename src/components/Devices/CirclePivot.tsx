@@ -1,4 +1,4 @@
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { Circle, InfoWindowF, Marker, Polygon, Polyline } from '@react-google-maps/api';
 import { Space, Tag, Typography } from 'antd';
 import React, { useState } from 'react';

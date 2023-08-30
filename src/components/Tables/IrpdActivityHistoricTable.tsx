@@ -1,8 +1,8 @@
 import { useTableHook } from '@/hooks/table';
 import { GetIrpdHistoryModelProps, queryIrpdHistory } from '@/models/irpd-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { PumpHistoryOrigin } from '@/utils/enums';
-import { formatDate } from '@/utils/get-formated-date';
+import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
+import { formatDate } from '@/utils/formater/get-formated-date';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   LightFilter,

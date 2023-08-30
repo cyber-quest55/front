@@ -1,7 +1,7 @@
 import { useTableHook } from '@/hooks/table';
 import { GetIrpdEventsModelProps, queryIrpdEvents } from '@/models/irpd-events';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { formatDate } from '@/utils/get-formated-date';
+import { formatDate } from '@/utils/formater/get-formated-date';
 import { DownloadOutlined } from '@ant-design/icons';
 import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
 import { Button, Col, Pagination, PaginationProps, Row, Space } from 'antd';

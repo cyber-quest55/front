@@ -17,7 +17,7 @@ declare namespace API {
 
   type GetIrpdHistoryParams = {
     farmId: number;
-    irpdId: string;
+    irpdId: number;
     params: any;
   };
 

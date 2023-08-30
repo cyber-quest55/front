@@ -1,5 +1,5 @@
 import { getMeterSystemWaterLevel } from '@/services/metersystem/';
-import { formatDateTime } from '@/utils/get-formated-date';
+import { formatDateTime } from '@/utils/formater/get-formated-date';
 import { AxiosError } from 'axios';
 
 export interface GetMeterSystemWaterLevelModelProps {

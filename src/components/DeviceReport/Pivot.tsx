@@ -9,28 +9,15 @@ import {
   setDeviceClose,
   setSelectedDevice,
 } from '@/models/selected-device';
-import { DeviceType } from '@/utils/enums';
-import { PivotStatusColor } from '@/utils/pivot-status';
-import {
-  CaretDownOutlined,
-  ClockCircleOutlined,
-  CloseCircleFilled,
-  CloudFilled,
-  EditFilled,
-  HistoryOutlined,
-  ThunderboltFilled,
-} from '@ant-design/icons';
+import { DeviceType } from '@/utils/enum/device-type';
 import { G2, Line, Pie } from '@ant-design/plots';
 import { ProCard, ProSkeleton, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useParams } from '@umijs/max';
-import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
-import { BsFillCloudRainFill } from 'react-icons/bs';
-import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
+import { Col, Modal, Row } from 'antd';
+import { useState } from 'react';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
-import DevicePanel from '../DevicePanel';
+import DevicePanelContainer from '../DevicePanel/DevicePanelContainer';
 import SkeletonList from '../Skeletons/List';
 import SkeletonPieChart from '../Skeletons/PieChart';
 import SkeletonStatistic from '../Skeletons/Statistic';
@@ -784,16 +771,11 @@ type Props = {
 };
 
 const PivotReport: React.FC<Props> = (props) => {
-  const params = useParams();
   const G = G2.getEngine('canvas');
   const { md, xxl } = useScreenHook();
   const { tab, setTab } = useTabsHook('tab1');
 
   const [option, setOption] = useState<undefined | number>(undefined);
-  const [device, setDevice] = useState<any>({});
-
-  const item =
-    props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
 
   const data = [
     {
@@ -833,22 +815,6 @@ const PivotReport: React.FC<Props> = (props) => {
     };
   });
 
-  const classNameSelect = useEmotionCss(() => {
-    return {
-      '.ant-select-selection-item': {
-        fontWeight: 700,
-        fontSize: 24,
-      },
-      '.ant-select-selector': {
-        padding: '0 !important',
-      },
-      '.ant-select-arrow': {
-        color: 'black',
-        fontSize: 20,
-      },
-    };
-  });
-
   const classNameTableProCard = useEmotionCss(() => {
     return {
       '.ant-pro-card-body': {
@@ -856,29 +822,6 @@ const PivotReport: React.FC<Props> = (props) => {
       },
     };
   });
-
-  useEffect(() => {
-    const device = props.pivot.result.find(
-      (item) => item.id === props.selectedDevice.deviceId,
-    );
-    setDevice(device);
-  }, [props.selectedDevice.deviceId]);
-
-  const onChangeDevice = (e: string) => {
-    const device = props.pivot.result.find((item) => item.id === parseInt(e));
-    const farmId = parseInt(params.id as string);
-    if (device && farmId)
-      props.setSelectedDevice({
-        type: DeviceType.Pivot,
-        deviceId: device.id,
-        farmId,
-        otherProps: {},
-      });
-  };
-
-  const destroyOnClick = () => {
-    props.setDeviceClose();
-  };
 
   const getComparative = (): any[] => {
     const newList: any = [];
@@ -927,89 +870,8 @@ const PivotReport: React.FC<Props> = (props) => {
         <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 5 }} style={{ height: 275 }}>
           <DeviceMapsRender height={275} />
         </ProCard>
-        <ProCard
-          loading={props.pivotReport.loading}
-          colSpan={{ xs: 24, md: 16, xxl: 9 }}
-          style={{ height: md ? 275 : '100%' }}
-        >
-          <DevicePanel
-            actions={
-              <Space>
-                <Button icon={<GiPadlockOpen />} />
-                <Button icon={<GiSolidLeaf />} />
-                <Button icon={<CloudFilled />} />
-                <Button icon={<EditFilled />}>Edit</Button>
-                <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-                  Close
-                </Button>
-              </Space>
-            }
-            status={<Tag color={PivotStatusColor.off}>{item?.statusText}</Tag>}
-            deviceSelector={
-              <Select
-                className={classNameSelect}
-                suffixIcon={<CaretDownOutlined />}
-                bordered={false}
-                showSearch
-                value={device?.name?.toString()}
-                size="large"
-                style={{ width: '100%' }}
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                onChange={onChangeDevice}
-                options={props.pivot?.result.map((item) => ({
-                  value: item.id,
-                  label: item.name,
-                }))}
-              />
-            }
-            extra={
-              <Space direction="vertical" size="middle">
-                <Space size="middle">
-                  <Space>
-                    <Tooltip title="Voltagem">
-                      <ThunderboltFilled />
-                    </Tooltip>
-
-                    <div>220 V</div>
-                  </Space>
-                  <Space>
-                    <Tooltip title="Barras">
-                      <HistoryOutlined />
-                    </Tooltip>
-                    <div>1.2 bar</div>
-                  </Space>
-                </Space>
-                <Space size="middle">
-                  <Space>
-                    <Tooltip title="Chuva hoje">
-                      <BsFillCloudRainFill />
-                    </Tooltip>
-                    <div>10 mm </div>
-                  </Space>
-                  <Space>
-                    <Tooltip title="Horímetro">
-                      <ClockCircleOutlined />
-                    </Tooltip>
-
-                    <div>262h 33min</div>
-                  </Space>
-                </Space>
-              </Space>
-            }
-            lastCommunication="19 May 10:15"
-            deviceActions={
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-                  Start Pivot
-                </Button>
-                <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-                  Stop Pivot
-                </Button>
-              </Space>
-            }
-          />
+        <ProCard colSpan={{ xs: 24, md: 16, xxl: 9 }} style={{ height: md ? 275 : '100%' }}>
+          <DevicePanelContainer type={DeviceType.Pivot} />
         </ProCard>
         <ProCard split={md ? 'vertical' : 'horizontal'} colSpan={{ xs: 24, md: 24, xxl: 10 }} wrap>
           <ProCard

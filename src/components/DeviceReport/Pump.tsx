@@ -3,42 +3,16 @@ import IrpdActivityEventTable from '@/components/Tables/IrpdActivityEventTable';
 import IrpdActivityHistoricTable from '@/components/Tables/IrpdActivityHistoricTable';
 import { useScreenHook } from '@/hooks/screen';
 import { useTabsHook } from '@/hooks/tabs';
-import { GetIrpdModelProps } from '@/models/irpd';
-import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
-import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
-import {
-  SelectedDeviceModelProps,
-  setDeviceClose,
-  setSelectedDevice,
-} from '@/models/selected-device';
-import { DeviceType } from '@/utils/enums';
-import { getCommonDateParam } from '@/utils/getCommonDateParam';
-import { CaretDownOutlined, CloseCircleFilled, EditFilled } from '@ant-design/icons';
+import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useParams } from '@umijs/max';
-import { Button, Select, Space, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { TbBrandFlightradar24 } from 'react-icons/tb';
-import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
-import DevicePanel from '../DevicePanel';
+import DevicePanelContainer from '../DevicePanel/DevicePanelContainer';
 
-type Props = {
-  irpd: GetIrpdModelProps;
-  irpdById: GetIrpdByIdModelProps;
-  iprdWaterConsumption: GetIrpdWaterModelProps;
-  selectedDevice: SelectedDeviceModelProps;
-  setSelectedDevice: typeof setSelectedDevice;
-  setDeviceClose: typeof setDeviceClose;
-};
-
-const PumpReport: React.FC<Props> = (props) => {
-  const params = useParams();
+const PumpReport: React.FC = () => {
   const { md } = useScreenHook();
 
   const { tab, setTab } = useTabsHook('tab1');
-  const [device, setDevice] = useState<any>({});
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -53,22 +27,6 @@ const PumpReport: React.FC<Props> = (props) => {
     };
   });
 
-  const classNameSelect = useEmotionCss(() => {
-    return {
-      '.ant-select-selection-item': {
-        fontWeight: 700,
-        fontSize: 24,
-      },
-      '.ant-select-selector': {
-        padding: '0 !important',
-      },
-      '.ant-select-arrow': {
-        color: 'black',
-        fontSize: 20,
-      },
-    };
-  });
-
   const classNameTableProCard = useEmotionCss(() => {
     return {
       '.ant-pro-card-body': {
@@ -76,30 +34,6 @@ const PumpReport: React.FC<Props> = (props) => {
       },
     };
   });
-
-  useEffect(() => {
-    const device = props.irpd.result.find((item) => item.id === props.selectedDevice.deviceId);
-    setDevice(device);
-  }, [props.selectedDevice.deviceId]);
-
-  const onChangeDevice = (e: string) => {
-    const device = props.irpd.result.find((item) => item.id === parseInt(e));
-
-    const farmId = parseInt(params.id as string);
-
-    if (device && farmId) {
-      props.setSelectedDevice({
-        type: DeviceType.Pump,
-        deviceId: device.id,
-        farmId,
-        otherProps: { waterId: device.waterId, params: getCommonDateParam(true) },
-      });
-    }
-  };
-
-  const destroyOnClick = () => {
-    props.setDeviceClose();
-  };
 
   return (
     <>
@@ -115,71 +49,7 @@ const PumpReport: React.FC<Props> = (props) => {
             <DeviceMapsRender height={275} />
           </ProCard>
           <ProCard colSpan={{ xs: 24, md: 16, xxl: 15 }} style={{ height: md ? 275 : '100%' }}>
-            <DevicePanel
-              actions={
-                <Space>
-                  <Button icon={<EditFilled />}>Edit</Button>
-                  <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-                    Close
-                  </Button>
-                </Space>
-              }
-              status={<Tag color={'#115186'}>{'LIGADA APÓS QUEDA DE ENERGIA'}</Tag>}
-              deviceSelector={
-                <Select
-                  className={classNameSelect}
-                  suffixIcon={<CaretDownOutlined />}
-                  bordered={false}
-                  showSearch
-                  value={device?.name?.toString()}
-                  size="large"
-                  style={{ width: '100%' }}
-                  filterOption={(input, option) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
-                  onChange={onChangeDevice}
-                  options={props.irpd.result?.map((item) => ({
-                    value: item.id,
-                    label: item.name,
-                  }))}
-                />
-              }
-              extra={
-                <Space direction="vertical" size="middle">
-                  <Space size="middle">
-                    <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>1.2 bar</div>
-                    </Space>
-                    <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>250V</div>
-                    </Space>
-                  </Space>
-                  <Space size="middle">
-                    <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>1.2 bar</div>
-                    </Space>
-                    <Space>
-                      <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                      <div>250V</div>
-                    </Space>
-                  </Space>
-                </Space>
-              }
-              lastCommunication="19 May 10:15"
-              deviceActions={
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                  <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-                    Ligar Bomba
-                  </Button>
-                  <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-                    Parar Bomba
-                  </Button>
-                </Space>
-              }
-            />
+            <DevicePanelContainer type={DeviceType.Pump} />
           </ProCard>
           <StatisticCard
             title="Gráfico de Consumo"
@@ -222,17 +92,6 @@ const PumpReport: React.FC<Props> = (props) => {
     </>
   );
 };
+ 
 
-const mapStateToProps = ({ irpd, irpdById, selectedDevice, iprdWaterConsumption }: any) => ({
-  irpd,
-  irpdById,
-  selectedDevice,
-  iprdWaterConsumption,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
-  setDeviceClose: () => dispatch(setDeviceClose()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PumpReport);
+export default (PumpReport);

@@ -16,7 +16,7 @@ import {
   setSelectedDevice,
 } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';

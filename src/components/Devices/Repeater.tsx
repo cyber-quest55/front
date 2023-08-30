@@ -1,4 +1,4 @@
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { RadarChartOutlined } from '@ant-design/icons';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
 import { Typography } from 'antd';

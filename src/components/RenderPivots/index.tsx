@@ -6,7 +6,7 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
 import Field from '@ant-design/pro-field';
 import { GoogleMap } from '@react-google-maps/api';

@@ -1,7 +1,7 @@
 import { CirclePivotProps } from '@/components/Devices/CirclePivot';
 import { getPivotsWithInformations } from '@/services/pivot';
-import { getPivotColor } from '@/utils/get-pivot-color';
-import { getPivotStatus } from '@/utils/get-pivot-status';
+import { getPivotColor } from '@/utils/formater/get-pivot-color';
+import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { AxiosError } from 'axios';
 
 export interface GetPivotInformationModelProps {
