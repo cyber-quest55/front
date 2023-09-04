@@ -44,6 +44,7 @@ const FlowMetterList: React.FC<AlarmFlowMetterListProps> = (props) => {
       },
       '.ant-pro-table-list-toolbar-container': {
         [`@media screen and (max-width: ${token.screenMD}px)`]: {
+          display: 'flex',
           flexWrap: 'nowrap',
           flexDirection: 'row',
           alignItems: 'center',

@@ -3,11 +3,12 @@ import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
-import { GetPivotModelProps } from '@/models/pivot';
+import { GetPivotModelProps, queryPivot } from '@/models/pivot';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
-import { GetRepeaterModelProps } from '@/models/repeaters';
+import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
+import { setSelectedDevice } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import {
   ClockCircleOutlined,
   EditFilled,
@@ -24,9 +25,9 @@ import { Marker, StaticGoogleMap } from 'react-static-google-map';
 import { connect } from 'umi';
 import AddDeviceForm from '../Forms/AddDeviceForm';
 import WithConnection from '../WithConnection';
+import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
 
 type Props = {
-  dispatch: any;
   pivot: GetPivotModelProps;
   pivotInformation: GetPivotInformationModelProps;
   central: GetCentralModelProps;
@@ -35,6 +36,9 @@ type Props = {
   repeater: GetRepeaterModelProps;
   selectedFarm: SelectedFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
+  queryPivot: typeof queryPivot;
+  setSelectedDevice: typeof setSelectedDevice;
+  queryRepeater: typeof queryRepeater;
 };
 
 const scrollToBottom = () => {
@@ -99,29 +103,26 @@ const PivotList: React.FC<Props> = (props) => {
   });
 
   useEffect(() => {
-    props.dispatch({
-      type: 'pivot/queryPivot',
-      payload: { id: parseInt(params.id as string) },
-    });
-
-    props.dispatch({
-      type: 'repeater/queryRepeater',
-      payload: { id: parseInt(params.id as string) },
-    });
+    props.queryPivot({ id: parseInt(params.id as string) });
+    props.queryRepeater({ id: parseInt(params.id as string) });
   }, [params]);
 
-  const onSetDevice = (type: string, deviceId: string) => {
-    props.dispatch({
-      type: 'selectedDevice/setSelectedDevice',
-      payload: { type, deviceId, farmId: params.id },
-    });
+  const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
+    const farmId = parseInt(params.id as string);
+    if (farmId)
+      props.setSelectedDevice({
+        type: type,
+        deviceId: deviceId,
+        farmId,
+        otherProps: otherProps,
+      });
   };
 
   const dataSource = props.pivotInformation.result?.map((item) => ({
     title: (
       <Row
         onClick={() => {
-          onSetDevice(DeviceType.Pivot, item.id.toString());
+          onSetDevice(DeviceType.Pivot, item.id, {});
           scrollToBottom();
         }}
         key={`row-pivot-information-${item.id}`}
@@ -202,7 +203,10 @@ const PivotList: React.FC<Props> = (props) => {
     title: (
       <Row
         onClick={() => {
-          onSetDevice(DeviceType.Pump, item.id.toString());
+          onSetDevice(DeviceType.Pump, item.id, {
+            waterId: item.waterId,
+            params: getCommonDateParam(true),
+          });
           scrollToBottom();
         }}
         justify="space-between"
@@ -244,7 +248,7 @@ const PivotList: React.FC<Props> = (props) => {
     title: (
       <Row
         onClick={() => {
-          onSetDevice(DeviceType.Meter, item.id.toString());
+          onSetDevice(DeviceType.Meter, item.id, { imeterSetId: item.imeterSetId });
           scrollToBottom();
         }}
         justify="space-between"
@@ -375,33 +379,30 @@ const PivotList: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivot,
-    farm,
-    pivotInformation,
-    central,
-    irpd,
-    repeater,
-    meterSystem,
-    selectedFarm,
-  }: {
-    pivot: any;
-    farm: any;
-    pivotInformation: any;
-    central: any;
-    irpd: any;
-    repeater: any;
-    meterSystem: any;
-    selectedFarm: any;
-  }) => ({
-    pivot,
-    farm,
-    pivotInformation,
-    central,
-    irpd,
-    repeater,
-    meterSystem,
-    selectedFarm,
-  }),
-)(PivotList);
+const mapStateToProps = ({
+  pivot,
+  farm,
+  pivotInformation,
+  central,
+  irpd,
+  repeater,
+  meterSystem,
+  selectedFarm,
+}: any) => ({
+  pivot,
+  farm,
+  pivotInformation,
+  central,
+  irpd,
+  repeater,
+  meterSystem,
+  selectedFarm,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryPivot: (props: any) => dispatch(queryPivot(props)),
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  queryRepeater: (props: any) => dispatch(queryRepeater(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PivotList);

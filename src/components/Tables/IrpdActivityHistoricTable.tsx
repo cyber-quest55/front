@@ -1,8 +1,8 @@
 import { useTableHook } from '@/hooks/table';
-import { GetIrpdHistoryModelProps } from '@/models/irpd-history';
+import { GetIrpdHistoryModelProps, queryIrpdHistory } from '@/models/irpd-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { PumpHistoryOrigin } from '@/utils/enums';
-import { formatDate } from '@/utils/get-formated-date';
+import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
+import { formatDate } from '@/utils/formater/get-formated-date';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   LightFilter,
@@ -18,6 +18,7 @@ type Props = {
   dispatch: any;
   irpdHistory: GetIrpdHistoryModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  queryIrpdHistory: typeof queryIrpdHistory;
 };
 
 const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
@@ -38,13 +39,10 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
   const update = () => {
     const { startDate, endDate } = range;
 
-    props.dispatch({
-      type: 'irpdHistory/queryIrpdHistory',
-      payload: {
-        farmId: props.selectedDevice.farmId,
-        irpdId: props.selectedDevice.deviceId,
-        params: { currentPage, pageSize, startDate, endDate },
-      },
+    props.queryIrpdHistory({
+      farmId: props.selectedDevice.farmId,
+      irpdId: props.selectedDevice.deviceId,
+      params: { currentPage, pageSize, startDate, endDate },
     });
   };
 
@@ -163,9 +161,13 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({ irpdHistory, selectedDevice }: { irpdHistory: any; selectedDevice: any }) => ({
-    irpdHistory,
-    selectedDevice,
-  }),
-)(IrpdActivityHistoricTable);
+const mapStateToProps = ({ irpdHistory, selectedDevice }: any) => ({
+  irpdHistory,
+  selectedDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryIrpdHistory: (props: any) => dispatch(queryIrpdHistory(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(IrpdActivityHistoricTable);

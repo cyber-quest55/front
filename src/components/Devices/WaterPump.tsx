@@ -1,11 +1,12 @@
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
+import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
 import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
 import { Space, Tag, Typography } from 'antd';
 import React, { useState } from 'react';
 import Image from '../../../public/images/devices/water-pump.png';
 
 export type WaterPumpProps = {
-  id: number | string;
+  id: number;
   centerLat: number;
   centerLng: number;
   deviceColor?: string;
@@ -15,6 +16,7 @@ export type WaterPumpProps = {
   updated: string;
   onSelect?: any;
   infoWindow?: boolean;
+  waterId?: number;
 };
 
 const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
@@ -29,7 +31,12 @@ const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       >
         <div
-          onClick={() => props?.onSelect(DeviceType.Pump, props.id)}
+          onClick={() =>
+            props?.onSelect(DeviceType.Pump, props.id, {
+              params: getCommonDateParam(true),
+              waterId: props.waterId,
+            })
+          }
           onMouseLeave={() => setInfoWindowVisible(false)}
           onMouseEnter={() => setInfoWindowVisible(true)}
         >

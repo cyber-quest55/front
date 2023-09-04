@@ -1,5 +1,5 @@
 import { GetFarmModelProps } from '@/models/farm';
-import { GetFarmConnectionModelProps } from '@/models/farm-connection';
+import { GetFarmConnectionModelProps, queryFarmConnection } from '@/models/farm-connection';
 import { LoadingOutlined, WifiOutlined } from '@ant-design/icons';
 import { Badge, Tooltip } from 'antd';
 import { connect } from 'dva';
@@ -9,15 +9,13 @@ export type WithConnectionProps = {
   dispatch: any;
   farm: GetFarmModelProps;
   farmConnection: GetFarmConnectionModelProps;
+  queryFarmConnection: typeof queryFarmConnection;
 };
 
 const WithConnection: React.FC<WithConnectionProps> = (props) => {
   useEffect(() => {
     if (props.farm.loaded && !props.farmConnection.loaded)
-      props.dispatch({
-        type: 'farmConnection/queryFarmConnection',
-        payload: { id: props.farm.selectedFarm },
-      });
+      props.queryFarmConnection({ id: props.farm.selectedFarm });
   }, [props.farm.selectedFarm]);
 
   return (
@@ -44,7 +42,13 @@ const WithConnection: React.FC<WithConnectionProps> = (props) => {
   );
 };
 
-export default connect(({ farm, farmConnection }: { farm: any; farmConnection: any }) => ({
+const mapStateToProps = ({ farm, farmConnection }: any) => ({
   farm,
   farmConnection,
-}))(WithConnection);
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryFarmConnection: (props: any) => dispatch(queryFarmConnection(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WithConnection);

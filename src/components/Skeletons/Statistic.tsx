@@ -1,42 +1,16 @@
-import { Skeleton } from 'antd';
 import React from 'react';
+import Box from '../Box';
+import SkeletonButton from './Button';
 
 const SkeletonStatistic: React.FC = () => {
-  const size: any = 5;
+  const size: any = 8;
 
   return (
-    <div
-      style={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        position: "relative"
-      }}
-    > 
-
-      <Skeleton.Button
-        style={{ width: '100%' }}
-        active={true}
-        size={size}
-        block={true}
-        shape={'round'}
-      />
-      <Skeleton.Button
-        style={{ width: '100%' }}
-        active={true}
-        size={size}
-        block={true}
-        shape={'round'}
-      />
-      <Skeleton.Button
-        style={{ width: '100%' }}
-        active={true}
-        size={size}
-        block={true}
-        shape={'round'}
-      /> 
-    </div>
+    <Box width={'100%'} display="flex" flexDirection={'column'} gap={2}>
+      <SkeletonButton active={true} size={size} block={true} shape={'round'} />
+      <SkeletonButton active={true} size={size} block={true} shape={'round'} />
+      <SkeletonButton active={true} size={size} block={true} shape={'round'} />
+    </Box>
   );
 };
 

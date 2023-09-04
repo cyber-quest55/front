@@ -1,4 +1,4 @@
-import { colors } from './status-color';
+import { colors } from '../enum/status-color';
 
 export function getIrpdColor(status: number): string {
   switch (status) {

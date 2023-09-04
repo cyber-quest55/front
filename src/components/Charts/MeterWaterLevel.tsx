@@ -1,5 +1,8 @@
 import { useScreenHook } from '@/hooks/screen';
-import { GetMeterSystemWaterLevelModelProps } from '@/models/meter-water-level';
+import {
+  GetMeterSystemWaterLevelModelProps,
+  queryMeterSystemWaterLevel,
+} from '@/models/meter-water-level';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { Mix } from '@ant-design/charts';
 import { LightFilter, ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
@@ -12,7 +15,7 @@ import { connect } from 'umi';
 type Props = {
   selectedDevice: SelectedDeviceModelProps;
   meterSystemWaterLevel: GetMeterSystemWaterLevelModelProps;
-  dispatch: any;
+  queryMeterSystemWaterLevel: typeof queryMeterSystemWaterLevel;
 };
 
 const MeterWaterLevelChart: React.FC<Props> = (props) => {
@@ -44,18 +47,15 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
     });
   };
 
- 
   const update = () => {
     const { startDate, endDate } = range;
-    props.dispatch({
-      type: 'meterSystemWaterLevel/queryMeterSystemWaterLevel',
-      payload: {
-        farmId: props.selectedDevice.farmId,
-        meterId: props.selectedDevice.deviceId,
-        otherId: props.selectedDevice.otherProps.imeterSetId,
-        
-        params: { startDate, endDate },
-      },
+
+    props.queryMeterSystemWaterLevel({
+      farmId: props.selectedDevice.farmId,
+      meterId: props.selectedDevice.deviceId,
+      otherId: props.selectedDevice.otherProps.imeterSetId,
+
+      params: { startDate, endDate },
     });
   };
 
@@ -172,15 +172,13 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    meterSystemWaterLevel,
-    selectedDevice,
-  }: {
-    meterSystemWaterLevel: any;
-    selectedDevice: any;
-  }) => ({
-    meterSystemWaterLevel,
-    selectedDevice,
-  }),
-)(MeterWaterLevelChart);
+const mapStateToProps = ({ meterSystemWaterLevel, selectedDevice }: any) => ({
+  meterSystemWaterLevel,
+  selectedDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryMeterSystemWaterLevel: (props: any) => dispatch(queryMeterSystemWaterLevel(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MeterWaterLevelChart);

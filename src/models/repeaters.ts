@@ -9,6 +9,13 @@ export interface GetRepeaterModelProps {
   error: any;
 }
 
+export const queryRepeater = (payload: API.GetRepeaterParams) => {
+  return {
+    type: 'repeater/queryRepeater',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'repeater',
 
@@ -20,7 +27,7 @@ export default {
   },
 
   effects: {
-    *queryRepeater({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryRepeater({ payload }: { payload: API.GetRepeaterParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryRepeaterStart' });
       try {
         const response: API.GetRepeaterResponse = yield call(getRepeaters, payload);

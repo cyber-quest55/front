@@ -1,7 +1,7 @@
 import { useTableHook } from '@/hooks/table';
-import { GetIrpdEventsModelProps } from '@/models/irpd-events';
+import { GetIrpdEventsModelProps, queryIrpdEvents } from '@/models/irpd-events';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { formatDate } from '@/utils/get-formated-date';
+import { formatDate } from '@/utils/formater/get-formated-date';
 import { DownloadOutlined } from '@ant-design/icons';
 import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
 import { Button, Col, Pagination, PaginationProps, Row, Space } from 'antd';
@@ -9,9 +9,9 @@ import { useEffect } from 'react';
 import { connect } from 'umi';
 
 type Props = {
-  dispatch: any;
   irpdEvents: GetIrpdEventsModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  queryIrpdEvents: typeof queryIrpdEvents;
 };
 
 const IrpdActivityEventTable: React.FC<Props> = (props) => {
@@ -33,14 +33,10 @@ const IrpdActivityEventTable: React.FC<Props> = (props) => {
 
   const update = () => {
     const { startDate, endDate } = range;
-
-    props.dispatch({
-      type: 'irpdEvents/queryIrpdEvents',
-      payload: {
-        farmId: props.selectedDevice.farmId,
-        irpdId: props.selectedDevice.deviceId,
-        params: { currentPage, pageSize, startDate, endDate },
-      },
+    props.queryIrpdEvents({
+      farmId: props.selectedDevice.farmId,
+      irpdId: props.selectedDevice.deviceId,
+      params: { currentPage, pageSize, startDate, endDate },
     });
   };
 
@@ -123,9 +119,13 @@ const IrpdActivityEventTable: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({ irpdEvents, selectedDevice }: { irpdEvents: any; selectedDevice: any }) => ({
-    irpdEvents,
-    selectedDevice,
-  }),
-)(IrpdActivityEventTable);
+const mapStateToProps = ({ irpdEvents, selectedDevice }: any) => ({
+  irpdEvents,
+  selectedDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryIrpdEvents: (props: any) => dispatch(queryIrpdEvents(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(IrpdActivityEventTable);

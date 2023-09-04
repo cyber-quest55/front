@@ -15,6 +15,13 @@ export interface GetCentralModelProps {
   error: any;
 }
 
+export const queryCentral = (payload: API.GetCentralParams ) => {
+  return {
+    type: 'central/queryCentral',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'central',
 
@@ -26,7 +33,7 @@ export default {
   },
 
   effects: {
-    *queryCentral({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryCentral({ payload }: { payload: API.GetCentralParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryCentralStart' });
       try {
         const response: API.GetCentralResponse = yield call(getCentral, payload);

@@ -2,18 +2,20 @@ import { GetFarmModelProps } from '@/models/farm';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Select } from 'antd';
-import { connect } from 'dva';
 import React from 'react';
 
 export type FarmSelectProps = {
-  name: string;
   farm: GetFarmModelProps;
-  dispatch: any;
   selectedFarm: SelectedFarmModelProps;
+  onChange: (value: APIModels.Farm) => void;
+  options: { value: number; label: string }[];
 };
 
-const FarmSelect: React.FC<FarmSelectProps> = (props) => {
-  const classNameSelect = useEmotionCss(({ token }) => {
+const FarmSelectComponent: React.FC<FarmSelectProps> = (props) => {
+  const { onChange, selectedFarm, options } = props;
+  const { name } = selectedFarm;
+
+  const selectStyle = useEmotionCss(({ token }) => {
     return {
       width: '100%',
       marginTop: 16,
@@ -34,34 +36,33 @@ const FarmSelect: React.FC<FarmSelectProps> = (props) => {
     };
   });
 
-  const onChange = (value: any) => {
-    props.dispatch({
-      type: 'selectedFarm/setSelectedFarm',
-      payload: props.farm.result.find((item) => item.id === value),
-    });
+
+  const handleChange = (value: number) => {
+    const farm: APIModels.Farm = {
+      id: value,
+      name: '',
+      timezone: '',
+      is_administrator: true,
+      payment_status: 0,
+    };
+    onChange(farm);
   };
+
 
   return (
     <Select
-      loading={props.farm.loading}
-      className={classNameSelect}
+      className={selectStyle}
       showSearch
       bordered={false}
-      onChange={onChange}
-      value={props.selectedFarm?.name?.toString()}
+      onChange={handleChange}
+      value={name as any}
       size="large"
       filterOption={(input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
       }
-      options={props.farm.result?.map((item) => ({
-        value: item.id,
-        label: item.name,
-      }))}
+      options={options}
     />
   );
 };
 
-export default connect(({ farm, selectedFarm }: { farm: any; selectedFarm: any }) => ({
-  farm,
-  selectedFarm,
-}))(FarmSelect);
+export { FarmSelectComponent };

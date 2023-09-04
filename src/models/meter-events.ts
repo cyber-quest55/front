@@ -1,5 +1,5 @@
 import { getMeterSystemTable } from '@/services/metersystem';
-import { formatDateTime } from '@/utils/get-formated-date';
+import { formatDateTime } from '@/utils/formater/get-formated-date';
 import { AxiosError } from 'axios';
 
 export interface GetMeterSystemEventModelProps {
@@ -9,6 +9,13 @@ export interface GetMeterSystemEventModelProps {
   error: any;
   total: number;
 }
+
+export const queryMeterSystemEvent = (payload: API.GetMeterSystemTableParams) => {
+  return {
+    type: 'meterSystemEvent/queryMeterSystemEvent',
+    payload: payload,
+  };
+};
 
 export default {
   namespace: 'meterSystemEvent',

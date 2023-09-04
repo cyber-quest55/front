@@ -1,7 +1,7 @@
 import { CirclePivotProps } from '@/components/Devices/CirclePivot';
 import { getPivotById } from '@/services/pivot';
-import { getPivotColor } from '@/utils/get-pivot-color';
-import { getPivotStatus } from '@/utils/get-pivot-status';
+import { getPivotColor } from '@/utils/formater/get-pivot-color';
+import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { AxiosError } from 'axios';
 
 export interface GetPivotByIdModelProps {
@@ -11,6 +11,13 @@ export interface GetPivotByIdModelProps {
   loaded: boolean;
   error: any;
 }
+
+export const queryPivotByIdStart = (payload: API.GetPivotByIdInformationParam) => {
+  return {
+    type: 'pivotById/queryPivotByIdStart',
+    payload: payload,
+  };
+};
 
 export default {
   namespace: 'pivotById',

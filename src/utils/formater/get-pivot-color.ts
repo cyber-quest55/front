@@ -1,4 +1,4 @@
-import { colors } from './status-color';
+import { colors } from '../enum/status-color';
 
 export function getPivotColor(status: number): string {
   switch (status) {

@@ -4,15 +4,19 @@ import PumpReport from '@/components/DeviceReport/Pump';
 import PivotList from '@/components/PivotList';
 import RenderPivots from '@/components/RenderPivots';
 import { useScreenHook } from '@/hooks/screen';
-import { GetFarmModelProps } from '@/models/farm';
-import { GetIrpdModelProps } from '@/models/irpd';
-import { GetMeterSystemModelProps } from '@/models/meter-sysem';
+import { GetFarmModelProps, queryFarm } from '@/models/farm';
+import { GetIrpdModelProps, queryIrpd } from '@/models/irpd';
+import { GetMeterSystemModelProps, queryMeterSystem } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
-import { GetPivotInformationModelProps } from '@/models/pivot-information';
+import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
-import { SelectedDeviceModelProps } from '@/models/selected-device';
+import {
+  SelectedDeviceModelProps,
+  setDeviceClose,
+  setSelectedDevice,
+} from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';
@@ -33,6 +37,12 @@ type Props = {
   meterSystem: GetMeterSystemModelProps;
   pivotInformation: GetPivotInformationModelProps;
   irpd: GetIrpdModelProps;
+  setSelectedDevice: typeof setSelectedDevice;
+  setDeviceClose: typeof setDeviceClose;
+  queryFarm: typeof queryFarm;
+  queryPivotInformation: typeof queryPivotInformation;
+  queryMeterSystem: typeof queryMeterSystem;
+  queryIrpd: typeof queryIrpd;
 };
 
 const Welcome: FunctionComponent<Props> = (props) => {
@@ -95,11 +105,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
   //}, [params, props.selectedFarm]);
 
   useMount(() => {
-    if (!props.farm.loaded)
-      props.dispatch({
-        type: 'farm/queryFarm',
-        payload: { id: params.id },
-      });
+    if (!props.farm.loaded) {
+      const id = parseInt(params.id as string);
+      props.queryFarm({ id });
+    }
   });
 
   useEffect(() => {
@@ -110,39 +119,31 @@ const Welcome: FunctionComponent<Props> = (props) => {
   }, [props.selectedFarm]);
 
   useUnmount(() => {
-    props.dispatch({
-      type: 'selectedDevice/setDeviceClose',
-      payload: {},
-    });
+    props.setDeviceClose();
   });
 
   useEffect(() => {
     if (params.id !== ':id') {
-      props.dispatch({
-        type: 'pivotInformation/queryPivotInformation',
-        payload: {
-          id: parseInt(params.id as string),
-          params: {},
-        },
+      props.queryPivotInformation({
+        id: parseInt(params.id as string),
+        params: {},
       });
 
-      props.dispatch({
-        type: 'meterSystem/queryMeterSystem',
-        payload: {
-          id: parseInt(params.id as string),
-          params: {},
-        },
+      props.queryMeterSystem({
+        id: parseInt(params.id as string),
       });
 
-      props.dispatch({
-        type: 'irpd/queryIrpd',
-        payload: {
-          id: parseInt(params.id as string),
-          params: {},
-        },
+      props.queryIrpd({
+        id: parseInt(params.id as string),
       });
     }
   }, [params]);
+
+  useEffect(() => {
+    if (props.selectedDevice.open && !md) {
+      setActiveKey('3');
+    }
+  }, [props.selectedDevice]);
 
   const className = useEmotionCss(({}) => {
     return md
@@ -173,6 +174,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
       background: 'white',
       zIndex: 3,
       ['.ant-tabs-nav-wrap']: {
+        display: 'flex',
         justifyContent: 'center',
       },
       ['.ant-tabs-nav']: {
@@ -211,12 +213,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
       children: getDeviceBySelected(props.selectedDevice.type),
     },
   ];
-
-  useEffect(() => {
-    if (props.selectedDevice.open && !md) {
-      setActiveKey('3');
-    }
-  }, [props.selectedDevice]);
 
   return (
     <Row>
@@ -277,33 +273,33 @@ const Welcome: FunctionComponent<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivot,
-    pivotInformation,
-    farm,
-    selectedDevice,
-    selectedFarm,
-    repeater,
-    meterSystem,
-    irpd,
-  }: {
-    pivot: any;
-    pivotInformation: any;
-    farm: any;
-    selectedDevice: any;
-    selectedFarm: any;
-    repeater: any;
-    meterSystem: any;
-    irpd: any;
-  }) => ({
-    pivot,
-    pivotInformation,
-    farm,
-    selectedDevice,
-    selectedFarm,
-    repeater,
-    meterSystem,
-    irpd,
-  }),
-)(Welcome);
+const mapStateToProps = ({
+  pivot,
+  pivotInformation,
+  farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  meterSystem,
+  irpd,
+}: any) => ({
+  pivot,
+  pivotInformation,
+  farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  meterSystem,
+  irpd,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  setDeviceClose: () => dispatch(setDeviceClose()),
+  queryFarm: (props: any) => dispatch(queryFarm(props)),
+  queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
+  queryMeterSystem: (props: any) => dispatch(queryMeterSystem(props)),
+  queryIrpd: (props: any) => dispatch(queryIrpd(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

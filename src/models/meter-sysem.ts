@@ -1,7 +1,7 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getMeterSystem } from '@/services/metersystem';
-import { getIrpdColor } from '@/utils/get-irpd-color';
-import { getMeterStatus } from '@/utils/get-meter-status';
+import { getIrpdColor } from '@/utils/formater/get-irpd-color';
+import { getMeterStatus } from '@/utils/formater/get-meter-status';
 import { AxiosError } from 'axios';
 
 export interface GetMeterSystemModelProps {
@@ -10,6 +10,13 @@ export interface GetMeterSystemModelProps {
   loaded: boolean;
   error: any;
 }
+
+export const queryMeterSystem = (payload: API.GetMeterSystemParams) => {
+  return {
+    type: 'meterSystem/queryMeterSystem',
+    payload: payload,
+  };
+};
 
 export default {
   namespace: 'meterSystem',
@@ -22,7 +29,7 @@ export default {
   },
 
   effects: {
-    *queryMeterSystem({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryMeterSystem({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryMeterSystemStart' });
       try {
         const response: API.GetMeterSystemResponse = yield call(getMeterSystem, payload);

@@ -42,7 +42,7 @@ export async function getPivotHistory(
 ) {
   return request<{
     data: API.GetFarmResponse;
-  }>(`/farms/${props.farmId}/history/${props.pivotId}/history/`, {
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
     method: 'GET',
   });
 }
@@ -57,5 +57,5 @@ export async function getPivotReports(
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/report/`, {
     method: 'GET',
     params: options
-  });
+    });
 }

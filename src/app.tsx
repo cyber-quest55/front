@@ -12,12 +12,21 @@ import weekday from 'dayjs/plugin/weekday';
 import uniqid from 'uniqid';
 import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
-import FarmSelect from './components/FarmSelect';
+import FarmSelect from './components/FarmSelect/FarmSelectContainer';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
 type Libraries = ('drawing' | 'geometry' | 'localContext' | 'places' | 'visualization')[];
+
+const consoleError = console.error;
+const SUPPRESSED_WARNINGS = ['Warning:'];
+
+console.error = function filterWarnings(msg, ...args) {
+  if (!SUPPRESSED_WARNINGS.some((entry) => msg.includes(entry))) {
+    consoleError(msg, ...args);
+  }
+};
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
@@ -129,7 +138,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <App>
+        <App  >
           <LoadScript
             libraries={libraries}
             id={loaderId}

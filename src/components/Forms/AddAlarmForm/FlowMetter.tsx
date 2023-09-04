@@ -11,7 +11,7 @@ import {
   ProFormTimePicker,
 } from '@ant-design/pro-components';
 import { Button, Col, Form, Row, Space, Steps } from 'antd';
- 
+
 import { useScreenHook } from '@/hooks/screen';
 import { useStepHook } from '@/hooks/step';
 
@@ -19,7 +19,7 @@ const AddFlowMetterAlarmForm = () => {
   const [form] = Form.useForm<any>();
   const { lg } = useScreenHook();
 
-  const {step, setStep} = useStepHook(0);
+  const { step, setStep } = useStepHook(0);
 
   const listOptions = [
     { title: 'Limites de vazão inferior', name: 'p1', children: <div>asdasd</div> },
