@@ -1,5 +1,5 @@
 import { getMeterSystemWaterLevel } from '@/services/metersystem/';
-import { formatDateTime } from '@/utils/get-formated-date';
+import { formatDateTime } from '@/utils/formater/get-formated-date';
 import { AxiosError } from 'axios';
 
 export interface GetMeterSystemWaterLevelModelProps {
@@ -8,6 +8,13 @@ export interface GetMeterSystemWaterLevelModelProps {
   loaded: boolean;
   error: any;
 }
+
+export const queryMeterSystemWaterLevel = (payload: API.GetMeterSystemWaterLevelParams) => {
+  return {
+    type: 'meterSystemWaterLevel/queryMeterSystemWaterLevel',
+    payload: payload,
+  };
+};
 
 export default {
   namespace: 'meterSystemWaterLevel',
@@ -21,7 +28,7 @@ export default {
 
   effects: {
     *queryMeterSystemWaterLevel(
-      { payload }: { payload: any },
+      { payload }: { payload: API.GetMeterSystemWaterLevelParams },
       { call, put }: { call: any; put: any },
     ) {
       const { farmId, meterId, otherId, params } = payload;

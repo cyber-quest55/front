@@ -9,6 +9,13 @@ export interface GetIrpdEventsModelProps {
   total: number;
 }
 
+export const queryIrpdEvents = (payload: API.GetIrpdEventsParams) => {
+  return {
+    type: 'irpdEvents/queryIrpdEvents',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'irpdEvents',
 
@@ -27,8 +34,16 @@ export default {
     ) {
       const { farmId, irpdId, params } = payload;
       yield put({ type: 'queryIrpdEventsStart' });
+      console.log('here there', params);
       try {
-        const response: API.GetIrpdEventsResponse = yield call(getIrpdEvents, { farmId, irpdId }, params);
+        const response: API.GetIrpdEventsResponse = yield call(
+          getIrpdEvents,
+          {
+            farmId,
+            irpdId,
+          },
+          params,
+        );
         yield put({ type: 'queryIrpdEventsSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdEventsError', payload: error });

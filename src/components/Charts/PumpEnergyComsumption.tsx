@@ -73,6 +73,10 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(({ irpdWaterConsumption }: { irpdWaterConsumption: any }) => ({
+const mapStateToProps = ({ irpdWaterConsumption }: any) => ({
   irpdWaterConsumption,
-}))(PumpEnergyConsumptionChart);
+});
+
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PumpEnergyConsumptionChart);

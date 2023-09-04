@@ -1,26 +1,28 @@
-import { Skeleton } from 'antd';
 import React from 'react';
+import Box from '../Box';
+import SkeletonAvatar from './Avatar';
+import SkeletonInput from './Input';
 
-const SkeletonPieChart: React.FC = () => {
+type Props = any;
+
+const SkeletonPieChart: React.FC<Props> = () => {
   return (
-    <div
-      style={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 12,
-        paddingBottom: 14,
-      }}
+    <Box
+      width="100%"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      gap={12}
+      paddingBottom={14}
     >
-      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <div style={{ width: '30%' }}>
-          <Skeleton.Input active block={true}></Skeleton.Input>
-        </div>
-      </div>
-      <Skeleton.Avatar active size={250} />
-    </div>
+      <Box display="flex" justifyContent="flex-end" width="100%">
+        <Box width="30%">
+          <SkeletonInput fullWidth />
+        </Box>
+      </Box>
+      <SkeletonAvatar size={250} fullWidth />
+    </Box>
   );
 };
 

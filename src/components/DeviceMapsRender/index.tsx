@@ -1,22 +1,21 @@
+import { useMapHook } from '@/hooks/map';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdByIdModelProps } from '@/models/irpd-by-id';
 import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { DeviceType } from '@/utils/enums';
+import { DeviceType } from '@/utils/enum/device-type';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
 import { FunctionComponent, useEffect } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
-import { useMapHook } from '@/hooks/map';
 
 type Props = {
   zoom: number;
   height: number;
-  dispatch: any;
   farm: GetFarmModelProps;
   irpdById: GetIrpdByIdModelProps;
   pivotById: GetPivotByIdModelProps;
@@ -26,7 +25,7 @@ type Props = {
 };
 
 const DeviceMapsRender: FunctionComponent<Props> = (props) => {
-  const {  mapCenter, setMapCenter } = useMapHook(0, { lat: 0, lng: 0 });
+  const { mapCenter, setMapCenter } = useMapHook(0, { lat: 0, lng: 0 });
 
   const containerStyle = {
     width: '100%',
@@ -58,7 +57,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         break;
       }
     }
-  }, [props.pivotById.loaded, props.irpdById.loaded, props.meterSystemById.loaded]);
+  }, [props.pivotById.loading, props.irpdById.loading, props.meterSystemById.loading]);
 
   const renderCorrectDevice = (type: string) => {
     switch (type) {
@@ -161,28 +160,22 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    farm,
-    irpdById,
-    pivotById,
-    meterSystemById,
+const mapStateToProps = ({
+  farm,
+  irpdById,
+  pivotById,
+  meterSystemById,
+  selectedDevice,
+  pivotInformation,
+}: any) => ({
+  farm,
+  irpdById,
+  pivotById,
+  meterSystemById,
+  selectedDevice,
+  pivotInformation,
+});
 
-    selectedDevice,
-    pivotInformation,
-  }: {
-    farm: any;
-    irpdById: any;
-    pivotById: any;
-    meterSystemById: any;
-    selectedDevice: any;
-    pivotInformation: any;
-  }) => ({
-    farm,
-    irpdById,
-    pivotById,
-    meterSystemById,
-    selectedDevice,
-    pivotInformation,
-  }),
-)(DeviceMapsRender);
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeviceMapsRender);

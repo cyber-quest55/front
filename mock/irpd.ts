@@ -39,7 +39,7 @@ export default {
     res.status(200).send(GetIrpdWaterComsumptionResponse);
   },
 
-  'GET /farms/:farmId/irpds/:irpdId/irpd-list': async (req: Request, res: Response) => {
+  'GET /farms/:farmId/reports/irpds/:irpdId/irpd-list': async (req: Request, res: Response) => {
     await waitTime(2000);
     res.status(200).send(GetIrpdEventsResponse);
   },

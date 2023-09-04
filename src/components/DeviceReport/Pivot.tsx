@@ -4,29 +4,21 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetPivotReportModelProps } from '@/models/pivot-report';
-import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { DeviceType } from '@/utils/enums';
-import { PivotStatusColor } from '@/utils/pivot-status';
 import {
-  CaretDownOutlined,
-  ClockCircleOutlined,
-  CloseCircleFilled,
-  CloudFilled,
-  EditFilled,
-  HistoryOutlined,
-  ThunderboltFilled,
-} from '@ant-design/icons';
+  SelectedDeviceModelProps,
+  setDeviceClose,
+  setSelectedDevice,
+} from '@/models/selected-device';
+import { DeviceType } from '@/utils/enum/device-type';
 import { G2, Line, Pie } from '@ant-design/plots';
 import { ProCard, ProSkeleton, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useParams } from '@umijs/max';
-import { Button, Col, Modal, Row, Select, Space, Tag, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
-import { BsFillCloudRainFill } from 'react-icons/bs';
-import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
+import { Col, Modal, Row } from 'antd';
+import { useState } from 'react';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
-import DevicePanel from '../DevicePanel';
+import DevicePanelContainer from '../DevicePanel/DevicePanelContainer';
+import SkeletonList from '../Skeletons/List';
 import SkeletonPieChart from '../Skeletons/PieChart';
 import SkeletonStatistic from '../Skeletons/Statistic';
 import PivotEventTable from '../Tables/PivotEventTable';
@@ -774,19 +766,16 @@ type Props = {
   pivotHistory: GetPivotHistoryModelProps;
   pivotInformation: GetPivotInformationModelProps;
   selectedDevice: SelectedDeviceModelProps;
-  dispatch: any;
+  setSelectedDevice: typeof setSelectedDevice;
+  setDeviceClose: typeof setDeviceClose;
 };
 
 const PivotReport: React.FC<Props> = (props) => {
-  const params = useParams();
   const G = G2.getEngine('canvas');
   const { md, xxl } = useScreenHook();
   const { tab, setTab } = useTabsHook('tab1');
 
   const [option, setOption] = useState<undefined | number>(undefined);
-  const [device, setDevice] = useState<any>({});
-
-  console.log('refresh');
 
   const data = [
     {
@@ -826,22 +815,6 @@ const PivotReport: React.FC<Props> = (props) => {
     };
   });
 
-  const classNameSelect = useEmotionCss(() => {
-    return {
-      '.ant-select-selection-item': {
-        fontWeight: 700,
-        fontSize: 24,
-      },
-      '.ant-select-selector': {
-        padding: '0 !important',
-      },
-      '.ant-select-arrow': {
-        color: 'black',
-        fontSize: 20,
-      },
-    };
-  });
-
   const classNameTableProCard = useEmotionCss(() => {
     return {
       '.ant-pro-card-body': {
@@ -849,32 +822,6 @@ const PivotReport: React.FC<Props> = (props) => {
       },
     };
   });
-
-  const onChangeDevice = (e: string) => {
-    const device = props.pivot.result.find((item) => item.id === parseInt(e));
-
-    props.dispatch({
-      type: 'selectedDevice/setSelectedDevice',
-      payload: { type: DeviceType.Pivot, deviceId: device?.id, farmId: params.id },
-    });
-  };
-
-  useEffect(() => {
-    const device = props.pivot.result.find(
-      (item) => item.id === parseInt(props.selectedDevice.deviceId),
-    );
-    setDevice(device);
-  }, [props.selectedDevice.deviceId]);
-
-  const destroyOnClick = () => {
-    props.dispatch({
-      type: 'selectedDevice/setDeviceClose',
-      payload: {},
-    });
-  };
-
-  const item =
-    props.pivotInformation.result.length > 0 ? props.pivotInformation.result[0] : undefined;
 
   const getComparative = (): any[] => {
     const newList: any = [];
@@ -924,84 +871,7 @@ const PivotReport: React.FC<Props> = (props) => {
           <DeviceMapsRender height={275} />
         </ProCard>
         <ProCard colSpan={{ xs: 24, md: 16, xxl: 9 }} style={{ height: md ? 275 : '100%' }}>
-          <DevicePanel
-            actions={
-              <Space>
-                <Button icon={<GiPadlockOpen />} />
-                <Button icon={<GiSolidLeaf />} />
-                <Button icon={<CloudFilled />} />
-                <Button icon={<EditFilled />}>Edit</Button>
-                <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-                  Close
-                </Button>
-              </Space>
-            }
-            status={<Tag color={PivotStatusColor.off}>{item?.statusText}</Tag>}
-            deviceSelector={
-              <Select
-                className={classNameSelect}
-                suffixIcon={<CaretDownOutlined />}
-                bordered={false}
-                showSearch
-                value={device?.name?.toString()}
-                size="large"
-                style={{ width: '100%' }}
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                onChange={onChangeDevice}
-                options={props.pivot?.result.map((item) => ({
-                  value: item.id,
-                  label: item.name,
-                }))}
-              />
-            }
-            extra={
-              <Space direction="vertical" size="middle">
-                <Space size="middle">
-                  <Space>
-                    <Tooltip title="Voltagem">
-                      <ThunderboltFilled />
-                    </Tooltip>
-
-                    <div>220 V</div>
-                  </Space>
-                  <Space>
-                    <Tooltip title="Barras">
-                      <HistoryOutlined />
-                    </Tooltip>
-                    <div>1.2 bar</div>
-                  </Space>
-                </Space>
-                <Space size="middle">
-                  <Space>
-                    <Tooltip title="Chuva hoje">
-                      <BsFillCloudRainFill />
-                    </Tooltip>
-                    <div>10 mm </div>
-                  </Space>
-                  <Space>
-                    <Tooltip title="Horímetro">
-                      <ClockCircleOutlined />
-                    </Tooltip>
-
-                    <div>262h 33min</div>
-                  </Space>
-                </Space>
-              </Space>
-            }
-            lastCommunication="19 May 10:15"
-            deviceActions={
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-                  Start Pivot
-                </Button>
-                <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-                  Stop Pivot
-                </Button>
-              </Space>
-            }
-          />
+          <DevicePanelContainer type={DeviceType.Pivot} />
         </ProCard>
         <ProCard split={md ? 'vertical' : 'horizontal'} colSpan={{ xs: 24, md: 24, xxl: 10 }} wrap>
           <ProCard
@@ -1345,40 +1215,40 @@ const PivotReport: React.FC<Props> = (props) => {
             </ProCard>
           </ProCard>
         </ProCard>
-        <ProCard
-          loading={props.pivotHistory.loading && <ProSkeleton type="list" />}
-          colSpan={{ xs: 24, lg: 12 }}
-          wrap
-          ghost
-          className={classNameTableProCard}
-        >
+        <ProCard colSpan={{ xs: 24, lg: 12 }} wrap ghost className={classNameTableProCard}>
           <ProCard
+            loading={props.pivotHistory.loading && <ProSkeleton type="list" />}
             style={{ minHeight: 1032 }}
             title="Histórico"
-            tabs={{
-              tabPosition: 'top',
-              activeKey: tab,
-              items: [
-                {
-                  label: `Eventos`,
-                  key: 'tab1',
+            tabs={
+              props.pivotHistory.loading
+                ? undefined
+                : {
+                    tabPosition: 'top',
+                    activeKey: tab,
+                    items: [
+                      {
+                        label: `Eventos`,
+                        key: 'tab1',
 
-                  children: <PivotEventTable />,
-                },
-                {
-                  label: `Operações`,
-                  key: 'tab2',
-                  children: <PivotOperationTable />,
-                },
-              ],
-              onChange: (key) => {
-                setTab(key);
-              },
-            }}
+                        children: <PivotEventTable />,
+                      },
+                      {
+                        label: `Operações`,
+                        key: 'tab2',
+                        children: <PivotOperationTable />,
+                      },
+                    ],
+                    onChange: (key) => {
+                      setTab(key);
+                    },
+                  }
+            }
             colSpan={{ xs: 24, md: 24 }}
           ></ProCard>
 
           <StatisticCard
+            loading={props.pivotReport.loading && <SkeletonList size={12} rows={13} p={3} />}
             style={{ marginTop: 16 }}
             title="Comparativo de Pressão"
             chart={
@@ -1455,27 +1325,25 @@ const PivotReport: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    pivot,
-    pivotById,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
-    selectedDevice,
-  }: {
-    pivot: any;
-    pivotById: any;
-    pivotReport: any;
-    pivotHistory: any;
-    pivotInformation: any;
-    selectedDevice: any;
-  }) => ({
-    pivot,
-    pivotById,
-    pivotReport,
-    pivotHistory,
-    pivotInformation,
-    selectedDevice,
-  }),
-)(PivotReport);
+const mapStateToProps = ({
+  pivot,
+  pivotById,
+  pivotReport,
+  pivotHistory,
+  pivotInformation,
+  selectedDevice,
+}: any) => ({
+  pivot,
+  pivotById,
+  pivotReport,
+  pivotHistory,
+  pivotInformation,
+  selectedDevice,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  setDeviceClose: () => dispatch(setDeviceClose()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PivotReport);

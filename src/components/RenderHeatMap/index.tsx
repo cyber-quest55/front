@@ -10,7 +10,6 @@ import { GoogleMap, HeatmapLayer } from '@react-google-maps/api';
 import { connect } from 'dva';
 import React from 'react';
 export type RenderPivotsProps = {
-  dispatch: any;
   zoom: number;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;
@@ -22,7 +21,10 @@ export type RenderPivotsProps = {
 
 const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
   const { xl } = useScreenHook();
-  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(14, { lat: 49.2811663, lng: -123.1162367 });
+  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(14, {
+    lat: 49.2811663,
+    lng: -123.1162367,
+  });
 
   const containerStyle = {
     width: '100%',
@@ -1626,27 +1628,22 @@ const RenderHeatMap: React.FC<RenderPivotsProps> = () => {
   );
 };
 
-export default connect(
-  ({
-    pivotInformation,
-    farm,
-    meterSystem,
-    irpd,
-    central,
-    repeater,
-  }: {
-    pivotInformation: any;
-    farm: any;
-    meterSystem: any;
-    irpd: any;
-    central: any;
-    repeater: any;
-  }) => ({
-    pivotInformation,
-    farm,
-    meterSystem,
-    irpd,
-    central,
-    repeater,
-  }),
-)(RenderHeatMap);
+const mapStateToProps = ({
+  pivotInformation,
+  farm,
+  meterSystem,
+  irpd,
+  central,
+  repeater,
+}: any) => ({
+  pivotInformation,
+  farm,
+  meterSystem,
+  irpd,
+  central,
+  repeater,
+});
+
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RenderHeatMap);

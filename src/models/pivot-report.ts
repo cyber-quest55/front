@@ -9,6 +9,13 @@ export interface GetPivotReportModelProps {
   error: any;
 }
 
+export const queryPivotReport = (payload: API.GetPivotReportParams) => {
+  return {
+    type: 'pivotReport/queryPivotReport',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'pivotReport',
 

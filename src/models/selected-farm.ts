@@ -7,6 +7,13 @@ export interface SelectedFarmModelProps {
   error?: any;
 }
 
+export const setSelectedFarm = (payload: APIModels.Farm) => {
+  return {
+    type: 'selectedFarm/setSelectedFarm',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'selectedFarm',
 

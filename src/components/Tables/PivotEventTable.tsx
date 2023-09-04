@@ -6,7 +6,6 @@ import { Button, Col, Pagination, Row, Space } from 'antd';
 import { connect } from 'umi';
 
 type Props = {
-  dispatch: any;
   pivotHistory: GetPivotHistoryModelProps;
 };
 
@@ -89,6 +88,10 @@ const PivotEventTable: React.FC<Props> = (props) => {
   );
 };
 
-export default connect(({ pivotHistory }: { pivotHistory: any }) => ({
+const mapStateToProps = ({ pivotHistory }: { pivotHistory: any }) => ({
   pivotHistory,
-}))(PivotEventTable);
+});
+
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PivotEventTable);

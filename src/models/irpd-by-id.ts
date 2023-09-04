@@ -1,7 +1,7 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getIrpdById } from '@/services/irpd/';
-import { getIrpdColor } from '@/utils/get-irpd-color';
-import { getIrpdStatus } from '@/utils/get-irpd-status';
+import { getIrpdColor } from '@/utils/formater/get-irpd-color';
+import { getIrpdStatus } from '@/utils/formater/get-irpd-status';
 import { AxiosError } from 'axios';
 
 export interface GetIrpdByIdModelProps {
@@ -13,6 +13,14 @@ export interface GetIrpdByIdModelProps {
   loaded: boolean;
   error: any;
 }
+
+export const queryIrpdById = (payload: API.GetIrpdByIdParams ) => {
+  return {
+    type: 'irpdById/queryIrpdById',
+    payload: payload,
+  };
+};
+
 
 export default {
   namespace: 'irpdById',
@@ -26,7 +34,7 @@ export default {
   },
 
   effects: {
-    *queryIrpdById({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryIrpdById({ payload }: { payload: API.GetIrpdByIdParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdByIdStart' });
       try {
         const response: API.GetIrpdByIdResponse = yield call(getIrpdById, payload);

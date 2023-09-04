@@ -19,3 +19,5 @@ declare module 'bizcharts-plugin-slider';
 
 declare const REACT_APP_ENV: 'test' | 'development' | 'pre' | 'production' | false;
 declare const API_URL: string;
+
+type Dispatch = ({ type: string, payload: any }) => any;

@@ -9,6 +9,13 @@ export interface GetFarmModelProps {
   error: any;
 }
 
+export const queryFarm = (payload: { id: number }) => {
+  return {
+    type: 'farm/queryFarm',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'farm',
 
@@ -53,7 +60,6 @@ export default {
       state: GetFarmModelProps,
       { payload }: { payload: { data: API.GetFarmResponse; id: string } },
     ) {
-
       return {
         ...state,
         loading: false,
