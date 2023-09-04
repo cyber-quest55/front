@@ -8,370 +8,364 @@ declare namespace APIModels {
   };
 
   type PivotInformation = {
-    count: number;
-    current_page: number;
-    next: string;
-    previous: any;
-    results: Array<{
+    id: number;
+    config: any;
+    controllerconfig: {
       id: number;
-      config: any;
-      controllerconfig: {
-        id: number;
-        gps_config: number;
-        pump_config: number;
-        uuid: string;
-        created_on_hardware: boolean;
-        created: string;
-        updated: string;
-        arrived: string;
-        message_status: number;
-        message_error: string;
-        message_packets: Array<number>;
-        message_subtype: string;
-        content: {
-          clock: {
-            day: number;
-            hour: number;
-            year: number;
-            month: number;
-            minute: number;
-            second: number;
-          };
-          sector: {
-            end_angle: number;
-            start_angle: number;
-          };
-          holidays: Array<{
-            day: number;
-            month: number;
-            number_editing: number;
-          }>;
-          language: {
-            language: number;
-          };
-          segments: Array<{
-            angle_end: number;
-            angle_start: number;
-            number_editing: number;
-          }>;
-          mm_to_stop?: {
-            value: number;
-          };
-          pause_time: {
-            enable_friday: number;
-            enable_monday: number;
-            enable_sunday: number;
-            enable_tuesday: number;
-            enable_saturday: number;
-            enable_thursday: number;
-            enable_wednesday: number;
-            end_pause_time_hour_1: number;
-            end_pause_time_hour_2: number;
-            end_pause_time_minute_1: number;
-            end_pause_time_minute_2: number;
-            start_pause_time_hour_1: number;
-            start_pause_time_hour_2: number;
-            start_pause_time_minute_1: number;
-            start_pause_time_minute_2: number;
-          };
-          endgun_mode: {
-            endgun_mode: number;
-          };
-          power_delay: {
-            power_delay: number;
-          };
-          endgun_angles: Array<{
-            end_angle: number;
-            start_angle: number;
-            number_editing: number;
-          }>;
-          pivot_positions: {
-            latitude_center: number;
-            north_reference: any;
-            longitude_center: number;
-            latitude_reference: number;
-            longitude_reference: number;
-          };
-          pressure_config: {
-            pump_time_out: number;
-            pump_press_delay: number;
-            read_pressure_by: number;
-            sensor_scale_end: number;
-            pump_press_switch: number;
-            pump_soft_start_time: number;
-            press_sensor_max_range: number;
-            press_sensor_min_range: number;
-          };
-          pivot_parameters: {
-            speed: number;
-            flow_rate: number;
-            radius_last: number;
-            irrigated_area: number;
-          };
-          pluviometer_scale?: {
-            mm: number;
-          };
-          pause_time_command: {
-            pause_time_command: number;
-          };
-          pluviometer_enable?: {
-            enable: number;
-          };
-          voltage_limit_enable: {
-            voltage_limit_enable: number;
-          };
-          autoreversion_command: {
-            command: number;
-          };
-          pluviometer_stop_mode?: {
-            stop_mode: number;
-          };
-          voltage_configurations: {
-            stable_time: number;
-            maximum_voltage: number;
-            minimum_voltage: number;
-            voltage_reference: number;
-          };
-          autoreversion_configurations: {
-            mode: number;
-            time: number;
-          };
-        };
-        pinned: boolean;
-        name: string;
-        group_uuid: string;
-        segments_crop: Array<{
-          name?: string;
-          segment_type?: string;
-          number_editing: number;
-          crop_plant_date: any;
-          crop_harvest_date: any;
-        }>;
-        kwh_peak: string;
-        kwh_out_of_peak: string;
-        kwh_reduced: string;
-        injection_pump: boolean;
-        name_pivot_on_config: string;
-        brand_model: string;
-        panel_type: number;
-        potency: number;
-        created_by: number;
-        device: number;
-        equipment: number;
-      };
-      latest_panel_stream: any;
-      latest_gps_stream: any;
-      latest_pluviometer_stream: any;
-      controllerstream_panel: {
-        id: number;
-        current_angle: number;
-        end_tower_pressure: number;
-        uuid: string;
-        created_on_hardware: boolean;
-        created: string;
-        updated: string;
-        arrived: string;
-        message_status: number;
-        message_error: string;
-        message_packets: Array<number>;
-        message_subtype: string;
-        content: {
-          operation_time: {
-            wet_hour: number;
-            pump_hour: number;
-            total_hour: number;
-            wet_minute: number;
-            endgun_hour: number;
-            pump_minute: number;
-            total_minute: number;
-            endgun_minute: number;
-            injection_pump_hour: number;
-            injection_pump_minutes: number;
-          };
-          center_pressure: {
-            center_pressure: number;
-          };
-          current_segment: {
-            current_segment: number;
-          };
-          time_range_data: Array<{
-            wet_hour: number;
-            pump_hour: number;
-            total_hour: number;
-            wet_minute: number;
-            endgun_hour: number;
-            pump_minute: number;
-            total_minute: number;
-            endgun_minute: number;
-            number_editing: number;
-            injection_pump_hour: number;
-            injection_pump_minute: number;
-          }>;
-          voltage_measure: {
-            voltage_measure: number;
-          };
-          current_schedule: {
-            current_schedule: number;
-          };
-          irrigation_status: {
-            irrigation_type: number;
-            irrigation_status: number;
-          };
-          devices_current_status: {
-            pump: number;
-            motor: number;
-            endgun: number;
-            irripump: number;
-            injection_pump: number;
-          };
-          current_irrigation_information: {
-            mode: number;
-            direction: number;
-            stop_mode: number;
-            stop_angle: number;
-            total_round: number;
-            current_round: number;
-            irrigation_percent: number;
-            rain_meter_percent: number;
-          };
-        };
-        content_hash: number;
-        created_by: any;
-        device: number;
-        equipment: number;
-      };
-      controllerstream_gps: {
-        id: number;
-        current_angle: number;
-        end_tower_pressure: number;
-        content: {
-          current_angle: {
-            current_angle: number;
-          };
-          operation_time: {
-            wet_hour: number;
-            pump_hour: number;
-            total_hour: number;
-            wet_minute: number;
-            endgun_hour: number;
-            pump_minute: number;
-            total_minute: number;
-            endgun_minute: number;
-            injection_pump_hour: number;
-            injection_pump_minutes: number;
-          };
-          center_pressure: {
-            center_pressure: number;
-          };
-          current_segment: {
-            current_segment: number;
-          };
-          voltage_measure: {
-            voltage_measure: number;
-          };
-          current_schedule: {
-            current_schedule: number;
-          };
-          irrigation_status: {
-            irrigation_type: number;
-            irrigation_status: number;
-          };
-          pluviometer_total?: {
-            total_measure: number;
-          };
-          end_tower_pressure: {
-            end_tower_pressure: number;
-          };
-          devices_current_status: {
-            pump: number;
-            motor: number;
-            endgun: number;
-            irripump: number;
-            injection_pump: number;
-          };
-          latitude_longitude_gps: {
-            altitude: number;
-            latitude_gps: number;
-            longitude_gps: number;
-          };
-          irrigation_remaining_time: {
-            hours: number;
-            minutes: number;
-          };
-          current_irrigation_information: {
-            mode: number;
-            direction: number;
-            stop_mode: number;
-            stop_angle: number;
-            total_round: number;
-            current_round: number;
-            irrigation_percent: number;
-            rain_meter_percent: number;
-          };
-        };
-        uuid: string;
-        created_on_hardware: boolean;
-        created: string;
-        updated: string;
-        arrived: string;
-        message_status: number;
-        message_error: string;
-        message_packets: Array<number>;
-        message_subtype: string;
-        content_hash: number;
-        created_by: any;
-        device: number;
-        equipment: number;
-      };
-      controllerstream_periodic?: {
-        id: number;
-        current_angle: number;
-        end_tower_pressure: number;
-        uuid: string;
-        created_on_hardware: boolean;
-        created: string;
-        updated: string;
-        arrived: string;
-        message_status: number;
-        message_error: string;
-        message_packets: Array<number>;
-        message_subtype: string;
-        content: any;
-        content_hash: number;
-        created_by: any;
-        device: number;
-        equipment: number;
-      };
-      irrigation_end_angle: any;
-      image: string;
-      map_history: Array<number>;
-      base_radio_id: string;
-      monitor_radio_id: string;
-      control_radio_id: string;
-      pump_radio_id?: string;
-      reference_angle: number;
-      permission_level: number;
-      name: string;
-      potency: number;
-      brand_model: string;
-      automation_type: number;
-      panel_type: number;
-      communication_type: number;
-      protocol: number;
-      pluviometer: boolean;
-      maintenance: boolean;
-      form_status: boolean;
-      first_operation_date: string;
+      gps_config: number;
+      pump_config: number;
+      uuid: string;
+      created_on_hardware: boolean;
       created: string;
       updated: string;
-      linear_report_time_minutes: number;
-      regenerate_reports: boolean;
-      farm: number;
-      base: number;
-      monitor: number;
-      control: number;
-      pump?: number;
-    }>;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        clock: {
+          day: number;
+          hour: number;
+          year: number;
+          month: number;
+          minute: number;
+          second: number;
+        };
+        sector: {
+          end_angle: number;
+          start_angle: number;
+        };
+        holidays: Array<{
+          day: number;
+          month: number;
+          number_editing: number;
+        }>;
+        language: {
+          language: number;
+        };
+        segments: Array<{
+          angle_end: number;
+          angle_start: number;
+          number_editing: number;
+        }>;
+        mm_to_stop?: {
+          value: number;
+        };
+        pause_time: {
+          enable_friday: number;
+          enable_monday: number;
+          enable_sunday: number;
+          enable_tuesday: number;
+          enable_saturday: number;
+          enable_thursday: number;
+          enable_wednesday: number;
+          end_pause_time_hour_1: number;
+          end_pause_time_hour_2: number;
+          end_pause_time_minute_1: number;
+          end_pause_time_minute_2: number;
+          start_pause_time_hour_1: number;
+          start_pause_time_hour_2: number;
+          start_pause_time_minute_1: number;
+          start_pause_time_minute_2: number;
+        };
+        endgun_mode: {
+          endgun_mode: number;
+        };
+        power_delay: {
+          power_delay: number;
+        };
+        endgun_angles: Array<{
+          end_angle: number;
+          start_angle: number;
+          number_editing: number;
+        }>;
+        pivot_positions: {
+          latitude_center: number;
+          north_reference: any;
+          longitude_center: number;
+          latitude_reference: number;
+          longitude_reference: number;
+        };
+        pressure_config: {
+          pump_time_out: number;
+          pump_press_delay: number;
+          read_pressure_by: number;
+          sensor_scale_end: number;
+          pump_press_switch: number;
+          pump_soft_start_time: number;
+          press_sensor_max_range: number;
+          press_sensor_min_range: number;
+        };
+        pivot_parameters: {
+          speed: number;
+          flow_rate: number;
+          radius_last: number;
+          irrigated_area: number;
+        };
+        pluviometer_scale?: {
+          mm: number;
+        };
+        pause_time_command: {
+          pause_time_command: number;
+        };
+        pluviometer_enable?: {
+          enable: number;
+        };
+        voltage_limit_enable: {
+          voltage_limit_enable: number;
+        };
+        autoreversion_command: {
+          command: number;
+        };
+        pluviometer_stop_mode?: {
+          stop_mode: number;
+        };
+        voltage_configurations: {
+          stable_time: number;
+          maximum_voltage: number;
+          minimum_voltage: number;
+          voltage_reference: number;
+        };
+        autoreversion_configurations: {
+          mode: number;
+          time: number;
+        };
+      };
+      pinned: boolean;
+      name: string;
+      group_uuid: string;
+      segments_crop: Array<{
+        name?: string;
+        segment_type?: string;
+        number_editing: number;
+        crop_plant_date: any;
+        crop_harvest_date: any;
+      }>;
+      kwh_peak: string;
+      kwh_out_of_peak: string;
+      kwh_reduced: string;
+      injection_pump: boolean;
+      name_pivot_on_config: string;
+      brand_model: string;
+      panel_type: number;
+      potency: number;
+      created_by: number;
+      device: number;
+      equipment: number;
+    };
+    latest_panel_stream: any;
+    latest_gps_stream: any;
+    latest_pluviometer_stream: any;
+    controllerstream_panel: {
+      id: number;
+      current_angle: number;
+      end_tower_pressure: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        operation_time: {
+          wet_hour: number;
+          pump_hour: number;
+          total_hour: number;
+          wet_minute: number;
+          endgun_hour: number;
+          pump_minute: number;
+          total_minute: number;
+          endgun_minute: number;
+          injection_pump_hour: number;
+          injection_pump_minutes: number;
+        };
+        center_pressure: {
+          center_pressure: number;
+        };
+        current_segment: {
+          current_segment: number;
+        };
+        time_range_data: Array<{
+          wet_hour: number;
+          pump_hour: number;
+          total_hour: number;
+          wet_minute: number;
+          endgun_hour: number;
+          pump_minute: number;
+          total_minute: number;
+          endgun_minute: number;
+          number_editing: number;
+          injection_pump_hour: number;
+          injection_pump_minute: number;
+        }>;
+        voltage_measure: {
+          voltage_measure: number;
+        };
+        current_schedule: {
+          current_schedule: number;
+        };
+        irrigation_status: {
+          irrigation_type: number;
+          irrigation_status: number;
+        };
+        devices_current_status: {
+          pump: number;
+          motor: number;
+          endgun: number;
+          irripump: number;
+          injection_pump: number;
+        };
+        current_irrigation_information: {
+          mode: number;
+          direction: number;
+          stop_mode: number;
+          stop_angle: number;
+          total_round: number;
+          current_round: number;
+          irrigation_percent: number;
+          rain_meter_percent: number;
+        };
+      };
+      content_hash: number;
+      created_by: any;
+      device: number;
+      equipment: number;
+    };
+    controllerstream_gps: {
+      id: number;
+      current_angle: number;
+      end_tower_pressure: number;
+      content: {
+        current_angle: {
+          current_angle: number;
+        };
+        operation_time: {
+          wet_hour: number;
+          pump_hour: number;
+          total_hour: number;
+          wet_minute: number;
+          endgun_hour: number;
+          pump_minute: number;
+          total_minute: number;
+          endgun_minute: number;
+          injection_pump_hour: number;
+          injection_pump_minutes: number;
+        };
+        center_pressure: {
+          center_pressure: number;
+        };
+        current_segment: {
+          current_segment: number;
+        };
+        voltage_measure: {
+          voltage_measure: number;
+        };
+        current_schedule: {
+          current_schedule: number;
+        };
+        irrigation_status: {
+          irrigation_type: number;
+          irrigation_status: number;
+        };
+        pluviometer_total?: {
+          total_measure: number;
+        };
+        end_tower_pressure: {
+          end_tower_pressure: number;
+        };
+        devices_current_status: {
+          pump: number;
+          motor: number;
+          endgun: number;
+          irripump: number;
+          injection_pump: number;
+        };
+        latitude_longitude_gps: {
+          altitude: number;
+          latitude_gps: number;
+          longitude_gps: number;
+        };
+        irrigation_remaining_time: {
+          hours: number;
+          minutes: number;
+        };
+        current_irrigation_information: {
+          mode: number;
+          direction: number;
+          stop_mode: number;
+          stop_angle: number;
+          total_round: number;
+          current_round: number;
+          irrigation_percent: number;
+          rain_meter_percent: number;
+        };
+      };
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content_hash: number;
+      created_by: any;
+      device: number;
+      equipment: number;
+    };
+    controllerstream_periodic?: {
+      id: number;
+      current_angle: number;
+      end_tower_pressure: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: any;
+      content_hash: number;
+      created_by: any;
+      device: number;
+      equipment: number;
+    };
+    irrigation_end_angle: any;
+    image: string;
+    map_history: Array<number>;
+    base_radio_id: string;
+    monitor_radio_id: string;
+    control_radio_id: string;
+    pump_radio_id?: string;
+    reference_angle: number;
+    permission_level: number;
+    name: string;
+    potency: number;
+    brand_model: string;
+    automation_type: number;
+    panel_type: number;
+    communication_type: number;
+    protocol: number;
+    pluviometer: boolean;
+    maintenance: boolean;
+    form_status: boolean;
+    first_operation_date: string;
+    created: string;
+    updated: string;
+    linear_report_time_minutes: number;
+    regenerate_reports: boolean;
+    farm: number;
+    base: number;
+    monitor: number;
+    control: number;
+    pump?: number;
   };
 
   type PivotByIdInformation = {
@@ -415,90 +409,84 @@ declare namespace APIModels {
   };
 
   type PivotHistory = {
-    count: number;
-    current_page: number;
-    next: string;
-    previous: any;
-    results: Array<{
-      ControllerStream_panel: {
-        id: number;
-        current_angle: number;
-        end_tower_pressure: number;
-        uuid: string;
-        created_on_hardware: boolean;
-        created: string;
-        updated: string;
-        arrived: string;
-        message_status: number;
-        message_error: string;
-        message_packets: Array<number>;
-        message_subtype: string;
-        content: {
-          operation_time: {
-            wet_hour: number;
-            pump_hour: number;
-            total_hour: number;
-            wet_minute: number;
-            endgun_hour: number;
-            pump_minute: number;
-            total_minute: number;
-            endgun_minute: number;
-            injection_pump_hour: number;
-            injection_pump_minutes: number;
-          };
-          center_pressure: {
-            center_pressure: number;
-          };
-          current_segment: {
-            current_segment: number;
-          };
-          time_range_data: Array<{
-            wet_hour: number;
-            pump_hour: number;
-            total_hour: number;
-            wet_minute: number;
-            endgun_hour: number;
-            pump_minute: number;
-            total_minute: number;
-            endgun_minute: number;
-            number_editing: number;
-            injection_pump_hour: number;
-            injection_pump_minute: number;
-          }>;
-          voltage_measure: {
-            voltage_measure: number;
-          };
-          current_schedule: {
-            current_schedule: number;
-          };
-          irrigation_status: {
-            irrigation_type: number;
-            irrigation_status: number;
-          };
-          devices_current_status: {
-            pump: number;
-            motor: number;
-            endgun: number;
-            irripump: number;
-            injection_pump: number;
-          };
-          current_irrigation_information: {
-            mode: number;
-            direction: number;
-            stop_mode: number;
-            stop_angle: number;
-            total_round: number;
-            current_round: number;
-            irrigation_percent: number;
-            rain_meter_percent: number;
-          };
+    ControllerStream_panel: {
+      id: number;
+      current_angle: number;
+      end_tower_pressure: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        operation_time: {
+          wet_hour: number;
+          pump_hour: number;
+          total_hour: number;
+          wet_minute: number;
+          endgun_hour: number;
+          pump_minute: number;
+          total_minute: number;
+          endgun_minute: number;
+          injection_pump_hour: number;
+          injection_pump_minutes: number;
         };
-        content_hash: number;
-        created_by: any;
-        device: number;
-        equipment: number;
+        center_pressure: {
+          center_pressure: number;
+        };
+        current_segment: {
+          current_segment: number;
+        };
+        time_range_data: Array<{
+          wet_hour: number;
+          pump_hour: number;
+          total_hour: number;
+          wet_minute: number;
+          endgun_hour: number;
+          pump_minute: number;
+          total_minute: number;
+          endgun_minute: number;
+          number_editing: number;
+          injection_pump_hour: number;
+          injection_pump_minute: number;
+        }>;
+        voltage_measure: {
+          voltage_measure: number;
+        };
+        current_schedule: {
+          current_schedule: number;
+        };
+        irrigation_status: {
+          irrigation_type: number;
+          irrigation_status: number;
+        };
+        devices_current_status: {
+          pump: number;
+          motor: number;
+          endgun: number;
+          irripump: number;
+          injection_pump: number;
+        };
+        current_irrigation_information: {
+          mode: number;
+          direction: number;
+          stop_mode: number;
+          stop_angle: number;
+          total_round: number;
+          current_round: number;
+          irrigation_percent: number;
+          rain_meter_percent: number;
+        };
       };
-    }>;
+      content_hash: number;
+      created_by: any;
+      device: number;
+      equipment: number;
+    };
   };
 
   type PivotReport = {

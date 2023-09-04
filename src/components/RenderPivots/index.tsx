@@ -152,7 +152,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             }}
           >
             <Space>
-              <Switch onChange={(e) => setShowRepeaters(e)} defaultChecked size="small" />
+              <Switch onChange={(e) => setShowRepeaters(e)} defaultChecked size="small"  />
               <Typography.Text>Repetidores </Typography.Text>
             </Space>
           </ProCard>

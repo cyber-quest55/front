@@ -57,7 +57,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         break;
       }
     }
-  }, [props.pivotById.loaded, props.irpdById.loaded, props.meterSystemById.loaded]);
+  }, [props.pivotById.loading, props.irpdById.loading, props.meterSystemById.loading]);
 
   const renderCorrectDevice = (type: string) => {
     switch (type) {

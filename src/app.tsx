@@ -138,7 +138,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <App>
+        <App  >
           <LoadScript
             libraries={libraries}
             id={loaderId}

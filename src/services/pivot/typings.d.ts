@@ -13,7 +13,13 @@ declare namespace API {
     params: any;
   };
 
-  type GetPivotsInformationResponse = APIModels.PivotInformation;
+  type GetPivotsInformationResponse = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<APIModels.PivotInformation>;
+  };
 
   type GetPivotByIdInformationParam = {
     farmId: number;
@@ -27,7 +33,13 @@ declare namespace API {
     pivotId: string;
   };
 
-  type GetPivotHistoryResponse = APIModels.PivotHistory;
+  type GetPivotHistoryResponse = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<APIModels.PivotHistory>
+  }
 
   type GetPivotReportParams = {
     farmId: number;
