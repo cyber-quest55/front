@@ -65,7 +65,7 @@ const RegisterComponent: React.FC<Props> = (props) => {
   });
 
   const yupSync = yupValidator(schema, form.getFieldsValue);
-  // changing
+  
   return (
     <ProCard
       style={{ width: '465px' }}
