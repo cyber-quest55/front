@@ -2,12 +2,19 @@ export default {
   'pages.login.input.email.placeholder': 'Your E-mail / User',
   'pages.login.input.password.placeholder': 'Your Password',
   'pages.login.recoverPassword': 'Forgot your password?',
-  'pages.login.btn.text': 'Signin',  
-  'pages.login.therms.first': 'By using the Irricontrol platform, you declare that you have read and accepted the',
+  'pages.login.btn.text': 'Sign in',
+  'pages.login.therms.first':
+    'By using the Irricontrol platform, you declare that you have read and accepted the',
   'pages.login.therms.second': 'Terms and Conditions',
   'pages.login.therms.third': 'and the',
   'pages.login.therms.fourth': 'Privacy Policy',
   'pages.login.invalid': 'Invalid Credentials',
   'pages.login.welcome': 'Welcome!',
-
+  'pages.register.button.text': 'Sign up',
+  'pages.register.input.email.placeholder': 'mail@mail.com',
+  'pages.register.input.firstName.placeholder': 'John',
+  'pages.register.input.lastName.placeholder': 'Vicioda',
+  'pages.register.input.username.placeholder': 'john.vicioda',
+  'pages.register.input.password.placeholder': '******',
+  'pages.register.input.confirmPassword.placeholder': '******',
 };
