@@ -65,7 +65,7 @@ const RegisterComponent: React.FC<Props> = (props) => {
   });
 
   const yupSync = yupValidator(schema, form.getFieldsValue);
-  
+
   return (
     <ProCard
       style={{ width: '465px' }}
@@ -82,7 +82,7 @@ const RegisterComponent: React.FC<Props> = (props) => {
         validateTrigger="onBlur"
         form={form}
         layout="vertical"
-        rowProps={{ gutter: [12, 16] }}
+        rowProps={{ gutter: [8, 8] }}
         grid
         onFieldsChange={(changedFields) => {
           if (changedFields[0].name[0] === 'language') {
@@ -98,7 +98,9 @@ const RegisterComponent: React.FC<Props> = (props) => {
                     <>
                       {error.map((item, index) => (
                         <>
-                          <Typography.Text key={`error-${index}`}>{`* ${intl.formatMessage({ id: item, defaultMessage: 'Fail!' })} `} </Typography.Text>
+                          <Typography.Text key={`error-${index}`}>
+                            {`* ${intl.formatMessage({ id: item, defaultMessage: 'Fail!' })} `}{' '}
+                          </Typography.Text>
                         </>
                       ))}
                     </>
@@ -141,6 +143,11 @@ const RegisterComponent: React.FC<Props> = (props) => {
         <ProFormSelect
           colProps={{ xs: 24 }}
           name="language"
+          required
+          label={intl.formatMessage({
+            id: 'component.register.input.language.label',
+            defaultMessage: 'Idioma',
+          })}
           valueEnum={{
             'pt-BR': '🇧🇷 Português (BR)',
             'en-US': '🇺🇸 English (US)',
@@ -155,9 +162,14 @@ const RegisterComponent: React.FC<Props> = (props) => {
           disabled
           colProps={{ xs: 24 }}
           name="email"
+          required
           placeholder={intl.formatMessage({
             id: 'pages.register.input.email.placeholder',
             defaultMessage: 'mail@mail.com',
+          })}
+          label={intl.formatMessage({
+            id: 'component.register.input.email.label',
+            defaultMessage: 'E-mail',
           })}
         />
 
@@ -165,9 +177,14 @@ const RegisterComponent: React.FC<Props> = (props) => {
           rules={[yupSync]}
           colProps={{ md: 24, lg: 12 }}
           name="first_name"
+          required
           placeholder={intl.formatMessage({
             id: 'pages.register.input.firstName.placeholder',
             defaultMessage: 'John',
+          })}
+          label={intl.formatMessage({
+            id: 'component.register.input.firstName.label',
+            defaultMessage: 'Primeiro Nome',
           })}
         />
 
@@ -175,15 +192,24 @@ const RegisterComponent: React.FC<Props> = (props) => {
           rules={[yupSync]}
           colProps={{ md: 24, lg: 12 }}
           name="last_name"
+          required
           placeholder={intl.formatMessage({
             id: 'pages.register.input.lastName.placeholder',
             defaultMessage: 'Vicioda',
+          })}
+          label={intl.formatMessage({
+            id: 'component.register.input.lastName.label',
+            defaultMessage: 'Último Nome',
           })}
         />
 
         <ProFormText
           colProps={{ xs: 24 }}
           name="username"
+          label={intl.formatMessage({
+            id: 'component.register.input.username.label',
+            defaultMessage: 'Usuário',
+          })}
           rules={[yupSync]}
           hasFeedback
           required
@@ -215,6 +241,10 @@ const RegisterComponent: React.FC<Props> = (props) => {
             id: 'pages.register.input.password.placeholder',
             defaultMessage: 'Sua Senha',
           })}
+          label={intl.formatMessage({
+            id: 'component.register.input.password.label',
+            defaultMessage: 'Senha',
+          })}
         />
 
         <ProFormText.Password
@@ -225,6 +255,10 @@ const RegisterComponent: React.FC<Props> = (props) => {
           placeholder={intl.formatMessage({
             id: 'pages.register.input.confirmPassword.placeholder',
             defaultMessage: 'Confirme sua Senha',
+          })}
+          label={intl.formatMessage({
+            id: 'component.register.input.confirmPassword.label',
+            defaultMessage: 'Confirma Senha',
           })}
         />
       </ProForm>

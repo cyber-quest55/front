@@ -113,7 +113,7 @@ export const RegisterMobile: React.FC<Props> = (props) => {
           first_name: '',
           last_name: '',
         }}
-        requiredMarkStyle="none"
+        requiredMarkStyle="asterisk"
         layout="vertical"
         footer={
           <Space direction="vertical" style={{ width: '100%', '--gap': '24px' }}>
@@ -141,7 +141,7 @@ export const RegisterMobile: React.FC<Props> = (props) => {
               loading={isSubmiting}
             >
               {intl.formatMessage({
-                id: 'pages.register.button.text',
+                id: 'component.register.button.text',
                 defaultMessage: 'Entrar ',
               })}
             </Button>
@@ -157,7 +157,7 @@ export const RegisterMobile: React.FC<Props> = (props) => {
           </Typography.Title>
         </Form.Header>
 
-        <Form.Item noStyle name="language">
+        <Form.Item noStyle name="language" required>
           <Button
             onClick={() => setVisible(!visible)}
             className={selectStyle}
@@ -185,61 +185,109 @@ export const RegisterMobile: React.FC<Props> = (props) => {
           />
         </Form.Item>
 
-        <Form.Item rules={[yupSync]} name="email" label="Email">
+        <Form.Item
+          rules={[yupSync]}
+          name="email"
+          required
+          label={intl.formatMessage({
+            id: 'component.register.input.email.label',
+            defaultMessage: 'E-mail',
+          })}
+        >
           <Input
             disabled
             placeholder={intl.formatMessage({
-              id: 'pages.register.input.email.placeholder',
+              id: 'component.register.input.email.placeholder',
               defaultMessage: 'mail@mail.com',
             })}
           />
         </Form.Item>
-        <Form.Item rules={[yupSync]} name="first_name" label="Nome">
+        <Form.Item
+          required
+          rules={[yupSync]}
+          name="first_name"
+          label={intl.formatMessage({
+            id: 'component.register.input.firstName.label',
+            defaultMessage: 'mail@mail.com',
+          })}
+        >
           <Input
             clearable
             placeholder={intl.formatMessage({
-              id: 'pages.register.input.firstName.placeholder',
+              id: 'component.register.input.firstName.placeholder',
               defaultMessage: 'John',
             })}
           />
         </Form.Item>
-        <Form.Item rules={[yupSync]} name="last_name" label="Sobrenome">
+        <Form.Item
+          required
+          rules={[yupSync]}
+          name="last_name"
+          label={intl.formatMessage({
+            id: 'component.register.input.lastName.label',
+            defaultMessage: 'mail@mail.com',
+          })}
+        >
           <Input
             clearable
             placeholder={intl.formatMessage({
-              id: 'pages.register.input.lastName.placeholder',
+              id: 'component.register.input.lastName.placeholder',
               defaultMessage: 'Vicioda',
             })}
           />
         </Form.Item>
-        <Form.Item rules={[yupSync]} name="username" label="Usuário">
+        <Form.Item
+          required
+          rules={[yupSync]}
+          name="username"
+          label={intl.formatMessage({
+            id: 'component.register.input.username.label',
+            defaultMessage: 'mail@mail.com',
+          })}
+        >
           <Input
             clearable
             onBlur={(e: any) => {
               checkUsernameReq.runAsync({ username: e.currentTarget.value });
             }}
             placeholder={intl.formatMessage({
-              id: 'pages.register.input.username.placeholder',
+              id: 'component.register.input.username.placeholder',
               defaultMessage: 'john.vicioda',
             })}
           />
         </Form.Item>
-        <Form.Item rules={[yupSync]} name="password" label="Senha">
+        <Form.Item
+          required
+          rules={[yupSync]}
+          name="password"
+          label={intl.formatMessage({
+            id: 'component.register.input.password.label',
+            defaultMessage: 'mail@mail.com',
+          })}
+        >
           <Input
             clearable
             type="password"
             placeholder={intl.formatMessage({
-              id: 'pages.register.input.password.placeholder',
+              id: 'component.register.input.password.placeholder',
               defaultMessage: 'Sua Senha',
             })}
           />
         </Form.Item>
-        <Form.Item rules={[yupSync]} name="confirmPassword" label="Confirma Senha">
+        <Form.Item
+          required
+          rules={[yupSync]}
+          name="confirmPassword"
+          label={intl.formatMessage({
+            id: 'component.register.input.confirmPassword.label',
+            defaultMessage: 'mail@mail.com',
+          })}
+        >
           <Input
             clearable
             type="password"
             placeholder={intl.formatMessage({
-              id: 'pages.register.input.confirmPassword.placeholder',
+              id: 'component.register.input.confirmPassword.placeholder',
               defaultMessage: 'Confirme sua Senha',
             })}
           />

@@ -10,11 +10,5 @@ export default {
   'pages.login.therms.fourth': 'Privacy Policy',
   'pages.login.invalid': 'Invalid Credentials',
   'pages.login.welcome': 'Welcome!',
-  'pages.register.button.text': 'Sign up',
-  'pages.register.input.email.placeholder': 'mail@mail.com',
-  'pages.register.input.firstName.placeholder': 'John',
-  'pages.register.input.lastName.placeholder': 'Vicioda',
-  'pages.register.input.username.placeholder': 'john.vicioda',
-  'pages.register.input.password.placeholder': '******',
-  'pages.register.input.confirmPassword.placeholder': '******',
+
 };
