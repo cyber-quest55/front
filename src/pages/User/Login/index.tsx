@@ -1,7 +1,8 @@
 import { LoginFormContainer } from '@/components/Forms/Login/LoginContainer';
 import { ConfigProvider } from 'antd';
 
-export default () => {
+export default () => { 
+  
   return (
     <ConfigProvider
       theme={{

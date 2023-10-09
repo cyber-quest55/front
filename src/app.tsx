@@ -23,7 +23,7 @@ const consoleError = console.error;
 const SUPPRESSED_WARNINGS = ['Warning:'];
 
 console.error = function filterWarnings(msg, ...args) {
-  if (!SUPPRESSED_WARNINGS.some((entry) => msg.includes(entry))) {
+  if (!SUPPRESSED_WARNINGS.some((entry) => Array.isArray(msg) && msg?.includes(entry))) {
     consoleError(msg, ...args);
   }
 };
@@ -45,7 +45,7 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser({});
       return msg.profile;
     } catch (error) {
-      history.push(loginPath);
+      //history.push(loginPath);
     }
     return undefined;
   };

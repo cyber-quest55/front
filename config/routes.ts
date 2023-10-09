@@ -20,6 +20,11 @@ export default [
         path: '/user/login',
         component: './User/Login',
       },
+      {
+        name: 'register',
+        path: '/user/register/:token',
+        component: './User/Register',
+      },
     ],
   },
 
@@ -27,6 +32,7 @@ export default [
     path: '/farms/',
     name: 'Control',
     icon: 'formOutlined',
+   
     routes: [
       {
         path: '/farms/:id',
