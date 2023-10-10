@@ -17,7 +17,7 @@ import {
 } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { DeviceType } from '@/utils/enum/device-type';
-import { ProCard } from '@ant-design/pro-components';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';
 import { useMount, useUnmount } from 'ahooks';
@@ -214,62 +214,86 @@ const Welcome: FunctionComponent<Props> = (props) => {
     },
   ];
 
-  return (
-    <Row>
-      <Col
-        xs={24}
-        style={{
-          height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
-          position: 'relative',
-        }}
-      >
-        <>
-          {md ? (
-            <Spin
-              spinning={
-                props.pivot.loading ||
-                props.farm.loading ||
-                props.irpd.loading ||
-                props.meterSystem.loading ||
-                props.pivotInformation.loading
-              }
-            >
-              <div style={{ width: '100%', height: '100vh' }}>
-                <RenderPivots />
-              </div>
-              <ProCard className={className}>
-                <PivotList />
-              </ProCard>
-            </Spin>
-          ) : null}
+  const classNamts = useEmotionCss(() => ({
+    '.ant-pro-page-container-children-container': {
+      paddingInline: 0,
+      paddingBlock: 0,
+      paddingBlockStart: '0px !important',
+    },
+    '.ant-pro-page-container-warp-page-header': { 
+      display: 'none'
+    },
+  
+    '.ant-page-header-heading': {
+      paddingBlockStart: '0px !important',
+    },
+  }));
 
-          {!md ? (
-            <div className={classNameFixedMobile}>
-              <Tabs
-                defaultActiveKey="1"
-                activeKey={activeKey}
-                onChange={(key) => setActiveKey(key)}
-                items={items}
-                tabPosition="bottom"
-              />
-            </div>
-          ) : null}
-        </>
-      </Col>
-      {props.selectedDevice.open ? (
-        md ? (
+  return (
+    <div className={classNamts}>
+      <PageContainer
+        header={{ children: <div style={{ display: 'none' }}></div> }}
+        ghost
+        breadcrumb={{}}
+        title={' '}
+      >
+        <Row>
           <Col
             xs={24}
             style={{
-              padding: '15px 15px',
-              minHeight: 'calc(100vh - 116px)',
+              height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
+              position: 'relative',
             }}
           >
-            {getDeviceBySelected(props.selectedDevice.type)}
+            <>
+              {md ? (
+                <Spin
+                  spinning={
+                    props.pivot.loading ||
+                    props.farm.loading ||
+                    props.irpd.loading ||
+                    props.meterSystem.loading ||
+                    props.pivotInformation.loading
+                  }
+                >
+                  <div style={{ width: '100%', height: '100vh' }}>
+                    <RenderPivots />
+                  </div>
+                  <ProCard className={className}>
+                    <PivotList />
+                  </ProCard>
+                </Spin>
+              ) : null}
+
+              {!md ? (
+                <div className={classNameFixedMobile}>
+                  <Tabs
+                    defaultActiveKey="1"
+                    activeKey={activeKey}
+                    onChange={(key) => setActiveKey(key)}
+                    items={items}
+                    tabPosition="bottom"
+                  />
+                </div>
+              ) : null}
+            </>
           </Col>
-        ) : null
-      ) : null}
-    </Row>
+          {props.selectedDevice.open ? (
+            md ? (
+              <Col
+                xs={24}
+                style={{
+                  padding: '15px 15px',
+                  minHeight: 'calc(100vh - 116px)',
+                }}
+              >
+                {getDeviceBySelected(props.selectedDevice.type)}
+              </Col>
+            ) : null
+          ) : null}
+        </Row>
+      </PageContainer>
+    </div>
   );
 };
 

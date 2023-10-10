@@ -63,6 +63,7 @@
     "@ant-design/use-emotion-css": "1.0.4",
     "@capacitor/android": "^5.1.1",
     "@capacitor/core": "^5.1.1",
+    "@capacitor/geolocation": "^5.0.6",
     "@capacitor/ios": "^5.1.1",
     "@react-google-maps/api": "^2.18.1",
     "@react-hook/window-size": "^3.1.1",

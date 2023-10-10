@@ -32,7 +32,6 @@ export default [
     path: '/farms/',
     name: 'Control',
     icon: 'formOutlined',
-   
     routes: [
       {
         path: '/farms/:id',
@@ -69,6 +68,13 @@ export default [
     name: 'Radio',
     icon: 'deploymentUnitOutlined',
     component: './Devices',
+  },
+
+  {
+    path: 'farms/:id/pivot/:id',
+    name: 'Edit Pivot',
+    isHidden: true,
+    component: './Pivot/Edit.tsx',
   },
 
   {

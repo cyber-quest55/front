@@ -83,6 +83,7 @@ export default defineConfig({
   title: 'Irricontrol',
   layout: {
     locale: true,
+  
     ...defaultSettings,
   },
   dva: {},
