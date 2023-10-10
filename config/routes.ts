@@ -21,6 +21,11 @@ export default [
         component: './User/Login',
       },
       {
+        name: 'passwordRecovery',
+        path: '/user/password-recovery',
+        component: './User/PasswordRecovery',
+      },
+      {
         name: 'register',
         path: '/user/register/:token',
         component: './User/Register',
