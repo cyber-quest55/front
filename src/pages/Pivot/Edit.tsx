@@ -1,27 +1,23 @@
+import EditPivotGeneralContainer from '@/components/Forms/EditPivot/General/GeneralContainer';
 import LocationFormContainer from '@/components/Forms/Location/LocationContainer';
 import FormPivotSegmentationContainer from '@/components/Forms/Segmentation/SegmentationContainer';
 import { useScreenHook } from '@/hooks/screen';
 import { SaveOutlined } from '@ant-design/icons';
-import { PageContainer, ProCard, ProForm } from '@ant-design/pro-components';
-import { Button, Form } from 'antd';
+import { PageContainer, ProCard,   } from '@ant-design/pro-components';
+import { Button } from 'antd';
 import React, { useState } from 'react';
 
 const NoFoundPage: React.FC = () => {
   const [tab, setTab] = useState('tab1');
-  const [form] = Form.useForm<any>();
-  const [isSubmiting, setIsSubmiting] = useState(false);
+   const [isSubmiting,  ] = useState(false);
   const { xs } = useScreenHook();
 
-  const handleSubmit = async () => {
-    setIsSubmiting(true);
-    setIsSubmiting(false);
-    return true;
-  };
+ 
 
   return (
     <PageContainer
       tabBarExtraContent={
-        <Button icon={<SaveOutlined />} type="primary" onClick={form.submit} loading={isSubmiting}>
+        <Button icon={<SaveOutlined />} type="primary"  loading={isSubmiting}>
           Salvar{' '}
         </Button>
       }
@@ -45,18 +41,7 @@ const NoFoundPage: React.FC = () => {
         onEdit: (e, action) => console.log(e, action),
       }}
     >
-      <ProForm
-        validateTrigger="onBlur"
-        form={form}
-        layout="vertical"
-        rowProps={{ gutter: [8, 8] }}
-        grid
-        size="large"
-        submitter={false}
-        name="loging_form"
-        initialValues={{}}
-        onFinish={handleSubmit}
-      >
+    
         <ProCard
           tabs={{
             tabPosition: xs ? 'top' : 'left',
@@ -65,7 +50,7 @@ const NoFoundPage: React.FC = () => {
               {
                 label: `Geral`,
                 key: 'tab1',
-                children: <div></div>,
+                children: <EditPivotGeneralContainer/>,
               },
               {
                 label: `Localização`,
@@ -123,7 +108,6 @@ const NoFoundPage: React.FC = () => {
             },
           }}
         ></ProCard>
-      </ProForm>
     </PageContainer>
   );
 };

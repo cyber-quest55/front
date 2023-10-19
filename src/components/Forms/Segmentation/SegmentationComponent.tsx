@@ -1,7 +1,13 @@
 import SegmentedPivotDevice from '@/components/Devices/SegmentedPivot';
 import { useMapHook } from '@/hooks/map';
 import { useScreenHook } from '@/hooks/screen';
-import { EditableProTable, ProCard, ProColumns, ProFormDigit } from '@ant-design/pro-components';
+import {
+  EditableProTable,
+  ProCard,
+  ProColumns,
+  ProForm,
+  ProFormDigit,
+} from '@ant-design/pro-components';
 import { GoogleMap } from '@react-google-maps/api';
 import { Alert, Typography } from 'antd';
 import * as React from 'react';
@@ -273,14 +279,13 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
           type="info"
           message="Você pode criar até 5 segmentos"
         />
-
-        <ProFormDigit
-          fieldProps={{ onBlur: (e) => setMaxAngle(e), value: maxAngle }}
-          max={360}
-          name="asdsad"
-          label="Qual é o ângulo máximo que esse pivô atinge?"
-        />
-      </ProCard>
+           <ProFormDigit
+            fieldProps={{ onBlur: (e) => setMaxAngle(e), value: maxAngle }}
+            max={360}
+            name="asdsad"
+            label="Qual é o ângulo máximo que esse pivô atinge?"
+          />
+       </ProCard>
       <ProCard ghost colSpan={{ xs: 24, md: 8 }}>
         <GoogleMap
           onLoad={(map) => setMap(map)}
