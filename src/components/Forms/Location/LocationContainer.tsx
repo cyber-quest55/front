@@ -1,12 +1,10 @@
 import { useScreenHook } from '@/hooks/screen';
-import {
-    GeoLocationContext,
-} from '@/utils/strategies/geolocation/geolocation';
+import { GeoBrowserStrategy } from '@/utils/strategies/geolocation/browser-strategy';
+import { GeoLocationContext } from '@/utils/strategies/geolocation/geolocation';
 import * as React from 'react';
 import LocationFormComponent from './LocationComponent';
 import LocationFormMobile from './LocationMobile';
 import LocationFormSkeleton from './LocationSkeleton';
-import { GeoBrowserStrategy } from '@/utils/strategies/geolocation/browser-strategy';
 
 interface ILocationFormContainerProps {
   firstLocationName: string;
@@ -28,7 +26,6 @@ const LocationFormContainer: React.FunctionComponent<ILocationFormContainerProps
     // Se o objeto 'window' estiver definido, significa que o código está sendo executado em um navegador
     geoContext.setStrategy(geoBrowserStrategy);
   } else {
- 
     // Se o objeto 'window' não estiver definido, pode estar rodando em um ambiente diferente (por exemplo, Node.js)
     geoContext.setStrategy(geoBrowserStrategy);
   }
@@ -40,12 +37,7 @@ const LocationFormContainer: React.FunctionComponent<ILocationFormContainerProps
       ) : xs ? (
         <LocationFormMobile />
       ) : (
-        <LocationFormComponent
-          {...props}
-          geoLocationContext={geoContext}
-          secondLocationName="test"
-          onChangeFirstLocation={() => null}
-        />
+        <LocationFormComponent {...props} geoLocationContext={geoContext} />
       )}
     </>
   );

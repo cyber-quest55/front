@@ -1,23 +1,29 @@
 import LocationFormContainer from '@/components/Forms/Location/LocationContainer';
+import FormPivotSegmentationContainer from '@/components/Forms/Segmentation/SegmentationContainer';
+import { useScreenHook } from '@/hooks/screen';
 import { SaveOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard, ProForm } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
 import React, { useState } from 'react';
 
-type Props = {};
-
 const NoFoundPage: React.FC = () => {
   const [tab, setTab] = useState('tab1');
   const [form] = Form.useForm<any>();
+  const [isSubmiting, setIsSubmiting] = useState(false);
+  const { xs } = useScreenHook();
 
   const handleSubmit = async () => {
+    setIsSubmiting(true);
+    setIsSubmiting(false);
     return true;
   };
 
   return (
     <PageContainer
       tabBarExtraContent={
-        <Button icon={<SaveOutlined />} type="primary">Salvar </Button>
+        <Button icon={<SaveOutlined />} type="primary" onClick={form.submit} loading={isSubmiting}>
+          Salvar{' '}
+        </Button>
       }
       tabList={[
         {
@@ -28,18 +34,17 @@ const NoFoundPage: React.FC = () => {
         {
           tab: 'Histórico',
           key: 'info',
-          
         },
       ]}
       token={{
-        paddingBlockPageContainerContent: 0,
-        paddingInlinePageContainerContent: 32,
+        paddingBlockPageContainerContent: -8,
+        paddingInlinePageContainerContent: xs ? 8 : 32,
       }}
       tabProps={{
-          hideAdd: true,
+        hideAdd: true,
         onEdit: (e, action) => console.log(e, action),
       }}
-     >
+    >
       <ProForm
         validateTrigger="onBlur"
         form={form}
@@ -53,15 +58,14 @@ const NoFoundPage: React.FC = () => {
         onFinish={handleSubmit}
       >
         <ProCard
-          
           tabs={{
-            tabPosition: 'left',
+            tabPosition: xs ? 'top' : 'left',
             activeKey: tab,
             items: [
               {
                 label: `Geral`,
                 key: 'tab1',
-                children: ' Geral',
+                children: <div></div>,
               },
               {
                 label: `Localização`,
@@ -72,9 +76,9 @@ const NoFoundPage: React.FC = () => {
                     lng={-47.0598314}
                     hasNorthReference={true}
                     secondLocationName="test"
-                    onChangeSecondLocation={() => null}
+                    onChangeSecondLocation={(value: string) => form.setFieldValue('test', value)}
                     firstLocationName="testing"
-                    onChangeFirstLocation={() => (null)}
+                    onChangeFirstLocation={(value: string) => form.setFieldValue('testing', value)}
                   />
                 ),
               },
@@ -101,7 +105,7 @@ const NoFoundPage: React.FC = () => {
               {
                 label: `Segmentos e Plantio`,
                 key: 'tab7',
-                children: `Segmentos e Plantio`,
+                children: <FormPivotSegmentationContainer />,
               },
               {
                 label: `Canhão Final`,

@@ -66,7 +66,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
   };
 
   return (
-    <ProCard gutter={[16, 8]}>
+    <ProCard ghost gutter={[16, 8]}>
       <ProCard ghost colSpan={{ sm: 12 }}>
         <GoogleMap
           onLoad={(map) => setMap(map)}
@@ -92,7 +92,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
           {secondLocation ? <Marker icon={MarkerRed} position={secondLocation} /> : null}
         </GoogleMap>
       </ProCard>
-      <ProCard ghost title="Dados" colSpan={{ sm: 12 }}>
+      <ProCard ghost colSpan={{ sm: 12 }}>
         <ProFormText
           required
           label={'Centro'}
