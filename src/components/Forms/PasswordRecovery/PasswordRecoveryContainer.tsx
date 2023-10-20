@@ -22,27 +22,37 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
 
   /** Models */
   const handleSubmit = async (values: any) => {
-    const { email } = values;
+    const { email, recaptcha } = values;
     const isEmail = yup.string().email();
-    const isValidEmail = isEmail.isValidSync(email);
-    let flexBody = {};
+    const isRecaptcha = yup.boolean();
 
-    if (isValidEmail) {
-      flexBody = values;
-    } else {
-      flexBody = { username: values.email };
+    const isValidEmail = isEmail.isValidSync(email);
+    const isValidRecaptcha = isRecaptcha.isValidSync(recaptcha);
+
+    let validateCredential = { username: "" };
+
+    if (recaptcha) {
+      validateCredential = { username: values.email };
     }
 
-    const data = checkUsernameReq.runAsync({ username: values.email });
-    console.log((await data).available)
-    message.success({
-      type: 'success',
-      content: intl.formatMessage({
-        id: 'pages.login.welcome1',
-        defaultMessage: 'Enviado',
-      }),
-      duration: 3,
-    });
+    const usernameExists = checkUsernameReq.runAsync(validateCredential);
+    if ((await usernameExists).available && recaptcha) {
+      message.success({
+        type: 'success',
+        content: intl.formatMessage({
+          id: 'pages.login.welcome1',
+          defaultMessage: 'Enviado',
+        }),
+        duration: 3,
+      });
+    } else {
+      setError(
+        intl.formatMessage({
+          id: 'pages.login.invalid',
+          defaultMessage: 'Credenciais Inválidas',
+        }),
+      );
+    }
     // history.push(`/user/login`);
 
     return;

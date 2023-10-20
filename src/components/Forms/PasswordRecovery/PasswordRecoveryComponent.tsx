@@ -1,7 +1,8 @@
 import { ProCard, ProForm, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useIntl } from '@umijs/max';
-import { Alert, Button, Col, Row, Space, Typography } from 'antd';
+import { Alert, Button, Col, Divider, Row, Space, Typography } from 'antd';
+import ReCAPTCHA from "react-google-recaptcha";
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 const PasswordRecoveryComponent: React.FC<Props> = (props) => {
     const intl = useIntl();
     const { handleSubmit, loading, error } = props;
+
     const className = useEmotionCss(({ }) => {
         return {
             maxWidth: `375px`,
@@ -55,31 +57,8 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                             grid
                             submitter={{
                                 render: () => (
-                                    <Space direction="horizontal" size={"large"} style={{ width: '100%' }}>
-                                        {error ? <Alert description={error} type="error" /> : null}
-                                        <Button
-                                            type="primary"
-                                            htmlType="submit"
-                                            style={{ width: '100%' }}
-                                            loading={loading}
-                                        >
-                                            {intl.formatMessage({
-                                                id: 'pages.login.btn.text1',
-                                                defaultMessage: 'Voltar ',
-                                            })}
-                                        </Button>
+                                    <Space direction="vertical" align="center" size="large" style={{ width: '100%', justifyContent: 'center' }}>
 
-                                        <Button
-                                            type="primary"
-                                            htmlType="submit"
-                                            style={{ width: '100%' }}
-                                            loading={loading}
-                                        >
-                                            {intl.formatMessage({
-                                                id: 'pages.login.btn.text1',
-                                                defaultMessage: 'Recuperar ',
-                                            })}
-                                        </Button>
                                     </Space>
                                 ),
                             }}
@@ -90,10 +69,20 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                     process.env.NODE_ENV === 'development'
                                         ? 'wellington.ferreira@irricontrol.com.br'
                                         : '',
-                                password: process.env.NODE_ENV === 'development' ? 'ant.design' : '',
+                                recaptcha: false,
                             }}
                             onFinish={handleSubmit}
                         >
+                            <Space style={{ width: '100%' }} direction="vertical" align="center">
+                                <Typography.Text type="secondary">
+                                    {intl.formatMessage({
+                                        id: 'pages.login.therms.firstx',
+                                        defaultMessage:
+                                            'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.',
+                                    })}
+                                </Typography.Text>
+                            </Space>
+                            <Divider />
                             <ProFormText
                                 width="md"
                                 required
@@ -103,40 +92,50 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                     defaultMessage: 'John Vicioda',
                                 })}
                             />
+                            <Space style={{ width: '100%' }} direction="vertical" align="center">
+                                <ReCAPTCHA
+                                    style={{ margin: 0, padding: 0, transform: "scale(1.08)" }}
+                                    sitekey="6LeH4_cUAAAAAJn1YZUm-91DpXPz35kLOEH5RSUr"
+                                    size="normal"
+                                    name='recaptcha'
+                                />
+                            </Space>
+                            {error ? <Alert style={{
+                                width: '100%', textAlign: "center"
+                                , marginTop: "20px"
+                            }} description={error} type="error" /> : null}
+                            <Divider />
+                            <Row gutter={[25, 25]} justify="center">
+                                <Col flex="auto">
+                                    <Button
+                                        block
+                                        type="primary"
+                                        htmlType="submit"
+                                        loading={loading}
+                                        style={{ minWidth: '150px' }}
+                                    >
+                                        {intl.formatMessage({
+                                            id: 'pages.login.btn.text1',
+                                            defaultMessage: 'Voltar ',
+                                        })}
+                                    </Button>
+                                </Col>
+                                <Col flex="auto">
+                                    <Button
+                                        block
+                                        type="primary"
+                                        htmlType="submit"
+                                        loading={loading}
+                                        style={{ minWidth: '150px' }}
+                                    >
+                                        {intl.formatMessage({
+                                            id: 'pages.login.btn.text1',
+                                            defaultMessage: 'Enviar ',
+                                        })}
+                                    </Button>
+                                </Col>
+                            </Row>
                         </ProForm>
-                        <Space style={{ width: '100%' }} direction="vertical" align="center">
-                            <Typography.Text type="secondary">
-                                {intl.formatMessage({
-                                    id: 'pages.login.therms.first',
-                                    defaultMessage:
-                                        'Ao utilizar a plataforma Irricontrol, você declara ter lido e aceitado os',
-                                })}{' '}
-                                <Typography.Link
-                                    target="_blank"
-                                    href="https://irricontrol.com.br/termos-e-condicoes/"
-                                >
-                                    {intl.formatMessage({
-                                        id: 'pages.login.therms.second',
-                                        defaultMessage: 'Termos e Condições',
-                                    })}
-                                </Typography.Link>{' '}
-                                {intl.formatMessage({
-                                    id: 'pages.login.therms.third',
-                                    defaultMessage: 'e a',
-                                })}{' '}
-                                <Typography.Link
-                                    target="_blank"
-                                    href="https://irricontrol.com.br/politica-de-privacidade"
-                                >
-                                    {' '}
-                                    {intl.formatMessage({
-                                        id: 'pages.login.therms.fourth',
-                                        defaultMessage: 'Política de Privacidade.',
-                                    })}{' '}
-                                </Typography.Link>
-                                .
-                            </Typography.Text>
-                        </Space>
                     </Space>
                 </Space>
             </ProCard>
