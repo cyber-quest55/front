@@ -4,16 +4,27 @@ import { SelectLang, useIntl } from '@umijs/max';
 import { Alert, Button, Col, Divider, Row, Space, Typography } from 'antd';
 import ReCAPTCHA from "react-google-recaptcha";
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
+import { createRef } from 'react';
 
 type Props = {
-    handleSubmit: (values: any) => Promise<void>;
+    handleSubmit: (values: any, recaptchaRef: any) => Promise<void>;
     loading: boolean;
     error?: string;
-};
+    validateEmail: (values: any) => Promise<void>;
+}
 
 const PasswordRecoveryComponent: React.FC<Props> = (props) => {
     const intl = useIntl();
-    const { handleSubmit, loading, error } = props;
+    const { handleSubmit, loading, error, validateEmail } = props;
+    const recaptchaRef = createRef();
+
+    const handleFormSubmit = async (values: any) => {
+        handleSubmit(values, recaptchaRef);
+    };
+
+    function onChange(value: any) {
+        console.log("Captcha value:", value);
+    }
 
     const className = useEmotionCss(({ }) => {
         return {
@@ -69,9 +80,8 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                     process.env.NODE_ENV === 'development'
                                         ? 'wellington.ferreira@irricontrol.com.br'
                                         : '',
-                                recaptcha: false,
                             }}
-                            onFinish={handleSubmit}
+                            onFinish={handleFormSubmit}
                         >
                             <Space style={{ width: '100%' }} direction="vertical" align="center">
                                 <Typography.Text type="secondary">
@@ -91,13 +101,16 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                     id: 'pages.login.input.email.placeholder',
                                     defaultMessage: 'John Vicioda',
                                 })}
+                                onMetaChange={validateEmail}
                             />
                             <Space style={{ width: '100%' }} direction="vertical" align="center">
                                 <ReCAPTCHA
+                                    ref={recaptchaRef}
                                     style={{ margin: 0, padding: 0, transform: "scale(1.08)" }}
                                     sitekey="6LeH4_cUAAAAAJn1YZUm-91DpXPz35kLOEH5RSUr"
                                     size="normal"
                                     name='recaptcha'
+                                    onChange={onChange}
                                 />
                             </Space>
                             {error ? <Alert style={{

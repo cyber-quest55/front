@@ -4,7 +4,7 @@ import { currentUser as queryCurrentUser } from '@/services/user/index';
 import { useIntl, useModel, history } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { message } from 'antd';
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import * as yup from 'yup';
 import { PasswordRecoverySkeleton } from './PasswordRecoverySkeleton';
@@ -20,40 +20,74 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
   /** Requests */
   const checkUsernameReq = useRequest(checkUsername, { manual: true });
 
-  /** Models */
-  const handleSubmit = async (values: any) => {
-    const { email, recaptcha } = values;
+  const validateEmail = async (values: any) => {
+    const { email } = values;
     const isEmail = yup.string().email();
-    const isRecaptcha = yup.boolean();
 
+    console.log(email)
     const isValidEmail = isEmail.isValidSync(email);
-    const isValidRecaptcha = isRecaptcha.isValidSync(recaptcha);
 
     let validateCredential = { username: "" };
 
-    if (recaptcha) {
-      validateCredential = { username: values.email };
-    }
+    if (isValidEmail) {
 
-    const usernameExists = checkUsernameReq.runAsync(validateCredential);
-    if ((await usernameExists).available && recaptcha) {
-      message.success({
-        type: 'success',
-        content: intl.formatMessage({
-          id: 'pages.login.welcome1',
-          defaultMessage: 'Enviado',
-        }),
-        duration: 3,
-      });
-    } else {
-      setError(
-        intl.formatMessage({
-          id: 'pages.login.invalid',
-          defaultMessage: 'Credenciais Inválidas',
-        }),
-      );
+      validateCredential = { username: values.email };
+
+      const usernameExists = checkUsernameReq.runAsync(validateCredential);
+      if ((await usernameExists).available) {
+        message.success({
+          type: 'success',
+          content: intl.formatMessage({
+            id: 'pages.login.welcome1',
+            defaultMessage: 'Enviado',
+          }),
+          duration: 3,
+        });
+      } else {
+        setError(
+          intl.formatMessage({
+            id: 'pages.login.invalid',
+            defaultMessage: 'Credenciais Inválidas',
+          }),
+        );
+      }
     }
-    // history.push(`/user/login`);
+  }
+
+  /** Models */
+  const handleSubmit = async (values: any, recaptchaRef: any) => {
+    const { email } = values;
+    const isEmail = yup.string().email();
+
+    const isValidEmail = isEmail.isValidSync(email);
+    let validateCredential = { username: "" };
+
+    // const recaptcha = !!recaptchaRef.current.getValue();
+    const recaptcha = true
+
+    if (recaptcha && isValidEmail) {
+      validateCredential = { username: values.email };
+
+      const usernameExists = checkUsernameReq.runAsync(validateCredential);
+      if ((await usernameExists).available) {
+        message.success({
+          type: 'success',
+          content: intl.formatMessage({
+            id: 'pages.login.welcome1',
+            defaultMessage: 'Enviado',
+          }),
+          duration: 3,
+        });
+      } else {
+        setError(
+          intl.formatMessage({
+            id: 'pages.login.invalid',
+            defaultMessage: 'Credenciais Inválidas',
+          }),
+        );
+      }
+      // history.push(`/user/login`);
+    }
 
     return;
   };
@@ -75,9 +109,9 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
       {false ? (
         <PasswordRecoverySkeleton />
       ) : xs ? (
-        <PasswordRecoveryMobile handleSubmit={handleSubmit} loading={checkUsernameReq.loading} error={error} />
+        <PasswordRecoveryMobile handleSubmit={handleSubmit} loading={checkUsernameReq.loading} error={error} validateEmail={validateEmail} />
       ) : (
-        <PasswordRecoveryComponent handleSubmit={handleSubmit} loading={checkUsernameReq.loading} error={error} />
+        <PasswordRecoveryComponent handleSubmit={handleSubmit} loading={checkUsernameReq.loading} error={error} validateEmail={validateEmail} />
       )}
     </>
   );
