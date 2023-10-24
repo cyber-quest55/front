@@ -2,32 +2,48 @@ import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Link, SelectLang, useIntl } from '@umijs/max';
 import { Alert, Col, Row, Space, Typography } from 'antd';
-import { Button, Divider, Form, Input } from 'antd-mobile';
-import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
-import ReCAPTCHA from "react-google-recaptcha";
+import { Button, Form, Input } from 'antd-mobile';
 import { createRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
+import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
+import { yupValidator } from '@/utils/adapters/yup';
+import * as yup from 'yup';
 
 type Props = {
   handleSubmit: (values: any, recaptchaRef: any) => Promise<void>;
   loading: boolean;
   error?: string;
-  validateEmail: (values: any) => Promise<void>;
 };
 
-interface MobileValue {
-  preValue: string | number
-  realValue: string
-}
-
 const PasswordRecoveryMobile: React.FC<Props> = (props) => {
-  const intl = useIntl();
-  const { handleSubmit, loading, error, validateEmail } = props;
+  const [form] = Form.useForm<any>();
 
+  const intl = useIntl();
+  const { handleSubmit, loading, error } = props;
   const recaptchaRef = createRef();
 
   const handleFormSubmit = async (values: any) => {
     handleSubmit(values, recaptchaRef);
   };
+
+  const schema = yup.object().shape({
+    email: yup
+      .string()
+      .email(intl.formatMessage({
+        id: 'pages.passwordRecovery.invalid',
+      }),)
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+  });
+
+  const yupSync = yupValidator(schema, form.getFieldsValue);
+
+  function onChange(value: any) {
+    console.log('Captcha value:', value);
+  }
 
   const className = useEmotionCss(({ }) => {
     return {
@@ -75,26 +91,33 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
           </Row>
           <Space direction="vertical" size={'large'} style={{ width: '85vw' }}>
             <Form
+              validateTrigger="onBlur"
               layout="horizontal"
               mode="card"
               onFinish={handleFormSubmit}
               footer={
                 <Space direction="vertical" size={'large'}>
-                  {error ? <Alert style={{
-                    width: '100%', textAlign: "center"
-                    , marginTop: "20px"
-                  }} description={error} type="error" /> : null}
+                  {error ? (
+                    <Alert
+                      style={{
+                        width: '100%',
+                        textAlign: 'center',
+                        marginTop: '20px',
+                      }}
+                      description={error}
+                      type="error"
+                    />
+                  ) : null}
                   <Row gutter={[25, 25]} justify="center">
                     <Col flex="auto">
                       <Link to={'/user/login'}>
                         <Button
                           block
                           color="primary"
-                          type='button'
+                          type="button"
                           loading={loading}
                           style={{ minWidth: '150px' }}
                         >
-
                           {intl.formatMessage({
                             id: 'pages.passwordRecovery.btn.back',
                             defaultMessage: 'Voltar ',
@@ -106,7 +129,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
                       <Button
                         block
                         color="primary"
-                        type='submit'
+                        type="submit"
                         loading={loading}
                         style={{ minWidth: '150px' }}
                       >
@@ -121,24 +144,24 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
               }
               style={{ width: '100%' }}
             >
-              <Form.Item name="email" rules={[{ required: true, message: 'is required' }]}>
+              <Form.Item name="email" rules={[yupSync]}>
                 <Input
-                  type='email'
+                  type="email"
                   placeholder={intl.formatMessage({
                     id: 'pages.passwordRecovery.email.placeholder',
                     defaultMessage: 'example@mail.com',
                   })}
-                  onBlur={validateEmail}
                 />
               </Form.Item>
               <Form.Header />
               <Form.Item name="recaptcha" rules={[{ required: true, message: 'is required' }]}>
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  style={{ margin: 0, padding: 0, transform: "scale(1.0)" }}
+                  style={{ margin: 0, padding: 0, transform: 'scale(1.0)' }}
                   sitekey="6LeH4_cUAAAAAJn1YZUm-91DpXPz35kLOEH5RSUr"
                   size="normal"
-                  name='recaptcha'
+                  name="recaptcha"
+                  onChange={onChange}
                 />
               </Form.Item>
             </Form>

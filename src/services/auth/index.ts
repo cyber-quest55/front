@@ -14,7 +14,10 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 /** Validate if the username already exists POST /auth/check_username */
-export async function checkUsername(body: API.ValidateUsernameParam, options?: { [key: string]: any }) {
+export async function checkUsername(
+  body: API.ValidateUsernameParam,
+  options?: { [key: string]: any },
+) {
   return request<API.ValidateUsernameResult>('/auth/check_username/', {
     method: 'POST',
     headers: {
@@ -26,17 +29,15 @@ export async function checkUsername(body: API.ValidateUsernameParam, options?: {
 }
 
 /** Send email for password recovery auth/reset/ */
-export async function recoveryPassword(body: API.ResetPasswordParam, options?: { [key: string]: any }) {
-  return request<API.ResetPasswordResult>('/auth/check_username/', {
+export async function recoveryPassword(body: API.ResetPasswordParam) {
+  return request<API.ResetPasswordResult>('/auth/reset/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     data: body,
-    ...(options || {}),
   });
 }
-
 
 /** Validate the registration token GET /auth/register */
 export async function validateRegisterToken(options: API.ValidateRegisterTokenParam) {
@@ -50,14 +51,14 @@ export async function validateRegisterToken(options: API.ValidateRegisterTokenPa
 }
 
 /** Register the user POST /auth/register */
-export async function registerUser(body: API.RegisterUserParam, params: {token: string}) {
+export async function registerUser(body: API.RegisterUserParam, params: { token: string }) {
   return request<API.RegisterUserResult>('/auth/register/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     data: body,
-    params
+    params,
   });
 }
 

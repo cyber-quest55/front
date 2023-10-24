@@ -18,10 +18,7 @@ declare namespace APIModels {
     available: boolean;
   };
 
-  type ResetPasswordValidation = {
-    email: boolean;
-  };
-
+  type ResetPasswordValidation = {};
 
   type RegisterUser = {
     email: string;

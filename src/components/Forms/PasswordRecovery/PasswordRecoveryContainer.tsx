@@ -1,15 +1,12 @@
 import { useScreenHook } from '@/hooks/screen';
-import { checkUsername } from '@/services/auth';
-import { currentUser as queryCurrentUser } from '@/services/user/index';
-import { useIntl, useModel, history } from '@umijs/max';
+import { recoveryPassword } from '@/services/auth';
+import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { message } from 'antd';
-import { createRef, useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
-import { PasswordRecoverySkeleton } from './PasswordRecoverySkeleton';
-import { PasswordRecoveryMobile } from './PasswordRecoveryMobile';
 import { PasswordRecoveryComponent } from './PasswordRecoveryComponent';
+import { PasswordRecoveryMobile } from './PasswordRecoveryMobile';
+import { PasswordRecoverySkeleton } from './PasswordRecoverySkeleton';
 
 const PasswordRecoveryContainer: React.FC<any> = () => {
   /** hooks */
@@ -18,100 +15,57 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
   const intl = useIntl();
 
   /** Requests */
-  const checkUsernameReq = useRequest(checkUsername, { manual: true });
-
-  const validateEmail = async (values: any) => {
-    const { email } = values;
-    const isEmail = yup.string().email();
-
-    console.log(email)
-    const isValidEmail = isEmail.isValidSync(email);
-
-    let validateCredential = { username: "" };
-
-    if (isValidEmail) {
-
-      validateCredential = { username: values.email };
-
-      const usernameExists = checkUsernameReq.runAsync(validateCredential);
-      if ((await usernameExists).available) {
-        message.success({
-          type: 'success',
-          content: intl.formatMessage({
-            id: 'pages.passwordRecovery.submitted',
-            defaultMessage: 'Enviado',
-          }),
-          duration: 3,
-        });
-      } else {
-        setError(
-          intl.formatMessage({
-            id: 'pages.passwordRecovery.invalid',
-            defaultMessage: 'Email inválido',
-          }),
-        );
-      }
-    }
-  }
+  const recoveryPasswordRequest = useRequest(recoveryPassword, { manual: true });
 
   /** Models */
   const handleSubmit = async (values: any, recaptchaRef: any) => {
     const { email } = values;
     const isEmail = yup.string().email();
-
     const isValidEmail = isEmail.isValidSync(email);
-    let validateCredential = { username: "" };
+    let validateCredentials = { email: '' };
 
-    // const recaptcha = !!recaptchaRef.current.getValue();
-    const recaptcha = true
+    const recaptcha = !!recaptchaRef.current.getValue();
+
+    console.log(recaptcha)
+    console.log(values.email, isValidEmail)
 
     if (recaptcha && isValidEmail) {
-      validateCredential = { username: values.email };
-
-      const usernameExists = checkUsernameReq.runAsync(validateCredential);
-      if ((await usernameExists).available) {
-        message.success({
-          type: 'success',
-          content: intl.formatMessage({
-            id: 'pages.passwordRecovery.submitted',
-            defaultMessage: 'Enviado',
-          }),
-          duration: 3,
-        });
-      } else {
-        setError(
-          intl.formatMessage({
-            id: 'pages.passwordRecovery.invalid',
-            defaultMessage: 'Email inválido',
-          }),
-        );
-      }
-      // history.push(`/user/login`);
+      validateCredentials = { email: values.email };
+      recoveryPasswordRequest.runAsync(validateCredentials);
     }
-
-    return;
   };
 
   useEffect(() => {
-    const { error } = checkUsernameReq;
+
+    console.log(recoveryPasswordRequest)
+    const { error } = recoveryPasswordRequest;
+
     if (error) {
       setError(
         intl.formatMessage({
           id: 'pages.passwordRecovery.invalid',
-          defaultMessage: 'Email inválido',
+          defaultMessage: 'Email não cadastrado',
         }),
       );
     }
-  }, [checkUsernameReq]);
+  }, [recoveryPasswordRequest]);
 
   return (
     <>
       {false ? (
         <PasswordRecoverySkeleton />
       ) : xs ? (
-        <PasswordRecoveryMobile handleSubmit={handleSubmit} loading={checkUsernameReq.loading} error={error} validateEmail={validateEmail} />
+        <PasswordRecoveryMobile
+          handleSubmit={handleSubmit}
+          loading={recoveryPasswordRequest.loading}
+          error={error}
+        />
       ) : (
-        <PasswordRecoveryComponent handleSubmit={handleSubmit} loading={checkUsernameReq.loading} error={error} validateEmail={validateEmail} />
+        <PasswordRecoveryComponent
+          handleSubmit={handleSubmit}
+          loading={recoveryPasswordRequest.loading}
+          error={error}
+        />
       )}
     </>
   );
