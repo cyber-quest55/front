@@ -13,5 +13,7 @@ export default {
   'pages.passwordRecovery.email.placeholder': 'example@mail.com',
   'pages.passwordRecovery.btn.send': 'Enviar',
   'pages.passwordRecovery.btn.back': 'Voltar',
-  'pages.passwordRecovery.info': 'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.'
+  'pages.passwordRecovery.info': 'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.',
+  'pages.passwordRecovery.invalid': 'Email inválido',
+  'pages.passwordRecovery.submitted': 'Enviado',
 };

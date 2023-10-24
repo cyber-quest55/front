@@ -14,4 +14,6 @@ export default {
   'pages.passwordRecovery.btn.send': 'Send',
   'pages.passwordRecovery.btn.back': 'Back',
   'pages.passwordRecovery.info': 'Enter your email address so we can send you a link to recover your account',
+  'pages.passwordRecovery.invalid': 'Invalid Email',
+  'pages.passwordRecovery.submitted': 'Submitted',
 };

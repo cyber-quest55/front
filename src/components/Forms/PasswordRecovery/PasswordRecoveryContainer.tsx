@@ -38,7 +38,7 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
         message.success({
           type: 'success',
           content: intl.formatMessage({
-            id: 'pages.login.welcome1',
+            id: 'pages.passwordRecovery.submitted',
             defaultMessage: 'Enviado',
           }),
           duration: 3,
@@ -46,8 +46,8 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
       } else {
         setError(
           intl.formatMessage({
-            id: 'pages.login.invalid',
-            defaultMessage: 'Credenciais Inválidas',
+            id: 'pages.passwordRecovery.invalid',
+            defaultMessage: 'Email inválido',
           }),
         );
       }
@@ -73,7 +73,7 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
         message.success({
           type: 'success',
           content: intl.formatMessage({
-            id: 'pages.login.welcome1',
+            id: 'pages.passwordRecovery.submitted',
             defaultMessage: 'Enviado',
           }),
           duration: 3,
@@ -81,8 +81,8 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
       } else {
         setError(
           intl.formatMessage({
-            id: 'pages.login.invalid',
-            defaultMessage: 'Credenciais Inválidas',
+            id: 'pages.passwordRecovery.invalid',
+            defaultMessage: 'Email inválido',
           }),
         );
       }
@@ -97,8 +97,8 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
     if (error) {
       setError(
         intl.formatMessage({
-          id: 'pages.login.invalid',
-          defaultMessage: 'Credenciais Inválidas',
+          id: 'pages.passwordRecovery.invalid',
+          defaultMessage: 'Email inválido',
         }),
       );
     }
