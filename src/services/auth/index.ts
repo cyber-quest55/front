@@ -25,6 +25,19 @@ export async function checkUsername(body: API.ValidateUsernameParam, options?: {
   });
 }
 
+/** Send email for password recovery auth/reset/ */
+export async function recoveryPassword(body: API.ResetPasswordParam, options?: { [key: string]: any }) {
+  return request<API.ResetPasswordResult>('/auth/check_username/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+
 /** Validate the registration token GET /auth/register */
 export async function validateRegisterToken(options: API.ValidateRegisterTokenParam) {
   return request<API.ValidateRegisterTokenResult>('/auth/register/', {
