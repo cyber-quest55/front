@@ -1,6 +1,6 @@
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { SelectLang, useIntl } from '@umijs/max';
+import { Link, SelectLang, useIntl } from '@umijs/max';
 import { Alert, Col, Row, Space, Typography } from 'antd';
 import { Button, Divider, Form, Input } from 'antd-mobile';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
@@ -86,18 +86,21 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
                   }} description={error} type="error" /> : null}
                   <Row gutter={[25, 25]} justify="center">
                     <Col flex="auto">
-                      <Button
-                        block
-                        color="primary"
-                        type='button'
-                        loading={loading}
-                        style={{ minWidth: '150px' }}
-                      >
-                        {intl.formatMessage({
-                          id: 'pages.passwordRecovery.btn.back',
-                          defaultMessage: 'Voltar ',
-                        })}
-                      </Button>
+                      <Link to={'/user/login'}>
+                        <Button
+                          block
+                          color="primary"
+                          type='button'
+                          loading={loading}
+                          style={{ minWidth: '150px' }}
+                        >
+
+                          {intl.formatMessage({
+                            id: 'pages.passwordRecovery.btn.back',
+                            defaultMessage: 'Voltar ',
+                          })}
+                        </Button>
+                      </Link>
                     </Col>
                     <Col flex="auto">
                       <Button
@@ -118,7 +121,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
               }
               style={{ width: '100%' }}
             >
-              <Form.Item name="email"  rules={[{ required: true, message: 'is required' }]}>
+              <Form.Item name="email" rules={[{ required: true, message: 'is required' }]}>
                 <Input
                   type='email'
                   placeholder={intl.formatMessage({
