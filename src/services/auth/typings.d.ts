@@ -38,5 +38,5 @@ declare namespace API {
     email: string;
   }
 
-  type ResetPasswordResult = {}
+  type ResetPasswordResult = APIModels.ResetPasswordValidation;
 }
