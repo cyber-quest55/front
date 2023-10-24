@@ -21,7 +21,6 @@ const EditPivotGeneralContainer: React.FunctionComponent<Props> = (props) => {
       )}
     </>
   );
-  return;
-};
+ };
 
 export default EditPivotGeneralContainer;

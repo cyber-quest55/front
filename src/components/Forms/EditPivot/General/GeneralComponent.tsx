@@ -3,6 +3,7 @@ import {
   ProForm,
   ProFormCheckbox,
   ProFormDependency,
+  ProFormDigit,
   ProFormField,
   ProFormSelect,
 } from '@ant-design/pro-components';
@@ -32,7 +33,7 @@ const EditPivotGeneralComponent: React.FunctionComponent = () => {
         grid
         submitter={false}
         form={form}
-        name="loging_form"
+        name="general_form"
         initialValues={{ pressureController: false }}
       >
         <ProFormSelect label="Rádio da Central" colProps={{ xs: 24, md: 6 }} />
@@ -41,7 +42,7 @@ const EditPivotGeneralComponent: React.FunctionComponent = () => {
         <ProFormSelect label="Rádio da Bomba" colProps={{ xs: 24, md: 6 }} />
         <ProFormField name="test" label="Nome do pivô" colProps={{ xs: 24, md: 8, xl: 8 }} />
         <ProFormSelect label="Linguagem do dispositivo" colProps={{ xs: 24, md: 8, xl: 8 }} />
-        <ProFormField
+        <ProFormDigit
           label="Raio até a última torre"
           colProps={{ xs: 24, md: 8 }}
           fieldProps={{
@@ -55,14 +56,14 @@ const EditPivotGeneralComponent: React.FunctionComponent = () => {
             suffix: 'm³/h',
           }}
         />
-        <ProFormField
+        <ProFormDigit
           label="Veloc. da última torre"
           colProps={{ xs: 24, md: 8 }}
           fieldProps={{
             suffix: 'm/h',
           }}
         />
-        <ProFormField
+        <ProFormDigit
           label="Área irrigada"
           colProps={{ xs: 24, md: 8 }}
           fieldProps={{
@@ -101,20 +102,29 @@ const EditPivotGeneralComponent: React.FunctionComponent = () => {
           {({ pressureController }) => {
             return (
               <>
-                <ProFormField
+                <ProFormDigit
                   label="Tensão mínima de operação"
                   disabled={!pressureController}
                   colProps={{ xs: 24, md: 8 }}
+                  fieldProps={{
+                    suffix: 'V',
+                  }}
                 />
-                <ProFormField
+                <ProFormDigit
                   label="Tensão máxima de operação"
                   disabled={!pressureController}
                   colProps={{ xs: 24, md: 8 }}
+                  fieldProps={{
+                    suffix: 'V',
+                  }}
                 />
-                <ProFormField
+                <ProFormDigit
                   label="Tempo limite"
                   disabled={!pressureController}
                   colProps={{ xs: 24, md: 8 }}
+                  fieldProps={{
+                    suffix: 'min',
+                  }}
                 />
               </>
             );
