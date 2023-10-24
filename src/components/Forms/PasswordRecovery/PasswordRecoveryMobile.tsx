@@ -66,7 +66,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
             <Space style={{ width: '100%' }} direction="vertical" align="center">
               <Typography.Text type="secondary">
                 {intl.formatMessage({
-                  id: 'pages.login.therms.firstx',
+                  id: 'pages.passwordRecovery.info',
                   defaultMessage:
                     'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.',
                 })}
@@ -94,7 +94,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
                         style={{ minWidth: '150px' }}
                       >
                         {intl.formatMessage({
-                          id: 'pages.login.btn.text1',
+                          id: 'pages.passwordRecovery.btn.back',
                           defaultMessage: 'Voltar ',
                         })}
                       </Button>
@@ -108,7 +108,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
                         style={{ minWidth: '150px' }}
                       >
                         {intl.formatMessage({
-                          id: 'pages.login.btn.text1',
+                          id: 'pages.passwordRecovery.btn.send',
                           defaultMessage: 'Enviar ',
                         })}
                       </Button>
@@ -116,15 +116,14 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
                   </Row>
                 </Space>
               }
-              requiredMarkStyle="asterisk"
               style={{ width: '100%' }}
             >
               <Form.Item name="email"  rules={[{ required: true, message: 'is required' }]}>
                 <Input
                   type='email'
                   placeholder={intl.formatMessage({
-                    id: 'pages.login.input.email.placeholder',
-                    defaultMessage: 'John Vicioda',
+                    id: 'pages.passwordRecovery.email.placeholder',
+                    defaultMessage: 'example@mail.com',
                   })}
                   onBlur={validateEmail}
                 />

@@ -86,7 +86,7 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                             <Space style={{ width: '100%' }} direction="vertical" align="center">
                                 <Typography.Text type="secondary">
                                     {intl.formatMessage({
-                                        id: 'pages.login.therms.firstx',
+                                        id: 'pages.passwordRecovery.info',
                                         defaultMessage:
                                             'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.',
                                     })}
@@ -98,8 +98,8 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                 required
                                 name="email"
                                 placeholder={intl.formatMessage({
-                                    id: 'pages.login.input.email.placeholder',
-                                    defaultMessage: 'John Vicioda',
+                                    id: 'pages.passwordRecovery.email.placeholder',
+                                    defaultMessage: 'example@mail.com',
                                 })}
                                 onMetaChange={validateEmail}
                             />
@@ -128,7 +128,7 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                         style={{ minWidth: '150px' }}
                                     >
                                         {intl.formatMessage({
-                                            id: 'pages.login.btn.text1',
+                                            id: 'pages.passwordRecovery.btn.back',
                                             defaultMessage: 'Voltar ',
                                         })}
                                     </Button>
@@ -142,7 +142,7 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                         style={{ minWidth: '150px' }}
                                     >
                                         {intl.formatMessage({
-                                            id: 'pages.login.btn.text1',
+                                            id: 'pages.passwordRecovery.btn.send',
                                             defaultMessage: 'Enviar ',
                                         })}
                                     </Button>
