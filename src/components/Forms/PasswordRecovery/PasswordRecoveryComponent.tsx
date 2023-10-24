@@ -123,9 +123,10 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                                     <Button
                                         block
                                         type="primary"
-                                        htmlType="submit"
+                                        htmlType="reset"
                                         loading={loading}
                                         style={{ minWidth: '150px' }}
+                                        href='/user/login'
                                     >
                                         {intl.formatMessage({
                                             id: 'pages.passwordRecovery.btn.back',
