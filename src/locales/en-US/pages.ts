@@ -10,5 +10,8 @@ export default {
   'pages.login.therms.fourth': 'Privacy Policy',
   'pages.login.invalid': 'Invalid Credentials',
   'pages.login.welcome': 'Welcome!',
-
+  'pages.passwordRecovery.email.placeholder': 'example@mail.com',
+  'pages.passwordRecovery.btn.send': 'Send',
+  'pages.passwordRecovery.btn.back': 'Back',
+  'pages.passwordRecovery.info': 'Enter your email address so we can send you a link to recover your account',
 };

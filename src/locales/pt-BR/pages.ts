@@ -10,4 +10,8 @@ export default {
   'pages.login.activity.title': 'Contato',
   'pages.login.activity.desc': 'Caso queira entrar em contato',
   'pages.login.activity.btn.text': 'CLIQUE AQUI',
+  'pages.passwordRecovery.email.placeholder': 'example@mail.com',
+  'pages.passwordRecovery.btn.send': 'Enviar',
+  'pages.passwordRecovery.btn.back': 'Voltar',
+  'pages.passwordRecovery.info': 'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.'
 };
