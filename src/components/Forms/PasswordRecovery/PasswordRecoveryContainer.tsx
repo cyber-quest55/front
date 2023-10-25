@@ -1,12 +1,13 @@
 import { useScreenHook } from '@/hooks/screen';
 import { recoveryPassword } from '@/services/auth';
-import { useIntl } from '@umijs/max';
+import { useIntl, history } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { PasswordRecoveryComponent } from './PasswordRecoveryComponent';
 import { PasswordRecoveryMobile } from './PasswordRecoveryMobile';
 import { PasswordRecoverySkeleton } from './PasswordRecoverySkeleton';
+import { Button, Card, Modal, Result, Typography, message } from 'antd';
 
 const PasswordRecoveryContainer: React.FC<any> = () => {
   /** hooks */
@@ -15,40 +16,37 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
   const intl = useIntl();
 
   /** Requests */
-  const recoveryPasswordRequest = useRequest(recoveryPassword, { manual: true });
+  const recoveryPasswordReq = useRequest(recoveryPassword, { manual: true });
 
   /** Models */
   const handleSubmit = async (values: any, recaptchaRef: any) => {
     const { email } = values;
     const isEmail = yup.string().email();
     const isValidEmail = isEmail.isValidSync(email);
-    let validateCredentials = { email: '' };
+    let validateCredentials = { email: 'ariadne.vieira@irricontrol.com.br' };
 
     const recaptcha = !!recaptchaRef.current.getValue();
 
-    console.log(recaptcha)
-    console.log(values.email, isValidEmail)
-
     if (recaptcha && isValidEmail) {
       validateCredentials = { email: values.email };
-      recoveryPasswordRequest.runAsync(validateCredentials);
+      try {
+        recoveryPasswordReq.runAsync(validateCredentials);
+      } catch (error) {
+        message.error({
+          type: 'error',
+          content: intl.formatMessage({
+            id: 'component.forms.register.fail',
+            defaultMessage: 'Falha ao Registrar',
+          }),
+          duration: 3,
+        });
+      } finally {
+        history.push('/user/recovery-success')
+      }
     }
   };
 
-  useEffect(() => {
 
-    console.log(recoveryPasswordRequest)
-    const { error } = recoveryPasswordRequest;
-
-    if (error) {
-      setError(
-        intl.formatMessage({
-          id: 'pages.passwordRecovery.invalid',
-          defaultMessage: 'Email não cadastrado',
-        }),
-      );
-    }
-  }, [recoveryPasswordRequest]);
 
   return (
     <>
@@ -57,13 +55,13 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
       ) : xs ? (
         <PasswordRecoveryMobile
           handleSubmit={handleSubmit}
-          loading={recoveryPasswordRequest.loading}
+          loading={recoveryPasswordReq.loading}
           error={error}
         />
       ) : (
         <PasswordRecoveryComponent
           handleSubmit={handleSubmit}
-          loading={recoveryPasswordRequest.loading}
+          loading={recoveryPasswordReq.loading}
           error={error}
         />
       )}

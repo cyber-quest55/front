@@ -135,10 +135,11 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
               initialValues={{
                 email:
                   process.env.NODE_ENV === 'development'
-                    ? 'wellington.ferreira@irricontrol.com.br'
+                    ? 'test@irricontrol.com.br'
                     : '',
               }}
               onFinish={handleFormSubmit}
+              autoFocusFirstInput
             >
               <Typography.Text type="secondary">
                 {intl.formatMessage({
@@ -149,7 +150,7 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
               </Typography.Text>
               <Divider />
               <ProFormText
-                rules={[yupSync]}
+                // rules={[yupSync]}
                 width="md"
                 required
                 name="email"

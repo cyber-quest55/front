@@ -144,7 +144,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
               }
               style={{ width: '100%' }}
             >
-              <Form.Item name="email" rules={[yupSync]}>
+              <Form.Item name="email">
                 <Input
                   type="email"
                   placeholder={intl.formatMessage({
@@ -154,16 +154,16 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
                 />
               </Form.Item>
               <Form.Header />
-              <Form.Item name="recaptcha" rules={[{ required: true, message: 'is required' }]}>
+              <Col style={{ display: 'flex', justifyContent: 'center' }} span={24}>
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  style={{ margin: 0, padding: 0, transform: 'scale(1.0)' }}
+                  style={{ margin: 0, padding: 0, transform: 'scale(1.08)' }}
                   sitekey="6LeH4_cUAAAAAJn1YZUm-91DpXPz35kLOEH5RSUr"
                   size="normal"
                   name="recaptcha"
                   onChange={onChange}
                 />
-              </Form.Item>
+              </Col>
             </Form>
           </Space>
         </Space>
