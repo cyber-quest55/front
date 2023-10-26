@@ -3,7 +3,7 @@ import { ProCard, ProForm, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useIntl } from '@umijs/max';
 import { Alert, Button, Col, Divider, Form, Row, Space, Typography } from 'antd';
-import { createRef } from 'react';
+import { createRef, useEffect } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import * as yup from 'yup';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
@@ -28,14 +28,11 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
   const schema = yup.object().shape({
     email: yup
       .string()
-      .email(intl.formatMessage({
-        id: 'pages.passwordRecovery.invalid',
-      }),)
-      .required(
-        intl.formatMessage({
-          id: 'validations.required',
-        }),
-      ),
+      .email()
+      .required()
+    // .required(intl.formatMessage({
+    //   id: 'pages.passwordRecovery.invalid',
+    // }))
   });
 
   const yupSync = yupValidator(schema, form.getFieldsValue);
@@ -84,10 +81,15 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
           <Space direction="vertical" size={'large'}>
             <ProForm
               validateTrigger="onBlur"
+              form={form}
               layout="vertical"
               rowProps={{ gutter: [8, 8] }}
               grid
               submitter={{
+                searchConfig: {
+                  resetText: 'reset',
+                  submitText: 'submit',
+                },
                 render: () => (
                   <Space
                     direction="vertical"
@@ -100,7 +102,8 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                         <Button
                           block
                           type="primary"
-                          htmlType="button"
+                          htmlType="reset"
+                          key="rest"
                           loading={loading}
                           style={{ minWidth: '150px' }}
                           href="/user/login"
@@ -117,6 +120,7 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                           block
                           type="primary"
                           htmlType="submit"
+                          key="submit"
                           loading={loading}
                           style={{ minWidth: '150px' }}
                         >
@@ -131,7 +135,7 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                 ),
               }}
               size="large"
-              name="loging_form"
+              name="recovery_password_form"
               initialValues={{
                 email:
                   process.env.NODE_ENV === 'development'
@@ -150,7 +154,7 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
               </Typography.Text>
               <Divider />
               <ProFormText
-                // rules={[yupSync]}
+                rules={[yupSync]}
                 width="md"
                 required
                 name="email"
