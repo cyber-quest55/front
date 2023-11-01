@@ -16,4 +16,8 @@ export default {
   'pages.passwordRecovery.info': 'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.',
   'pages.passwordRecovery.invalid': 'Email inválido',
   'pages.passwordRecovery.submitted': 'Enviado',
+  'pages.recoveryConfirmation.title': 'Email de recuperação enviado com sucesso',
+  'pages.recoveryConfirmation.text1': "Um email foi enviado para o endereço indicado.",
+  'pages.recoveryConfirmation.text2': "Siga as instruções no email e recupere sua senha.",
+  'pages.recoveryConfirmation.text3': "Este email pode demorar até 1 hora para chegar.",
 };
