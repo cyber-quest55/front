@@ -2,12 +2,12 @@ import { useScreenHook } from '@/hooks/screen';
 import { recoveryPassword } from '@/services/auth';
 import { useIntl, history } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as yup from 'yup';
 import { PasswordRecoveryComponent } from './PasswordRecoveryComponent';
 import { PasswordRecoveryMobile } from './PasswordRecoveryMobile';
 import { PasswordRecoverySkeleton } from './PasswordRecoverySkeleton';
-import { Button, Card, Modal, Result, Typography, message } from 'antd';
+import { message } from 'antd';
 
 const PasswordRecoveryContainer: React.FC<any> = () => {
   /** hooks */
@@ -45,8 +45,6 @@ const PasswordRecoveryContainer: React.FC<any> = () => {
       }
     }
   };
-
-
 
   return (
     <>

@@ -41,9 +41,6 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
 
   const yupSync = yupValidator(schema, form.getFieldsValue);
 
-  function onChange(value: any) {
-    console.log('Captcha value:', value);
-  }
 
   const className = useEmotionCss(({ }) => {
     return {
@@ -91,6 +88,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
           </Row>
           <Space direction="vertical" size={'large'} style={{ width: '85vw' }}>
             <Form
+              form={form}
               validateTrigger="onBlur"
               layout="horizontal"
               mode="card"
@@ -144,7 +142,7 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
               }
               style={{ width: '100%' }}
             >
-              <Form.Item name="email">
+              <Form.Item name="email" rules={[yupSync]}>
                 <Input
                   type="email"
                   placeholder={intl.formatMessage({
@@ -161,7 +159,6 @@ const PasswordRecoveryMobile: React.FC<Props> = (props) => {
                   sitekey="6LeH4_cUAAAAAJn1YZUm-91DpXPz35kLOEH5RSUr"
                   size="normal"
                   name="recaptcha"
-                  onChange={onChange}
                 />
               </Col>
             </Form>

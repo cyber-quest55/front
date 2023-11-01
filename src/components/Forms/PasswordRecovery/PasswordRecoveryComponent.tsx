@@ -2,8 +2,8 @@ import { yupValidator } from '@/utils/adapters/yup';
 import { ProCard, ProForm, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useIntl } from '@umijs/max';
-import { Alert, Button, Col, Divider, Form, Row, Space, Typography } from 'antd';
-import { createRef, useEffect } from 'react';
+import { Button, Col, Divider, Form, Row, Space, Typography } from 'antd';
+import { createRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import * as yup from 'yup';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
@@ -28,18 +28,18 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
   const schema = yup.object().shape({
     email: yup
       .string()
-      .email()
-      .required()
-    // .required(intl.formatMessage({
-    //   id: 'pages.passwordRecovery.invalid',
-    // }))
+      .email(intl.formatMessage({
+        id: 'pages.passwordRecovery.invalid',
+      }),)
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
   });
 
   const yupSync = yupValidator(schema, form.getFieldsValue);
 
-  function onChange(value: any) {
-    console.log('Captcha value:', value);
-  }
 
   const className = useEmotionCss(({ }) => {
     return {
@@ -77,11 +77,10 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
               <SelectLang />
             </Col>
           </Row>
-
           <Space direction="vertical" size={'large'}>
             <ProForm
-              validateTrigger="onBlur"
               form={form}
+              validateTrigger="onBlur"
               layout="vertical"
               rowProps={{ gutter: [8, 8] }}
               grid
@@ -163,7 +162,6 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                   defaultMessage: 'example@mail.com',
                 })}
               />
-
               <Col style={{ display: 'flex', justifyContent: 'center' }} span={24}>
                 <ReCAPTCHA
                   ref={recaptchaRef}
@@ -171,10 +169,8 @@ const PasswordRecoveryComponent: React.FC<Props> = (props) => {
                   sitekey="6LeH4_cUAAAAAJn1YZUm-91DpXPz35kLOEH5RSUr"
                   size="normal"
                   name="recaptcha"
-                  onChange={onChange}
                 />
               </Col>
-
               <Divider />
             </ProForm>
           </Space>
