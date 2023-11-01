@@ -71,7 +71,7 @@ export default [
   },
 
   {
-    path: 'farms/:id/pivot/:id',
+    path: 'farms/:farmId/pivot/:pivotId/edit',
     name: 'Edit Pivot',
     isHidden: true,
     component: './Pivot/Edit.tsx',

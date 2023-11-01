@@ -11,6 +11,7 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
+import { useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Form, Space, Tooltip } from 'antd';
 import * as React from 'react';
@@ -45,7 +46,10 @@ type GithubIssueItem = {
   closed_at?: string;
 };
 
-const EditPivotFavoriteHistoryTable: React.FunctionComponent<IEditPivotFavoriteHistoryTableProps> = (props) => {
+const EditPivotFavoriteHistoryTable: React.FunctionComponent<
+  IEditPivotFavoriteHistoryTableProps
+> = (props) => {
+  const params = useParams();
   const actionRef = React.useRef<ActionType>();
   const reqEditPivot = useRequest(getEditPivotHistory, { manual: true });
   const reqFavorite = useRequest(favoritePivotConfig, { manual: true });
@@ -150,7 +154,7 @@ const EditPivotFavoriteHistoryTable: React.FunctionComponent<IEditPivotFavoriteH
           submitTimeout={2000}
           onFinish={async (values) => {
             await reqFavorite.runAsync(
-              { configId: item.full.id, farmId: '133', pivotId: '275' },
+              { configId: item.full.id, farmId: params.farmId as any, pivotId: params.pivotId as any },
               { pinned: !item.full.pinned, ...values },
             );
             actionRef.current?.reload();
@@ -409,7 +413,10 @@ const EditPivotFavoriteHistoryTable: React.FunctionComponent<IEditPivotFavoriteH
         actionRef={actionRef}
         ghost
         request={async () => {
-          const result: any = await reqEditPivot.runAsync({ farmId: 133, pivotId: '275' }, {pinned: true});
+          const result: any = await reqEditPivot.runAsync(
+            { farmId: params.farmId as any, pivotId: params.pivotId as any },
+            { pinned: true },
+          );
           const data = result.results?.map((item: any, index: number) => ({
             created: item.created,
             created_by: item.created_by?.username,

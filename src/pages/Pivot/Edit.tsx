@@ -16,8 +16,8 @@ import { Button } from 'antd';
 import React, { useState } from 'react';
 
 const NoFoundPage: React.FC = () => {
-  const [tab, setTab] = useState('tab2');
-  const [tabCont, setTabCont] = useState('tab2');
+  const [tab, setTab] = useState('tab1');
+  const [tabCont, setTabCont] = useState('tab1');
   const [isSubmiting] = useState(false);
 
   const { xs } = useScreenHook();
@@ -25,7 +25,7 @@ const NoFoundPage: React.FC = () => {
   return (
     <PageContainer
       tabBarExtraContent={
-        tabCont === '1' ? (
+        tabCont === 'tab1' ? (
           <Button icon={<SaveOutlined />} type="primary" loading={isSubmiting}>
             Salvar{' '}
           </Button>
@@ -34,12 +34,12 @@ const NoFoundPage: React.FC = () => {
       tabList={[
         {
           tab: 'Configurações',
-          key: '1',
+          key: 'tab1',
           closable: false,
         },
         {
           tab: 'Histórico',
-          key: '2',
+          key: 'tab2',
         },
       ]}
       tabActiveKey={tabCont}
