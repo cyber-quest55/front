@@ -79,6 +79,7 @@ const RegisterComponent: React.FC<Props> = (props) => {
       }
     >
       <ProForm
+        
         validateTrigger="onBlur"
         form={form}
         layout="vertical"

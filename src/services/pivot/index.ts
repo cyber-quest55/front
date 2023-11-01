@@ -41,7 +41,7 @@ export async function getPivotHistory(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: API.GetFarmResponse;
+    data: API.GetPivotsInformationResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
     method: 'GET',
   });
@@ -53,9 +53,35 @@ export async function getPivotReports(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: API.GetFarmResponse;
+    data: API.GetPivotByIdInformationResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/report/`, {
     method: 'GET',
-    params: options
-    });
+    params: options,
+  });
+}
+
+/** GET /farms/${farmId}/pivots/${pivotId}/config/?pinned=false */
+export async function getEditPivotHistory(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** POST /farms/${farmId}/pivots/${pivotId}/config/${configId} */
+export async function favoritePivotConfig(
+  props: API.FavoritePivotConfigParams,
+  options?: { [key: string]: any },
+) {
+
+  return request<{
+    data: API.FavoritePivotConfigResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/${props.configId}`, {
+    method: 'PATCH',
+   data: options});
 }

@@ -169,7 +169,8 @@ const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
           fillOpacity: 0,
         }} 
       />
-      {getPolylines().map((item) => (
+
+      {   getPolylines().map((item) => (
         <Polyline
           key={`line-${Math.random()}`}
           path={[
@@ -183,28 +184,8 @@ const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
             zIndex: 999,
           }}
         />
-      ))}
-      <Polyline
-        options={{
-          strokeOpacity: 0,
-          strokeColor: 'white',
-          icons: [
-            {
-              icon: lineSymbol,
-              offset: '0',
-              repeat: '10px',
-            },
-          ],
-          path: [
-            { lat: centerPositionGMaps.latitude, lng: centerPositionGMaps.longitude },
-            {
-              lat: endIrrigationDashedLine.latitude,
-              lng: endIrrigationDashedLine.longitude,
-            },
-          ],
-          zIndex: 3,
-        }}
-      />
+      ))  }
+  
     </>
   );
 };
