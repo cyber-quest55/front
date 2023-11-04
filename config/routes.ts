@@ -21,7 +21,7 @@ export default [
         component: './User/Login',
       },
       {
-        name: 'Passwor Recovery',
+        name: 'Password Recovery',
         path: '/user/password-recovery',
         component: './User/PasswordRecovery',
       },
