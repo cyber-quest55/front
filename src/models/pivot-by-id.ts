@@ -8,13 +8,14 @@ export interface GetPivotByIdModelProps {
   unformated: API.GetPivotByIdInformationResponse;
   result: CirclePivotProps;
   loading: boolean;
+  
   loaded: boolean;
   error: any;
 }
 
 export const queryPivotByIdStart = (payload: API.GetPivotByIdInformationParam) => {
   return {
-    type: 'pivotById/queryPivotByIdStart',
+    type: 'pivotById/queryPivotById',
     payload: payload,
   };
 };
@@ -192,6 +193,7 @@ export default {
         loading: false,
         loaded: true,
         pivotInformation: payload,
+        unformated: payload,
         result: mapper,
         error: {},
       };

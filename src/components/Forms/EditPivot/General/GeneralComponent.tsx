@@ -1,3 +1,13 @@
+import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
+import {
+  getEditPivotDeviceControlTable,
+  getEditPivotDeviceMonitorTable,
+  patchChangeControlRadio,
+  patchChangeMonitorRadio,
+  postPivotConfig,
+} from '@/services/pivot';
+import { yupValidator } from '@/utils/adapters/yup';
+import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
   ProForm,
@@ -7,11 +17,94 @@ import {
   ProFormField,
   ProFormSelect,
 } from '@ant-design/pro-components';
-import { Form, Typography } from 'antd';
+import { useIntl, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import { App, Button, Form, Row, Typography } from 'antd';
 import * as React from 'react';
+import * as yup from 'yup';
 
-const EditPivotGeneralComponent: React.FunctionComponent = () => {
+const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
+  const { message } = App.useApp();
+  const ref = React.useRef();
+  const params = useParams();
+  const postReq = useRequest(postPivotConfig, { manual: true });
+  const intl = useIntl();
+  const [loading, setLoading] = React.useState(false);
+
+  const schema = yup.object().shape({
+    name: yup.string().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+
+    aux_brand_model: yup.string().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+
+    controllerconfig: yup.object().shape({
+      content: yup.object().shape({
+        pivot_parameters: yup.object().shape({
+          radius_last: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+          flow_rate: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+          speed: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+          irrigated_area: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+        }),
+
+        voltage_limit_enable: yup.object().shape({
+          voltage_limit_enable: yup.boolean().required(),
+        }),
+
+        voltage_configurations: yup.object().shape({
+          minimum_voltage: yup.number().required(),
+          maximum_voltage: yup.number().required(),
+          stable_time: yup.number().required(),
+        }),
+
+        language: yup.object().shape({
+          language: yup.string().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+        }),
+      }),
+
+      brand_model: yup.string().required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+
+      panel_type: yup.string().required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+    }),
+  });
+
+  const yupSync = yupValidator(schema, form.getFieldsValue);
+  const { pivot } = props;
 
   return (
     <ProCard
@@ -20,117 +113,361 @@ const EditPivotGeneralComponent: React.FunctionComponent = () => {
           Configurações
         </Typography.Title>
       }
+      extra={
+        <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
+          Salvar
+        </Button>
+      }
       ghost
       gutter={[12, 12]}
     >
-      <div style={{ marginBottom: 20 }}>
-        <Typography.Text>Última configuração: 19 Out 2023 09:55- Internet</Typography.Text>
-      </div>
-      <ProForm
-        validateTrigger="onBlur"
-        layout="vertical"
-        rowProps={{ gutter: [8, 8] }}
-        grid
-        submitter={false}
-        form={form}
-        name="general_form"
-        initialValues={{ pressureController: false }}
-      >
-        <ProFormSelect label="Rádio da Central" colProps={{ xs: 24, md: 6 }} />
-        <ProFormSelect label="Rádio do Controlador" colProps={{ xs: 24, md: 6 }} />
-        <ProFormSelect label="Rádio do GPS" colProps={{ xs: 24, md: 6 }} />
-        <ProFormSelect label="Rádio da Bomba" colProps={{ xs: 24, md: 6 }} />
-        <ProFormField name="test" label="Nome do pivô" colProps={{ xs: 24, md: 8, xl: 8 }} />
-        <ProFormSelect label="Linguagem do dispositivo" colProps={{ xs: 24, md: 8, xl: 8 }} />
-        <ProFormDigit
-          label="Raio até a última torre"
-          colProps={{ xs: 24, md: 8 }}
-          fieldProps={{
-            suffix: 'm',
-          }}
-        />
-        <ProFormField
-          label="Vazão"
-          colProps={{ xs: 24, md: 8 }}
-          fieldProps={{
-            suffix: 'm³/h',
-          }}
-        />
-        <ProFormDigit
-          label="Veloc. da última torre"
-          colProps={{ xs: 24, md: 8 }}
-          fieldProps={{
-            suffix: 'm/h',
-          }}
-        />
-        <ProFormDigit
-          label="Área irrigada"
-          colProps={{ xs: 24, md: 8 }}
-          fieldProps={{
-            suffix: 'ha',
-          }}
-        />
-        <ProFormSelect
-          name="builder"
-          options={[
-            {
-              value: 'select',
-              label: 'Bauer',
-            },
-            {
-              value: 'others',
-              label: 'Outro',
-            },
-          ]}
-          label="Fabricante"
-          colProps={{ xs: 24, md: 8 }}
-        />
-        <ProFormDependency name={['builder']}>
-          {({ builder }) => {
-            if (builder === 'others')
-              return <ProFormField label="Insira o Fabricante" colProps={{ xs: 24, md: 8 }} />;
-          }}
-        </ProFormDependency>
+      {pivot ? (
+        <>
+          <div style={{ marginBottom: 20 }}>
+            <Typography.Text>Última configuração: 19 Out 2023 09:55- Internet</Typography.Text>
+          </div>
+          <ProForm
+            validateTrigger="onBlur"
+            layout="vertical"
+            rowProps={{ gutter: [8, 8] }}
+            grid
+            submitter={false}
+            form={form}
+            formRef={ref}
+            name="general_form"
+            onFinish={async (values: any) => {
+              setLoading(true);
+              try {
+                const brands = [
+                  'Valley',
+                  'Reinke',
+                  'Krebs',
+                  'Irrigabras',
+                  'Fockink',
+                  'Carborundum',
+                  'Bauer',
+                ];
 
-        <ProFormField label="Tipo de Painel" colProps={{ xs: 24, md: 8 }} />
+                const newObj = {
+                  ...pivot.controllerconfig,
+                  ...values.controllerconfig,
+                  content: {
+                    ...pivot.controllerconfig.content,
+                    ...values.controllerconfig.content,
+                  },
+                  name_pivot_on_config: values.name,
+                };
 
-        <ProFormCheckbox name="pressureController" colProps={{ xs: 24, md: 24 }}>
-          Controlador de tensão
-        </ProFormCheckbox>
+                if (brands.includes(values.aux_brand_model)) {
+                  newObj.brand_model = values.aux_brand_model;
+                }
+                delete newObj.uuid;
+                delete newObj.device;
 
-        <ProFormDependency name={['pressureController']}>
-          {({ pressureController }) => {
-            return (
-              <>
-                <ProFormDigit
-                  label="Tensão mínima de operação"
-                  disabled={!pressureController}
-                  colProps={{ xs: 24, md: 8 }}
-                  fieldProps={{
-                    suffix: 'V',
-                  }}
-                />
-                <ProFormDigit
-                  label="Tensão máxima de operação"
-                  disabled={!pressureController}
-                  colProps={{ xs: 24, md: 8 }}
-                  fieldProps={{
-                    suffix: 'V',
-                  }}
-                />
-                <ProFormDigit
-                  label="Tempo limite"
-                  disabled={!pressureController}
-                  colProps={{ xs: 24, md: 8 }}
-                  fieldProps={{
-                    suffix: 'min',
-                  }}
-                />
-              </>
-            );
-          }}
-        </ProFormDependency>
-      </ProForm>
+                await postReq.runAsync(
+                  {
+                    farmId: params.farmId as any,
+                    pivotId: params.pivotId as any,
+                    deviceId: pivot.control as any,
+                  },
+                  newObj,
+                );
+
+                await props.queryPivotByIdStart({
+                  farmId: params.farmId as any,
+                  pivotId: params.pivotId as any,
+                });
+
+                message.success('Configs Atualizadas com Sucesso');
+              } catch (err) {
+                message.error('Fail');
+              }
+
+              setLoading(false);
+            }}
+            onInit={(pvalues, pform) => {
+              const values = [
+                'Valley',
+                'Reinke',
+                'Krebs',
+                'Irrigabras',
+                'Fockink',
+                'Carborundum',
+                'Bauer',
+              ];
+
+              if (values.includes(pvalues.controllerconfig.brand_model)) {
+                pform.setFieldValue('aux_brand_model', pvalues.controllerconfig.brand_model);
+              }
+
+              if (!values.includes(pvalues.controllerconfig.brand_model)) {
+                pform.setFieldValue('aux_brand_model', 'Outro');
+              }
+            }}
+            initialValues={{ ...pivot }}
+          >
+            <Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
+              <RadioInputContainer
+                name={['base_radio_id']}
+                operable={false}
+                setFieldValue={'2'}
+                label="Rádio da Central"
+                status={'processing'}
+                span={{
+                  xs: 24,
+                  md: 6,
+                }}
+                deviceType=""
+                device=""
+              />
+              <RadioInputContainer
+                name={['control_radio_id']}
+                operable
+                setFieldValue={'2'}
+                label="Rádio do Controlador"
+                status={'processing'}
+                span={{ xs: 24, md: 6 }}
+                deviceType="Controlador"
+                device="pivô"
+                request={getEditPivotDeviceControlTable}
+                requestChange={patchChangeControlRadio}
+                fieldIndex={'control'}
+              />
+              <RadioInputContainer
+                name={['monitor_radio_id']}
+                operable
+                setFieldValue={'2'}
+                label="Rádio do GPS"
+                status={'processing'}
+                span={{ xs: 24, md: 6 }}
+                deviceType="GPS"
+                device="pivô"
+                request={getEditPivotDeviceMonitorTable}
+                requestChange={patchChangeMonitorRadio}
+                fieldIndex={'monitor'}
+              />
+              <RadioInputContainer
+                operable={false}
+                setFieldValue={'2'}
+                label="Rádio da Bomba"
+                status={'processing'}
+                span={{ xs: 24, md: 6 }}
+                deviceType=""
+                device=""
+              />
+            </Row>
+            <ProFormField
+              rules={[yupSync]}
+              name="name"
+              label="Nome do pivô"
+              colProps={{ xs: 24, md: 8, xl: 8 }}
+            />
+            <ProFormSelect
+              rules={[yupSync]}
+              name={['controllerconfig', 'content', 'language', 'language']}
+              label="Linguagem do dispositivo"
+              colProps={{ xs: 24, md: 8, xl: 8 }}
+              options={[
+                { label: 'English', value: 1 },
+                { label: 'Português', value: 2 },
+                { label: 'German', value: 3 },
+                { label: 'Spanish', value: 4 },
+                { label: 'Russian', value: 5 },
+              ]}
+            />
+            <ProFormDigit
+              rules={[yupSync]}
+              name={['controllerconfig', 'content', 'pivot_parameters', 'radius_last']}
+              label="Raio até a última torre"
+              colProps={{ xs: 24, md: 8 }}
+              fieldProps={{
+                addonAfter: 'm',
+                controls: false,
+              }}
+            />
+            <ProFormDigit
+              rules={[yupSync]}
+              name={['controllerconfig', 'content', 'pivot_parameters', 'flow_rate']}
+              label="Vazão"
+              colProps={{ xs: 24, md: 8 }}
+              fieldProps={{
+                addonAfter: 'm³/h',
+                controls: false,
+              }}
+            />
+            <ProFormDigit
+              rules={[yupSync]}
+              name={['controllerconfig', 'content', 'pivot_parameters', 'speed']}
+              label="Veloc. da última torre"
+              colProps={{ xs: 24, md: 8 }}
+              fieldProps={{
+                addonAfter: 'm/h',
+                controls: false,
+              }}
+            />
+            <ProFormDigit
+              rules={[yupSync]}
+              name={['controllerconfig', 'content', 'pivot_parameters', 'irrigated_area']}
+              label="Área irrigada"
+              colProps={{ xs: 24, md: 8 }}
+              fieldProps={{
+                addonAfter: 'ha',
+                controls: false,
+              }}
+            />
+            <ProFormSelect
+              rules={[yupSync]}
+              name="aux_brand_model"
+              allowClear={false}
+              options={[
+                {
+                  value: 'Bauer',
+                  label: 'Bauer',
+                },
+                {
+                  value: 'Carborundum',
+                  label: 'Carborundum',
+                },
+                {
+                  value: 'Fockink',
+                  label: 'Fockink',
+                },
+                {
+                  value: 'Irrigabras',
+                  label: 'Irrigabras',
+                },
+                {
+                  value: 'Krebs',
+                  label: 'Krebs',
+                },
+                {
+                  value: 'Reinke',
+                  label: 'Reinke',
+                },
+                {
+                  value: 'Valley',
+                  label: 'Valley',
+                },
+                {
+                  value: 'Outro',
+                  label: 'Outro',
+                },
+              ]}
+              label="Fabricante"
+              colProps={{ xs: 24, md: 8 }}
+            />
+            <ProFormDependency name={['aux_brand_model']}>
+              {({ aux_brand_model }) => {
+                const values = [
+                  'Valley',
+                  'Reinke',
+                  'Krebs',
+                  'Irrigabras',
+                  'Fockink',
+                  'Carborundum',
+                  'Bauer',
+                ];
+
+                if (!values.includes(aux_brand_model)) {
+                  return (
+                    <ProFormField
+                      rules={[yupSync]}
+                      name={['controllerconfig', 'brand_model']}
+                      label="Insira o Fabricante"
+                      colProps={{ xs: 24, md: 8 }}
+                    />
+                  );
+                }
+              }}
+            </ProFormDependency>
+
+            <ProFormSelect
+              rules={[yupSync]}
+              name={['controllerconfig', 'panel_type']}
+              options={[
+                {
+                  value: 1,
+                  label: 'Nexus',
+                },
+              ]}
+              allowClear={false}
+              label="Tipo de Painel"
+              colProps={{ xs: 24, md: 8 }}
+            />
+
+            <ProFormCheckbox
+              rules={[yupSync]}
+              name={['controllerconfig', 'content', 'voltage_limit_enable', 'voltage_limit_enable']}
+              colProps={{ xs: 24, md: 24 }}
+            >
+              Controlador de tensão
+            </ProFormCheckbox>
+
+            <ProFormDependency name={['controllerconfig']}>
+              {({ controllerconfig }) => {
+                return (
+                  <>
+                    <ProFormDigit
+                      rules={[yupSync]}
+                      name={[
+                        'controllerconfig',
+                        'content',
+                        'voltage_configurations',
+                        'minimum_voltage',
+                      ]}
+                      label="Tensão mínima de operação"
+                      disabled={
+                        !controllerconfig?.content?.voltage_limit_enable?.voltage_limit_enable
+                      }
+                      colProps={{ xs: 24, md: 8 }}
+                      fieldProps={{
+                        addonAfter: 'V',
+                        controls: false,
+                      }}
+                    />
+                    <ProFormDigit
+                      rules={[yupSync]}
+                      name={[
+                        'controllerconfig',
+                        'content',
+                        'voltage_configurations',
+                        'maximum_voltage',
+                      ]}
+                      label="Tensão máxima de operação"
+                      disabled={
+                        !controllerconfig?.content?.voltage_limit_enable?.voltage_limit_enable
+                      }
+                      colProps={{ xs: 24, md: 8 }}
+                      fieldProps={{
+                        addonAfter: 'V',
+                        controls: false,
+                      }}
+                    />
+                    <ProFormDigit
+                      rules={[yupSync]}
+                      name={[
+                        'controllerconfig',
+                        'content',
+                        'voltage_configurations',
+                        'stable_time',
+                      ]}
+                      label="Tempo limite"
+                      disabled={
+                        !controllerconfig?.content?.voltage_limit_enable?.voltage_limit_enable
+                      }
+                      colProps={{ xs: 24, md: 8 }}
+                      fieldProps={{
+                        addonAfter: 'min',
+                        controls: false,
+                      }}
+                    />
+                  </>
+                );
+              }}
+            </ProFormDependency>
+          </ProForm>
+        </>
+      ) : null}
     </ProCard>
   );
 };

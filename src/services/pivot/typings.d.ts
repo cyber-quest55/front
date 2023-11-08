@@ -60,4 +60,11 @@ declare namespace API {
   type GetPivotReportResponse = APIModels.PivotReport;
 
   type FavoritePivotConfigResponse = APIModels.PivotReport;
+
+  type PostPivotConfigParams = {
+    farmId: number;
+    pivotId: string;
+    deviceId: string;
+  };
 }
+

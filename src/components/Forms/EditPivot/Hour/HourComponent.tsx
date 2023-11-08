@@ -1,3 +1,5 @@
+import { postPivotConfig } from '@/services/pivot';
+import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
   ProForm,
@@ -5,12 +7,24 @@ import {
   ProFormDependency,
   ProFormSelect,
 } from '@ant-design/pro-components';
-import { Typography } from 'antd';
+import { useIntl, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import { App, Button, Form, Typography } from 'antd';
+import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
 
-interface IAppProps {}
+const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
+  const [form] = Form.useForm<any>();
+  const ref = React.useRef();
+  const params = useParams();
+  const { message } = App.useApp();
 
-const EditPivotHourComponent: React.FunctionComponent<IAppProps> = (props) => {
+  const postReq = useRequest(postPivotConfig, { manual: true });
+  const intl = useIntl();
+  const [loading, setLoading] = React.useState(false);
+
+  const { pivot } = props;
+
   return (
     <ProCard
       title={
@@ -21,6 +35,11 @@ const EditPivotHourComponent: React.FunctionComponent<IAppProps> = (props) => {
       ghost
       gutter={[12, 12]}
       style={{ minHeight: '60vh' }}
+      extra={
+        <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
+          Salvar
+        </Button>
+      }
     >
       <div style={{ marginBottom: 20 }}>
         <Typography.Text>Última configuração: 19 Out 2023 09:55- Internet</Typography.Text>
@@ -30,9 +49,78 @@ const EditPivotHourComponent: React.FunctionComponent<IAppProps> = (props) => {
         layout="vertical"
         rowProps={{ gutter: [8, 8] }}
         grid
+        onInit={(v2, form) => {
+          console.log(v2.controllerconfig.content.clock.day)
+          const day = v2.controllerconfig.content.clock.day
+          const hour =v2.controllerconfig.content.clock.hour
+          const year =  v2.controllerconfig.content.clock.year
+          const month = v2.controllerconfig.content.clock.month
+          const minute = v2.controllerconfig.content.clock.minute
+          const second =  v2.controllerconfig.content.clock.second
+          console.log(`${year}-${month}-${day} ${hour}:${minute}:${second}`)
+          const date = dayjs( `${year}-${month}-${day} ${hour}:${minute}:${second}`) 
+          console.log(date)
+          console.log(date.get('M'))
+          form.setFieldValue('controllerconfig', {
+            ...v2.controllerconfig,
+            content: {
+              ...v2.content,
+              clock: date,
+            },
+          });
+        }}
+        form={form}
         submitter={false}
         name="HourForm"
-        initialValues={{ deviceHour: 'select' }}
+        initialValues={{ deviceHour: 'others', ...pivot }}
+        onFinish={async (v2: any) => {
+          setLoading(true);
+
+          try {
+            const date = dayjs(v2.controllerconfig?.content?.clock);
+            const newObj = {
+              ...pivot.controllerconfig,
+              ...v2.controllerconfig,
+              content: {
+                ...pivot.controllerconfig.content,
+                ...v2.controllerconfig.content,
+                clock: {
+                  day: date.get('D'),
+                  hour: date.get('h'),
+                  year: date.get('y'),
+                  month: date.get('M') + 1,
+                  minute: date.get('m'),
+                  second: date.get('s'),
+                },
+              },
+              name_pivot_on_config: pivot.name,
+            };
+
+            delete newObj.uuid;
+            delete newObj.device;
+            delete newObj.name;
+
+            console.log('aqui', newObj);
+
+            await postReq.runAsync(
+              {
+                farmId: params.farmId as any,
+                pivotId: params.pivotId as any,
+                deviceId: pivot.control as any,
+              },
+              newObj,
+            );
+
+            props.queryPivotByIdStart({
+              farmId: params.farmId as any,
+              pivotId: params.pivotId as any,
+            });
+            message.success('Configs Atualizadas com Sucesso');
+          } catch (err) {
+            message.success('Configs Atualizadas com Sucesso');
+          }
+          setLoading(false);
+        }}
       >
         <ProFormSelect
           label="Relógio do equipamento"
@@ -54,6 +142,7 @@ const EditPivotHourComponent: React.FunctionComponent<IAppProps> = (props) => {
           {({ deviceHour }) => {
             return (
               <ProFormDateTimePicker
+                name={['controllerconfig', 'content', 'clock']}
                 label="Data do equipamento"
                 disabled={!(deviceHour === 'others')}
               />

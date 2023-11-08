@@ -10,26 +10,38 @@ import FormPivotSegmentationContainer from '@/components/Forms/Segmentation/Segm
 import EditPivotFavoriteHistoryTable from '@/components/Tables/EditPivotFavoriteTable';
 import EditPivotHistoryTable from '@/components/Tables/EditPivotHistoryTable';
 import { useScreenHook } from '@/hooks/screen';
+import { queryPivotByIdStart } from '@/models/pivot-by-id';
 import { SaveOutlined } from '@ant-design/icons';
-import { PageContainer, ProCard } from '@ant-design/pro-components';
+import { PageContainer, ProCard, ProFormSelect } from '@ant-design/pro-components';
+import { Dispatch, useParams } from '@umijs/max';
 import { Button } from 'antd';
 import React, { useState } from 'react';
 
-const NoFoundPage: React.FC = () => {
+import { connect } from 'dva';
+interface Props {
+  queryPivotByIdStart: typeof queryPivotByIdStart;
+}
+
+const NoFoundPage: React.FunctionComponent<Props> = (props) => {
   const [tab, setTab] = useState('tab1');
   const [tabCont, setTabCont] = useState('tab1');
-  const [isSubmiting] = useState(false);
+  const params = useParams();
 
   const { xs } = useScreenHook();
 
+  React.useEffect(() => {
+    props.queryPivotByIdStart({ farmId: params.farmId as any, pivotId: params.pivotId as any });
+  }, []);
+
+ 
   return (
     <PageContainer
       tabBarExtraContent={
-        tabCont === 'tab1' ? (
-          <Button icon={<SaveOutlined />} type="primary" loading={isSubmiting}>
-            Salvar{' '}
-          </Button>
-        ) : null
+        <ProFormSelect fieldProps={{value: 'pivo1'}} initialValue={"pivo1"} noStyle options={[
+          {value: 'pivo1', label: 'asdsadasd'},
+          {value: 'pivo2', label: 'Pivô 2'},
+          {value: 'pivo3', label: 'Pivô 3'},
+        ]}/>
       }
       tabList={[
         {
@@ -75,9 +87,9 @@ const NoFoundPage: React.FC = () => {
                     lng={-47.0598314}
                     hasNorthReference={true}
                     secondLocationName="test"
-                    onChangeSecondLocation={(value: string) => null}
+                    onChangeSecondLocation={() => null}
                     firstLocationName="testing"
-                    onChangeFirstLocation={(value: string) => null}
+                    onChangeFirstLocation={() => null}
                   />
                 ),
               },
@@ -151,4 +163,10 @@ const NoFoundPage: React.FC = () => {
   );
 };
 
-export default NoFoundPage;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NoFoundPage);

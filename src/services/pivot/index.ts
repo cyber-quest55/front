@@ -85,3 +85,69 @@ export async function favoritePivotConfig(
     method: 'PATCH',
    data: options});
 }
+
+
+/** GET /farms/${farmId}/pivots/${pivotId}/devices/control/ */
+export async function getEditPivotDeviceControlTable(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/devices/control`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** GET /farms/${farmId}/pivots/${pivotId}/devices/monitor/ */
+export async function getEditPivotDeviceMonitorTable(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/devices/monitor`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/control/ */
+export async function patchChangeControlRadio(
+  props: any,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/control/`, {
+    method: 'PATCH',
+    params: options,
+  });
+}
+
+/** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/monitor/ */
+export async function patchChangeMonitorRadio(
+  props: any,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/monitor/`, {
+    method: 'PATCH',
+    params: options,
+  });
+}
+
+/** POST /farms/${farmId}/pivots/${pivotId}/device/${deviceId}/config/ */
+export async function postPivotConfig(
+  props: API.PostPivotConfigParams,
+  options: APIModels.PostPivotConfig,
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/device/${props.deviceId}/config/`, {
+    method: 'POST',
+    data: options,
+  });
+}

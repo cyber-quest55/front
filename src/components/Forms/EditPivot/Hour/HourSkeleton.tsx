@@ -4,7 +4,7 @@ interface IAppProps {
 }
 
 const EditPivotHourSkeleton: React.FunctionComponent<IAppProps> = (props) => {
-  return <div></div>;
+  return <div>loading</div>;
 };
 
 export default EditPivotHourSkeleton;
