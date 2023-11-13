@@ -1,28 +1,44 @@
 import { useScreenHook } from '@/hooks/screen';
+import { GetPivotByIdModelProps, queryPivotByIdStart } from '@/models/pivot-by-id';
+import { Dispatch } from '@umijs/max';
+import { connect } from 'dva';
 import * as React from 'react';
-import EditPivotPluviometerSkeleton from './PluviometerSkeleton';
-import EditPivotGeneralContainer from '../General/GeneralContainer';
-import EditPivotPluviometerMobile from './PluviometerMobile';
 import EditPivotPluviometerComponent from './PluviometeComponent';
+import EditPivotPluviometerSkeleton from './PluviometerSkeleton';
 
 interface IAppProps {
+  pivotById: GetPivotByIdModelProps;
+  queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 
 const EditPivotPluviometerContainer: React.FunctionComponent<IAppProps> = (props) => {
-    const { xs } = useScreenHook();
+  const { xs } = useScreenHook();
 
- 
-    return (
-      <>
-        {false ? (
-          <EditPivotPluviometerSkeleton  />
-        ) : xs ? (
-          <EditPivotPluviometerMobile />
-        ) : (
-          <EditPivotPluviometerComponent />
-        )}
-      </>
-    );
+  return (
+    <>
+      {props.pivotById.loading ? (
+        <EditPivotPluviometerSkeleton />
+      ) : xs ? (
+        <EditPivotPluviometerComponent
+          pivot={props.pivotById.unformated}
+          queryPivotByIdStart={props.queryPivotByIdStart}
+        />
+      ) : (
+        <EditPivotPluviometerComponent
+          pivot={props.pivotById.unformated}
+          queryPivotByIdStart={props.queryPivotByIdStart}
+        />
+      )}
+    </>
+  );
 };
 
-export default EditPivotPluviometerContainer;
+const mapStateToProps = ({ pivotById }: any) => ({
+  pivotById,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditPivotPluviometerContainer);

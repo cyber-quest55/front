@@ -1,3 +1,6 @@
+import { postPivotConfig } from '@/services/pivot';
+import { yupValidator } from '@/utils/adapters/yup';
+import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
   ProForm,
@@ -6,12 +9,103 @@ import {
   ProFormDigit,
   ProFormSelect,
 } from '@ant-design/pro-components';
-import { Col, Divider, Typography } from 'antd';
+import { useIntl, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import { App, Button, Col, Divider, Form, Typography } from 'antd';
 import * as React from 'react';
+import * as yup from 'yup';
 
-interface IAppProps {}
+const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
+  const [form] = Form.useForm<any>();
+  const { message } = App.useApp();
+  const params = useParams();
+  const postReq = useRequest(postPivotConfig, { manual: true });
+  const intl = useIntl();
+  const [loading, setLoading] = React.useState(false);
 
-const EditPivotPumpComponent: React.FunctionComponent<IAppProps> = (props) => {
+  const schema = yup.object().shape({
+    name: yup.string().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+
+    aux_brand_model: yup.string().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+
+    controllerconfig: yup.object().shape({
+      content: yup.object().shape({
+        power_delay: yup.object().shape({
+          power_delay: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+        }),
+
+        pressure_config: yup.object().shape({
+          read_pressure_by: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+
+          pump_time_out: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+
+          pump_press_delay: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+
+          pump_press_switch: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+
+          press_sensor_min_range: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+
+          press_sensor_max_range: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+
+          sensor_scale_end: yup.number().required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          ),
+        }),
+      }),
+      injection_pump: yup.boolean().required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+      potency: yup.number().required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+    }),
+  });
+
+  const yupSync = yupValidator(schema, form.getFieldsValue);
+
+  const { pivot } = props;
   return (
     <ProCard
       title={
@@ -20,6 +114,11 @@ const EditPivotPumpComponent: React.FunctionComponent<IAppProps> = (props) => {
         </Typography.Title>
       }
       ghost
+      extra={
+        <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
+          Salvar
+        </Button>
+      }
       gutter={[12, 12]}
       style={{ minHeight: '60vh' }}
     >
@@ -31,22 +130,64 @@ const EditPivotPumpComponent: React.FunctionComponent<IAppProps> = (props) => {
         layout="vertical"
         rowProps={{ gutter: [8, 8] }}
         grid
+        form={form}
         submitter={false}
-        name="HourForm"
-        initialValues={{ pressureListener: 'off' }}
+        name="PumpForm"
+        onFinish={async (values: any) => {
+          setLoading(true);
+          try {
+            const newObj = {
+              ...pivot.controllerconfig,
+              ...values.controllerconfig,
+              content: {
+                ...pivot.controllerconfig.content,
+                ...values.controllerconfig.content,
+              },
+              name_pivot_on_config: pivot.name,
+            };
+
+            delete newObj.uuid;
+            delete newObj.device;
+
+            await postReq.runAsync(
+              {
+                farmId: params.farmId as any,
+                pivotId: params.pivotId as any,
+                deviceId: pivot.control as any,
+              },
+              newObj,
+            );
+
+            await props.queryPivotByIdStart({
+              farmId: params.farmId as any,
+              pivotId: params.pivotId as any,
+            });
+
+            message.success('Configs Atualizadas com Sucesso');
+          } catch (err) {
+            message.error('Fail');
+          }
+
+          setLoading(false);
+        }}
+        initialValues={{ ...pivot }}
       >
         <ProFormDigit
+          rules={[yupSync]}
+          name={['controllerconfig', 'potency']}
           label="Potência da bomba"
           colProps={{ xs: 24, md: 6 }}
           fieldProps={{
-            suffix: 'kW',
+            addonAfter: 'kW',
           }}
         />
         <ProFormDigit
+          rules={[yupSync]}
+          name={['controllerconfig', 'content', 'power_delay', 'power_delay']}
           label="Tempo de energia"
           colProps={{ xs: 24, md: 6 }}
           fieldProps={{
-            suffix: 'min',
+            addonAfter: 'min',
           }}
         />
         <Col style={{ padding: 0 }} span={24}>
@@ -57,75 +198,100 @@ const EditPivotPumpComponent: React.FunctionComponent<IAppProps> = (props) => {
           </Typography.Title>
         </Col>
         <ProFormSelect
+          rules={[yupSync]}
+          name={['controllerconfig', 'content', 'pressure_config', 'read_pressure_by']}
           label="Leitura de pressão"
           colProps={{ xs: 24, md: 24 }}
           options={[
             {
-              value: 'off',
+              value: 0,
               label: 'Desligado',
             },
             {
-              value: 'byPressor',
+              value: 1,
               label: 'Por pressostato',
             },
             {
-              value: 'bySensorPressor',
+              value: 2,
               label: 'Por Sensor de pressão',
             },
           ]}
-          name="pressureListener"
         />
 
-        <ProFormDependency name={['pressureListener']}>
-          {({ pressureListener }) => {
+        <ProFormDependency name={['controllerconfig']}>
+          {({ controllerconfig }) => {
+            const pressureListener = controllerconfig.content.pressure_config.read_pressure_by;
+
             return (
               <>
                 <ProFormDigit
+                  rules={[yupSync]}
+                  name={['controllerconfig', 'content', 'pressure_config', 'pump_time_out']}
                   label="Tempo de bomba"
-                  disabled={pressureListener === 'off'}
+                  disabled={pressureListener === 0}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
-                    suffix: 'min',
+                    addonAfter: 'min',
                   }}
                 />
                 <ProFormDigit
+                  rules={[yupSync]}
+                  name={['controllerconfig', 'content', 'pressure_config', 'pump_press_delay']}
                   label="Tempo de retardo"
-                  disabled={pressureListener === 'off'}
+                  disabled={pressureListener === 0}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
-                    suffix: 's',
+                    addonAfter: 's',
                   }}
                 />
                 <ProFormDigit
+                  rules={[yupSync]}
+                  name={['controllerconfig', 'content', 'pressure_config', 'pump_press_switch']}
                   label="Tempo instável de pressostato"
-                  disabled={pressureListener === 'off'}
+                  disabled={pressureListener === 0}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
-                    suffix: 'min',
+                    addonAfter: 'min',
                   }}
                 />
                 <ProFormDigit
+                  rules={[yupSync]}
+                  name={[
+                    'controllerconfig',
+                    'content',
+                    'pressure_config',
+                    'press_sensor_min_range',
+                  ]}
                   label="Valor mínimo do sensor"
-                  disabled={pressureListener === 'off' || pressureListener === 'byPressor'}
+                  disabled={pressureListener === 0 || pressureListener === 1}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
-                    suffix: 'bar',
+                    addonAfter: 'bar',
                   }}
                 />
                 <ProFormDigit
+                  rules={[yupSync]}
+                  name={[
+                    'controllerconfig',
+                    'content',
+                    'pressure_config',
+                    'press_sensor_max_range',
+                  ]}
                   label="Valor máximo do sensor"
-                  disabled={pressureListener === 'off' || pressureListener === 'byPressor'}
+                  disabled={pressureListener === 0 || pressureListener === 1}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
-                    suffix: 'bar',
+                    addonAfter: 'bar',
                   }}
                 />
                 <ProFormDigit
+                  rules={[yupSync]}
+                  name={['controllerconfig', 'content', 'pressure_config', 'sensor_scale_end']}
                   label="Escala do sensor"
-                  disabled={pressureListener === 'off' || pressureListener === 'byPressor'}
+                  disabled={pressureListener === 0 || pressureListener === 1}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
-                    suffix: 'bar',
+                    addonAfter: 'bar',
                   }}
                 />
               </>
@@ -139,7 +305,9 @@ const EditPivotPumpComponent: React.FunctionComponent<IAppProps> = (props) => {
             Bomba de Fertirrigação
           </Typography.Title>
         </Col>
-        <ProFormCheckbox>Ativar Fertirrigação</ProFormCheckbox>
+        <ProFormCheckbox rules={[yupSync]} name={['controllerconfig', 'injection_pump']}>
+          Ativar Fertirrigação
+        </ProFormCheckbox>
       </ProForm>
     </ProCard>
   );

@@ -1,26 +1,44 @@
 import { useScreenHook } from '@/hooks/screen';
+import { GetPivotByIdModelProps, queryPivotByIdStart } from '@/models/pivot-by-id';
+import { Dispatch } from '@umijs/max';
+import { connect } from 'dva';
 import * as React from 'react';
-import EditPivotRushHourSkeleton from './RushHourSkeleton';
-import EditPivotRushHourMobile from './RushHourMobile';
 import EditPivotRushHourComponent from './RushHourComponent';
+import EditPivotRushHourSkeleton from './RushHourSkeleton';
 
 interface IAppProps {
+  pivotById: GetPivotByIdModelProps;
+  queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 
 const EditPivotRushHourContainer: React.FunctionComponent<IAppProps> = (props) => {
-    const { xs } = useScreenHook();
+  const { xs } = useScreenHook();
 
-    return (
-      <>
-        {false ? (
-          <EditPivotRushHourSkeleton  />
-        ) : xs ? (
-          <EditPivotRushHourMobile />
-        ) : (
-          <EditPivotRushHourComponent/>
-        )}
-      </>
-    );
+  return (
+    <>
+      {props.pivotById.loading ? (
+        <EditPivotRushHourSkeleton />
+      ) : xs ? (
+        <EditPivotRushHourComponent
+          pivot={props.pivotById.unformated}
+          queryPivotByIdStart={props.queryPivotByIdStart}
+        />
+      ) : (
+        <EditPivotRushHourComponent
+          pivot={props.pivotById.unformated}
+          queryPivotByIdStart={props.queryPivotByIdStart}
+        />
+      )}
+    </>
+  );
 };
 
-export default EditPivotRushHourContainer;
+const mapStateToProps = ({ pivotById }: any) => ({
+  pivotById,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditPivotRushHourContainer);

@@ -1,25 +1,46 @@
 import { useScreenHook } from '@/hooks/screen';
-import * as React from 'react'; 
-import EditPivotAutoreversionMobile from './AutoreversionMobile';
+import { GetPivotByIdModelProps, queryPivotByIdStart } from '@/models/pivot-by-id';
+import { Dispatch } from '@umijs/max';
+import { connect } from 'dva';
+import * as React from 'react';
 import EditPivotAutoreversionComponent from './AutoreversionComponent';
+import EditPivotAutoreversionMobile from './AutoreversionMobile';
 
 interface IEditPivotAutoreversionContainer {
+  pivotById: GetPivotByIdModelProps;
+  queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 
-const EditPivotAutoreversionContainer: React.FunctionComponent<IEditPivotAutoreversionContainer> = (props) => {
+const EditPivotAutoreversionContainer: React.FunctionComponent<IEditPivotAutoreversionContainer> = (
+  props,
+) => {
   const { xs } = useScreenHook();
 
   return (
     <>
-      {false ? (
+      {props.pivotById.loading ? (
         <EditPivotAutoreversionMobile />
       ) : xs ? (
-        <EditPivotAutoreversionComponent />
+        <EditPivotAutoreversionComponent
+          pivot={props.pivotById.unformated}
+          queryPivotByIdStart={props.queryPivotByIdStart}
+        />
       ) : (
-        <EditPivotAutoreversionComponent  />
+        <EditPivotAutoreversionComponent
+          pivot={props.pivotById.unformated}
+          queryPivotByIdStart={props.queryPivotByIdStart}
+        />
       )}
     </>
   );
 };
 
-export default EditPivotAutoreversionContainer;
+const mapStateToProps = ({ pivotById }: any) => ({
+  pivotById,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditPivotAutoreversionContainer);

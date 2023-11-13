@@ -1,4 +1,5 @@
 import { postPivotConfig } from '@/services/pivot';
+import { yupValidator } from '@/utils/adapters/yup';
 import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
@@ -11,6 +12,7 @@ import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Button, Form, Typography } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
+import * as yup from 'yup';
 import * as React from 'react';
 
 const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
@@ -50,17 +52,13 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
         rowProps={{ gutter: [8, 8] }}
         grid
         onInit={(v2, form) => {
-          console.log(v2.controllerconfig.content.clock.day)
-          const day = v2.controllerconfig.content.clock.day
-          const hour =v2.controllerconfig.content.clock.hour
-          const year =  v2.controllerconfig.content.clock.year
-          const month = v2.controllerconfig.content.clock.month
-          const minute = v2.controllerconfig.content.clock.minute
-          const second =  v2.controllerconfig.content.clock.second
-          console.log(`${year}-${month}-${day} ${hour}:${minute}:${second}`)
-          const date = dayjs( `${year}-${month}-${day} ${hour}:${minute}:${second}`) 
-          console.log(date)
-          console.log(date.get('M'))
+          const day = v2.controllerconfig.content?.clock?.day || 1
+          const hour =v2.controllerconfig.content?.clock?.hour || 1
+          const year =  v2.controllerconfig.content?.clock?.year || 1
+          const month = v2.controllerconfig.content?.clock?.month || 1
+          const minute = v2.controllerconfig.content?.clock?.minute || 1
+          const second =  v2.controllerconfig.content?.clock?.second || 1 
+          const date = dayjs( `${year}-${month}-${day} ${hour}:${minute}:${second}`)  
           form.setFieldValue('controllerconfig', {
             ...v2.controllerconfig,
             content: {

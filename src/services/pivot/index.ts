@@ -151,3 +151,16 @@ export async function postPivotConfig(
     data: options,
   });
 }
+
+/** PATCH /farms/${farmId}/pivots/${pivotId} */
+export async function patchPivotGlobalConfig(
+  props: API.GetEditPivotHistoryParams,
+  options: any,
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
