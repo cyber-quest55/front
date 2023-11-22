@@ -31,7 +31,7 @@ const EditPivotAutoreversionComponent: React.FunctionComponent<any> = (props) =>
     <ProCard
       title={
         <Typography.Title style={{ margin: 0 }} level={4}>
-          AutoReversão
+          Autoreversão
         </Typography.Title>
       }
       extra={

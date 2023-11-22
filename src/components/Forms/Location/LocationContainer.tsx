@@ -7,11 +7,19 @@ import LocationFormMobile from './LocationMobile';
 import LocationFormSkeleton from './LocationSkeleton';
 
 interface ILocationFormContainerProps {
-  firstLocationName: string;
-  secondLocationName?: string;
-  onChangeFirstLocation: any;
-  onChangeSecondLocation?: any;
+  locations: {
+    color: string;
+    name: string;
+    value: {
+      lat: number;
+      lng: number;
+    };
+    marker: any;
+    onChange: any;
+  }[];
   hasNorthReference?: boolean;
+  onChangeNorth?: any;
+  northValue: boolean;
   lat: number;
   lng: number;
 }
@@ -35,7 +43,7 @@ const LocationFormContainer: React.FunctionComponent<ILocationFormContainerProps
       {false ? (
         <LocationFormSkeleton />
       ) : xs ? (
-        <LocationFormMobile />
+        <LocationFormComponent  {...props} geoLocationContext={geoContext}/>
       ) : (
         <LocationFormComponent {...props} geoLocationContext={geoContext} />
       )}

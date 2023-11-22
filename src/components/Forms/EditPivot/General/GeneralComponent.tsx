@@ -121,6 +121,7 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
       ghost
       gutter={[12, 12]}
     >
+      
       {pivot ? (
         <>
           <div style={{ marginBottom: 20 }}>
@@ -196,11 +197,11 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 'Bauer',
               ];
 
-              if (values.includes(pvalues.controllerconfig.brand_model)) {
-                pform.setFieldValue('aux_brand_model', pvalues.controllerconfig.brand_model);
+              if (values.includes(pvalues?.controllerconfig?.brand_model)) {
+                pform.setFieldValue('aux_brand_model', pvalues?.controllerconfig?.brand_model);
               }
 
-              if (!values.includes(pvalues.controllerconfig.brand_model)) {
+              if (!values.includes(pvalues?.controllerconfig?.brand_model)) {
                 pform.setFieldValue('aux_brand_model', 'Outro');
               }
             }}

@@ -11,7 +11,7 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { App, Button, Col, Form, Typography } from 'antd';
+import { App, Button, Col, Form, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import * as yup from 'yup';
@@ -240,7 +240,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
         <ProFormDependency name={['firstHour']}>
           {({ firstHour }) => {
             return (
-              <>
+              <Space>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_friday']}
                   colProps={{ xs: 24, md: 1 }}
@@ -290,7 +290,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                 >
                   SAB
                 </ProFormCheckbox>
-              </>
+              </Space>
             );
           }}
         </ProFormDependency>

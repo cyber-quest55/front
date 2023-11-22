@@ -1,15 +1,17 @@
 import SegmentedPivotDevice from '@/components/Devices/SegmentedPivot';
 import { useMapHook } from '@/hooks/map';
 import { useScreenHook } from '@/hooks/screen';
+import { postPivotConfig } from '@/services/pivot';
+import { SaveOutlined } from '@ant-design/icons';
 import { EditableProTable, ProCard, ProColumns, ProFormDigit } from '@ant-design/pro-components';
 import { GoogleMap } from '@react-google-maps/api';
-import { Alert, Typography } from 'antd';
+import { useIntl, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import { Alert, App, Button, Typography } from 'antd';
 import * as React from 'react';
-
-interface Props {}
-
+ 
 type DataSourceType = {
-  id: React.Key;
+  id: any;
   name?: string;
   begin?: number;
   end?: number;
@@ -19,6 +21,14 @@ type DataSourceType = {
   color: string;
 };
 
+const colors = [
+  "#1d39c4",
+  "#d3adf7",
+  "#e6fffb",
+  "#ffa39e",
+  "#b7eb8f"
+]
+
 const equiData = (
   record: DataSourceType,
   datasource: DataSourceType[],
@@ -26,13 +36,17 @@ const equiData = (
 ): DataSourceType[] => {
   const length = datasource.length - 1;
   if (record.id === datasource[0].id) {
-    datasource[1].begin = 0;
-    return datasource.filter((item) => item.id !== record.id);
+    if (datasource[1].begin) {
+      datasource[1].begin = 0;
+      return datasource.filter((item) => item.id !== record.id);
+    }
   }
 
   if (record.id !== datasource[length].id) {
-    datasource[index + 1].begin = datasource[index - 1].end;
-    return datasource.filter((item) => item.id !== record.id);
+    if (datasource[index + 1].begin) {
+      datasource[index + 1].begin = datasource[index - 1].end;
+      return datasource.filter((item) => item.id !== record.id);
+    }
   }
   return datasource.filter((item) => item.id !== record.id);
 };
@@ -57,18 +71,25 @@ const formatDatasource = (
   return datasource;
 };
 
-const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) => {
+const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => {
+  const { pivot } = props;
+  const positions = pivot?.controllerconfig?.content?.pivot_positions;
+
+  const intl = useIntl();
+  const params = useParams();
+  const { message } = App.useApp();
+  const { xs } = useScreenHook();
+  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(15, {
+    lat: positions.latitude_center,
+    lng: positions.longitude_center,
+  });
+
   const [editableKeys, setEditableRowKeys] = React.useState<React.Key[]>([]);
   const [dataSource, setDataSource] = React.useState<any[]>([]);
   const [position, setPosition] = React.useState<'top' | 'bottom' | 'hidden'>('bottom');
-  const [maxAngle, setMaxAngle] = React.useState<any>(360);
+  const [maxAngle, setMaxAngle] = React.useState<any>(360); 
 
-  const { xs } = useScreenHook();
-
-  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(15, {
-    lat: 38.149847,
-    lng: -122.459345,
-  });
+  const postReq = useRequest(postPivotConfig, { manual: true });
 
   const containerStyle = {
     width: '100%',
@@ -92,11 +113,7 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
     {
       title: 'Tipo do Plantio',
       dataIndex: 'plantingType',
-      formItemProps: () => {
-        return {
-          rules: [{ required: true, message: 'required field' }],
-        };
-      },
+      
       editable: (text, record, index) => {
         return index !== 0;
       },
@@ -138,7 +155,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
           ],
         };
       },
-
+      render: (text) => {
+        return <>{text}°</>;
+      },
       width: '14%',
     },
     {
@@ -151,7 +170,6 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
           rules: [{ required: true, message: 'required field' }],
         };
       },
-      // 第一行不允许编辑
       editable: (text, record, index) => {
         return index !== 0;
       },
@@ -166,7 +184,6 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
           rules: [{ required: true, message: 'required field ' }],
         };
       },
-      // 第一行不允许编辑
       editable: (text, record, index) => {
         return index !== 0;
       },
@@ -185,62 +202,22 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
         >
           Edit
         </a>,
-        <a
-          key="delete"
-          onClick={() => {
-            setDataSource(equiData(record, dataSource, index));
-          }}
-        >
-          Delete
-        </a>,
+        dataSource.length > 1 ? (
+          <a
+            key="delete"
+            onClick={() => {
+              setDataSource(equiData(record, dataSource, index));
+            }}
+          >
+            Delete
+          </a>
+        ) : null,
       ],
     },
   ];
-
-  const defaultData: DataSourceType[] = [
-    {
-      id: 624748504,
-      name: 'Segmento 1',
-      begin: 0,
-      end: 100,
-      state: 'open',
-      plantingDate: '2020-01-01',
-      harvestDate: '2020-01-01',
-      color: '#ff0',
-    },
-    {
-      id: 6247483504,
-      name: 'Segmento 2',
-      begin: 100,
-      end: 150,
-      state: 'open',
-      plantingDate: '2020-01-01',
-      harvestDate: '2020-01-01',
-      color: '#0ff',
-    },
-    {
-      id: 62474334,
-      name: 'Segmento 1',
-      begin: 150,
-      end: 220,
-      state: 'open',
-      plantingDate: '2020-01-01',
-      harvestDate: '2020-01-01',
-      color: '#f30',
-    },
-    {
-      id: 555504,
-      name: 'Segmento 1',
-      begin: 220,
-      end: 280,
-      state: 'open',
-      plantingDate: '2020-01-01',
-      harvestDate: '2020-01-01',
-      color: '#03f',
-    },
-  ];
-
+ 
   React.useEffect(() => {
+    /** Caso já tenha fechado o circulo*/
     if (dataSource.length > 0) {
       if (dataSource[dataSource.length - 1]?.end === maxAngle) {
         setPosition('hidden');
@@ -254,12 +231,82 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
   }, [dataSource]);
 
   React.useEffect(() => {
+    /** Filtrar todos após ter mudado o ângulo máximo*/
     const dt = dataSource.filter((item) => item.end <= maxAngle);
     setDataSource(dt);
   }, [maxAngle]);
 
+  const onFinish = async () => {
+    try {
+      const segments_crop = dataSource.map((item, index) => ({
+        crop_harvest_date: item.harvestDate,
+        crop_plant_date: item.plantingDate,
+        name: item.name,
+        number_editing: index,
+        segment_type: item.plantingType || '',
+      }));
+
+      const segments = dataSource.map((item, index) => ({
+        angle_end: item.end,
+        angle_start: item.begin,
+        number_editing: index,
+      }));
+
+      const newObj = {
+        content: {
+          ...pivot.controllerconfig.content,
+          segments,
+          sector: {
+            ...pivot.controllerconfig.content.sector,
+            end_angle: maxAngle,
+          },
+        },
+        name_pivot_on_config: pivot.controllerconfig.name,
+        segments_crop,
+        brand_model: pivot.controllerconfig.brand_model,
+        equipment: pivot.controllerconfig.equipment,
+        injection_pump: pivot.controllerconfig.injection_pump,
+        kwh_out_of_peak: pivot.controllerconfig.kwh_out_of_peak,
+        kwh_peak: pivot.controllerconfig.kwh_peak,
+        kwh_reduced: pivot.controllerconfig.kwh_reduced,
+        message_subtype: pivot.controllerconfig.message_subtype,
+        panel_type: pivot.controllerconfig.panel_type,
+        potency: pivot.controllerconfig.potency,
+      };
+
+      await postReq.runAsync(
+        {
+          farmId: params.farmId as any,
+          pivotId: params.pivotId as any,
+          deviceId: pivot.control as any,
+        },
+        newObj as any,
+      );
+
+      await props.queryPivotByIdStart({
+        farmId: params.farmId as any,
+        pivotId: params.pivotId as any,
+      });
+
+      message.success('Configs Atualizadas com Sucesso');
+    } catch (err) {
+      message.error('Fail');
+    }
+  };
+
+  
   return (
-    <ProCard ghost gutter={[16, 8]} title="Descrição" wrap>
+    <ProCard
+      ghost
+      gutter={[16, 8]}
+      title="Segmentos e Plantio"
+      wrap
+      extra={
+        <Button loading={postReq.loading} icon={<SaveOutlined />} type="primary" onClick={onFinish}>
+          Salvar
+        </Button>
+      }
+    >
       <ProCard ghost gutter={[16, 8]} colSpan={{ md: 24 }} wrap>
         <Typography.Text>
           Em alguns pivôs, é comum segmentar os pivôs em duas ou mais partes devido à variedade
@@ -296,12 +343,12 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
             fullscreenControl: false,
             streetViewControl: false,
           }}
-          zoom={zoom}
+          zoom={zoom} 
         >
-          <SegmentedPivotDevice
-            referenced={{ lat: 38.15433787178924, lng: -122.459245319599 }}
+          <SegmentedPivotDevice 
+            center={{ lat: positions.latitude_center, lng: positions.longitude_center }}
+            referenced={{ lat: positions.latitude_reference, lng: positions.longitude_reference }}
             segments={dataSource}
-            center={{ lat: 38.149847, lng: -122.459345 }}
           />
         </GoogleMap>
       </ProCard>
@@ -321,17 +368,39 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
                     id: (Math.random() * 1000000).toFixed(0),
                     begin: index === 0 ? 0 : dataSource[index - 1]?.end,
                     end: maxAngle,
+                    color: colors[index]
                   }),
                 }
               : (false as any)
           }
           loading={false}
           columns={columns}
-          request={async () => ({
-            data: defaultData,
-            total: 3,
-            success: true,
-          })}
+          request={async () => {
+            const newData = []
+
+            for(let i = 0; i < pivot?.controllerconfig?.content?.segments?.length; i++){
+              const segment = pivot?.controllerconfig?.content?.segments[i];
+              const group =  pivot?.controllerconfig?.segments_crop[i];
+
+              newData.push({
+                name: group.name,
+                plantingType: group.segment_type,
+                begin: segment.angle_start,
+                end: segment.angle_end,
+                plantingDate: group.crop_plant_date,
+                harvestDate: group.crop_harvest_date,
+                color: colors[i],
+                id: `key-table-segment-${i}`,
+               } as any)
+            }
+
+            return {
+              data: newData,
+              total: pivot?.controllerconfig?.content?.segments?.length,
+              success: true,
+              pageSize: 4
+            };
+          }}
           ghost
           value={dataSource}
           onChange={setDataSource as any}
@@ -339,7 +408,6 @@ const FormPivotSegmentationComponent: React.FunctionComponent<Props> = (props) =
             type: 'multiple',
             editableKeys,
             onSave: async (_, data) => {
-              console.log('data', data);
               if (dataSource.find((item) => item.id === data.id)) {
                 setDataSource(formatDatasource(data, dataSource, data.index as number));
               }

@@ -1,7 +1,12 @@
 import { Circle, InfoWindowF, Polygon, Polyline } from '@react-google-maps/api';
 import { Typography } from 'antd';
 import React, { useState } from 'react';
-import { computeDistanceBetween, computeOffset, LatLng } from 'spherical-geometry-js';
+import {
+  computeDistanceBetween,
+  computeHeading,
+  computeOffset,
+  LatLng,
+} from 'spherical-geometry-js';
 
 export type SegmentedPivotDeviceProps = {
   /**
@@ -13,7 +18,6 @@ export type SegmentedPivotDeviceProps = {
    * Final of pivot
    */
   referenced: { lat: number; lng: number };
-
   /**
    * All of the segments
    */
@@ -38,8 +42,8 @@ const circleOptions = {
   zIndex: 1,
 };
 
-
 const RenderSegment: React.FC<any> = (props) => {
+  const [clickPosition, setClickPosition] = useState(null);
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
 
   /** Props */
@@ -48,7 +52,7 @@ const RenderSegment: React.FC<any> = (props) => {
   const centerLng = props.center.lng; // Longitude
 
   // Raio em metros
-  const radiusMeters = 500; // 10 km
+  const radiusMeters = props.radius;
 
   // Diferença angular em graus que você deseja mover
   const startAngle = props.segment.begin;
@@ -69,14 +73,24 @@ const RenderSegment: React.FC<any> = (props) => {
         Math.sin(angularDifferenceRadians);
 
     points.push({ lat: newLat, lng: newLng });
+    
   }
+
+  const handleClick = (event: any) => {
+    const clickedPosition = event.latLng.toJSON();
+    setClickPosition(clickedPosition);
+  };
 
   return (
     <>
       <Polygon
         onMouseOver={() => setInfoWindowVisible(true)}
-        onMouseOut={() => setInfoWindowVisible(false)}
+        onMouseOut={() => {
+          setInfoWindowVisible(false)
+          setClickPosition(null)
+        }}
         paths={points}
+        onClick={handleClick}
         options={{
           strokeColor: 'white',
           strokeOpacity: 1,
@@ -85,12 +99,9 @@ const RenderSegment: React.FC<any> = (props) => {
           fillOpacity: 0.35,
         }}
       />
-      {infoWindowVisible ? (
+      {infoWindowVisible &&  clickPosition ? (
         <InfoWindowF
-          position={{
-            lat: centerLat,
-            lng: centerLng,
-          }}
+          position={clickPosition}
           options={{
             zIndex: 12,
           }}
@@ -114,14 +125,8 @@ const RenderSegment: React.FC<any> = (props) => {
 };
 
 const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
-  const lineSymbol = {
-    path: 'M 0,-1 0,1',
-    strokeOpacity: 1,
-    scale: 2,
-  };
-
-  const centerLat = props.center.lat; // Latitud;
-  const centerLng = props.center.lng; // Longitude
+  const centerLat = props.center.lat;
+  const centerLng = props.center.lng;
 
   const referencedLat = props.referenced.lat;
   const referencedLng = props.referenced.lng;
@@ -130,8 +135,6 @@ const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
   const referencePositionGMaps = new LatLng(referencedLat, referencedLng);
 
   const referenceRadius = computeDistanceBetween(centerPositionGMaps, referencePositionGMaps);
-
-  const endIrrigationDashedLine = computeOffset(centerPositionGMaps, referenceRadius, 0);
 
   const getPolylines = () => {
     let nextAngle = 0;
@@ -152,10 +155,25 @@ const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
     });
   };
 
+  // Coordenadas do ponto na circunferência que você deseja calcular o ângulo
+  const pointLat = props.referenced.lat; // Latitude do ponto
+  const pointLng = props.referenced.lng; // Longitude do ponto
+
+  // Calcula o ângulo em relação ao ponto central
+  const angleDegrees = computeHeading(
+    new LatLng(centerLat, centerLng),
+    new LatLng(pointLat, pointLng),
+  );
+
   return (
     <>
       {props.segments?.map((item, index) => (
-        <RenderSegment key={`segment-${index}`} center={props.center} segment={item} />
+        <RenderSegment
+          key={`segment-${index}`}
+          center={props.center}
+          segment={{ ...item, begin: item.begin + angleDegrees, end: item.end + angleDegrees }}
+          radius={referenceRadius} 
+        />
       ))}
       <Circle
         center={{ lat: centerLat, lng: centerLng }}
@@ -167,10 +185,10 @@ const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
           strokeOpacity: 1,
           strokeWeight: 0.8,
           fillOpacity: 0,
-        }} 
+        }}
       />
 
-      {   getPolylines().map((item) => (
+      {getPolylines().map((item) => (
         <Polyline
           key={`line-${Math.random()}`}
           path={[
@@ -184,8 +202,7 @@ const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
             zIndex: 999,
           }}
         />
-      ))  }
-  
+      ))}
     </>
   );
 };

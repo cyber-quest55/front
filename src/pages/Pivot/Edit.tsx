@@ -5,18 +5,16 @@ import EditPivotHourContainer from '@/components/Forms/EditPivot/Hour/HourContai
 import EditPivotPluviometerContainer from '@/components/Forms/EditPivot/Pluviometer/PluviometerContainer';
 import EditPivotPumpContainer from '@/components/Forms/EditPivot/Pump/PumpContainer';
 import EditPivotRushHourContainer from '@/components/Forms/EditPivot/RushHour/RushHourContainer';
-import LocationFormContainer from '@/components/Forms/Location/LocationContainer';
-import FormPivotSegmentationContainer from '@/components/Forms/Segmentation/SegmentationContainer';
 import EditPivotFavoriteHistoryTable from '@/components/Tables/EditPivotFavoriteTable';
 import EditPivotHistoryTable from '@/components/Tables/EditPivotHistoryTable';
 import { useScreenHook } from '@/hooks/screen';
 import { queryPivotByIdStart } from '@/models/pivot-by-id';
-import { SaveOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard, ProFormSelect } from '@ant-design/pro-components';
 import { Dispatch, useParams } from '@umijs/max';
-import { Button } from 'antd';
 import React, { useState } from 'react';
 
+import LocationCallerContainer from '@/components/Forms/EditPivot/LocationCaller/LocationCallerContainer';
+import FormPivotSegmentationContainer from '@/components/Forms/EditPivot/Segmentation/SegmentationContainer';
 import { connect } from 'dva';
 interface Props {
   queryPivotByIdStart: typeof queryPivotByIdStart;
@@ -33,15 +31,19 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
     props.queryPivotByIdStart({ farmId: params.farmId as any, pivotId: params.pivotId as any });
   }, []);
 
- 
   return (
     <PageContainer
       tabBarExtraContent={
-        <ProFormSelect fieldProps={{value: 'pivo1'}} initialValue={"pivo1"} noStyle options={[
-          {value: 'pivo1', label: 'asdsadasd'},
-          {value: 'pivo2', label: 'Pivô 2'},
-          {value: 'pivo3', label: 'Pivô 3'},
-        ]}/>
+        <ProFormSelect
+          fieldProps={{ value: 'pivo1' }}
+          initialValue={'pivo1'}
+          noStyle
+          options={[
+            { value: 'pivo1', label: 'asdsadasd' },
+            { value: 'pivo2', label: 'Pivô 2' },
+            { value: 'pivo3', label: 'Pivô 3' },
+          ]}
+        />
       }
       tabList={[
         {
@@ -81,17 +83,7 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
               {
                 label: `Localização`,
                 key: 'tab2',
-                children: (
-                  <LocationFormContainer
-                    lat={-22.9013676}
-                    lng={-47.0598314}
-                    hasNorthReference={true}
-                    secondLocationName="test"
-                    onChangeSecondLocation={() => null}
-                    firstLocationName="testing"
-                    onChangeFirstLocation={() => null}
-                  />
-                ),
+                children: <LocationCallerContainer />,
               },
               {
                 label: `Horário`,
@@ -124,7 +116,7 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
                 children: <EditPivotFinalCanonContainer />,
               },
               {
-                label: `Auto Reversão`,
+                label: `Autoreversão`,
                 key: 'tab9',
                 children: <EditPivotAutoreversionContainer />,
               },

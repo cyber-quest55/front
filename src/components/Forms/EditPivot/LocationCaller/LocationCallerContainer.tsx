@@ -1,17 +1,16 @@
 import { useScreenHook } from '@/hooks/screen';
 import { GetPivotByIdModelProps, queryPivotByIdStart } from '@/models/pivot-by-id';
 import * as React from 'react';
-import EditPivotFinalCanonComponent from './FinalCanonComponent';
-import EditPivotFinalCanonMobile from './FinalCanonMobile';
+import EditPivotLocationCallerComponent from './LocationCallerComponent'; 
 import { connect } from 'dva';
 import { Dispatch } from '@umijs/max';
 
-interface IEditPivotFinalCanonContainer {
+interface IEditPivotLocationCallerContainer {
   pivotById: GetPivotByIdModelProps;
   queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 
-const EditPivotFinalCanonContainer: React.FunctionComponent<IEditPivotFinalCanonContainer> = (
+const EditPivotLocationCallerContainer: React.FunctionComponent<IEditPivotLocationCallerContainer> = (
   props,
 ) => {
   const { xs } = useScreenHook();
@@ -21,12 +20,12 @@ const EditPivotFinalCanonContainer: React.FunctionComponent<IEditPivotFinalCanon
       {props.pivotById.loading ? (
         <> </>
       ) : xs ? (
-        <EditPivotFinalCanonComponent
+        <EditPivotLocationCallerComponent
           pivot={props.pivotById.unformated}
           queryPivotByIdStart={props.queryPivotByIdStart}
         />
       ) : (
-        <EditPivotFinalCanonComponent
+        <EditPivotLocationCallerComponent
           pivot={props.pivotById.unformated}
           queryPivotByIdStart={props.queryPivotByIdStart}
         />
@@ -43,4 +42,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditPivotFinalCanonContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(EditPivotLocationCallerContainer);

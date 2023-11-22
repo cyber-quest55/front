@@ -4,37 +4,32 @@ import { GeoLocationContext } from '@/utils/strategies/geolocation/geolocation';
 import { EnvironmentFilled } from '@ant-design/icons';
 import { ProCard, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { Button, Space } from 'antd';
+import { Button, Row, Space } from 'antd';
+
 import * as React from 'react';
-import MarkerGreen from '../../../../public/images/devices/marker-green.svg';
-import MarkerRed from '../../../../public/images/devices/marker-red.svg';
 
 interface ILocationFormComponentProps {
-  firstLocationName: string;
-  secondLocationName?: string;
-  onChangeFirstLocation: any;
-  onChangeSecondLocation?: any;
-  firstInitialValue?: { lat: number; lng: number };
-  secondInitialValue?: { lat: number; lng: number };
+  locations: {
+    color: string;
+    name: string;
+    value: {
+      lat: number;
+      lng: number;
+    };
+    marker: any;
+    onChange: any;
+  }[];
   geoLocationContext: GeoLocationContext;
   hasNorthReference?: boolean;
+  onChangeNorth?: any;
+  northValue: boolean;
   lat: number;
   lng: number;
 }
 
 const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps> = (props) => {
-  const {
-    firstLocationName,
-    secondLocationName,
-    geoLocationContext,
-    onChangeFirstLocation,
-    onChangeSecondLocation,
-    firstInitialValue,
-    secondInitialValue,
-    hasNorthReference,
-    lat,
-    lng,
-  } = props;
+  const { locations, geoLocationContext, hasNorthReference, lat, lng, onChangeNorth, northValue } =
+    props;
 
   const { xl } = useScreenHook();
 
@@ -44,30 +39,32 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
   });
 
   //* hooks for the marks */
-  const [firstLocation, setFirstLocation] = React.useState<any>(firstInitialValue);
-  const [secondLocation, setSecondLocation] = React.useState<any>(secondInitialValue);
-  const [isNorthReference, setIsNorthReference] = React.useState<any>(false);
+  const [location, setLocation] = React.useState(locations);
 
   const containerStyle = {
     width: '100%',
-    height: xl ? '50vh' : 'calc(30vh -  102px)',
+    height: xl ? '50vh' : '350px',
   };
 
-  const onClickGetFirstLocation = async () => {
+  const onClickLocation = async (index: number) => {
     const location = await geoLocationContext.execute();
-    setFirstLocation(location.pure);
-    onChangeFirstLocation(location.str);
+
+    const newLocations = [...locations];
+    newLocations[index].value = location.pure;
+    setLocation(newLocations);
+    newLocations[index].onChange(location.str);
   };
 
-  const onClickGetSecondLocation = async () => {
-    const location = await geoLocationContext.execute();
-    setSecondLocation(location.pure);
-    onChangeSecondLocation(location.str);
+  const handleMarkerDragEnd = (index: number, value: any) => {
+    const newLocations = [...locations];
+    newLocations[index].value = value;
+    setLocation(newLocations);
+    newLocations[index].onChange(value);
   };
 
   return (
-    <ProCard ghost gutter={[16, 8]}>
-      <ProCard ghost colSpan={{ sm: 12 }}>
+    <ProCard ghost gutter={[16, 16]} colSpan={{ xs: 24 }} wrap>
+      <ProCard ghost colSpan={{ xs: 24, sm: 12 }} wrap>
         <GoogleMap
           onLoad={(map) => setMap(map)}
           onZoomChanged={() => {
@@ -88,41 +85,49 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
           }}
           zoom={zoom}
         >
-          {firstLocation ? <Marker icon={MarkerGreen} position={firstLocation} /> : null}
-          {secondLocation ? <Marker icon={MarkerRed} position={secondLocation} /> : null}
+          {location?.map((item, index) => (
+            <Marker
+              key={`index-marker-map-${index}`}
+              icon={item.marker}
+              position={item.value}
+              draggable
+              onDragEnd={(event) => {
+                handleMarkerDragEnd(index, event.latLng?.toJSON());
+              }}
+            />
+          ))}
         </GoogleMap>
       </ProCard>
       <ProCard ghost colSpan={{ sm: 12 }}>
-        <ProFormText
-          required
-          label={'Centro'}
-          name={firstLocationName as string}
-          addonAfter={
-            <Button onClick={onClickGetFirstLocation}>
-              <Space>
-                <EnvironmentFilled style={{ color: 'green' }} /> Localização
-              </Space>
-            </Button>
-          }
-        />
-        {secondLocationName && onChangeSecondLocation ? (
-          <ProFormText
-            required
-            disabled={isNorthReference}
-            label={'Referência Inicial'}
-            name={secondLocationName as string}
-            addonAfter={
-              <Button disabled={isNorthReference} onClick={onClickGetSecondLocation}>
-                <Space>
-                  <EnvironmentFilled style={{ color: 'tomato' }} /> Localização
-                </Space>
-              </Button>
-            }
-          />
-        ) : null}{' '}
-        {hasNorthReference ? (
-          <ProFormCheckbox fieldProps={{onChange: (e) => setIsNorthReference(e.target.checked)}}>Utilizar Norte como Referência</ProFormCheckbox>
-        ) : null}
+        <Row style={{ width: '100%' }}>
+          {location?.map((item, index) => (
+            <ProFormText
+              key={`value-color-${index}`}
+              required
+              colProps={{ xs: 24, md: 24 }}
+              label={item.name}
+              name={item.name as string}
+              width={'350px' as 'sm'}
+              fieldProps={{
+                width: '450px',
+                value: `${item.value.lat},${item.value.lng}`,
+              }}
+              addonAfter={
+                <Button onClick={() => onClickLocation(index)}>
+                  <Space>
+                    <EnvironmentFilled style={{ color: item.color }} /> Localização
+                  </Space>
+                </Button>
+              }
+            />
+          ))}
+
+          {hasNorthReference ? (
+            <ProFormCheckbox fieldProps={{ onChange: (e) => onChangeNorth(e), defaultChecked: northValue  }}>
+              Utilizar Norte como Referência
+            </ProFormCheckbox>
+          ) : null}
+        </Row>
       </ProCard>
     </ProCard>
   );
