@@ -25,7 +25,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
 
   const [loading, setLoading] = React.useState(false);
- 
+
   const postReq = useRequest(postPivotConfig, { manual: true });
 
   const schema = yup.object().shape({
@@ -76,13 +76,17 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
     <ProCard
       title={
         <Typography.Title style={{ margin: 0 }} level={4}>
-          Descrição
+          {intl.formatMessage({
+            id: 'component.edit.pivot.pickhour.title',
+          })}
         </Typography.Title>
       }
       ghost
       extra={
         <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
-          Salvar
+          {intl.formatMessage({
+            id: 'component.edit.pivot.lastconfig',
+          })}
         </Button>
       }
       gutter={[12, 12]}
@@ -90,8 +94,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
     >
       <div style={{ marginBottom: 20 }}>
         <Typography.Text>
-          Horários de Pico são faixas de tempo no qual o pivô não deve operar com água para evitar o
-          uso em horários críticos, por exemplo, quando o custo da energia elétrica é alto.
+          {intl.formatMessage({
+            id: 'component.edit.pivot.pickhour.desc',
+          })}
         </Typography.Text>
       </div>
       <ProForm
@@ -202,12 +207,16 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
       >
         <Col style={{ padding: 0 }} span={24}>
           <Typography.Title style={{ marginTop: 12 }} level={4}>
-            Preços das Faixas de Energia
+            {intl.formatMessage({
+              id: 'component.edit.pivot.pickhour.sub1',
+            })}
           </Typography.Title>
         </Col>
         <ProFormDigit
           colProps={{ xs: 24, md: 8 }}
-          label="Ponta"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.pickhour.peak.label',
+          })}
           rules={[yupSync]}
           name={['controllerconfig', 'kwh_peak']}
           fieldProps={{ precision: 2, addonBefore: 'R$' }}
@@ -218,7 +227,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
           rules={[yupSync]}
           name={['controllerconfig', 'kwh_out_of_peak']}
           colProps={{ xs: 24, md: 8 }}
-          label="Fora de Ponta"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.pickhour.outofpeak.label',
+          })}
           fieldProps={{ precision: 2, addonBefore: 'R$' }}
           min={0}
           max={999}
@@ -227,14 +238,18 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
           rules={[yupSync]}
           name={['controllerconfig', 'kwh_reduced']}
           colProps={{ xs: 24, md: 8 }}
-          label="Reduzido"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.pickhour.nightime.label',
+          })}
           fieldProps={{ precision: 2, addonBefore: 'R$' }}
           min={0}
           max={999}
         />
         <Col style={{ padding: 0 }} span={24}>
           <Typography.Title style={{ marginTop: 12 }} level={4}>
-            Dias da Semana
+            {intl.formatMessage({
+              id: 'component.edit.pivot.pickhour.sub2',
+            })}
           </Typography.Title>
         </Col>
         <ProFormDependency name={['firstHour']}>
@@ -246,49 +261,63 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
-                  DOM
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.sun.label',
+                  })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_monday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
-                  SEG
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.mon.label',
+                  })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_sunday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
-                  TER
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.tue.label',
+                  })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_tuesday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
-                  QUA
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.wed.label',
+                  })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_saturday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
-                  QUI
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.thu.label',
+                  })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_thursday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
-                  SEX
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.fri.label',
+                  })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_wednesday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
-                  SAB
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.sat.label',
+                  })}
                 </ProFormCheckbox>
               </Space>
             );
@@ -297,7 +326,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
 
         <Col style={{ padding: 0 }} span={24}>
           <Typography.Title style={{ marginTop: 12 }} level={4}>
-            Configurações
+            {intl.formatMessage({
+              id: 'component.edit.pivot.pickhour.sub3',
+            })}
           </Typography.Title>
         </Col>
         <ProFormCheckbox
@@ -305,7 +336,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
           fieldProps={{ style: { paddingTop: '30px' } }}
           colProps={{ xs: 24, md: 4 }}
         >
-          Ativar horário de pico 1
+          {intl.formatMessage({
+            id: 'component.edit.pivot.pickhour.enablepeak1.label',
+          })}
         </ProFormCheckbox>
         <ProFormDependency name={['firstHour']}>
           {({ firstHour }) => {
@@ -316,7 +349,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   name={['firstBeginPickHour']}
                   dataFormat={format}
                   disabled={!firstHour}
-                  label="Início do horário de pico"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.peaktimest1.label',
+                  })}
                   fieldProps={{ style: { width: '100%' }, format: format }}
                   colProps={{ xs: 24, md: 10 }}
                 />
@@ -324,7 +359,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   rules={[yupSync]}
                   name={['firstEndPickHour']}
                   disabled={!firstHour}
-                  label="Final do horário de pico"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.peaktimeend1.label',
+                  })}
                   fieldProps={{ style: { width: '100%' }, format: format }}
                   colProps={{ xs: 24, md: 10 }}
                 />
@@ -334,7 +371,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   fieldProps={{ style: { paddingTop: '30px' } }}
                   colProps={{ xs: 24, md: 4 }}
                 >
-                  Ativar horário de pico 2
+                  {intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.enablepeak2.label',
+                  })}
                 </ProFormCheckbox>
               </>
             );
@@ -349,7 +388,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   rules={[yupSync]}
                   name={['secondBeginPickHour']}
                   disabled={!secondHour || !firstHour}
-                  label="Início do horário de pico"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.peaktimest2.label',
+                  })}
                   fieldProps={{ style: { width: '100%' }, format: format }}
                   colProps={{ xs: 24, md: 10 }}
                 />
@@ -357,7 +398,9 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   rules={[yupSync]}
                   name={['secondEndPickHour']}
                   disabled={!secondHour || !firstHour}
-                  label="Final do horário de pico"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pickhour.peaktimeend2.label',
+                  })}
                   fieldProps={{ style: { width: '100%' }, format: format }}
                   colProps={{ xs: 24, md: 10 }}
                 />

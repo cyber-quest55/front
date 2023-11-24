@@ -10,7 +10,7 @@ import EditPivotHistoryTable from '@/components/Tables/EditPivotHistoryTable';
 import { useScreenHook } from '@/hooks/screen';
 import { queryPivotByIdStart } from '@/models/pivot-by-id';
 import { PageContainer, ProCard, ProFormSelect } from '@ant-design/pro-components';
-import { Dispatch, useParams } from '@umijs/max';
+import { Dispatch, useIntl, useParams } from '@umijs/max';
 import React, { useState } from 'react';
 
 import LocationCallerContainer from '@/components/Forms/EditPivot/LocationCaller/LocationCallerContainer';
@@ -24,6 +24,7 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
   const [tab, setTab] = useState('tab1');
   const [tabCont, setTabCont] = useState('tab1');
   const params = useParams();
+  const intl = useIntl();
 
   const { xs } = useScreenHook();
 
@@ -47,12 +48,16 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
       }
       tabList={[
         {
-          tab: 'Configurações',
+          tab: intl.formatMessage({
+            id: 'pages.edit.pivot.tab.header.configuration',
+          }),
           key: 'tab1',
           closable: false,
         },
         {
-          tab: 'Histórico',
+          tab: intl.formatMessage({
+            id: 'pages.edit.pivot.tab.header.history',
+          }),
           key: 'tab2',
         },
       ]}
@@ -73,50 +78,73 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
           tabs={{
             tabPosition: xs ? 'top' : 'left',
             activeKey: tab,
+           
             destroyInactiveTabPane: true,
             items: [
               {
-                label: `Geral`,
+                label: (
+                  <div style={{ minWidth: 135, textAlign: 'left' }}>
+                    {intl.formatMessage({
+                      id: 'pages.edit.pivot.tab.options.general',
+                    })}
+                  </div>
+                ),
                 key: 'tab1',
                 children: <EditPivotGeneralContainer />,
               },
               {
-                label: `Localização`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.location',
+                }),
                 key: 'tab2',
                 children: <LocationCallerContainer />,
               },
               {
-                label: `Horário`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.hour',
+                }),
                 key: 'tab3',
                 children: <EditPivotHourContainer />,
               },
               {
-                label: `Bomba`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.pump',
+                }),
                 key: 'tab4',
                 children: <EditPivotPumpContainer />,
               },
               {
-                label: `Pluviometro`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.pluvi',
+                }),
                 key: 'tab5',
                 children: <EditPivotPluviometerContainer />,
               },
               {
-                label: `Horário de Pico`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.pickhour',
+                }),
                 key: 'tab6',
                 children: <EditPivotRushHourContainer />,
               },
               {
-                label: `Segmentos e Plantio`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.segments',
+                }),
                 key: 'tab7',
                 children: <FormPivotSegmentationContainer />,
               },
               {
-                label: `Canhão Final`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.final',
+                }),
                 key: 'tab8',
                 children: <EditPivotFinalCanonContainer />,
               },
               {
-                label: `Autoreversão`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.autoreversion',
+                }),
                 key: 'tab9',
                 children: <EditPivotAutoreversionContainer />,
               },

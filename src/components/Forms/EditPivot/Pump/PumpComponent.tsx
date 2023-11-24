@@ -110,20 +110,29 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
     <ProCard
       title={
         <Typography.Title style={{ margin: 0 }} level={4}>
-          Potência da bomba
+          {intl.formatMessage({
+            id: 'component.edit.pivot.pressure.title',
+          })}
         </Typography.Title>
       }
       ghost
       extra={
         <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
-          Salvar
+          {intl.formatMessage({
+            id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
       gutter={[12, 12]}
       style={{ minHeight: '60vh' }}
     >
       <div style={{ marginBottom: 20 }}>
-        <Typography.Text>Última configuração: 19 Out 2023 09:55- Internet</Typography.Text>
+        <Typography.Text>
+          {intl.formatMessage({
+            id: 'component.edit.pivot.lastconfig',
+          })}
+          : 19 Out 2023 09:55- Internet
+        </Typography.Text>
       </div>
       <ProForm
         validateTrigger="onBlur"
@@ -175,7 +184,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
         <ProFormDigit
           rules={[yupSync]}
           name={['controllerconfig', 'potency']}
-          label="Potência da bomba"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.pressure.pumppw.label',
+          })}
           colProps={{ xs: 24, md: 6 }}
           fieldProps={{
             addonAfter: 'kW',
@@ -184,7 +195,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
         <ProFormDigit
           rules={[yupSync]}
           name={['controllerconfig', 'content', 'power_delay', 'power_delay']}
-          label="Tempo de energia"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.pressure.pumptm.label',
+          })}
           colProps={{ xs: 24, md: 6 }}
           fieldProps={{
             addonAfter: 'min',
@@ -194,26 +207,36 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
           <Divider style={{ margin: 4 }} />
 
           <Typography.Title style={{ marginTop: 12 }} level={4}>
-            Configuração de Pressão
+            {intl.formatMessage({
+              id: 'component.edit.pivot.pressure.subtitle.1',
+            })}
           </Typography.Title>
         </Col>
         <ProFormSelect
           rules={[yupSync]}
           name={['controllerconfig', 'content', 'pressure_config', 'read_pressure_by']}
-          label="Leitura de pressão"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.pressure.pmptimeout.label',
+          })}
           colProps={{ xs: 24, md: 24 }}
           options={[
             {
               value: 0,
-              label: 'Desligado',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.pressure.pressuredng.opt.1',
+              }),
             },
             {
               value: 1,
-              label: 'Por pressostato',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.pressure.pressuredng.opt.2',
+              }),
             },
             {
               value: 2,
-              label: 'Por Sensor de pressão',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.pressure.pressuredng.opt.3',
+              }),
             },
           ]}
         />
@@ -227,7 +250,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
                 <ProFormDigit
                   rules={[yupSync]}
                   name={['controllerconfig', 'content', 'pressure_config', 'pump_time_out']}
-                  label="Tempo de bomba"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pressure.pmptimeout.label',
+                  })}
                   disabled={pressureListener === 0}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
@@ -237,7 +262,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
                 <ProFormDigit
                   rules={[yupSync]}
                   name={['controllerconfig', 'content', 'pressure_config', 'pump_press_delay']}
-                  label="Tempo de retardo"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pressure.delaytime.label',
+                  })}
                   disabled={pressureListener === 0}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
@@ -247,7 +274,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
                 <ProFormDigit
                   rules={[yupSync]}
                   name={['controllerconfig', 'content', 'pressure_config', 'pump_press_switch']}
-                  label="Tempo instável de pressostato"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pressure.unstpress.label',
+                  })}
                   disabled={pressureListener === 0}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
@@ -262,7 +291,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
                     'pressure_config',
                     'press_sensor_min_range',
                   ]}
-                  label="Valor mínimo do sensor"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pressure.minsensvalue.label',
+                  })}
                   disabled={pressureListener === 0 || pressureListener === 1}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
@@ -277,7 +308,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
                     'pressure_config',
                     'press_sensor_max_range',
                   ]}
-                  label="Valor máximo do sensor"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pressure.pressenmax.label',
+                  })}
                   disabled={pressureListener === 0 || pressureListener === 1}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
@@ -287,7 +320,9 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
                 <ProFormDigit
                   rules={[yupSync]}
                   name={['controllerconfig', 'content', 'pressure_config', 'sensor_scale_end']}
-                  label="Escala do sensor"
+                  label={intl.formatMessage({
+                    id: 'component.edit.pivot.pressure.senscale.label',
+                  })}
                   disabled={pressureListener === 0 || pressureListener === 1}
                   colProps={{ xs: 24, md: 8 }}
                   fieldProps={{
@@ -302,11 +337,15 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
           <Divider style={{ margin: 4 }} />
 
           <Typography.Title style={{ marginTop: 12 }} level={4}>
-            Bomba de Fertirrigação
+            {intl.formatMessage({
+              id: 'component.edit.pivot.pressure.subtitle.2',
+            })}
           </Typography.Title>
         </Col>
         <ProFormCheckbox rules={[yupSync]} name={['controllerconfig', 'injection_pump']}>
-          Ativar Fertirrigação
+          {intl.formatMessage({
+            id: 'component.edit.pivot.pressure.active.label',
+          })}
         </ProFormCheckbox>
       </ProForm>
     </ProCard>

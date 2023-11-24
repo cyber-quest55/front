@@ -1,5 +1,4 @@
 import { postPivotConfig } from '@/services/pivot';
-import { yupValidator } from '@/utils/adapters/yup';
 import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
@@ -11,13 +10,11 @@ import {
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Button, Form, Typography } from 'antd';
-import dayjs, { Dayjs } from 'dayjs';
-import * as yup from 'yup';
+import dayjs from 'dayjs';
 import * as React from 'react';
 
 const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
-  const ref = React.useRef();
   const params = useParams();
   const { message } = App.useApp();
 
@@ -31,7 +28,9 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
     <ProCard
       title={
         <Typography.Title style={{ margin: 0 }} level={4}>
-          Horários
+          {intl.formatMessage({
+            id: 'component.edit.pivot.clock.title',
+          })}
         </Typography.Title>
       }
       ghost
@@ -39,12 +38,19 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
       style={{ minHeight: '60vh' }}
       extra={
         <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
-          Salvar
+          {intl.formatMessage({
+            id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
     >
       <div style={{ marginBottom: 20 }}>
-        <Typography.Text>Última configuração: 19 Out 2023 09:55- Internet</Typography.Text>
+        <Typography.Text>
+          {intl.formatMessage({
+            id: 'component.edit.pivot.lastconfig',
+          })}
+          : 19 Out 2023 09:55- Internet
+        </Typography.Text>
       </div>
       <ProForm
         validateTrigger="onBlur"
@@ -52,13 +58,20 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
         rowProps={{ gutter: [8, 8] }}
         grid
         onInit={(v2, form) => {
-          const day = v2.controllerconfig.content?.clock?.day || 1
-          const hour =v2.controllerconfig.content?.clock?.hour || 1
-          const year =  v2.controllerconfig.content?.clock?.year || 1
-          const month = v2.controllerconfig.content?.clock?.month || 1
-          const minute = v2.controllerconfig.content?.clock?.minute || 1
-          const second =  v2.controllerconfig.content?.clock?.second || 1 
-          const date = dayjs( `${year}-${month}-${day} ${hour}:${minute}:${second}`)  
+          const day = v2.controllerconfig.content?.clock?.day || 1;
+          const hour = v2.controllerconfig.content?.clock?.hour || 1;
+          const year = v2.controllerconfig.content?.clock?.year || 1;
+          const month = v2.controllerconfig.content?.clock?.month || 1;
+          const minute = v2.controllerconfig.content?.clock?.minute || 1;
+          const second = v2.controllerconfig.content?.clock?.second || 1;
+          const date = dayjs()
+            .year(year + 2000)
+            .month(month - 1)
+            .date(day)
+            .hour(hour)
+            .minute(minute)
+            .second(second);
+
           form.setFieldValue('controllerconfig', {
             ...v2.controllerconfig,
             content: {
@@ -85,7 +98,7 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
                 clock: {
                   day: date.get('D'),
                   hour: date.get('h'),
-                  year: date.get('y'),
+                  year: date.get('y') - 2000,
                   month: date.get('M') + 1,
                   minute: date.get('m'),
                   second: date.get('s'),
@@ -97,8 +110,6 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
             delete newObj.uuid;
             delete newObj.device;
             delete newObj.name;
-
-            console.log('aqui', newObj);
 
             await postReq.runAsync(
               {
@@ -121,16 +132,22 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
         }}
       >
         <ProFormSelect
-          label="Relógio do equipamento"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.clock.dvclock.label',
+          })}
           colProps={{ xs: 24, md: 6 }}
           options={[
             {
               value: 'select',
-              label: 'Configurar relógio do equipamento com horário atual',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.clock.opt.1',
+              }),
             },
             {
               value: 'others',
-              label: 'Configurar relógio do equipamento manualmente',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.clock.opt.2',
+              }),
             },
           ]}
           name="deviceHour"
@@ -141,7 +158,9 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
             return (
               <ProFormDateTimePicker
                 name={['controllerconfig', 'content', 'clock']}
-                label="Data do equipamento"
+                label={intl.formatMessage({
+                  id: 'component.edit.pivot.clock.dvdate.label',
+                })}
                 disabled={!(deviceHour === 'others')}
               />
             );

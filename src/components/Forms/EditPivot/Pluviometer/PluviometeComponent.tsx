@@ -69,12 +69,22 @@ const EditPivotPluviometerComponent: React.FunctionComponent<any> = (props) => {
     <ProCard
       title={
         <Typography.Title style={{ margin: 0 }} level={4}>
-          Pluviômetro
+          {intl.formatMessage({
+            id: 'component.edit.pivot.pluviometer.title',
+          })}
         </Typography.Title>
       }
       extra={
-        <Button loading={loading} icon={<SaveOutlined />} disabled={!disabled} type="primary" onClick={form.submit}>
-          Salvar
+        <Button
+          loading={loading}
+          icon={<SaveOutlined />}
+          disabled={!disabled}
+          type="primary"
+          onClick={form.submit}
+        >
+          {intl.formatMessage({
+            id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
       ghost
@@ -82,7 +92,12 @@ const EditPivotPluviometerComponent: React.FunctionComponent<any> = (props) => {
       style={{ minHeight: '60vh' }}
     >
       <div style={{ marginBottom: 20 }}>
-        <Typography.Text>Última configuração: 19 Out 2023 09:55- Internet</Typography.Text>
+        <Typography.Text>
+          {intl.formatMessage({
+            id: 'component.edit.pivot.pluviometer.value.label',
+          })}
+          : 19 Out 2023 09:55- Internet
+        </Typography.Text>
       </div>
       <ProForm
         validateTrigger="onBlur"
@@ -94,7 +109,7 @@ const EditPivotPluviometerComponent: React.FunctionComponent<any> = (props) => {
         name="PluviometerForm"
         onFieldsChange={(changedField) => {
           if (changedField[0]?.name[0] === 'pluviometer') {
-            setDisabled(changedField[0].value)
+            setDisabled(changedField[0].value);
             patchReq.runAsync(
               {
                 farmId: params.farmId as any,
@@ -146,8 +161,12 @@ const EditPivotPluviometerComponent: React.FunctionComponent<any> = (props) => {
         <ProFormSwitch
           name={['pluviometer']}
           rules={[yupSync]}
-          checkedChildren="Desabilitar"
-          unCheckedChildren="Habilitar"
+          checkedChildren={intl.formatMessage({
+            id: 'component.switch.disabled',
+          })}
+          unCheckedChildren={intl.formatMessage({
+            id: 'component.switch.enable',
+          })}
         />
 
         <ProFormDependency name={['controllerconfig', 'pluviometer']}>
@@ -158,27 +177,37 @@ const EditPivotPluviometerComponent: React.FunctionComponent<any> = (props) => {
                   <ProFormSelect
                     rules={[yupSync]}
                     name={['controllerconfig', 'content', 'pluviometer_stop_mode', 'stop_mode']}
-                    label="Condição de parada"
+                    label={intl.formatMessage({
+                      id: 'component.edit.pivot.pluviometer.stopcdn.label',
+                    })}
                     colProps={{ xs: 24, md: 8 }}
                     options={[
                       {
                         value: 0,
-                        label: 'Desabilitado',
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.pluviometer.stopcdn.opt.1',
+                        }),
                       },
                       {
                         value: 1,
-                        label: 'Por valor',
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.pluviometer.stopcdn.opt.2',
+                        }),
                       },
                       {
                         value: 2,
-                        label: 'Por decremento',
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.pluviometer.stopcdn.opt.3',
+                        }),
                       },
                     ]}
                   />
                   <ProFormDigit
                     rules={[yupSync]}
                     name={['controllerconfig', 'content', 'mm_to_stop', 'value']}
-                    label="Valor"
+                    label={intl.formatMessage({
+                      id: 'component.edit.pivot.pluviometer.value.label',
+                    })}
                     colProps={{ xs: 24, md: 8 }}
                     fieldProps={{
                       addonAfter: 'mm',
@@ -188,7 +217,9 @@ const EditPivotPluviometerComponent: React.FunctionComponent<any> = (props) => {
                   <ProFormDigit
                     rules={[yupSync]}
                     name={['controllerconfig', 'content', 'pluviometer_scale', 'mm']}
-                    label="Escala do sensor"
+                    label={intl.formatMessage({
+                      id: 'component.edit.pivot.pluviometer.sensorscale.label',
+                    })}
                     colProps={{ xs: 24, md: 8 }}
                     fieldProps={{
                       addonAfter: 'mm',

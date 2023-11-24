@@ -1,20 +1,21 @@
+import { postPivotConfig } from '@/services/pivot';
 import { SaveOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
+import { useIntl, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
 import { App, Button, Typography } from 'antd';
 import * as React from 'react';
 import MarkerGreen from '../../../../../public/images/devices/marker-green.svg';
 import MarkerRed from '../../../../../public/images/devices/marker-red.svg';
 import LocationFormContainer from '../../Location/LocationContainer';
-import { postPivotConfig } from '@/services/pivot';
-import { useRequest } from 'ahooks';
-import { useParams } from '@umijs/max';
 
 const EditPivotLocationCallerComponent: React.FunctionComponent<any> = (props) => {
-  const pivot =  props.pivot
+  const pivot = props.pivot;
   const positions = props.pivot.controllerconfig.content.pivot_positions;
   const postReq = useRequest(postPivotConfig, { manual: true });
   const params = useParams();
   const { message } = App.useApp();
+  const intl = useIntl();
 
   const [first, setFirst] = React.useState({
     lat: positions.latitude_center,
@@ -27,20 +28,19 @@ const EditPivotLocationCallerComponent: React.FunctionComponent<any> = (props) =
   });
 
   const [hasNorth, setHasNorth] = React.useState(positions.north_reference);
- 
-  const onFinish = async () => { 
-    try { 
 
+  const onFinish = async () => {
+    try {
       const newObj = {
         content: {
           ...pivot.controllerconfig.content,
           pivot_positions: {
-            "latitude_center": first.lat,
-            "north_reference": hasNorth? 1: 0,
-            "longitude_center": first.lng,
-            "latitude_reference": second.lat,
-            "longitude_reference": second.lng
-          }
+            latitude_center: first.lat,
+            north_reference: hasNorth ? 1 : 0,
+            longitude_center: first.lng,
+            latitude_reference: second.lat,
+            longitude_reference: second.lng,
+          },
         },
         name_pivot_on_config: pivot.controllerconfig.name,
         brand_model: pivot.controllerconfig.brand_model,
@@ -73,29 +73,32 @@ const EditPivotLocationCallerComponent: React.FunctionComponent<any> = (props) =
     } catch (err) {
       message.error('Fail');
     }
-  }
+  };
 
   return (
     <ProCard
       title={
         <Typography.Title style={{ margin: 0 }} level={4}>
-          Localização do Dispositivo
+          {intl.formatMessage({
+            id: 'component.edit.pivot.location.title',
+          })}
         </Typography.Title>
       }
       wrap
       ghost
       extra={
         <Button loading={postReq.loading} onClick={onFinish} icon={<SaveOutlined />} type="primary">
-          Salvar
+          {intl.formatMessage({
+            id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
     >
       <div style={{ marginBottom: 20 }}>
         <Typography.Text>
-          A autoreversão é um recurso que possibilita que o pivô chegue ao final do seu percurso e
-          retorne automaticamente, realizando uma operação. O retorno do pivô acontece quando ele
-          alcança um obstáculo físico, chamado de fim de curso - disponível em painéis SmartConnect
-          - ou quando chega ao ângulo final de trabalho.
+          {intl.formatMessage({
+            id: 'component.edit.pivot.location.desc',
+          })}
         </Typography.Text>
       </div>
       <LocationFormContainer
@@ -108,14 +111,18 @@ const EditPivotLocationCallerComponent: React.FunctionComponent<any> = (props) =
           {
             color: 'green',
             value: { lat: first.lat, lng: first.lng },
-            name: 'Center',
+            name: intl.formatMessage({
+              id: 'component.edit.pivot.location.center.label',
+            }),
             onChange: (v: any) => setFirst(v),
             marker: MarkerGreen,
           },
           {
             color: 'red',
             value: { lat: second.lat, lng: second.lng },
-            name: 'Start Reference',
+            name: intl.formatMessage({
+              id: 'component.edit.pivot.location.startref.label',
+            }),
             onChange: (v: any) => setSecond(v),
             marker: MarkerRed,
           },

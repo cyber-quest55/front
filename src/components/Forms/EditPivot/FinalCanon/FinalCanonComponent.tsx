@@ -92,7 +92,9 @@ const EditPivotFinalCanonComponent: React.FunctionComponent<any> = (props) => {
 
   const columns: ProColumns<DataSourceType>[] = [
     {
-      title: 'Ângulo Inicial',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.finalgun.column.initialangle.title',
+      }),
       dataIndex: 'begin',
       valueType: 'digit',
 
@@ -116,7 +118,9 @@ const EditPivotFinalCanonComponent: React.FunctionComponent<any> = (props) => {
       width: '14%',
     },
     {
-      title: 'Ângulo Final',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.finalgun.column.endangle.title',
+      }),
       dataIndex: 'end',
       valueType: 'digit',
 
@@ -126,7 +130,9 @@ const EditPivotFinalCanonComponent: React.FunctionComponent<any> = (props) => {
       width: '14%',
     },
     {
-      title: 'Ações',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.finalgun.column.option.title',
+      }),
       valueType: 'option',
       width: 120,
       render: (text, record, index, action) => [
@@ -222,25 +228,31 @@ const EditPivotFinalCanonComponent: React.FunctionComponent<any> = (props) => {
     <ProCard
       ghost
       gutter={[16, 8]}
-      title="Canhão Final"
+      title={intl.formatMessage({
+        id: 'component.edit.pivot.finalgun.title',
+      })}
       wrap
       extra={
         <Button loading={postReq.loading} icon={<SaveOutlined />} type="primary" onClick={onFinish}>
-          Salvar
+          {intl.formatMessage({
+           id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
     >
       <ProCard ghost gutter={[16, 8]} colSpan={{ md: 24 }} wrap>
         <Typography.Text>
-          Para pivôs que possuem canhão final instalado na última torre, é possível segmentar o seu
-          acionamento evitando que ele ligue em locais onde não se deve irrigar, como estradas,
-          casas, etc.
+          {intl.formatMessage({
+            id: 'component.edit.pivot.finalgun.desc',
+          })}
         </Typography.Text>
         <Alert
           style={{ marginBlock: 12 }}
           showIcon
           type="info"
-          message="Você pode criar até 10 segmentos          "
+          message={intl.formatMessage({
+            id: 'component.edit.pivot.finalgun.info',
+          })}
         />
         <ProFormSelect
           name="condition"
@@ -250,15 +262,21 @@ const EditPivotFinalCanonComponent: React.FunctionComponent<any> = (props) => {
           options={[
             {
               value: 0,
-              label: 'Sempre desligado',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.finalgun.stopcdn.opt.1',
+              }),
             },
             {
               value: 1,
-              label: 'Sempre ligado',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.finalgun.stopcdn.opt.2',
+              }),
             },
             {
               value: 2,
-              label: 'Ligado por segmento',
+              label: intl.formatMessage({
+                id: 'component.edit.pivot.finalgun.stopcdn.opt.3',
+              }),
             },
           ]}
         />

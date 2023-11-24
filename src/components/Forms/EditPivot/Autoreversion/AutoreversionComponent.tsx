@@ -7,9 +7,8 @@ import {
   ProFormSegmented,
   ProFormSelect,
   ProFormSwitch,
-  useIntl,
 } from '@ant-design/pro-components';
-import { useParams } from '@umijs/max';
+import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Button, Form, Typography } from 'antd';
 import * as React from 'react';
@@ -24,19 +23,22 @@ const EditPivotAutoreversionComponent: React.FunctionComponent<any> = (props) =>
 
   const postReq = useRequest(postPivotConfig, { manual: true });
 
- 
   const { pivot } = props;
 
   return (
     <ProCard
       title={
         <Typography.Title style={{ margin: 0 }} level={4}>
-          Autoreversão
+          {intl.formatMessage({
+            id: 'component.edit.pivot.autoreversion.title',
+          })}
         </Typography.Title>
       }
       extra={
         <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
-          Salvar
+          {intl.formatMessage({
+            id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
       ghost
@@ -45,10 +47,9 @@ const EditPivotAutoreversionComponent: React.FunctionComponent<any> = (props) =>
     >
       <div style={{ marginBottom: 20 }}>
         <Typography.Text>
-          A autoreversão é um recurso que possibilita que o pivô chegue ao final do seu percurso e
-          retorne automaticamente, realizando uma operação. O retorno do pivô acontece quando ele
-          alcança um obstáculo físico, chamado de fim de curso - disponível em painéis SmartConnect
-          - ou quando chega ao ângulo final de trabalho.
+          {intl.formatMessage({
+            id: 'component.edit.pivot.autoreversion.desc',
+          })}
         </Typography.Text>
       </div>
       <ProForm
@@ -105,8 +106,12 @@ const EditPivotAutoreversionComponent: React.FunctionComponent<any> = (props) =>
       >
         <ProFormSwitch
           name={['controllerconfig', 'content', 'autoreversion_command', 'command']}
-          checkedChildren="Desabilitar"
-          unCheckedChildren="Habilitar"
+          checkedChildren={intl.formatMessage({
+            id: 'component.switch.disabled',
+          })}
+          unCheckedChildren={intl.formatMessage({
+            id: 'component.switch.enable',
+          })}
         />
         <ProFormDependency name={['controllerconfig']}>
           {({ controllerconfig }) => {
@@ -115,28 +120,48 @@ const EditPivotAutoreversionComponent: React.FunctionComponent<any> = (props) =>
                 <>
                   <ProFormSegmented
                     name={['controllerconfig', 'content', 'autoreversion_configurations', 'mode']}
-                    label="Condição de parada"
+                    label={intl.formatMessage({
+                      id: 'component.edit.pivot.autoreversion.stopcdn.label',
+                    })}
                     request={async () => [
-                      { label: 'Por ângulo', value: 1 },
-                      { label: 'Por fim de curso', value: 0 },
+                      {
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.autoreversion.stopcdn.opt.2',
+                        }),
+                        value: 1,
+                      },
+                      {
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.autoreversion.stopcdn.opt.3',
+                        }),
+                        value: 0,
+                      },
                     ]}
                   />
                   <ProFormSelect
                     name={['controllerconfig', 'content', 'autoreversion_configurations', 'time']}
-                    label="Tempo de espera para autoreversão"
+                    label={intl.formatMessage({
+                      id: 'component.edit.pivot.autoreversion.auto.label',
+                    })}
                     colProps={{ xs: 24, md: 8 }}
                     options={[
                       {
                         value: 30,
-                        label: '30 Segundos',
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.autoreversion.autotime.opt.1',
+                        }),
                       },
                       {
                         value: 60,
-                        label: 'Um minuto',
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.autoreversion.autotime.opt.2',
+                        }),
                       },
                       {
                         value: 120,
-                        label: 'Dois minutos',
+                        label: intl.formatMessage({
+                          id: 'component.edit.pivot.autoreversion.autotime.opt.3',
+                        }),
                       },
                     ]}
                   />

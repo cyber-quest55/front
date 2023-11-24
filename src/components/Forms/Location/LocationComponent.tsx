@@ -4,6 +4,7 @@ import { GeoLocationContext } from '@/utils/strategies/geolocation/geolocation';
 import { EnvironmentFilled } from '@ant-design/icons';
 import { ProCard, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { GoogleMap, Marker } from '@react-google-maps/api';
+import { useIntl } from '@umijs/max';
 import { Button, Row, Space } from 'antd';
 
 import * as React from 'react';
@@ -31,6 +32,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
   const { locations, geoLocationContext, hasNorthReference, lat, lng, onChangeNorth, northValue } =
     props;
 
+  const intl = useIntl();
   const { xl } = useScreenHook();
 
   const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(16, {
@@ -115,7 +117,10 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
               addonAfter={
                 <Button onClick={() => onClickLocation(index)}>
                   <Space>
-                    <EnvironmentFilled style={{ color: item.color }} /> Localização
+                    <EnvironmentFilled style={{ color: item.color }} />
+                    {intl.formatMessage({
+                      id: 'component.location.btnlocation.label',
+                    })}
                   </Space>
                 </Button>
               }
@@ -123,8 +128,14 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
           ))}
 
           {hasNorthReference ? (
-            <ProFormCheckbox fieldProps={{ onChange: (e) => onChangeNorth(e), defaultChecked: northValue  }}>
-              Utilizar Norte como Referência
+            <ProFormCheckbox
+            colProps={{ xs: 24, md: 24 }}
+
+              fieldProps={{ onChange: (e) => onChangeNorth(e), defaultChecked: northValue }}
+            >
+              {intl.formatMessage({
+                id: 'component.location.hasnorth.label',
+              })}
             </ProFormCheckbox>
           ) : null}
         </Row>

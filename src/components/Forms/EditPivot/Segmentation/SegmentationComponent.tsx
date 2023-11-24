@@ -9,7 +9,7 @@ import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Alert, App, Button, Typography } from 'antd';
 import * as React from 'react';
- 
+
 type DataSourceType = {
   id: any;
   name?: string;
@@ -21,13 +21,7 @@ type DataSourceType = {
   color: string;
 };
 
-const colors = [
-  "#1d39c4",
-  "#d3adf7",
-  "#e6fffb",
-  "#ffa39e",
-  "#b7eb8f"
-]
+const colors = ['#1d39c4', '#d3adf7', '#e6fffb', '#ffa39e', '#b7eb8f'];
 
 const equiData = (
   record: DataSourceType,
@@ -87,7 +81,7 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
   const [editableKeys, setEditableRowKeys] = React.useState<React.Key[]>([]);
   const [dataSource, setDataSource] = React.useState<any[]>([]);
   const [position, setPosition] = React.useState<'top' | 'bottom' | 'hidden'>('bottom');
-  const [maxAngle, setMaxAngle] = React.useState<any>(360); 
+  const [maxAngle, setMaxAngle] = React.useState<any>(360);
 
   const postReq = useRequest(postPivotConfig, { manual: true });
 
@@ -98,7 +92,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
 
   const columns: ProColumns<DataSourceType>[] = [
     {
-      title: 'Nome',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.segments.column.name.title',
+      }),
       dataIndex: 'name',
       formItemProps: () => {
         return {
@@ -111,16 +107,20 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
       width: '14%',
     },
     {
-      title: 'Tipo do Plantio',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.segments.column.pantingtype.title',
+      }),
       dataIndex: 'plantingType',
-      
+
       editable: (text, record, index) => {
         return index !== 0;
       },
       width: '14%',
     },
     {
-      title: 'Ângulo Inicial',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.segments.column.initialangle.title',
+      }),
       dataIndex: 'begin',
       formItemProps: () => {
         return {
@@ -136,7 +136,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
       width: '14%',
     },
     {
-      title: 'Ângulo Final',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.segments.column.endangle.title',
+      }),
       dataIndex: 'end',
       valueType: 'digit',
       formItemProps: (form, { rowIndex, entity }) => {
@@ -161,7 +163,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
       width: '14%',
     },
     {
-      title: 'Data do Plantio',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.segments.column.plantingdate.title',
+      }),
       dataIndex: 'plantingDate',
       valueType: 'date',
 
@@ -176,7 +180,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
       width: '14%',
     },
     {
-      title: 'Data da Colheita',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.segments.column.harvestdate.title',
+      }),
       dataIndex: 'harvestDate',
       valueType: 'date',
       formItemProps: () => {
@@ -190,7 +196,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
       width: '14%',
     },
     {
-      title: 'Ações',
+      title: intl.formatMessage({
+        id: 'component.edit.pivot.segments.column.option.title',
+      }),
       valueType: 'option',
       width: 120,
       render: (text, record, index, action) => [
@@ -200,7 +208,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
             action?.startEditable?.(record.id);
           }}
         >
-          Edit
+          {intl.formatMessage({
+            id: 'component.edit.pivot.segments.column.option.edit',
+          })}
         </a>,
         dataSource.length > 1 ? (
           <a
@@ -209,13 +219,15 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
               setDataSource(equiData(record, dataSource, index));
             }}
           >
-            Delete
+            {intl.formatMessage({
+              id: 'component.edit.pivot.segments.column.option.delete',
+            })}
           </a>
         ) : null,
       ],
     },
   ];
- 
+
   React.useEffect(() => {
     /** Caso já tenha fechado o circulo*/
     if (dataSource.length > 0) {
@@ -294,36 +306,43 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
     }
   };
 
-  
   return (
     <ProCard
       ghost
       gutter={[16, 8]}
-      title="Segmentos e Plantio"
+      title={intl.formatMessage({
+        id: 'component.edit.pivot.segments.title',
+      })}
       wrap
       extra={
         <Button loading={postReq.loading} icon={<SaveOutlined />} type="primary" onClick={onFinish}>
-          Salvar
+          {intl.formatMessage({
+            id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
     >
       <ProCard ghost gutter={[16, 8]} colSpan={{ md: 24 }} wrap>
         <Typography.Text>
-          Em alguns pivôs, é comum segmentar os pivôs em duas ou mais partes devido à variedade
-          plantada, época de plantio ou até mesmo para facilitar o gerenciamento da operação. Com
-          esta funcionalidade, você pode segmentar os pivôs e ter maior controle da sua operação.
+          {intl.formatMessage({
+            id: 'component.edit.pivot.segments.desc',
+          })}
         </Typography.Text>
         <Alert
           style={{ marginBlock: 12 }}
           showIcon
           type="info"
-          message="Você pode criar até 5 segmentos"
+          message={intl.formatMessage({
+            id: 'component.edit.pivot.segments.info',
+          })}
         />
         <ProFormDigit
           fieldProps={{ onBlur: (e) => setMaxAngle(e), value: maxAngle }}
           max={360}
-          name="asdsad"
-          label="Qual é o ângulo máximo que esse pivô atinge?"
+          name="noname"
+          label={intl.formatMessage({
+            id: 'component.edit.pivot.segments.maxangle.label',
+          })}
         />
       </ProCard>
       <ProCard ghost colSpan={{ xs: 24, md: 8 }}>
@@ -343,9 +362,9 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
             fullscreenControl: false,
             streetViewControl: false,
           }}
-          zoom={zoom} 
+          zoom={zoom}
         >
-          <SegmentedPivotDevice 
+          <SegmentedPivotDevice
             center={{ lat: positions.latitude_center, lng: positions.longitude_center }}
             referenced={{ lat: positions.latitude_reference, lng: positions.longitude_reference }}
             segments={dataSource}
@@ -368,7 +387,7 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
                     id: (Math.random() * 1000000).toFixed(0),
                     begin: index === 0 ? 0 : dataSource[index - 1]?.end,
                     end: maxAngle,
-                    color: colors[index]
+                    color: colors[index],
                   }),
                 }
               : (false as any)
@@ -376,11 +395,11 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
           loading={false}
           columns={columns}
           request={async () => {
-            const newData = []
+            const newData = [];
 
-            for(let i = 0; i < pivot?.controllerconfig?.content?.segments?.length; i++){
+            for (let i = 0; i < pivot?.controllerconfig?.content?.segments?.length; i++) {
               const segment = pivot?.controllerconfig?.content?.segments[i];
-              const group =  pivot?.controllerconfig?.segments_crop[i];
+              const group = pivot?.controllerconfig?.segments_crop[i];
 
               newData.push({
                 name: group.name,
@@ -391,14 +410,14 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
                 harvestDate: group.crop_harvest_date,
                 color: colors[i],
                 id: `key-table-segment-${i}`,
-               } as any)
+              } as any);
             }
 
             return {
               data: newData,
               total: pivot?.controllerconfig?.content?.segments?.length,
               success: true,
-              pageSize: 4
+              pageSize: 4,
             };
           }}
           ghost

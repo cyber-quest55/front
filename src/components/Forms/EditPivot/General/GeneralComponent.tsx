@@ -109,23 +109,31 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
   return (
     <ProCard
       title={
-        <Typography.Title style={{ margin: 0 }} level={4}>
-          Configurações
+        <Typography.Title style={{ margin: 0 }} level={5}>
+          {intl.formatMessage({
+            id: 'component.edit.pivot.general.title',
+          })}
         </Typography.Title>
       }
       extra={
         <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
-          Salvar
+          {intl.formatMessage({
+            id: 'component.edit.pivot.button.save',
+          })}
         </Button>
       }
       ghost
       gutter={[12, 12]}
     >
-      
       {pivot ? (
         <>
           <div style={{ marginBottom: 20 }}>
-            <Typography.Text>Última configuração: 19 Out 2023 09:55- Internet</Typography.Text>
+            <Typography.Text>
+              {intl.formatMessage({
+                id: 'component.edit.pivot.lastconfig',
+              })}
+              : 19 Out 2023 09:55- Internet
+            </Typography.Text>
           </div>
           <ProForm
             validateTrigger="onBlur"
@@ -212,7 +220,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 name={['base_radio_id']}
                 operable={false}
                 setFieldValue={'2'}
-                label="Rádio da Central"
+                label={intl.formatMessage({
+                  id: 'component.edit.pivot.general.centralradio.label',
+                })}
                 status={'processing'}
                 span={{
                   xs: 24,
@@ -225,7 +235,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 name={['control_radio_id']}
                 operable
                 setFieldValue={'2'}
-                label="Rádio do Controlador"
+                label={intl.formatMessage({
+                  id: 'component.edit.pivot.general.controllerradio.label',
+                })}
                 status={'processing'}
                 span={{ xs: 24, md: 6 }}
                 deviceType="Controlador"
@@ -238,7 +250,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 name={['monitor_radio_id']}
                 operable
                 setFieldValue={'2'}
-                label="Rádio do GPS"
+                label={intl.formatMessage({
+                  id: 'component.edit.pivot.general.gpsradio.label',
+                })}
                 status={'processing'}
                 span={{ xs: 24, md: 6 }}
                 deviceType="GPS"
@@ -250,7 +264,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
               <RadioInputContainer
                 operable={false}
                 setFieldValue={'2'}
-                label="Rádio da Bomba"
+                label={intl.formatMessage({
+                  id: 'component.edit.pivot.general.pumpradio.label',
+                })}
                 status={'processing'}
                 span={{ xs: 24, md: 6 }}
                 deviceType=""
@@ -260,13 +276,17 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
             <ProFormField
               rules={[yupSync]}
               name="name"
-              label="Nome do pivô"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.pivotname.label',
+              })}
               colProps={{ xs: 24, md: 8, xl: 8 }}
             />
             <ProFormSelect
               rules={[yupSync]}
               name={['controllerconfig', 'content', 'language', 'language']}
-              label="Linguagem do dispositivo"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.devicelanguage.label',
+              })}
               colProps={{ xs: 24, md: 8, xl: 8 }}
               options={[
                 { label: 'English', value: 1 },
@@ -279,7 +299,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
             <ProFormDigit
               rules={[yupSync]}
               name={['controllerconfig', 'content', 'pivot_parameters', 'radius_last']}
-              label="Raio até a última torre"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.radiuslasttower.label',
+              })}
               colProps={{ xs: 24, md: 8 }}
               fieldProps={{
                 addonAfter: 'm',
@@ -289,7 +311,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
             <ProFormDigit
               rules={[yupSync]}
               name={['controllerconfig', 'content', 'pivot_parameters', 'flow_rate']}
-              label="Vazão"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.flowrate.label',
+              })}
               colProps={{ xs: 24, md: 8 }}
               fieldProps={{
                 addonAfter: 'm³/h',
@@ -299,7 +323,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
             <ProFormDigit
               rules={[yupSync]}
               name={['controllerconfig', 'content', 'pivot_parameters', 'speed']}
-              label="Veloc. da última torre"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.endtowerspeed.label',
+              })}
               colProps={{ xs: 24, md: 8 }}
               fieldProps={{
                 addonAfter: 'm/h',
@@ -309,7 +335,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
             <ProFormDigit
               rules={[yupSync]}
               name={['controllerconfig', 'content', 'pivot_parameters', 'irrigated_area']}
-              label="Área irrigada"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.irrigationarea.label',
+              })}
               colProps={{ xs: 24, md: 8 }}
               fieldProps={{
                 addonAfter: 'ha',
@@ -354,7 +382,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                   label: 'Outro',
                 },
               ]}
-              label="Fabricante"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.brandmodel.label',
+              })}
               colProps={{ xs: 24, md: 8 }}
             />
             <ProFormDependency name={['aux_brand_model']}>
@@ -374,7 +404,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                     <ProFormField
                       rules={[yupSync]}
                       name={['controllerconfig', 'brand_model']}
-                      label="Insira o Fabricante"
+                      label={intl.formatMessage({
+                        id: 'component.edit.pivot.general.other.label',
+                      })}
                       colProps={{ xs: 24, md: 8 }}
                     />
                   );
@@ -392,7 +424,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 },
               ]}
               allowClear={false}
-              label="Tipo de Painel"
+              label={intl.formatMessage({
+                id: 'component.edit.pivot.general.paneltype.label',
+              })}
               colProps={{ xs: 24, md: 8 }}
             />
 
@@ -401,7 +435,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
               name={['controllerconfig', 'content', 'voltage_limit_enable', 'voltage_limit_enable']}
               colProps={{ xs: 24, md: 24 }}
             >
-              Controlador de tensão
+              {intl.formatMessage({
+                id: 'component.edit.pivot.general.vontagecontrol.label',
+              })}
             </ProFormCheckbox>
 
             <ProFormDependency name={['controllerconfig']}>
@@ -416,7 +452,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                         'voltage_configurations',
                         'minimum_voltage',
                       ]}
-                      label="Tensão mínima de operação"
+                      label={intl.formatMessage({
+                        id: 'component.edit.pivot.general.minopv.label',
+                      })}
                       disabled={
                         !controllerconfig?.content?.voltage_limit_enable?.voltage_limit_enable
                       }
@@ -434,7 +472,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                         'voltage_configurations',
                         'maximum_voltage',
                       ]}
-                      label="Tensão máxima de operação"
+                      label={intl.formatMessage({
+                        id: 'component.edit.pivot.general.maxopv.label',
+                      })}
                       disabled={
                         !controllerconfig?.content?.voltage_limit_enable?.voltage_limit_enable
                       }
@@ -452,7 +492,9 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                         'voltage_configurations',
                         'stable_time',
                       ]}
-                      label="Tempo limite"
+                      label={intl.formatMessage({
+                        id: 'component.edit.pivot.general.timeout.label',
+                      })}
                       disabled={
                         !controllerconfig?.content?.voltage_limit_enable?.voltage_limit_enable
                       }
