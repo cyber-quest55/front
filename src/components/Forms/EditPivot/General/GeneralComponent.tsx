@@ -172,7 +172,8 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 }
                 delete newObj.uuid;
                 delete newObj.device;
-
+                delete newObj.message_packets
+                
                 await postReq.runAsync(
                   {
                     farmId: params.farmId as any,
