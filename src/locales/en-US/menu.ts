@@ -9,4 +9,5 @@ export default {
   'menu.Relatórios': 'Reports',
   'menu.Relatórios.Relatório do Negócio': 'Business Report',
   'menu.Relatórios.Relatório da Fazenda': 'Farm Report',
+  'menu.Edit Pivot': 'Edit Pivot',
 };

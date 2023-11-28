@@ -257,7 +257,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
             return (
               <Space>
                 <ProFormCheckbox
-                  name={['controllerconfig', 'content', 'pause_time', 'enable_friday']}
+                  name={['controllerconfig', 'content', 'pause_time', 'enable_sunday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
@@ -275,7 +275,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
-                  name={['controllerconfig', 'content', 'pause_time', 'enable_sunday']}
+                  name={['controllerconfig', 'content', 'pause_time', 'enable_tuesday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
@@ -284,7 +284,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
-                  name={['controllerconfig', 'content', 'pause_time', 'enable_tuesday']}
+                  name={['controllerconfig', 'content', 'pause_time', 'enable_wednesday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
@@ -293,7 +293,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
-                  name={['controllerconfig', 'content', 'pause_time', 'enable_saturday']}
+                  name={['controllerconfig', 'content', 'pause_time', 'enable_thursday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
@@ -302,7 +302,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
-                  name={['controllerconfig', 'content', 'pause_time', 'enable_thursday']}
+                  name={['controllerconfig', 'content', 'pause_time', 'enable_friday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >
@@ -311,7 +311,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                   })}
                 </ProFormCheckbox>
                 <ProFormCheckbox
-                  name={['controllerconfig', 'content', 'pause_time', 'enable_wednesday']}
+                  name={['controllerconfig', 'content', 'pause_time', 'enable_saturday']}
                   colProps={{ xs: 24, md: 1 }}
                   disabled={!firstHour}
                 >

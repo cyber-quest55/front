@@ -81,7 +81,7 @@ export async function favoritePivotConfig(
 
   return request<{
     data: API.FavoritePivotConfigResponse;
-  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/${props.configId}`, {
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/${props.configId}/`, {
     method: 'PATCH',
    data: options});
 }

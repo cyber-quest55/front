@@ -8,7 +8,7 @@ import EditPivotRushHourContainer from '@/components/Forms/EditPivot/RushHour/Ru
 import EditPivotFavoriteHistoryTable from '@/components/Tables/EditPivotFavoriteTable';
 import EditPivotHistoryTable from '@/components/Tables/EditPivotHistoryTable';
 import { useScreenHook } from '@/hooks/screen';
-import { queryPivotByIdStart } from '@/models/pivot-by-id';
+import { loadPivotConfig, queryPivotByIdStart } from '@/models/pivot-by-id';
 import { PageContainer, ProCard, ProFormSelect } from '@ant-design/pro-components';
 import { Dispatch, useIntl, useParams } from '@umijs/max';
 import React, { useState } from 'react';
@@ -18,6 +18,7 @@ import FormPivotSegmentationContainer from '@/components/Forms/EditPivot/Segment
 import { connect } from 'dva';
 interface Props {
   queryPivotByIdStart: typeof queryPivotByIdStart;
+  loadPivotConfig: typeof loadPivotConfig;
 }
 
 const NoFoundPage: React.FunctionComponent<Props> = (props) => {
@@ -38,6 +39,7 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
         <ProFormSelect
           fieldProps={{ value: 'pivo1' }}
           initialValue={'pivo1'}
+          disabled
           noStyle
           options={[
             { value: 'pivo1', label: 'asdsadasd' },
@@ -163,14 +165,18 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
             destroyInactiveTabPane: true,
             items: [
               {
-                label: `Configurações Anteriores`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.favorites',
+                }),
                 key: '1',
-                children: <EditPivotHistoryTable />,
+                children: <EditPivotHistoryTable setTabCount={setTabCont} loadPivotConfig={props.loadPivotConfig}/>,
               },
               {
-                label: `Favoritos`,
+                label: intl.formatMessage({
+                  id: 'pages.edit.pivot.tab.options.previoussettings',
+                }),
                 key: '2',
-                children: <EditPivotFavoriteHistoryTable />,
+                children: <EditPivotFavoriteHistoryTable setTabCount={setTabCont} loadPivotConfig={props.loadPivotConfig}/>,
               },
             ],
             onChange: (key) => {
@@ -187,6 +193,8 @@ const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
+  loadPivotConfig: (props: any) => dispatch(loadPivotConfig(props)),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(NoFoundPage);

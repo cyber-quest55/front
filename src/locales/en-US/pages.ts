@@ -21,5 +21,8 @@ export default {
   'pages.edit.pivot.tab.options.segments': 'Segments and Planting',
   'pages.edit.pivot.tab.options.final': 'Endgun',
   'pages.edit.pivot.tab.options.autoreversion': 'Autoreversion',
+  'pages.edit.pivot.tab.options.favorites': 'Favorites',
+  'pages.edit.pivot.tab.options.previoussettings': 'Previous settings',
+
 
 };
