@@ -140,7 +140,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       return (
         <App  >
           <LoadScript
-            libraries={libraries}
+            libraries={libraries as any}
             id={loaderId}
             loadingElement={<div>Carregando</div>}
             googleMapsApiKey=""

@@ -19,11 +19,7 @@ const Settings: ProLayoutProps & {
   pwa: true,
   iconfontUrl: '',
   splitMenus: false,
-  token: {
-    pageContainer: {
-      paddingBlockPageContainerContent: 0,
-      paddingInlinePageContainerContent: 0,
-    },
+  token: { 
 
     colorBgAppListIconHover: 'rgba(0,0,0,0.06)',
     colorTextAppListIconHover: 'rgba(255,255,255,0.95)',

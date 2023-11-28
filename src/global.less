@@ -12,6 +12,7 @@ body,
 .colorWeak {
   filter: invert(80%);
 }
+ 
 
 .ant-layout {
   min-height: 100vh;
@@ -22,14 +23,17 @@ body,
   padding-inline-end: 0px;
 }
 
+.ant-pro-page-container-children-container{
+  padding-block-start: 0px !important;
+}
+
 .ant-menu-item-group-title {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
 .ant-pro-form-login-page-container {
   width: 100vw !important;
-  height: calc(100% - 32px);
-
+ 
   @media (min-width: 768px) {
     height: calc(100% - 152px);
   }
@@ -51,10 +55,7 @@ canvas {
   background-position: center;
   background-size: cover;
 }
-
-.teste1 .ant-pro-card-body {
-  padding-inline: 0px !important;
-}
+ 
 
 .ant-pro-form-login-page {
   @media (max-width: 768px) {
@@ -115,4 +116,10 @@ ol {
 
 .ant-skeleton-button {
   width: 100% !important;
+}
+
+
+.ant-badge-status-processing {
+  color: #1677ff !important;
+  background: #1677ff !important;
 }

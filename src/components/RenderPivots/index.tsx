@@ -10,7 +10,7 @@ import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
 import Field from '@ant-design/pro-field';
 import { GoogleMap } from '@react-google-maps/api';
-import { useParams } from '@umijs/max';
+import { Dispatch, useParams } from '@umijs/max';
 import { Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
 import React, { useEffect, useState } from 'react';

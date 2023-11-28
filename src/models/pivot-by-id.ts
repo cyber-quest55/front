@@ -8,13 +8,21 @@ export interface GetPivotByIdModelProps {
   unformated: API.GetPivotByIdInformationResponse;
   result: CirclePivotProps;
   loading: boolean;
+
   loaded: boolean;
   error: any;
 }
 
 export const queryPivotByIdStart = (payload: API.GetPivotByIdInformationParam) => {
   return {
-    type: 'pivotById/queryPivotByIdStart',
+    type: 'pivotById/queryPivotById',
+    payload: payload,
+  };
+};
+
+export const loadPivotConfig = (payload: API.GetPivotByIdInformationResponse) => {
+  return {
+    type: 'pivotById/loadPivotConfig',
     payload: payload,
   };
 };
@@ -39,6 +47,17 @@ export default {
       try {
         const response: API.GetPivotByIdInformationResponse = yield call(getPivotById, payload);
         yield put({ type: 'queryPivotByIdSuccess', payload: response });
+      } catch (error: any) {
+        yield put({ type: 'queryPivotByIdError', payload: error });
+      }
+    },
+    *loadPivotConfig(
+      { payload }: { payload: API.GetPivotByIdInformationResponse },
+      { put }: { call: any; put: any },
+    ) {
+      yield put({ type: 'queryPivotByIdStart' });
+      try {
+        yield put({ type: 'queryPivotByIdSuccess', payload });
       } catch (error: any) {
         yield put({ type: 'queryPivotByIdError', payload: error });
       }
@@ -192,6 +211,7 @@ export default {
         loading: false,
         loaded: true,
         pivotInformation: payload,
+        unformated: payload,
         result: mapper,
         error: {},
       };
