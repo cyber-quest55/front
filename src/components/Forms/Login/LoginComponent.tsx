@@ -1,6 +1,6 @@
 import { ProCard, ProForm, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { SelectLang, useIntl } from '@umijs/max';
+import { SelectLang, useIntl, Link } from '@umijs/max';
 import { Alert, Button, Col, Row, Space, Typography } from 'antd';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
 
@@ -13,7 +13,7 @@ type Props = {
 const LoginFormComponent: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { handleSubmit, loading, error } = props;
-  const className = useEmotionCss(({}) => {
+  const className = useEmotionCss(({ }) => {
     return {
       maxWidth: `375px`,
       background: 'rgb(255 255 255 / 0.2)',
@@ -56,7 +56,7 @@ const LoginFormComponent: React.FC<Props> = (props) => {
               submitter={{
                 render: () => (
                   <Space direction="vertical" size={"large"} style={{ width: '100%' }}>
-                    {error ? <Alert description={error} type="error"   /> : null}
+                    {error ? <Alert description={error} type="error" /> : null}
 
                     <Button
                       type="primary"
@@ -104,12 +104,14 @@ const LoginFormComponent: React.FC<Props> = (props) => {
               />
             </ProForm>
             <Space style={{ width: '100%' }} direction="vertical" align="center">
-              <Typography.Link>
-                {intl.formatMessage({
-                  id: 'pages.login.recoverPassword',
-                  defaultMessage: 'Esqueci minha senha',
-                })}
-              </Typography.Link>
+              <Link to="/user/password-recovery">
+                <Typography.Link>
+                  {intl.formatMessage({
+                    id: 'pages.login.recoverPassword',
+                    defaultMessage: 'Esqueci minha senha',
+                  })}
+                </Typography.Link>
+              </Link>
             </Space>
             <Space style={{ width: '100%' }} direction="vertical" align="center">
               <Typography.Text type="secondary">

@@ -18,6 +18,8 @@ declare namespace APIModels {
     available: boolean;
   };
 
+  type ResetPasswordValidation = {};
+
   type RegisterUser = {
     email: string;
     username: string;
