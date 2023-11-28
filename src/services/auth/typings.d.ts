@@ -32,4 +32,11 @@ declare namespace API {
   };
 
   type RegisterUserResult = APIModels.RegisterUser;
+
+
+  type ResetPasswordParam = {
+    email: string;
+  }
+
+  type ResetPasswordResult = APIModels.ResetPasswordValidation;
 }

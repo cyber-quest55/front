@@ -10,5 +10,14 @@ export default {
   'pages.login.therms.fourth': 'Privacy Policy',
   'pages.login.invalid': 'Invalid Credentials',
   'pages.login.welcome': 'Welcome!',
-
+  'pages.passwordRecovery.email.placeholder': 'example@mail.com',
+  'pages.passwordRecovery.btn.send': 'Send',
+  'pages.passwordRecovery.btn.back': 'Back',
+  'pages.passwordRecovery.info': 'Enter your email address so we can send you a link to recover your account',
+  'pages.passwordRecovery.invalid': 'Invalid Email',
+  'pages.passwordRecovery.submitted': 'Submitted',
+  'pages.recoveryConfirmation.title': 'Recovery email sent successfully',
+  'pages.recoveryConfirmation.text1': "An email has been sent to the specified address.",
+  'pages.recoveryConfirmation.text2': "Follow the instructions in the email and recover your password.",
+  'pages.recoveryConfirmation.text3': "This email may take up to 1 hour to arrive.",
 };

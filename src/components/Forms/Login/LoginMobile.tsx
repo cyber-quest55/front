@@ -1,6 +1,6 @@
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { SelectLang, useIntl } from '@umijs/max';
+import { Link, SelectLang, useIntl } from '@umijs/max';
 import { Alert, Col, Row, Space, Typography } from 'antd';
 import { Button, Form, Input } from 'antd-mobile';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
@@ -13,8 +13,8 @@ type Props = {
 
 const LoginFormMobile: React.FC<Props> = (props) => {
   const intl = useIntl();
-  const { handleSubmit, loading , error} = props;
-  const className = useEmotionCss(({}) => {
+  const { handleSubmit, loading, error } = props;
+  const className = useEmotionCss(({ }) => {
     return {
       maxWidth: `96%`,
       background: 'rgb(255 255 255 / 0.2)',
@@ -65,12 +65,14 @@ const LoginFormMobile: React.FC<Props> = (props) => {
                     })}
                   </Button>
                   <Space style={{ width: '100%' }} direction="vertical" align="center">
-                    <Typography.Link>
-                      {intl.formatMessage({
-                        id: 'pages.login.recoverPassword',
-                        defaultMessage: 'Esqueci minha senha',
-                      })}
-                    </Typography.Link>
+                    <Link to="/user/password-recovery">
+                      <Typography.Link>
+                        {intl.formatMessage({
+                          id: 'pages.login.recoverPassword',
+                          defaultMessage: 'Esqueci minha senha',
+                        })}
+                      </Typography.Link>
+                    </Link>
                   </Space>
                   <Space style={{ width: '100%' }} direction="vertical" align="center">
                     <Typography.Text type="secondary">
