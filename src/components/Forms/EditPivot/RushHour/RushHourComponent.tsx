@@ -85,7 +85,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
       extra={
         <Button loading={loading} icon={<SaveOutlined />} type="primary" onClick={form.submit}>
           {intl.formatMessage({
-            id: 'component.edit.pivot.lastconfig',
+            id: 'component.edit.pivot.button.save',
           })}
         </Button>
       }
@@ -162,7 +162,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                 ...pivot.controllerconfig.content,
                 ...v2.controllerconfig.content,
                 pause_time: {
-                  ...pivot.controllerconfig.content.pause_time,
+                  ...v2.controllerconfig.content.pause_time,
                   start_pause_time_hour_1: date1[0],
                   start_pause_time_minute_1: date1[1],
                   end_pause_time_hour_1: date2[0],

@@ -160,10 +160,22 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 const newObj = {
                   ...pivot.controllerconfig,
                   ...values.controllerconfig,
+                  kwh_out_of_peak: parseInt(pivot.controllerconfig.kwh_out_of_peak),
+                  kwh_peak: parseInt(pivot.controllerconfig.kwh_peak),
+                  kwh_reduced: parseInt(pivot.controllerconfig.kwh_reduced),
+
                   content: {
                     ...pivot.controllerconfig.content,
                     ...values.controllerconfig.content,
+                   
+                   
+                    voltage_configurations: {
+                      ...pivot.controllerconfig.content.voltage_configurations,
+
+                      voltage_reference: 480, // need review after
+                    }, 
                   },
+
                   name_pivot_on_config: values.name,
                 };
 
@@ -172,8 +184,22 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 }
                 delete newObj.uuid;
                 delete newObj.device;
-                delete newObj.message_packets
-                
+                delete newObj.message_packets;
+                delete newObj.arrived;
+                delete newObj.created;
+                delete newObj.created_by;
+                delete newObj.created_on_hardware;
+                delete newObj.gps_config;
+                delete newObj.group_uuid;
+                delete newObj.id;
+                delete newObj.message_error;
+                delete newObj.message_status;
+                delete newObj.name;
+                delete newObj.pump_config;
+                delete newObj.updated;
+                delete newObj.pinned;
+                delete newObj.content.clock.second;
+
                 await postReq.runAsync(
                   {
                     farmId: params.farmId as any,
