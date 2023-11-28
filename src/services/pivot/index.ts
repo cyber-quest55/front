@@ -41,7 +41,7 @@ export async function getPivotHistory(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: API.GetFarmResponse;
+    data: API.GetPivotsInformationResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
     method: 'GET',
   });
@@ -53,9 +53,114 @@ export async function getPivotReports(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: API.GetFarmResponse;
+    data: API.GetPivotByIdInformationResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/report/`, {
     method: 'GET',
-    params: options
-    });
+    params: options,
+  });
+}
+
+/** GET /farms/${farmId}/pivots/${pivotId}/config/?pinned=false */
+export async function getEditPivotHistory(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** POST /farms/${farmId}/pivots/${pivotId}/config/${configId} */
+export async function favoritePivotConfig(
+  props: API.FavoritePivotConfigParams,
+  options?: { [key: string]: any },
+) {
+
+  return request<{
+    data: API.FavoritePivotConfigResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/${props.configId}/`, {
+    method: 'PATCH',
+   data: options});
+}
+
+
+/** GET /farms/${farmId}/pivots/${pivotId}/devices/control/ */
+export async function getEditPivotDeviceControlTable(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/devices/control`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** GET /farms/${farmId}/pivots/${pivotId}/devices/monitor/ */
+export async function getEditPivotDeviceMonitorTable(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/devices/monitor`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/control/ */
+export async function patchChangeControlRadio(
+  props: any,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/control/`, {
+    method: 'PATCH',
+    params: options,
+  });
+}
+
+/** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/monitor/ */
+export async function patchChangeMonitorRadio(
+  props: any,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/monitor/`, {
+    method: 'PATCH',
+    params: options,
+  });
+}
+
+/** POST /farms/${farmId}/pivots/${pivotId}/device/${deviceId}/config/ */
+export async function postPivotConfig(
+  props: API.PostPivotConfigParams,
+  options: APIModels.PostPivotConfig,
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/device/${props.deviceId}/config/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+/** PATCH /farms/${farmId}/pivots/${pivotId} */
+export async function patchPivotGlobalConfig(
+  props: API.GetEditPivotHistoryParams,
+  options: any,
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
 }

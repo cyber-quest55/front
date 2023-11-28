@@ -46,5 +46,25 @@ declare namespace API {
     pivotId: string;
   };
 
+  type GetEditPivotHistoryParams = {
+    farmId: number;
+    pivotId: string;
+  };
+
+  type FavoritePivotConfigParams = {
+    farmId: string;
+    pivotId: string;
+    configId: string;
+  };
+
   type GetPivotReportResponse = APIModels.PivotReport;
+
+  type FavoritePivotConfigResponse = APIModels.PivotReport;
+
+  type PostPivotConfigParams = {
+    farmId: number;
+    pivotId: string;
+    deviceId: string;
+  };
 }
+

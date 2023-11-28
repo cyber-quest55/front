@@ -19,7 +19,7 @@ const useMapHook: (zm: number, mpCenter: { lat: number; lng: number }) => {
   const [map, setMap] = useState<any>(null);
 
   /**
-   * It define the map component
+   * It define the map component center
    */
   const [mapCenter, setMapCenter] = useState<any>(mpCenter);
 

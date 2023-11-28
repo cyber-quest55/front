@@ -550,4 +550,127 @@ declare namespace APIModels {
     misalignment_array: Array<any>;
     start_pivot_report_aggregate: number;
   };
+
+  type PostPivotConfig =  {
+    message_subtype: string
+    equipment: number
+    segments_crop: Array<{
+      number_editing: number
+      name: string
+      segment_type: string
+      crop_plant_date: string
+      crop_harvest_date: string
+    }>
+    kwh_peak: number
+    kwh_out_of_peak: number
+    kwh_reduced: number
+    injection_pump: boolean
+    name_pivot_on_config: string
+    brand_model: string
+    panel_type: string
+    potency: string
+    content: {
+      pivot_parameters: {
+        radius_last: number
+        flow_rate: number
+        speed: number
+        irrigated_area: number
+      }
+      clock: {
+        day: number
+        month: number
+        year: number
+        hour: number
+        minute: number
+      }
+      voltage_limit_enable: {
+        voltage_limit_enable: number
+      }
+      voltage_configurations: {
+        minimum_voltage: number
+        maximum_voltage: number
+        stable_time: number
+        voltage_reference: number
+      }
+      language: {
+        language: number
+      }
+      pressure_config: {
+        read_pressure_by: number
+        pump_time_out: number
+        pump_press_switch: number
+        pump_press_delay: number
+        pump_soft_start_time: number
+        press_sensor_max_range: number
+        press_sensor_min_range: number
+        sensor_scale_end: number
+      }
+      autoreversion_configurations: {
+        mode: number
+        time: number
+      }
+      autoreversion_command: {
+        command: number
+      }
+      pause_time: {
+        enable_friday: number
+        enable_monday: number
+        enable_sunday: number
+        enable_tuesday: number
+        enable_saturday: number
+        enable_thursday: number
+        enable_wednesday: number
+        start_pause_time_hour_1: number
+        start_pause_time_minute_1: number
+        end_pause_time_hour_1: number
+        end_pause_time_minute_1: number
+        start_pause_time_hour_2: number
+        start_pause_time_minute_2: number
+        end_pause_time_hour_2: number
+        end_pause_time_minute_2: number
+      }
+      pause_time_command: {
+        pause_time_command: number
+      }
+      power_delay: {
+        power_delay: number
+      }
+      sector: {
+        start_angle: number
+        end_angle: number
+      }
+      segments: Array<{
+        number_editing: number
+        angle_start: number
+        angle_end: number
+      }>
+      pivot_positions: {
+        latitude_center: number
+        longitude_center: number
+        north_reference: number
+        latitude_reference: number
+        longitude_reference: number
+      }
+      endgun_mode: {
+        endgun_mode: number
+      }
+      endgun_angles: Array<{
+        end_angle: number
+        start_angle: number
+        number_editing: number
+      }>
+      pluviometer_enable: {
+        enable: number
+      }
+      pluviometer_stop_mode: {
+        stop_mode: number
+      }
+      mm_to_stop: {
+        value: number
+      }
+      pluviometer_scale: {
+        mm: number
+      }
+    }
+  }
 }

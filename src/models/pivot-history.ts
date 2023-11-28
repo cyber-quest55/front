@@ -8,7 +8,7 @@ export interface GetPivotHistoryModelProps {
   error: any;
 }
 
-export const queryPivotByIdStart = (payload: API.GetPivotHistoryParams) => {
+export const queryPivotHistory = (payload: API.GetPivotHistoryParams) => {
   return {
     type: 'pivotHistory/queryPivotHistory',
     payload: payload,

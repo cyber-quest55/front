@@ -1,4 +1,4 @@
-declare namespace Models {
+declare namespace APIModels {
   /** Model of login request */
   type Auth = {
     profile: number;
@@ -8,5 +8,22 @@ declare namespace Models {
     two_factor_authentication: boolean;
     farm_id: string;
     user: number;
+  };
+
+  type RegistrationToken = {
+    email: string;
+  };
+
+  type UsernameValidation = {
+    available: boolean;
+  };
+
+  type ResetPasswordValidation = {};
+
+  type RegisterUser = {
+    email: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
   };
 }
