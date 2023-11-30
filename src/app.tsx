@@ -14,6 +14,8 @@ import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect/FarmSelectContainer';
 import { errorConfig } from './requestErrorConfig';
+import ForbidenPage from './pages/403';
+import NoFoundPage from './pages/404';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -75,6 +77,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     ...initialState?.settings,
     defaultCollapsed: true,
+    unAccessible: <ForbidenPage/>,
+    noFound: <NoFoundPage/>,
     collapsed: initialState?.collapsed,
     onCollapse: () => {
       setInitialState({ ...initialState, collapsed: !initialState?.collapsed });

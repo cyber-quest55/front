@@ -117,7 +117,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
           const minut7 = pivot.controllerconfig.content.pause_time.start_pause_time_hour_2;
           const minut8 = pivot.controllerconfig.content.pause_time.start_pause_time_minute_2;
 
-          const startDate1 = dayjs().hour(minut3).minute(minut4);
+           const startDate1 = dayjs().hour(minut3).minute(minut4);
           const endDate1 = dayjs().hour(minut1).minute(minut2);
 
           const startDate2 = dayjs().hour(minut7).minute(minut8);
@@ -129,7 +129,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
           form.setFieldValue('secondBeginPickHour', startDate2);
           form.setFieldValue('secondEndPickHour', endDate2);
 
-          if (minut1 === 0 && minut2 === 0 && minut3 === 0 && minut4 === 0) {
+          if (pivot.controllerconfig?.content?.pause_time_command?.pause_time_command === 0) {
             fm.setFieldValue('firstHour', false);
           } else {
             fm.setFieldValue('firstHour', true);
@@ -163,14 +163,17 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
                 ...v2.controllerconfig.content,
                 pause_time: {
                   ...v2.controllerconfig.content.pause_time,
-                  start_pause_time_hour_1: date1[0],
-                  start_pause_time_minute_1: date1[1],
-                  end_pause_time_hour_1: date2[0],
-                  end_pause_time_minute_1: date2[1],
-                  start_pause_time_hour_2: date3[0],
-                  start_pause_time_minute_2: date3[1],
-                  end_pause_time_hour_2: date4[0],
-                  end_pause_time_minute_2: date4[1],
+                  start_pause_time_hour_1: parseInt(date1[0]),
+                  start_pause_time_minute_1:   parseInt(date1[1]),
+                  end_pause_time_hour_1:  parseInt(date2[0]),
+                  end_pause_time_minute_1:  parseInt(date2[1]),
+                  start_pause_time_hour_2:  parseInt(date3[0]),
+                  start_pause_time_minute_2:  parseInt(date3[1]),
+                  end_pause_time_hour_2:  parseInt(date4[0]),
+                  end_pause_time_minute_2:  parseInt(date4[1]),
+                },
+                pause_time_command: {
+                  pause_time_command: v2.firstHour === true ? 1 : 0,
                 },
               },
               name_pivot_on_config: pivot.name,
@@ -183,6 +186,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
             delete newObj.firstEndPickHour;
             delete newObj.secondBeginPickHour;
             delete newObj.secondEndPickHour;
+            delete newObj.message_packets;
 
             await postReq.runAsync(
               {
@@ -255,7 +259,7 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
         <ProFormDependency name={['firstHour']}>
           {({ firstHour }) => {
             return (
-              <Space>
+              <Space wrap>
                 <ProFormCheckbox
                   name={['controllerconfig', 'content', 'pause_time', 'enable_sunday']}
                   colProps={{ xs: 24, md: 1 }}

@@ -243,7 +243,7 @@ const EditPivotPumpComponent: React.FunctionComponent<any> = (props) => {
 
         <ProFormDependency name={['controllerconfig']}>
           {({ controllerconfig }) => {
-            const pressureListener = controllerconfig.content.pressure_config.read_pressure_by;
+            const pressureListener = controllerconfig?.content?.pressure_config?.read_pressure_by;
 
             return (
               <>
