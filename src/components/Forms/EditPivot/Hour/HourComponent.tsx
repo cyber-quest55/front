@@ -1,4 +1,5 @@
 import { postPivotConfig } from '@/services/pivot';
+import { yupValidator } from '@/utils/adapters/yup';
 import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
@@ -12,6 +13,7 @@ import { useRequest } from 'ahooks';
 import { App, Button, Form, Typography } from 'antd';
 import dayjs from 'dayjs';
 import * as React from 'react';
+import * as yup from 'yup';
 
 const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
@@ -23,6 +25,20 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
   const [loading, setLoading] = React.useState(false);
 
   const { pivot } = props;
+
+  const schema = yup.object().shape({
+    controllerconfig: yup.object().shape({
+      content: yup.object().shape({
+        clock: yup.date().required(
+          intl.formatMessage({
+            id: 'validations.required',
+          }),
+        ),
+      }),
+    }),
+  });
+
+  const yupSync = yupValidator(schema, form.getFieldsValue);
 
   return (
     <ProCard
@@ -157,6 +173,7 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
           {({ deviceHour }) => {
             return (
               <ProFormDateTimePicker
+                rules={[yupSync]}
                 name={['controllerconfig', 'content', 'clock']}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.clock.dvdate.label',

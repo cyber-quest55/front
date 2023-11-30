@@ -33,11 +33,22 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [loading, setLoading] = React.useState(false);
 
   const schema = yup.object().shape({
-    name: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
+    name: yup
+      .string()
+      .max(
+        16,
+        intl.formatMessage(
+          {
+            id: 'validations.max',
+          },
+          { value: 16 },
+        ),
+      )
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
 
     aux_brand_model: yup.string().required(
       intl.formatMessage({
@@ -48,26 +59,106 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
     controllerconfig: yup.object().shape({
       content: yup.object().shape({
         pivot_parameters: yup.object().shape({
-          radius_last: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
-          flow_rate: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
-          speed: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
-          irrigated_area: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
+          radius_last: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              1500,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 1500 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
+          flow_rate: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              1000,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 1000 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
+          speed: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              500,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 500 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
+          irrigated_area: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              500,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 500 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
         }),
 
         voltage_limit_enable: yup.object().shape({
@@ -75,9 +166,69 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
         }),
 
         voltage_configurations: yup.object().shape({
-          minimum_voltage: yup.number().required(),
-          maximum_voltage: yup.number().required(),
-          stable_time: yup.number().required(),
+          minimum_voltage: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              999,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 999 },
+              ),
+            )
+            .required(),
+          maximum_voltage: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              999,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 999 },
+              ),
+            )
+            .required(),
+          stable_time: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              999,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 999 },
+              ),
+            )
+            .required(),
         }),
 
         language: yup.object().shape({
@@ -160,10 +311,21 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 const newObj = {
                   ...pivot.controllerconfig,
                   ...values.controllerconfig,
+                  kwh_out_of_peak: parseInt(pivot.controllerconfig.kwh_out_of_peak),
+                  kwh_peak: parseInt(pivot.controllerconfig.kwh_peak),
+                  kwh_reduced: parseInt(pivot.controllerconfig.kwh_reduced),
+
                   content: {
                     ...pivot.controllerconfig.content,
                     ...values.controllerconfig.content,
+
+                    voltage_configurations: {
+                      ...pivot.controllerconfig.content.voltage_configurations,
+
+                      voltage_reference: 480, // need review after
+                    },
                   },
+
                   name_pivot_on_config: values.name,
                 };
 
@@ -172,8 +334,22 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 }
                 delete newObj.uuid;
                 delete newObj.device;
-                delete newObj.message_packets
-                
+                delete newObj.message_packets;
+                delete newObj.arrived;
+                delete newObj.created;
+                delete newObj.created_by;
+                delete newObj.created_on_hardware;
+                delete newObj.gps_config;
+                delete newObj.group_uuid;
+                delete newObj.id;
+                delete newObj.message_error;
+                delete newObj.message_status;
+                delete newObj.name;
+                delete newObj.pump_config;
+                delete newObj.updated;
+                delete newObj.pinned;
+                delete newObj.content.clock.second;
+
                 await postReq.runAsync(
                   {
                     farmId: params.farmId as any,
