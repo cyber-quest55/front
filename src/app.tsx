@@ -14,7 +14,7 @@ import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect/FarmSelectContainer';
 import { errorConfig } from './requestErrorConfig';
-import OfflineNetworkContainer from './components/Modals/OfflineNetwork/OfflineNetworkContainer';
+import { OfflineNetwork } from './components/Modals/OfflineNetwork/OfflineNetwork';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -140,7 +140,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // if (initialState?.loading) return <PageLoading />;
       return (
         <App  >
-          <OfflineNetworkContainer/>
+          <OfflineNetwork/>
           <LoadScript
             libraries={libraries as any}
             id={loaderId}
