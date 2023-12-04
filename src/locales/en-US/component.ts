@@ -9,7 +9,8 @@ export default {
   'component.statusedge.pivot.notsent': 'Not sent',
   'component.statusedge.pivot.received': 'Received',
   'component.statusedge.pivot.waitreceivment': 'Awaiting receipt',
-
+  'component.picker.confirm': 'Confirm',
+  'component.picker.cancel': 'Cancel',
   'component.location.hasnorth.label': 'Use North as Reference',
   'component.location.btnlocation.label': 'Location',
   'component.forms.register.title': 'Register',

@@ -101,9 +101,10 @@ export default [
   },
 
   {
-    path: '/',
-    redirect: '/farms/id',
-  },
+    path: '/403',
+    layout: false,
+    component: './403',
+  }, 
   {
     path: '*',
     layout: false,

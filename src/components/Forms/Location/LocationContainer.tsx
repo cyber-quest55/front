@@ -5,6 +5,7 @@ import * as React from 'react';
 import LocationFormComponent from './LocationComponent';
 import LocationFormMobile from './LocationMobile';
 import LocationFormSkeleton from './LocationSkeleton';
+import { GeoCapacitorStrategy } from '@/utils/strategies/geolocation/cap-strategy';
 
 interface ILocationFormContainerProps {
   locations: {
@@ -28,14 +29,16 @@ const LocationFormContainer: React.FunctionComponent<ILocationFormContainerProps
   const { xs } = useScreenHook();
 
   const geoBrowserStrategy = new GeoBrowserStrategy();
+
   const geoContext = new GeoLocationContext(geoBrowserStrategy);
 
   if (typeof window !== undefined) {
     // Se o objeto 'window' estiver definido, significa que o código está sendo executado em um navegador
     geoContext.setStrategy(geoBrowserStrategy);
   } else {
+    const geoCapStrategy = new GeoCapacitorStrategy();
     // Se o objeto 'window' não estiver definido, pode estar rodando em um ambiente diferente (por exemplo, Node.js)
-    geoContext.setStrategy(geoBrowserStrategy);
+    geoContext.setStrategy(geoCapStrategy);
   }
 
   return (

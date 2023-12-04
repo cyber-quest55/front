@@ -16,19 +16,12 @@ declare module '@antv/data-set';
 declare module 'mockjs';
 declare module 'react-fittext';
 declare module 'bizcharts-plugin-slider';
- export declare const PresetStatusColorTypes: readonly [
-  'success',
-  'processing',
-  'error',
-  'default',
-  'warning',
-];
-export type PresetStatusColorType = (typeof PresetStatusColorTypes)[number];
- declare module 'react-google-recaptcha' {
-    const ReCAPTCHA: React.ComponentType<RecaptchaProps>;
-    export default ReCAPTCHA;
-};
  
+ declare module 'react-google-recaptcha' {
+  const ReCAPTCHA: React.ComponentType<RecaptchaProps>;
+  export default ReCAPTCHA;
+}
+
 declare const REACT_APP_ENV: 'test' | 'development' | 'pre' | 'production' | false;
 declare const API_URL: string;
 

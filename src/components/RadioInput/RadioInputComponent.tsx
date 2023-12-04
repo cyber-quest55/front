@@ -1,12 +1,14 @@
 import { queryPivotByIdStart } from '@/models/pivot-by-id';
 import { PresetStatusColorType } from '@/typings';
-import { EditOutlined, SaveOutlined } from '@ant-design/icons';
+import { EditOutlined, LoadingOutlined, QrcodeOutlined, SaveOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
 import { Request, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Badge, Breakpoint, Col, Modal, Space, Tooltip, Typography } from 'antd';
 import { CloseOutline, RedoOutline } from 'antd-mobile-icons';
 import * as React from 'react';
+import QRCodeScannerContainer from '../QRCode/QRCodeContainer';
+
 type ColSpanType = number | string;
 
 interface IRadioInputComponentProps {
@@ -17,9 +19,13 @@ interface IRadioInputComponentProps {
   deviceType: string;
   device: string;
   request?: Request;
+  requestSwapChange?: any;
   requestChange?: any;
+  deviceId: string;
   fieldIndex?: string;
   name?: string[];
+  setFieldValue: any;
+  form: any;
   queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 
@@ -30,11 +36,32 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [qrReaderEnable, setQrReaderEnable] = React.useState(false);
 
   const reqGet = useRequest(props.request as any, { manual: true });
-  const reqPost = useRequest(props.requestChange as any, { manual: true });
+  const reqPost = useRequest(props.requestSwapChange as any, { manual: true });
+  const reqManual = useRequest(props.requestChange as any, { manual: true });
 
   const { label, status, operable, span, device, deviceType, fieldIndex } = props;
+
+  const onSave = async () => {
+    try{
+
+    await reqManual.runAsync(
+      {
+        farmId: params.farmId as any,
+        pivotId: params.pivotId as any,
+      },
+      { radio_id: props.form.getFieldValue(props.name) },
+    );
+    setIsEditing(false);
+    message.success('Salvo com sucesso');
+
+  } catch (err) {
+    message.error('Fail');
+  }
+
+  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -97,7 +124,6 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             actionRef={actionRef}
             ghost
             request={async () => {
-              console.log('chegou aqui');
               const result: any = await reqGet.runAsync({
                 farmId: params.farmId as any,
                 pivotId: params.pivotId as any,
@@ -151,7 +177,11 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
               {isEditing ? (
                 <>
                   <Tooltip title={'Salvar'}>
-                    <SaveOutlined />
+                    {reqManual.loading ? (
+                      <LoadingOutlined />
+                    ) : (
+                      <SaveOutlined onClick={() => onSave()} />
+                    )}
                   </Tooltip>
                   <Tooltip title={'Cancelar'}>
                     <CloseOutline onClick={() => setIsEditing(false)} />
@@ -164,11 +194,21 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         bordered
         bodyStyle={{ padding: 16 }}
       >
+        {qrReaderEnable ? (
+          <QRCodeScannerContainer
+            setFieldValue={props.setFieldValue}
+            handleVisible={setQrReaderEnable}
+          />
+        ) : null}
+
         <ProFormText
           name={props.name}
           noStyle
           disabled={!isEditing}
           fieldProps={{
+            addonAfter: isEditing ? (
+              <QrcodeOutlined onClick={() => setQrReaderEnable(!qrReaderEnable)} />
+            ) : null,
             suffix: operable ? (
               <Tooltip
                 title={
