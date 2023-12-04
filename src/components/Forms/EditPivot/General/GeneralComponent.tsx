@@ -2,6 +2,7 @@ import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import {
   getEditPivotDeviceControlTable,
   getEditPivotDeviceMonitorTable,
+  patchChangeControlManualRadio,
   patchChangeControlRadio,
   patchChangeMonitorRadio,
   postPivotConfig,
@@ -33,11 +34,22 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [loading, setLoading] = React.useState(false);
 
   const schema = yup.object().shape({
-    name: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
+    name: yup
+      .string()
+      .max(
+        16,
+        intl.formatMessage(
+          {
+            id: 'validations.max',
+          },
+          { value: 16 },
+        ),
+      )
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
 
     aux_brand_model: yup.string().required(
       intl.formatMessage({
@@ -48,26 +60,106 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
     controllerconfig: yup.object().shape({
       content: yup.object().shape({
         pivot_parameters: yup.object().shape({
-          radius_last: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
-          flow_rate: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
-          speed: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
-          irrigated_area: yup.number().required(
-            intl.formatMessage({
-              id: 'validations.required',
-            }),
-          ),
+          radius_last: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              1500,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 1500 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
+          flow_rate: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              1000,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 1000 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
+          speed: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              500,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 500 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
+          irrigated_area: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              500,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 500 },
+              ),
+            )
+            .required(
+              intl.formatMessage({
+                id: 'validations.required',
+              }),
+            ),
         }),
 
         voltage_limit_enable: yup.object().shape({
@@ -75,9 +167,69 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
         }),
 
         voltage_configurations: yup.object().shape({
-          minimum_voltage: yup.number().required(),
-          maximum_voltage: yup.number().required(),
-          stable_time: yup.number().required(),
+          minimum_voltage: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              999,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 999 },
+              ),
+            )
+            .required(),
+          maximum_voltage: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              999,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 999 },
+              ),
+            )
+            .required(),
+          stable_time: yup
+            .number()
+            .min(
+              1,
+              intl.formatMessage(
+                {
+                  id: 'validations.min.number',
+                },
+                { value: 1 },
+              ),
+            )
+            .max(
+              999,
+              intl.formatMessage(
+                {
+                  id: 'validations.max.number',
+                },
+                { value: 999 },
+              ),
+            )
+            .required(),
         }),
 
         language: yup.object().shape({
@@ -105,6 +257,14 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
 
   const yupSync = yupValidator(schema, form.getFieldsValue);
   const { pivot } = props;
+
+  const setControlRadioId = (value: string) => {
+    form.setFieldValue(['control_radio_id'], value);
+  };
+
+  const setMonitorRadioId = (value: string) => {
+    form.setFieldValue(['monitor_radio_id'], value);
+  };
 
   return (
     <ProCard
@@ -167,13 +327,12 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                   content: {
                     ...pivot.controllerconfig.content,
                     ...values.controllerconfig.content,
-                   
-                   
+
                     voltage_configurations: {
                       ...pivot.controllerconfig.content.voltage_configurations,
 
                       voltage_reference: 480, // need review after
-                    }, 
+                    },
                   },
 
                   name_pivot_on_config: values.name,
@@ -246,7 +405,7 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
               <RadioInputContainer
                 name={['base_radio_id']}
                 operable={false}
-                setFieldValue={'2'}
+                setFieldValue={form.setFieldValue}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.centralradio.label',
                 })}
@@ -261,36 +420,43 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
               <RadioInputContainer
                 name={['control_radio_id']}
                 operable
-                setFieldValue={'2'}
+                setFieldValue={setControlRadioId}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.controllerradio.label',
                 })}
+                deviceId={pivot.control}
                 status={'processing'}
                 span={{ xs: 24, md: 6 }}
                 deviceType="Controlador"
                 device="pivô"
+                form={form}
                 request={getEditPivotDeviceControlTable}
-                requestChange={patchChangeControlRadio}
+                requestChange={patchChangeControlManualRadio}
+                requestSwapChange={patchChangeControlRadio}
+
                 fieldIndex={'control'}
               />
               <RadioInputContainer
                 name={['monitor_radio_id']}
                 operable
-                setFieldValue={'2'}
+                setFieldValue={setMonitorRadioId}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.gpsradio.label',
                 })}
+                deviceId={pivot.control}
                 status={'processing'}
                 span={{ xs: 24, md: 6 }}
                 deviceType="GPS"
                 device="pivô"
+                form={form}
                 request={getEditPivotDeviceMonitorTable}
-                requestChange={patchChangeMonitorRadio}
+                requestChange={patchChangeControlManualRadio}
+                requestSwapChange={patchChangeControlRadio}
                 fieldIndex={'monitor'}
               />
               <RadioInputContainer
                 operable={false}
-                setFieldValue={'2'}
+                setFieldValue={form.setFieldValue}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.pumpradio.label',
                 })}

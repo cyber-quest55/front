@@ -4,7 +4,6 @@ import { Breakpoint } from 'antd';
 import { connect } from 'dva';
 import * as React from 'react';
 import RadioInputComponent from './RadioInputComponent';
-import RadioInputMobile from './RadioInputMobile';
 import RadioInputSkeleton from './RadioInputSkeleton';
 import { Dispatch } from '@umijs/max';
 import { queryPivotByIdStart } from '@/models/pivot-by-id';
@@ -19,9 +18,12 @@ interface IRadioInputContainerProps {
   deviceType: string;
   device: string;
   request?: any;
+  requestSwapChange?: any;
   requestChange?: any;
+  deviceId: string;
   name?: string[];
   fieldIndex?: string;
+  form: any;
   queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 

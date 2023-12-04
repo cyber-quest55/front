@@ -85,7 +85,7 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
             items: [
               {
                 label: (
-                  <div style={{ minWidth: 135, textAlign: 'left' }}>
+                  <div style={{ minWidth: xs? ''  : 135, textAlign: 'left' }}>
                     {intl.formatMessage({
                       id: 'pages.edit.pivot.tab.options.general',
                     })}

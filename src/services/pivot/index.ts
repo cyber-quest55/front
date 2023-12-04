@@ -116,13 +116,26 @@ export async function getEditPivotDeviceMonitorTable(
 /** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/control/ */
 export async function patchChangeControlRadio(
   props: any,
-  options?: { [key: string]: any },
+  options?: { radio_id: string },
 ) {
   return request<{
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/control/`, {
     method: 'PATCH',
     params: options,
+  });
+}
+
+/** PATCH /farms/${farmId}/pivots/${pivotId}/${deviceId}/control/ */
+export async function patchChangeControlManualRadio(
+  props: any,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: any;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/control/`, {
+    method: 'POST',
+    data: options,
   });
 }
 

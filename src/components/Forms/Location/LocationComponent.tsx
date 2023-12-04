@@ -33,7 +33,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
     props;
 
   const intl = useIntl();
-  const { xl } = useScreenHook();
+  const { xl, xs } = useScreenHook();
 
   const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(16, {
     lat: lat,
@@ -109,9 +109,9 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
               colProps={{ xs: 24, md: 24 }}
               label={item.name}
               name={item.name as string}
-              width={'350px' as 'sm'}
+              width={xs ? ('100%' as 'sm') : ('450px' as 'sm')}
               fieldProps={{
-                width: '450px',
+                width: xs ? '100%' : '450px',
                 value: `${item.value.lat},${item.value.lng}`,
               }}
               addonAfter={
@@ -129,8 +129,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
 
           {hasNorthReference ? (
             <ProFormCheckbox
-            colProps={{ xs: 24, md: 24 }}
-
+              colProps={{ xs: 24, md: 24 }}
               fieldProps={{ onChange: (e) => onChangeNorth(e), defaultChecked: northValue }}
             >
               {intl.formatMessage({

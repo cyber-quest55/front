@@ -23,7 +23,6 @@ export default {
   'pages.edit.pivot.tab.options.autoreversion': 'Autoreversion',
   'pages.edit.pivot.tab.options.favorites': 'Favorites',
   'pages.edit.pivot.tab.options.previoussettings': 'Previous settings',
- 
   'pages.passwordRecovery.email.placeholder': 'example@mail.com',
   'pages.passwordRecovery.btn.send': 'Send',
   'pages.passwordRecovery.btn.back': 'Back',
@@ -34,4 +33,7 @@ export default {
   'pages.recoveryConfirmation.text1': "An email has been sent to the specified address.",
   'pages.recoveryConfirmation.text2': "Follow the instructions in the email and recover your password.",
   'pages.recoveryConfirmation.text3': "This email may take up to 1 hour to arrive.",
+  'pages.404.desc': "Sorry, the page you visited does not exist.",
+  'pages.404.btn': "Go back",
+  'pages.403.desc': "You do not have permissions to access this resource",
  };
