@@ -180,8 +180,12 @@ export const RegisterMobile: React.FC<Props> = (props) => {
               setLocale(value[0] as string);
             }}
             visible={visible}
-            cancelText="Cancelar"
-            confirmText="Confirmar"
+            cancelText={ intl.formatMessage({
+              id: 'component.picker.cancel',
+            })}
+            confirmText={ intl.formatMessage({
+              id: 'component.picker.confirm',
+            })}
           />
         </Form.Item>
 

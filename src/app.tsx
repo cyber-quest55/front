@@ -1,4 +1,4 @@
-import { AvatarDropdown, AvatarName, SelectLang } from '@/components';
+import { AvatarDropdown, AvatarName } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined, UserOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
@@ -13,9 +13,10 @@ import uniqid from 'uniqid';
 import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect/FarmSelectContainer';
-import { errorConfig } from './requestErrorConfig';
+import LocaleSelectorContainer from './components/LocaleSelector/LocaleSelectorContainer';
 import ForbidenPage from './pages/403';
 import NoFoundPage from './pages/404';
+import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -77,29 +78,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     ...initialState?.settings,
     defaultCollapsed: true,
-    unAccessible: <ForbidenPage/>,
-    noFound: <NoFoundPage/>,
+    unAccessible: <ForbidenPage />,
+    noFound: <NoFoundPage />,
     collapsed: initialState?.collapsed,
     onCollapse: () => {
       setInitialState({ ...initialState, collapsed: !initialState?.collapsed });
     },
     actionsRender: ({ collapsed, isMobile }) => {
-      if (collapsed && !isMobile) {
-        return [];
+      if ( isMobile ) {
+        return []
       }
-
-      if (collapsed && isMobile) {
-        return [
-          <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
-            <SelectLang />
-          </div>,
-          // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
-        ];
-      }
-
       return [
         <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
-          <SelectLang />
+          <LocaleSelectorContainer isCollapsed={collapsed} />
         </div>,
         // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
       ];
@@ -129,6 +120,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
             <LinkOutlined />
             <span>OpenAPI 文档</span>
           </Link>,
+        
         ]
       : [],
     menuHeaderRender: undefined,
@@ -142,7 +134,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <App  >
+        <App>
           <LoadScript
             libraries={libraries as any}
             id={loaderId}

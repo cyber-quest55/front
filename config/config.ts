@@ -9,6 +9,9 @@ const { REACT_APP_ENV } = process.env;
 console.log('CONFGGGGGGGGGGGG')
 export default defineConfig({
   jsMinifier: 'terser',
+  cssLoader: {
+    url: false,
+  },
 
   styledComponents: {},
 
