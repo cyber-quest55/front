@@ -4,9 +4,14 @@ import { Badge, Tooltip, Typography } from 'antd';
 import { useNetworkHook } from '@/hooks/network-status';
 import { WifiOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
+import { NetworkState } from 'ahooks/lib/useNetwork';
 
-export const OfflineNetwork = () => {
-    const networkState = useNetworkHook()
+interface Props {
+    networkState: NetworkState;
+}
+
+export const OfflineNetworkMobile = (props: Props) => {
+    const networkState: NetworkState = props.networkState
     const intl = useIntl();
 
     return (
@@ -34,7 +39,6 @@ export const OfflineNetwork = () => {
                             }}
                         />
                     </Tooltip>
-
                 </Badge>
             )}
             title={intl.formatMessage({
