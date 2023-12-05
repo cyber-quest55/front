@@ -17,6 +17,7 @@ import LocaleSelectorContainer from './components/LocaleSelector/LocaleSelectorC
 import ForbidenPage from './pages/403';
 import NoFoundPage from './pages/404';
 import { errorConfig } from './requestErrorConfig';
+import OfflineNetworkContainer from './components/Modals/OfflineNetwork/OfflineNetworkContainer';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -134,7 +135,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <App>
+        <App  >
+          <OfflineNetworkContainer/>
           <LoadScript
             libraries={libraries as any}
             id={loaderId}

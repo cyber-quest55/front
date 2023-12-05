@@ -163,5 +163,6 @@ export default {
   'component.edit.pivot.history.table.col.8': 'Actions',
   'component.edit.pivot.history.favorite.col.8': 'Actions',
   'component.edit.pivot.history.name.label': 'Name',
-
+  'component.modal.wifi.title': 'No connection',
+  'component.modal.wifi.description': 'Unable to connect to the internet, check your network access',
 };
