@@ -38,6 +38,7 @@ export default [
     ],
   },
 
+
   {
     path: '/farms/',
     name: 'Control',
@@ -74,6 +75,12 @@ export default [
     ],
   },
   {
+    name: 'Password Recovery Callback',
+    path: '/recovery/:token',
+    layout: false,
+    component: './User/PasswordRecoveryCallback'
+  },
+  {
     path: 'devices/farms/:id/',
     name: 'Radio',
     icon: 'deploymentUnitOutlined',
@@ -104,7 +111,7 @@ export default [
     path: '/403',
     layout: false,
     component: './403',
-  }, 
+  },
   {
     path: '*',
     layout: false,
