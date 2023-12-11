@@ -1,5 +1,5 @@
 import { history, useIntl } from '@umijs/max';
-import { Button, Card, Col, Result, Typography } from 'antd';
+import { Button, Col, Result, Typography } from 'antd';
 import React from 'react';
 
 const PasswordResetCofirmation: React.FC = () => {
@@ -9,8 +9,8 @@ const PasswordResetCofirmation: React.FC = () => {
             <Result
                 status="success"
                 title={intl.formatMessage({
-                    id: 'pages.recoveryConfirmation.title',
-                    defaultMessage: "Email de recuperação enviado com sucesso"
+                    id: 'pages.passwordResetCofirmation.title',
+                    defaultMessage: "Senha alterada com sucesso"
                 })}
                 extra={
                     <Button

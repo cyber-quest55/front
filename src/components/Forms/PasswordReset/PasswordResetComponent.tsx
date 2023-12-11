@@ -36,7 +36,9 @@ const PasswordResetComponent: React.FC<Props> = (props) => {
                 intl.formatMessage({
                     id: 'validations.strong.password',
                 }),
-            ).oneOf([yup.ref('password')], 'Passwords must match')
+            ).oneOf([yup.ref('password')], intl.formatMessage({
+                id: 'validations.password.match',
+            }),)
     });
 
     const yupSync = yupValidator(schema, form.getFieldsValue);
@@ -109,7 +111,7 @@ const PasswordResetComponent: React.FC<Props> = (props) => {
                                                     href="/user/login"
                                                 >
                                                     {intl.formatMessage({
-                                                        id: 'pages.PasswordReset.btn.back',
+                                                        id: 'component.form.PasswordReset.btn.back',
                                                         defaultMessage: 'Voltar ',
                                                     })}
                                                 </Button>
@@ -125,7 +127,7 @@ const PasswordResetComponent: React.FC<Props> = (props) => {
                                                     style={{ minWidth: '150px' }}
                                                 >
                                                     {intl.formatMessage({
-                                                        id: 'pages.PasswordReset.btn.send',
+                                                        id: 'component.form.PasswordReset.btn.send',
                                                         defaultMessage: 'Enviar ',
                                                     })}
                                                 </Button>
@@ -141,9 +143,9 @@ const PasswordResetComponent: React.FC<Props> = (props) => {
                         >
                             <Typography.Text type="secondary">
                                 {intl.formatMessage({
-                                    id: 'pages.PasswordReset.info',
+                                    id: 'component.form.passwordReset.info',
                                     defaultMessage:
-                                        'Digite sua nova senha..',
+                                        'Digite sua nova senha.',
                                 })}
                             </Typography.Text>
                             <Divider />
@@ -152,11 +154,11 @@ const PasswordResetComponent: React.FC<Props> = (props) => {
                                 required
                                 name="password"
                                 placeholder={intl.formatMessage({
-                                    id: 'pages.PasswordReset.input.password.placeholder',
+                                    id: 'component.form.passwordReset.input.password.placeholder',
                                     defaultMessage: 'Sua Senha',
                                 })}
                                 label={intl.formatMessage({
-                                    id: 'component.PasswordReset.input.password.label',
+                                    id: 'component.form.PasswordReset.input.password.label',
                                     defaultMessage: 'Senha',
                                 })}
                             />
@@ -165,11 +167,11 @@ const PasswordResetComponent: React.FC<Props> = (props) => {
                                 required
                                 name="confirmPassword"
                                 placeholder={intl.formatMessage({
-                                    id: 'pages.PasswordReset.input.confirmPassword.placeholder',
+                                    id: 'component.form.PasswordReset.input.confirmPassword.placeholder',
                                     defaultMessage: 'Confirme sua Senha',
                                 })}
                                 label={intl.formatMessage({
-                                    id: 'component.PasswordReset.input.confirmPassword.label',
+                                    id: 'component.form.PasswordReset.input.confirmPassword.label',
                                     defaultMessage: 'Confirmar Senha',
                                 })}
                             />

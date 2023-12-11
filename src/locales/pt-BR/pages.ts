@@ -20,4 +20,5 @@ export default {
   'pages.recoveryConfirmation.text1': "Um email foi enviado para o endereço indicado.",
   'pages.recoveryConfirmation.text2': "Siga as instruções no email e recupere sua senha.",
   'pages.recoveryConfirmation.text3': "Este email pode demorar até 1 hora para chegar.",
+  'pages.passwordResetCofirmation.title': 'Senha alterada com sucesso',
 };

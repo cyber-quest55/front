@@ -39,7 +39,9 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
                 intl.formatMessage({
                     id: 'validations.strong.password',
                 }),
-            ).oneOf([yup.ref('password')], 'Must match "password" field value'),
+            ).oneOf([yup.ref('password')], intl.formatMessage({
+                id: 'validations.password.match',
+            }),),
     });
 
     const yupSync = yupValidator(schema, form.getFieldsValue);
@@ -81,9 +83,9 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
                         <Space style={{ width: '100%' }} direction="vertical" align="center">
                             <Typography.Text type="secondary">
                                 {intl.formatMessage({
-                                    id: 'pages.PasswordReset.info',
+                                    id: 'component.form.passwordReset.info',
                                     defaultMessage:
-                                        'Digite sua nova senha..',
+                                        'Digite sua nova senha.',
                                 })}
                             </Typography.Text>
                         </Space>
@@ -119,7 +121,7 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
                                                     loading={loading}
                                                 >
                                                     {intl.formatMessage({
-                                                        id: 'pages.passwordRecovery.btn.back',
+                                                        id: 'component.form.PasswordReset.btn.back',
                                                         defaultMessage: 'Voltar ',
                                                     })}
                                                 </Button>
@@ -134,7 +136,7 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
                                                 loading={loading}
                                             >
                                                 {intl.formatMessage({
-                                                    id: 'pages.passwordRecovery.btn.send',
+                                                    id: 'component.form.PasswordReset.btn.send',
                                                     defaultMessage: 'Enviar ',
                                                 })}
                                             </Button>
@@ -153,7 +155,7 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
                                     clearable
                                     type="password"
                                     placeholder={intl.formatMessage({
-                                        id: 'component.PasswordReset.input.password.placeholder',
+                                        id: 'component.form.passwordReset.input.password.placeholder',
                                         defaultMessage: 'Sua Senha',
                                     })}
                                 />
@@ -168,7 +170,7 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
                                     clearable
                                     type="password"
                                     placeholder={intl.formatMessage({
-                                        id: 'component.PasswordReset.input.confirmPassword.placeholder',
+                                        id: 'component.form.PasswordReset.input.confirmPassword.placeholder',
                                         defaultMessage: 'Confirme sua Senha',
                                     })}
                                 />

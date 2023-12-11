@@ -35,7 +35,7 @@ const PasswordResetContainer: React.FC<any> = () => {
         message.error({
           type: 'error',
           content: intl.formatMessage({
-            id: 'component.forms.register.fail',
+            id: 'component.PasswordReset.forms.fail',
             defaultMessage: 'Falha ao Registrar',
           }),
           duration: 3,
