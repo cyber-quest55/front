@@ -1,33 +1,36 @@
 import { useScreenHook } from '@/hooks/screen';
-import { recoveryPassword } from '@/services/auth';
-import { useIntl, history } from '@umijs/max';
+import { resetPassword } from '@/services/auth';
+import { useIntl, history, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { useState } from 'react';
-import * as yup from 'yup';
 import { message } from 'antd';
 import { PasswordCallbackSkeleton } from './PasswordCallbackSkeleton';
 import { PasswordCallbackMobile } from './PasswordCallbackMobile';
+import { PasswordCallbackComponent } from './PasswordCallbackComponent';
 
 const PasswordCallbackContainer: React.FC<any> = () => {
+  const { token } = useParams<{ token: string }>();
+
+  console.log(token)
+  
   /** hooks */
   const { xs } = useScreenHook();
   const [error, setError] = useState('');
   const intl = useIntl();
 
   /** Requests */
-  const recoveryPasswordReq = useRequest(recoveryPassword, { manual: true });
+  const resetPasswordReq = useRequest(resetPassword, { manual: true });
 
   /** Models */
   const handleSubmit = async (values: any) => {
-    const { email } = values;
-    const isEmail = yup.string().email();
-    const isValidEmail = isEmail.isValidSync(email);
-    let validateCredentials = { email: 'ariadne.vieira@irricontrol.com.br' };
-
-    if (isValidEmail) {
-      validateCredentials = { email: values.email };
+    const { password, confirmPassword } = values;
+    if (values.password === values.confirmPassword && token) {
+      const body = {
+        new_password1: password,
+        new_password2: confirmPassword
+      };
       try {
-        recoveryPasswordReq.runAsync(validateCredentials);
+        resetPasswordReq.runAsync(token, body);
       } catch (error) {
         message.error({
           type: 'error',
@@ -38,7 +41,7 @@ const PasswordCallbackContainer: React.FC<any> = () => {
           duration: 3,
         });
       } finally {
-        history.push('/user/recovery-success')
+        history.push('/user/login')
       }
     }
   };
@@ -50,13 +53,13 @@ const PasswordCallbackContainer: React.FC<any> = () => {
       ) : xs ? (
         <PasswordCallbackMobile
           handleSubmit={handleSubmit}
-          loading={recoveryPasswordReq.loading}
+          loading={resetPasswordReq.loading}
           error={error}
         />
       ) : (
-        <PasswordCallbackMobile
+        <PasswordCallbackComponent
           handleSubmit={handleSubmit}
-          loading={recoveryPasswordReq.loading}
+          loading={resetPasswordReq.loading}
           error={error}
         />
       )}

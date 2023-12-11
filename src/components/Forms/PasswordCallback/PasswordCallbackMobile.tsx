@@ -3,6 +3,8 @@ import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Link, SelectLang, useIntl } from '@umijs/max';
 import { Alert, Col, Row, Space, Typography } from 'antd';
 import { Button, Form, Input } from 'antd-mobile';
+import { createRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
 import { yupValidator } from '@/utils/adapters/yup';
 import * as yup from 'yup';
@@ -20,16 +22,24 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
     const { handleSubmit, loading, error } = props;
 
     const schema = yup.object().shape({
-        email: yup
+        password: yup
             .string()
-            .email(intl.formatMessage({
-                id: 'pages.passwordRecovery.invalid',
-            }),)
-            .required(
+            .min(8, intl.formatMessage({ id: 'validations.min' }, { value: 8 }))
+            .matches(
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_])[A-Za-z\d@'"!$!-_%*#?&]{8,}$/,
                 intl.formatMessage({
-                    id: 'validations.required',
+                    id: 'validations.strong.password',
                 }),
             ),
+        confirmPassword: yup
+            .string()
+            .min(8, intl.formatMessage({ id: 'validations.min' }, { value: 8 }))
+            .matches(
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_])[A-Za-z\d@'"!$!-_%*#?&]{8,}$/,
+                intl.formatMessage({
+                    id: 'validations.strong.password',
+                }),
+            ).oneOf([yup.ref('password')], 'Must match "password" field value'),
     });
 
     const yupSync = yupValidator(schema, form.getFieldsValue);
@@ -71,9 +81,9 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
                         <Space style={{ width: '100%' }} direction="vertical" align="center">
                             <Typography.Text type="secondary">
                                 {intl.formatMessage({
-                                    id: 'pages.passwordRecovery.info',
+                                    id: 'pages.passwordCallback.info',
                                     defaultMessage:
-                                        'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.',
+                                        'Digite sua nova senha..',
                                 })}
                             </Typography.Text>
                         </Space>
@@ -105,8 +115,8 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
                                                     block
                                                     color="primary"
                                                     type="button"
-                                                    loading={loading}
                                                     style={{ minWidth: '150px' }}
+                                                    loading={loading}
                                                 >
                                                     {intl.formatMessage({
                                                         id: 'pages.passwordRecovery.btn.back',
@@ -120,8 +130,8 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
                                                 block
                                                 color="primary"
                                                 type="submit"
-                                                loading={loading}
                                                 style={{ minWidth: '150px' }}
+                                                loading={loading}
                                             >
                                                 {intl.formatMessage({
                                                     id: 'pages.passwordRecovery.btn.send',
@@ -134,24 +144,36 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
                             }
                             style={{ width: '100%' }}
                         >
-                            <Form.Item name="email" rules={[yupSync]}>
+                            <Form.Item
+                                required
+                                rules={[yupSync]}
+                                name="password"
+                            >
                                 <Input
-                                    type="email"
+                                    clearable
+                                    type="password"
                                     placeholder={intl.formatMessage({
-                                        id: 'pages.passwordRecovery.email.placeholder',
-                                        defaultMessage: 'example@mail.com',
+                                        id: 'component.passwordCallback.input.password.placeholder',
+                                        defaultMessage: 'Sua Senha',
                                     })}
                                 />
                             </Form.Item>
-                            <Form.Item name="email" rules={[yupSync]}>
+                            <Form.Header />
+                            <Form.Item
+                                required
+                                rules={[yupSync]}
+                                name="confirmPassword"
+                            >
                                 <Input
-                                    type="email"
+                                    clearable
+                                    type="password"
                                     placeholder={intl.formatMessage({
-                                        id: 'pages.passwordRecovery.email.placeholder',
-                                        defaultMessage: 'example@mail.com',
+                                        id: 'component.passwordCallback.input.confirmPassword.placeholder',
+                                        defaultMessage: 'Confirme sua Senha',
                                     })}
                                 />
                             </Form.Item>
+                            <Form.Header />
                         </Form>
                     </Space>
                 </Space>

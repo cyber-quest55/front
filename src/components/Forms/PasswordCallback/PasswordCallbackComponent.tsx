@@ -3,8 +3,6 @@ import { ProCard, ProForm, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useIntl } from '@umijs/max';
 import { Button, Col, Divider, Form, Row, Space, Typography } from 'antd';
-import { createRef } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
 import * as yup from 'yup';
 import ImageBgLogo from '../../../../public/images/logo/icon-logo-white-128x128.png';
 
@@ -19,19 +17,26 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
 
     const intl = useIntl();
     const { handleSubmit, loading, error } = props;
-    const recaptchaRef = createRef();
 
     const schema = yup.object().shape({
-        email: yup
+        password: yup
             .string()
-            .email(intl.formatMessage({
-                id: 'pages.passwordRecovery.invalid',
-            }),)
-            .required(
+            .min(8, intl.formatMessage({ id: 'validations.min' }, { value: 8 }))
+            .matches(
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_])[A-Za-z\d@'"!$!-_%*#?&]{8,}$/,
                 intl.formatMessage({
-                    id: 'validations.required',
+                    id: 'validations.strong.password',
                 }),
             ),
+        confirmPassword: yup
+            .string()
+            .min(8, intl.formatMessage({ id: 'validations.min' }, { value: 8 }))
+            .matches(
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_])[A-Za-z\d@'"!$!-_%*#?&]{8,}$/,
+                intl.formatMessage({
+                    id: 'validations.strong.password',
+                }),
+            ).oneOf([yup.ref('password')], 'Passwords must match')
     });
 
     const yupSync = yupValidator(schema, form.getFieldsValue);
@@ -130,42 +135,42 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
                                 ),
                             }}
                             size="large"
-                            name="recovery_password_form"
-                            initialValues={{
-                                email:
-                                    process.env.NODE_ENV === 'development'
-                                        ? 'test@irricontrol.com.br'
-                                        : '',
-                            }}
+                            name="password_callback_form"
                             onFinish={handleSubmit}
                             autoFocusFirstInput
                         >
                             <Typography.Text type="secondary">
                                 {intl.formatMessage({
-                                    id: 'pages.passwordRecovery.info',
+                                    id: 'pages.passwordCallabck.info',
                                     defaultMessage:
-                                        'Insira o seu endereço de email para enviarmos um link de recuperação da sua conta.',
+                                        'Digite sua nova senha..',
                                 })}
                             </Typography.Text>
                             <Divider />
-                            <ProFormText
+                            <ProFormText.Password
                                 rules={[yupSync]}
-                                width="md"
                                 required
-                                name="email"
+                                name="password"
                                 placeholder={intl.formatMessage({
-                                    id: 'pages.passwordRecovery.email.placeholder',
-                                    defaultMessage: 'example@mail.com',
+                                    id: 'pages.passwordCallabck.input.password.placeholder',
+                                    defaultMessage: 'Sua Senha',
+                                })}
+                                label={intl.formatMessage({
+                                    id: 'component.passwordCallabck.input.password.label',
+                                    defaultMessage: 'Senha',
                                 })}
                             />
-                            <ProFormText
+                            <ProFormText.Password
                                 rules={[yupSync]}
-                                width="md"
                                 required
-                                name="email"
+                                name="confirmPassword"
                                 placeholder={intl.formatMessage({
-                                    id: 'pages.passwordRecovery.email.placeholder',
-                                    defaultMessage: 'example@mail.com',
+                                    id: 'pages.passwordCallabck.input.confirmPassword.placeholder',
+                                    defaultMessage: 'Confirme sua Senha',
+                                })}
+                                label={intl.formatMessage({
+                                    id: 'component.passwordCallabck.input.confirmPassword.label',
+                                    defaultMessage: 'Confirmar Senha',
                                 })}
                             />
                             <Divider />
