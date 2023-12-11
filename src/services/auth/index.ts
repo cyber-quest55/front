@@ -30,7 +30,7 @@ export async function checkUsername(
 
 /** Send email for password recovery auth/reset/ */
 export async function recoveryPassword(body: API.RecoveryPasswordParam) {
-  return request<API.ResetPasswordResult>('/auth/reset/', {
+  return request<API.RecoveryPasswordResult>('/auth/reset/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export async function recoveryPassword(body: API.RecoveryPasswordParam) {
 
 /** Send email for password recovery recovery/ */
 export async function resetPassword(token: string, body: API.ResetPasswordParam) {
-  return request(`/v3/auth/reset/${token}/`, {
+  return request<API.ResetPasswordResult>(`/auth/reset/${token}/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

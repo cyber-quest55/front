@@ -20,10 +20,7 @@ declare namespace APIModels {
 
   type RecoveryPasswordValidation = {};
 
-  type ResetPasswordValidation = {
-    password: string;
-    confirmPassword: string;
-  };
+  type ResetPasswordValidation = {};
 
   type RegisterUser = {
     email: string;
