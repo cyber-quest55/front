@@ -23,7 +23,11 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
 
     const schema = yup.object().shape({
         password: yup
-            .string()
+            .string().required(
+                intl.formatMessage({
+                    id: 'validations.required',
+                }),
+            )
             .min(8, intl.formatMessage({ id: 'validations.min' }, { value: 8 }))
             .matches(
                 /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_])[A-Za-z\d@'"!$!-_%*#?&]{8,}$/,
@@ -32,7 +36,11 @@ const PasswordResetMobile: React.FC<Props> = (props) => {
                 }),
             ),
         confirmPassword: yup
-            .string()
+            .string().required(
+                intl.formatMessage({
+                    id: 'validations.required',
+                }),
+            )
             .min(8, intl.formatMessage({ id: 'validations.min' }, { value: 8 }))
             .matches(
                 /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_])[A-Za-z\d@'"!$!-_%*#?&]{8,}$/,
