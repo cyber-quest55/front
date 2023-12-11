@@ -12,7 +12,7 @@ const PasswordCallbackContainer: React.FC<any> = () => {
   const { token } = useParams<{ token: string }>();
 
   console.log(token)
-  
+
   /** hooks */
   const { xs } = useScreenHook();
   const [error, setError] = useState('');
@@ -41,7 +41,7 @@ const PasswordCallbackContainer: React.FC<any> = () => {
           duration: 3,
         });
       } finally {
-        history.push('/user/login')
+        history.push('/user/reset-success')
       }
     }
   };
