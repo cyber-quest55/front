@@ -31,6 +31,11 @@ export default [
         component: './PassworRecoveryCofirmation',
       },
       {
+        name: 'Password Reset Success',
+        path: '/user/reset-success',
+        component: './PasswordResetCofirmation',
+      },
+      {
         name: 'register',
         path: '/user/register/:token',
         component: './User/Register',
