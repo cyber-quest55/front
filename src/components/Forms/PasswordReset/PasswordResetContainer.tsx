@@ -4,11 +4,11 @@ import { useIntl, history, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { useState } from 'react';
 import { message } from 'antd';
-import { PasswordCallbackSkeleton } from './PasswordCallbackSkeleton';
-import { PasswordCallbackMobile } from './PasswordCallbackMobile';
-import { PasswordCallbackComponent } from './PasswordCallbackComponent';
+import { PasswordResetSkeleton } from './PasswordResetSkeleton';
+import { PasswordResetMobile } from './PasswordResetMobile';
+import { PasswordResetComponent } from './PasswordResetComponent';
 
-const PasswordCallbackContainer: React.FC<any> = () => {
+const PasswordResetContainer: React.FC<any> = () => {
   const { token } = useParams<{ token: string }>();
 
   console.log(token)
@@ -49,15 +49,15 @@ const PasswordCallbackContainer: React.FC<any> = () => {
   return (
     <>
       {false ? (
-        <PasswordCallbackSkeleton />
+        <PasswordResetSkeleton />
       ) : xs ? (
-        <PasswordCallbackMobile
+        <PasswordResetMobile
           handleSubmit={handleSubmit}
           loading={resetPasswordReq.loading}
           error={error}
         />
       ) : (
-        <PasswordCallbackComponent
+        <PasswordResetComponent
           handleSubmit={handleSubmit}
           loading={resetPasswordReq.loading}
           error={error}
@@ -67,4 +67,4 @@ const PasswordCallbackContainer: React.FC<any> = () => {
   );
 };
 
-export { PasswordCallbackContainer };
+export { PasswordResetContainer };

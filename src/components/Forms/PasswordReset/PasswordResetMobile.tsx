@@ -15,7 +15,7 @@ type Props = {
     error?: string;
 };
 
-const PasswordCallbackMobile: React.FC<Props> = (props) => {
+const PasswordResetMobile: React.FC<Props> = (props) => {
     const [form] = Form.useForm<any>();
 
     const intl = useIntl();
@@ -81,7 +81,7 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
                         <Space style={{ width: '100%' }} direction="vertical" align="center">
                             <Typography.Text type="secondary">
                                 {intl.formatMessage({
-                                    id: 'pages.passwordCallback.info',
+                                    id: 'pages.PasswordReset.info',
                                     defaultMessage:
                                         'Digite sua nova senha..',
                                 })}
@@ -153,7 +153,7 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
                                     clearable
                                     type="password"
                                     placeholder={intl.formatMessage({
-                                        id: 'component.passwordCallback.input.password.placeholder',
+                                        id: 'component.PasswordReset.input.password.placeholder',
                                         defaultMessage: 'Sua Senha',
                                     })}
                                 />
@@ -168,7 +168,7 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
                                     clearable
                                     type="password"
                                     placeholder={intl.formatMessage({
-                                        id: 'component.passwordCallback.input.confirmPassword.placeholder',
+                                        id: 'component.PasswordReset.input.confirmPassword.placeholder',
                                         defaultMessage: 'Confirme sua Senha',
                                     })}
                                 />
@@ -182,4 +182,4 @@ const PasswordCallbackMobile: React.FC<Props> = (props) => {
     );
 };
 
-export { PasswordCallbackMobile };
+export { PasswordResetMobile };

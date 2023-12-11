@@ -12,7 +12,7 @@ type Props = {
     error?: string;
 };
 
-const PasswordCallbackComponent: React.FC<Props> = (props) => {
+const PasswordResetComponent: React.FC<Props> = (props) => {
     const [form] = Form.useForm<any>();
 
     const intl = useIntl();
@@ -109,7 +109,7 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
                                                     href="/user/login"
                                                 >
                                                     {intl.formatMessage({
-                                                        id: 'pages.passwordRecovery.btn.back',
+                                                        id: 'pages.PasswordReset.btn.back',
                                                         defaultMessage: 'Voltar ',
                                                     })}
                                                 </Button>
@@ -125,7 +125,7 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
                                                     style={{ minWidth: '150px' }}
                                                 >
                                                     {intl.formatMessage({
-                                                        id: 'pages.passwordRecovery.btn.send',
+                                                        id: 'pages.PasswordReset.btn.send',
                                                         defaultMessage: 'Enviar ',
                                                     })}
                                                 </Button>
@@ -141,7 +141,7 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
                         >
                             <Typography.Text type="secondary">
                                 {intl.formatMessage({
-                                    id: 'pages.passwordCallabck.info',
+                                    id: 'pages.PasswordReset.info',
                                     defaultMessage:
                                         'Digite sua nova senha..',
                                 })}
@@ -152,11 +152,11 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
                                 required
                                 name="password"
                                 placeholder={intl.formatMessage({
-                                    id: 'pages.passwordCallabck.input.password.placeholder',
+                                    id: 'pages.PasswordReset.input.password.placeholder',
                                     defaultMessage: 'Sua Senha',
                                 })}
                                 label={intl.formatMessage({
-                                    id: 'component.passwordCallabck.input.password.label',
+                                    id: 'component.PasswordReset.input.password.label',
                                     defaultMessage: 'Senha',
                                 })}
                             />
@@ -165,11 +165,11 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
                                 required
                                 name="confirmPassword"
                                 placeholder={intl.formatMessage({
-                                    id: 'pages.passwordCallabck.input.confirmPassword.placeholder',
+                                    id: 'pages.PasswordReset.input.confirmPassword.placeholder',
                                     defaultMessage: 'Confirme sua Senha',
                                 })}
                                 label={intl.formatMessage({
-                                    id: 'component.passwordCallabck.input.confirmPassword.label',
+                                    id: 'component.PasswordReset.input.confirmPassword.label',
                                     defaultMessage: 'Confirmar Senha',
                                 })}
                             />
@@ -182,4 +182,4 @@ const PasswordCallbackComponent: React.FC<Props> = (props) => {
     );
 };
 
-export { PasswordCallbackComponent };
+export { PasswordResetComponent };

@@ -83,7 +83,7 @@ export default [
     name: 'Password Recovery Callback',
     path: '/recovery/:token',
     layout: false,
-    component: './User/PasswordRecoveryCallback'
+    component: './User/PasswordReset'
   },
   {
     path: 'devices/farms/:id/',

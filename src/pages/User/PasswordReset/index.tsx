@@ -1,4 +1,4 @@
-import { PasswordCallbackContainer } from '@/components/Forms/PasswordCallback/PasswordCallbackContainer';
+import { PasswordResetContainer } from '@/components/Forms/PasswordReset/PasswordResetContainer';
 import { ConfigProvider } from 'antd';
 
 export default () => { 
@@ -18,7 +18,7 @@ export default () => {
             'url(https://gw.alipayobjects.com/mdn/rms_08e378/afts/img/A*XpGeRoZKGycAAAAAAAAAAAAAARQnAQ)',
         }}
       >
-        <PasswordCallbackContainer />
+        <PasswordResetContainer />
       </div>
     </ConfigProvider>
   );
