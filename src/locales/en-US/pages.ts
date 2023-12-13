@@ -36,4 +36,5 @@ export default {
   'pages.404.desc': "Sorry, the page you visited does not exist.",
   'pages.404.btn': "Go back",
   'pages.403.desc': "You do not have permissions to access this resource",
+  'pages.passwordResetCofirmation.title': 'Password changed successfully',
  };

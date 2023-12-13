@@ -31,12 +31,18 @@ export default [
         component: './PassworRecoveryCofirmation',
       },
       {
+        name: 'Password Reset Success',
+        path: '/user/reset-success',
+        component: './PasswordResetCofirmation',
+      },
+      {
         name: 'register',
         path: '/user/register/:token',
         component: './User/Register',
       },
     ],
   },
+
 
   {
     path: '/farms/',
@@ -74,6 +80,12 @@ export default [
     ],
   },
   {
+    name: 'Password Recovery Callback',
+    path: '/recovery/:token',
+    layout: false,
+    component: './User/PasswordReset'
+  },
+  {
     path: 'devices/farms/:id/',
     name: 'Radio',
     icon: 'deploymentUnitOutlined',
@@ -104,7 +116,7 @@ export default [
     path: '/403',
     layout: false,
     component: './403',
-  }, 
+  },
   {
     path: '*',
     layout: false,

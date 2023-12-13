@@ -165,4 +165,12 @@ export default {
   'component.edit.pivot.history.name.label': 'Name',
   'component.modal.wifi.title': 'No connection',
   'component.modal.wifi.description': 'Unable to connect to the internet, check your network access',
+  'component.form.PasswordReset.btn.back': 'Back',
+  'component.form.PasswordReset.btn.send': 'Send ',
+  'component.form.passwordReset.info': 'Enter your new password',
+  'component.form.passwordReset.input.password.placeholder': 'Your Password',
+  'component.form.PasswordReset.input.password.label': 'Password',
+  'component.form.PasswordReset.input.confirmPassword.placeholder': 'Confirm your Password',
+  'component.form.PasswordReset.input.confirmPassword.label': 'Confirm Password',
+  'component.PasswordReset.forms.fail': 'Problem changing password',
 };
