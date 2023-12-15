@@ -126,7 +126,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       : [],
     menuHeaderRender: undefined,
 
-    menuExtraRender: ({ collapsed }) => !collapsed && <FarmSelect />,
+    menuExtraRender: ({ collapsed }) => !collapsed && <div style={{paddingInline: 12}}><FarmSelect /></div>,
 
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
@@ -138,10 +138,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         <App  >
           <OfflineNetworkContainer/>
           <LoadScript
-            libraries={libraries as any}
+            libraries={libraries as  any}
             id={loaderId}
             loadingElement={<div>Carregando</div>}
-            googleMapsApiKey=""
+            googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
           >
             {children}
           </LoadScript>

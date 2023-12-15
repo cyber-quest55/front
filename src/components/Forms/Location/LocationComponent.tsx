@@ -5,12 +5,13 @@ import { EnvironmentFilled } from '@ant-design/icons';
 import { ProCard, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { useIntl } from '@umijs/max';
-import { Button, Row, Space } from 'antd';
+import { Button, Col, Row, Space, Spin } from 'antd';
 
 import * as React from 'react';
 
 interface ILocationFormComponentProps {
   locations: {
+    // it is the location for each mark that you want to use
     color: string;
     name: string;
     value: {
@@ -24,21 +25,38 @@ interface ILocationFormComponentProps {
   hasNorthReference?: boolean;
   onChangeNorth?: any;
   northValue: boolean;
-  lat: number;
-  lng: number;
+  lat?: number;
+  lng?: number;
+  defaultLocation?: boolean;
+  layout?: 'vertical' | 'horizontal';
+  extra?: any;
 }
 
 const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps> = (props) => {
-  const { locations, geoLocationContext, hasNorthReference, lat, lng, onChangeNorth, northValue } =
-    props;
+  const {
+    locations,
+    geoLocationContext,
+    hasNorthReference,
+    lat,
+    lng,
+    onChangeNorth,
+    northValue,
+    defaultLocation,
+    layout,
+    extra
+  } = props;
 
   const intl = useIntl();
   const { xl, xs } = useScreenHook();
 
-  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(16, {
-    lat: lat,
-    lng: lng,
-  });
+  const { zoom, setZoom, map, setMap, mapCenter, loading } = useMapHook(
+    16,
+    {
+      lat: lat,
+      lng: lng,
+    },
+    defaultLocation,
+  );
 
   //* hooks for the marks */
   const [location, setLocation] = React.useState(locations);
@@ -66,79 +84,128 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
 
   return (
     <ProCard ghost gutter={[16, 16]} colSpan={{ xs: 24 }} wrap>
-      <ProCard ghost colSpan={{ xs: 24, sm: 12 }} wrap>
-        <GoogleMap
-          onLoad={(map) => setMap(map)}
-          onZoomChanged={() => {
-            if (map !== null) setZoom(map.getZoom());
-          }}
-          mapContainerStyle={containerStyle}
-          center={mapCenter}
-          options={{
-            keyboardShortcuts: false,
-            rotateControl: false,
-            mapTypeControl: false,
-            isFractionalZoomEnabled: false,
-            mapTypeId: 'satellite',
-            zoomControl: false,
-            scaleControl: false,
-            fullscreenControl: false,
-            streetViewControl: false,
-          }}
-          zoom={zoom}
-        >
-          {location?.map((item, index) => (
-            <Marker
-              key={`index-marker-map-${index}`}
-              icon={item.marker}
-              position={item.value}
-              draggable
-              onDragEnd={(event) => {
-                handleMarkerDragEnd(index, event.latLng?.toJSON());
-              }}
-            />
-          ))}
-        </GoogleMap>
-      </ProCard>
-      <ProCard ghost colSpan={{ sm: 12 }}>
-        <Row style={{ width: '100%' }}>
-          {location?.map((item, index) => (
-            <ProFormText
-              key={`value-color-${index}`}
-              required
-              colProps={{ xs: 24, md: 24 }}
-              label={item.name}
-              name={item.name as string}
-              width={xs ? ('100%' as 'sm') : ('450px' as 'sm')}
-              fieldProps={{
-                width: xs ? '100%' : '450px',
-                value: `${item.value.lat},${item.value.lng}`,
-              }}
-              addonAfter={
-                <Button onClick={() => onClickLocation(index)}>
-                  <Space>
-                    <EnvironmentFilled style={{ color: item.color }} />
-                    {intl.formatMessage({
-                      id: 'component.location.btnlocation.label',
-                    })}
-                  </Space>
-                </Button>
-              }
-            />
-          ))}
+      {layout === 'vertical' ? (
+        <ProCard ghost colSpan={{ sm: 24 }}>
+          <Row style={{ width: '100%' }}>
+            {location?.map((item, index) => (
+              <ProFormText
+                key={`value-color-${index}`}
+                required
+                colProps={{ xs: 24, md: 24 }}
+                label={item.name}
+                name={item.name as string}
+                width={xs ? ('100%' as 'sm') : ('450px' as 'sm')}
+                fieldProps={{
+                  width: xs ? '100%' : '450px',
+                  value: `${item.value.lat},${item.value.lng}`,
+                }}
+                addonAfter={
+                  <Button onClick={() => onClickLocation(index)}>
+                    <Space>
+                      <EnvironmentFilled style={{ color: item.color }} />
+                      {intl.formatMessage({
+                        id: 'component.location.btnlocation.label',
+                      })}
+                    </Space>
+                  </Button>
+                }
+              />
+            ))}
 
-          {hasNorthReference ? (
-            <ProFormCheckbox
-              colProps={{ xs: 24, md: 24 }}
-              fieldProps={{ onChange: (e) => onChangeNorth(e), defaultChecked: northValue }}
-            >
-              {intl.formatMessage({
-                id: 'component.location.hasnorth.label',
-              })}
-            </ProFormCheckbox>
-          ) : null}
-        </Row>
+            {hasNorthReference ? (
+              <ProFormCheckbox
+                colProps={{ xs: 24, md: 24 }}
+                fieldProps={{ onChange: (e) => onChangeNorth(e), defaultChecked: northValue }}
+              >
+                {intl.formatMessage({
+                  id: 'component.location.hasnorth.label',
+                })}
+              </ProFormCheckbox>
+            ) : null}
+            <Col span={24}>
+            {extra}
+            </Col>
+
+          </Row>
+        </ProCard>
+      ) : null}
+      <ProCard ghost colSpan={{ xs: 24, sm: layout === 'horizontal'? 12: 24 }} wrap>
+        <Spin spinning={loading}>
+          <GoogleMap
+            onLoad={(map) => setMap(map)}
+            onZoomChanged={() => {
+              if (map !== null) setZoom(map.getZoom());
+            }}
+            mapContainerStyle={containerStyle}
+            center={mapCenter}
+            options={{
+              keyboardShortcuts: false,
+              rotateControl: false,
+              mapTypeControl: false,
+              isFractionalZoomEnabled: false,
+              mapTypeId: 'satellite',
+              zoomControl: false,
+              scaleControl: false,
+              fullscreenControl: false,
+              streetViewControl: false,
+            }}
+            zoom={zoom}
+          >
+            {location?.map((item, index) => (
+              <Marker
+                key={`index-marker-map-${index}`}
+                icon={item.marker}
+                position={item.value}
+                draggable
+                onDragEnd={(event) => {
+                  handleMarkerDragEnd(index, event.latLng?.toJSON());
+                }}
+              />
+            ))}
+          </GoogleMap>
+        </Spin>
       </ProCard>
+      {layout === 'horizontal' ? (
+        <ProCard ghost colSpan={{ sm: 12 }}>
+          <Row style={{ width: '100%' }}>
+            {location?.map((item, index) => (
+              <ProFormText
+                key={`value-color-${index}`}
+                required
+                colProps={{ xs: 24, md: 24 }}
+                label={item.name}
+                name={item.name as string}
+                width={xs ? ('100%' as 'sm') : ('450px' as 'sm')}
+                fieldProps={{
+                  width: xs ? '100%' : '450px',
+                  value: `${item.value.lat},${item.value.lng}`,
+                }}
+                addonAfter={
+                  <Button onClick={() => onClickLocation(index)}>
+                    <Space>
+                      <EnvironmentFilled style={{ color: item.color }} />
+                      {intl.formatMessage({
+                        id: 'component.location.btnlocation.label',
+                      })}
+                    </Space>
+                  </Button>
+                }
+              />
+            ))}
+
+            {hasNorthReference ? (
+              <ProFormCheckbox
+                colProps={{ xs: 24, md: 24 }}
+                fieldProps={{ onChange: (e) => onChangeNorth(e), defaultChecked: northValue }}
+              >
+                {intl.formatMessage({
+                  id: 'component.location.hasnorth.label',
+                })}
+              </ProFormCheckbox>
+            ) : null}
+          </Row>
+        </ProCard>
+      ) : null}
     </ProCard>
   );
 };

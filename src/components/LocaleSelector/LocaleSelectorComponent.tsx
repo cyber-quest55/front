@@ -79,6 +79,12 @@ const defaultLangUConfigMap = {
     icon: '🇩🇪',
     title: 'Sprache',
   },
+  'de-AT': {
+    lang: 'de-AT',
+    label: 'German (Austria)',
+    icon: '🇦🇹',
+    title: 'Austrian German',
+  },
   'el-GR': {
     lang: 'el-GR',
     label: 'Ελληνικά',

@@ -9,23 +9,35 @@ import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { DeviceType } from '@/utils/enum/device-type';
+import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
 import {
   ClockCircleOutlined,
-  EditFilled,
   InsertRowRightOutlined,
+  MoreOutlined,
   RedoOutlined,
 } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Link, useParams } from '@umijs/max';
-import { Col, Divider, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { useParams } from '@umijs/max';
+import {
+  Col,
+  Divider,
+  Dropdown,
+  MenuProps,
+  Row,
+  Select,
+  Space,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
 import React, { useEffect } from 'react';
 import { BsCloudRainFill } from 'react-icons/bs';
 import { Marker, StaticGoogleMap } from 'react-static-google-map';
 import { connect } from 'umi';
 import AddDeviceForm from '../Forms/AddDeviceForm';
+import CreateFarmFormContainer from '../Forms/CreateFarm/CreateFarmContainer';
 import WithConnection from '../WithConnection';
-import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
 
 type Props = {
   pivot: GetPivotModelProps;
@@ -288,19 +300,36 @@ const PivotList: React.FC<Props> = (props) => {
 
   const getList = (dataSource: any) => {
     return (
-      <ProList<any>
-        itemLayout="vertical"
-        rowKey="id"
-        style={{ paddingBottom: 0, marginBottom: 0 }}
-        dataSource={dataSource}
-        metas={{
-          title: {},
-          content: {},
-          extra: {},
-        }}
-      />
+      <>
+        <ProList<any>
+          itemLayout="vertical"
+          rowKey="id"
+          style={{ paddingBottom: 0, marginBottom: 0 }}
+          dataSource={dataSource}
+          metas={{
+            title: {},
+            content: {},
+            extra: {},
+          }}
+        />
+      </>
     );
   };
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          Editar Fazenda
+        </a>
+      ),
+    },
+    {
+      key: '2',
+      label: <CreateFarmFormContainer />,
+    },
+  ];
 
   return (
     <div className={className}>
@@ -312,11 +341,11 @@ const PivotList: React.FC<Props> = (props) => {
           </Space>
         </Col>
         <Col>
-          <Link to="/edit/farm">
-            <Tooltip title="Editar Fazenda">
-              <EditFilled style={{ fontSize: 18 }} />
-            </Tooltip>
-          </Link>
+          <Dropdown menu={{ items }}>
+            <a onClick={(e) => e.preventDefault()}>
+              <MoreOutlined style={{ fontSize: 24 }} />
+            </a>
+          </Dropdown>
         </Col>
       </Row>
       <Divider />

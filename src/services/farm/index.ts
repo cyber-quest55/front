@@ -22,3 +22,16 @@ export async function getFarmConnection(
     method: 'GET',
   });
 }
+
+export async function createFarm(
+  props: {},
+  body?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetFarmConnectionResponse;
+  }>(`/farms`, {
+    method: 'POST',
+    data: body
+  });
+}
+
