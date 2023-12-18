@@ -29,8 +29,8 @@ export async function checkUsername(
 }
 
 /** Send email for password recovery auth/reset/ */
-export async function recoveryPassword(body: API.ResetPasswordParam) {
-  return request<API.ResetPasswordResult>('/auth/reset/', {
+export async function recoveryPassword(body: API.RecoveryPasswordParam) {
+  return request<API.RecoveryPasswordResult>('/auth/reset/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -38,6 +38,18 @@ export async function recoveryPassword(body: API.ResetPasswordParam) {
     data: body,
   });
 }
+
+/** Send email for password recovery recovery/ */
+export async function resetPassword(token: string, body: API.ResetPasswordParam) {
+  return request<API.ResetPasswordResult>(`/auth/reset/${token}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+  });
+}
+
 
 /** Validate the registration token GET /auth/register */
 export async function validateRegisterToken(options: API.ValidateRegisterTokenParam) {
