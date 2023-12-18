@@ -191,7 +191,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
       label: `Tab 1`,
       children: (
         <Spin spinning={false}>
-          <div style={{ width: '100%', height: 'calc(100vh - 102px)' }}>
+          <div style={{ width: '100%', height: 'calc(100vh - 102px)', }}>
             <RenderPivots />
           </div>
         </Spin>
@@ -232,7 +232,11 @@ const Welcome: FunctionComponent<Props> = (props) => {
   return (
     <div className={classNamts}>
       <PageContainer
-        header={{ children: <div style={{ display: 'none' }}></div> }}
+       token={{
+        paddingBlockPageContainerContent:  0,
+        paddingInlinePageContainerContent: 0,
+      }}
+        header={{ children: <div style={{ display: 'none' }}>asd</div> }}
         ghost
         breadcrumb={{}}
         title={' '}
@@ -242,6 +246,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
             xs={24}
             style={{
               height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
+              marginTop: md? -23: 0,
               position: 'relative',
             }}
           >

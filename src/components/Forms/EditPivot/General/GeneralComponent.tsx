@@ -4,7 +4,6 @@ import {
   getEditPivotDeviceMonitorTable,
   patchChangeControlManualRadio,
   patchChangeControlRadio,
-  patchChangeMonitorRadio,
   postPivotConfig,
 } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
@@ -26,11 +25,11 @@ import * as yup from 'yup';
 
 const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
+  const intl = useIntl();
   const { message } = App.useApp();
   const ref = React.useRef();
   const params = useParams();
   const postReq = useRequest(postPivotConfig, { manual: true });
-  const intl = useIntl();
   const [loading, setLoading] = React.useState(false);
 
   const schema = yup.object().shape({

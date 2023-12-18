@@ -3,7 +3,6 @@ import { GeoBrowserStrategy } from '@/utils/strategies/geolocation/browser-strat
 import { GeoLocationContext } from '@/utils/strategies/geolocation/geolocation';
 import * as React from 'react';
 import LocationFormComponent from './LocationComponent';
-import LocationFormMobile from './LocationMobile';
 import LocationFormSkeleton from './LocationSkeleton';
 import { GeoCapacitorStrategy } from '@/utils/strategies/geolocation/cap-strategy';
 
@@ -21,8 +20,11 @@ interface ILocationFormContainerProps {
   hasNorthReference?: boolean;
   onChangeNorth?: any;
   northValue: boolean;
-  lat: number;
-  lng: number;
+  defaultLocation?: boolean;
+  lat?: number;
+  lng?: number;
+  layout?: 'vertical' | 'horizontal';
+  extra?: any;
 }
 
 const LocationFormContainer: React.FunctionComponent<ILocationFormContainerProps> = (props) => {
