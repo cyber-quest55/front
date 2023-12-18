@@ -12,7 +12,7 @@ const CreateFarmFormContainer: React.FunctionComponent = (props) => {
       {false ? (
         <CreateFarmFormSkeleton />
       ) : xs ? (
-        <CreateFarmFormMobile />
+        <CreateFarmFormComponent />
       ) : (
         <CreateFarmFormComponent />
       )}

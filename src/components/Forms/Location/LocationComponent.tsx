@@ -129,7 +129,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
           </Row>
         </ProCard>
       ) : null}
-      <ProCard ghost colSpan={{ xs: 24, sm: layout === 'horizontal'? 12: 24 }} wrap>
+      <ProCard ghost colSpan={{ xs: 24, sm: layout === 'horizontal' || !layout? 12: 24 }} wrap>
         <Spin spinning={loading}>
           <GoogleMap
             onLoad={(map) => setMap(map)}
@@ -165,7 +165,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
           </GoogleMap>
         </Spin>
       </ProCard>
-      {layout === 'horizontal' ? (
+      {layout === 'horizontal' || !layout ? (
         <ProCard ghost colSpan={{ sm: 12 }}>
           <Row style={{ width: '100%' }}>
             {location?.map((item, index) => (
