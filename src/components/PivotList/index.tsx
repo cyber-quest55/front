@@ -337,7 +337,7 @@ const PivotList: React.FC<Props> = (props) => {
         <Col>
           <Space size="small">
             <WithConnection />
-            <span className={classNameSelect}>{props.selectedFarm?.name?.toString()}</span>
+            <Typography.Title level={4} className={classNameSelect}>{props.selectedFarm?.name?.toString()}</Typography.Title>
           </Space>
         </Col>
         <Col>

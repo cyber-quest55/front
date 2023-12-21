@@ -85,10 +85,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           }}
         >
           <ProCard
-            ghost
-            style={{
-              background: 'white',
-              padding: 8,
+             style={{
+               padding: 0,
             }}
           >
             <Field
@@ -106,10 +104,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             ></Field>
           </ProCard>
           <ProCard
-            ghost
-            style={{
-              background: 'white',
-              padding: 8,
+             style={{
+               padding: 0,
             }}
           >
             <Space>
@@ -119,10 +115,9 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           </ProCard>
 
           <ProCard
-            ghost
+             
             style={{
-              background: 'white',
-              padding: 8,
+               padding: 0,
             }}
           >
             <Space>
@@ -132,10 +127,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           </ProCard>
 
           <ProCard
-            ghost
-            style={{
-              background: 'white',
-              padding: 8,
+             style={{
+               padding: 0,
             }}
           >
             <Space>
@@ -145,10 +138,9 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           </ProCard>
 
           <ProCard
-            ghost
+            
             style={{
-              background: 'white',
-              padding: 8,
+               padding: 0,
             }}
           >
             <Space>
