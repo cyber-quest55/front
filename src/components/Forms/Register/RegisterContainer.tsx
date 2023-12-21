@@ -25,8 +25,7 @@ const RegisterFormContainer: React.FC<any> = () => {
   const registerUserReq = useRequest(registerUser, { manual: true });
 
   useEffect(() => {
-    console.log('caiu aqui')
-    if (validateTokenReq.error) {
+     if (validateTokenReq.error) {
       setIsSubmitAble(false);
       setError(['component.forms.register.invalid.token'])
     } else { 

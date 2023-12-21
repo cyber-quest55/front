@@ -1,7 +1,7 @@
-import { AvatarDropdown, AvatarName, SelectLang } from '@/components';
+import { AvatarDropdown, AvatarName } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined, UserOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import { SettingDrawer, type Settings as LayoutSettings } from '@ant-design/pro-components';
 import { LoadScript } from '@react-google-maps/api';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
@@ -13,9 +13,11 @@ import uniqid from 'uniqid';
 import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect/FarmSelectContainer';
-import { errorConfig } from './requestErrorConfig';
+import LocaleSelectorContainer from './components/LocaleSelector/LocaleSelectorContainer';
+import OfflineNetworkContainer from './components/Modals/OfflineNetwork/OfflineNetworkContainer';
 import ForbidenPage from './pages/403';
 import NoFoundPage from './pages/404';
+import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -77,29 +79,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     ...initialState?.settings,
     defaultCollapsed: true,
-    unAccessible: <ForbidenPage/>,
-    noFound: <NoFoundPage/>,
+    unAccessible: <ForbidenPage />,
+    noFound: <NoFoundPage />,
     collapsed: initialState?.collapsed,
     onCollapse: () => {
       setInitialState({ ...initialState, collapsed: !initialState?.collapsed });
     },
     actionsRender: ({ collapsed, isMobile }) => {
-      if (collapsed && !isMobile) {
+      if (isMobile) {
         return [];
       }
-
-      if (collapsed && isMobile) {
-        return [
-          <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
-            <SelectLang />
-          </div>,
-          // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
-        ];
-      }
-
       return [
         <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
-          <SelectLang />
+          <LocaleSelectorContainer isCollapsed={collapsed} />
         </div>,
         // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
       ];
@@ -133,23 +125,41 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       : [],
     menuHeaderRender: undefined,
 
-    menuExtraRender: ({ collapsed }) => !collapsed && <FarmSelect />,
+    menuExtraRender: ({ collapsed }) =>
+      !collapsed && (
+        <div style={{ paddingInline: 12 }}>
+          <FarmSelect />
+        </div>
+      ),
 
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-
+    token: initialState?.settings?.navTheme === 'realDark'? undefined : defaultSettings.token,
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <App  >
+        <App>
+          <OfflineNetworkContainer />
           <LoadScript
             libraries={libraries as any}
             id={loaderId}
             loadingElement={<div>Carregando</div>}
-            googleMapsApiKey=""
+            googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
           >
             {children}
+            <SettingDrawer
+              disableUrlParams
+              themeOnly
+              enableDarkTheme
+              settings={initialState?.settings}
+              onSettingChange={(settings) => {
+                setInitialState((preInitialState: any) => ({
+                  ...preInitialState,
+                  settings 
+                }));
+              }}
+            />
           </LoadScript>
         </App>
       );

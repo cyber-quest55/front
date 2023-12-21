@@ -2,8 +2,8 @@ import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import {
   getEditPivotDeviceControlTable,
   getEditPivotDeviceMonitorTable,
+  patchChangeControlManualRadio,
   patchChangeControlRadio,
-  patchChangeMonitorRadio,
   postPivotConfig,
 } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
@@ -25,11 +25,11 @@ import * as yup from 'yup';
 
 const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
+  const intl = useIntl();
   const { message } = App.useApp();
   const ref = React.useRef();
   const params = useParams();
   const postReq = useRequest(postPivotConfig, { manual: true });
-  const intl = useIntl();
   const [loading, setLoading] = React.useState(false);
 
   const schema = yup.object().shape({
@@ -257,6 +257,14 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
   const yupSync = yupValidator(schema, form.getFieldsValue);
   const { pivot } = props;
 
+  const setControlRadioId = (value: string) => {
+    form.setFieldValue(['control_radio_id'], value);
+  };
+
+  const setMonitorRadioId = (value: string) => {
+    form.setFieldValue(['monitor_radio_id'], value);
+  };
+
   return (
     <ProCard
       title={
@@ -396,7 +404,7 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
               <RadioInputContainer
                 name={['base_radio_id']}
                 operable={false}
-                setFieldValue={'2'}
+                setFieldValue={form.setFieldValue}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.centralradio.label',
                 })}
@@ -411,36 +419,43 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
               <RadioInputContainer
                 name={['control_radio_id']}
                 operable
-                setFieldValue={'2'}
+                setFieldValue={setControlRadioId}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.controllerradio.label',
                 })}
+                deviceId={pivot.control}
                 status={'processing'}
                 span={{ xs: 24, md: 6 }}
                 deviceType="Controlador"
                 device="pivô"
+                form={form}
                 request={getEditPivotDeviceControlTable}
-                requestChange={patchChangeControlRadio}
+                requestChange={patchChangeControlManualRadio}
+                requestSwapChange={patchChangeControlRadio}
+
                 fieldIndex={'control'}
               />
               <RadioInputContainer
                 name={['monitor_radio_id']}
                 operable
-                setFieldValue={'2'}
+                setFieldValue={setMonitorRadioId}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.gpsradio.label',
                 })}
+                deviceId={pivot.control}
                 status={'processing'}
                 span={{ xs: 24, md: 6 }}
                 deviceType="GPS"
                 device="pivô"
+                form={form}
                 request={getEditPivotDeviceMonitorTable}
-                requestChange={patchChangeMonitorRadio}
+                requestChange={patchChangeControlManualRadio}
+                requestSwapChange={patchChangeControlRadio}
                 fieldIndex={'monitor'}
               />
               <RadioInputContainer
                 operable={false}
-                setFieldValue={'2'}
+                setFieldValue={form.setFieldValue}
                 label={intl.formatMessage({
                   id: 'component.edit.pivot.general.pumpradio.label',
                 })}
