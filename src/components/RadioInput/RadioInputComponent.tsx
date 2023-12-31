@@ -26,6 +26,7 @@ interface IRadioInputComponentProps {
   name?: string[];
   setFieldValue: any;
   form: any;
+  requestDeviceId: string;
   queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 
@@ -45,22 +46,31 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   const { label, status, operable, span, device, deviceType, fieldIndex } = props;
 
   const onSave = async () => {
-    try{
-
-    await reqManual.runAsync(
-      {
-        farmId: params.farmId as any,
-        pivotId: params.pivotId as any,
-      },
-      { radio_id: props.form.getFieldValue(props.name) },
-    );
-    setIsEditing(false);
-    message.success('Salvo com sucesso');
-
-  } catch (err) {
-    message.error('Fail');
-  }
-
+    try {
+      if(device === 'pivô') {
+        await reqManual.runAsync(
+          {
+            farmId: params.farmId as any,
+            pivotId: params.pivotId as any,
+          },
+          { radio_id: props.form.getFieldValue(props.name) },
+        );
+      }
+      else if (device === 'imanage') {
+        await reqManual.runAsync(
+          {
+            farmId: params.farmId as any,
+            meterSystemId: params.meterSystemId,
+            meterId: params.meterId,
+          },
+          { radio_id: props.form.getFieldValue(props.name) },
+        );
+      }
+      setIsEditing(false);
+      message.success('Salvo com sucesso');
+    } catch (err) {
+      message.error('Fail');
+    }
   };
 
   const columns: ProColumns<any>[] = [
@@ -83,17 +93,32 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         <a
           key="editable"
           onClick={async () => {
-            await reqPost.runAsync({
-              farmId: params.farmId as any,
-              pivotId: params.pivotId as any,
-              deviceId: item.id as any,
-            });
-            message.success('Rádios trocados com sucesso');
-            if (device === 'pivô')
-              props.queryPivotByIdStart({
+            console.log(item)
+
+            if (device === 'pivô') {
+              await reqPost.runAsync({
                 farmId: params.farmId as any,
                 pivotId: params.pivotId as any,
+                deviceId: item.id as any,
               });
+            }
+            else if (device === 'imanage') {
+              await reqPost.runAsync({
+                farmId: params.farmId as any,
+                meterSystemId: params.meterSystemId as any,
+                meterId: params.meterId,
+                newMeterId: item.id
+              },
+              { radio_id: item.radio },
+              );
+            }
+
+            // if (device === 'pivô')
+            //   props.queryPivotByIdStart({
+              //     farmId: params.farmId as any,
+              //     [props.requestDeviceId]: params[props.requestDeviceId] as any,
+              //   });
+            message.success('Rádios trocados com sucesso');
             setIsOpen(false);
           }}
         >
@@ -102,6 +127,8 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       ],
     },
   ];
+
+  console.log(props.requestDeviceId);
 
   return (
     <Col {...span}>
@@ -124,10 +151,20 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             actionRef={actionRef}
             ghost
             request={async () => {
-              const result: any = await reqGet.runAsync({
-                farmId: params.farmId as any,
-                pivotId: params.pivotId as any,
-              });
+              let result: any = [];
+              if (device === 'pivô') {
+                result = await reqGet.runAsync({
+                  farmId: params.farmId as any,
+                  pivotId: params.pivotId as any,
+                });
+              }
+
+              if (device === 'imanage') {
+                result = await reqGet.runAsync({
+                  farmId: params.farmId as any,
+                  meterSystemId: params.meterSystemId as any,
+                });
+              }
 
               const mapped = result.map((item: any, index: number) => ({
                 name: item.name,

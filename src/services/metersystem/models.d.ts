@@ -450,4 +450,61 @@ declare namespace APIModels {
       flow: number;
     }>;
   };
+
+  type PostMeterSystemConfig = {
+    content: {
+      clock: {
+        second: number;
+        minute: number;
+        hour: number;
+        day: number;
+        month: number;
+        year: number;
+      };
+      enable_peak_time: {
+        enable: number;
+      };
+      peak_time: {
+        start_hour_1: number;
+        start_minute_1: number;
+        stop_hour_1: number;
+        stop_minute_1: number;
+        start_hour_2: number;
+        start_minute_2: number;
+        stop_hour_2: number;
+        stop_minute_2: number;
+        sunday_enable: number;
+        monday_enable: number;
+        tuesday_enable: number;
+        wednesday_enable: number;
+        thursday_enable: number;
+        friday_enable: number;
+        saturday_enable: number;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+    };
+    graphic_max_value: number;
+    sensor_offset: number;
+    flow_curve_equation: [number, number, number];
+    measure_scale: string;
+    measure_unit: string;
+    min_limit: number;
+    max_limit: number;
+    metersystem_name: string;
+    imeter_name: string;
+    position_imeter: string;
+    sensor_process_controller_pair: string;
+  };
+
+  type PatchMeterSystem = {
+    name: string,
+  }
+
+  type PatchIMeter = {
+    name: string,
+    position: string,
+    sensor_process_controller_pair: number,
+  }
 }

@@ -37,4 +37,9 @@ export default {
   'pages.404.btn': "Go back",
   'pages.403.desc': "You do not have permissions to access this resource",
   'pages.passwordResetCofirmation.title': 'Password changed successfully',
+  'pages.edit.meter.tab.header.history': 'History',
+  'pages.edit.meter.tab.header.configuration': 'Configurations',
+  'pages.edit.meter.tab.options.general': 'General',
+  'pages.edit.meter.tab.options.location': 'Location',
+  'pages.edit.meter.tab.options.level': 'Level',
  };

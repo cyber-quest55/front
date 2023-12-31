@@ -59,3 +59,92 @@ export async function getMeterSystemTable(
     },
   );
 }
+
+export async function getMeterSystemSensors() {
+  return request<{
+    data: any;
+  }>(`/sensors/`, {
+    method: 'GET',
+  });
+}
+
+export async function postMeterSystemConfig(
+  props: API.PostMeterSystemConfigParams,
+  options: APIModels.PostMeterSystemConfig,
+) {
+  return request<{
+    data: any;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.iMeterId}/config/standard/`,
+    {
+      method: 'POST',
+      data: options,
+    },
+  );
+}
+
+export async function patchIMeter(
+  props: API.PatchIMeterParams,
+  options: APIModels.PatchIMeter,
+) {
+  return request<{
+    data: any;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.iMeterId}/`,
+    {
+      method: 'PATCH',
+      data: options,
+    },
+  );
+}
+
+export async function patchMeterSystem(
+  props: API.PatchMeterSystemParams,
+  options: APIModels.PatchMeterSystem,
+) {
+  return request<{
+    data: any;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/`,
+    {
+      method: 'PATCH',
+      data: options,
+    },
+  );
+}
+
+export async function getEditMeterDeviceIManageTable(
+  props: API.GetMeterDevicesParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetMeterDevicesResponse;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/devices`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function patchChangeIManageRadio(
+  props: any,
+  options?: { radio_id: string },
+) {
+  return request<{
+    data: any;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/swap/${props.newMeterId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function patchChangeIManageManualRadio(
+  props: any,
+  options?: { radio_id: string },
+) {
+  return request<{
+    data: any;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/edit_radio/`, {
+    method: 'POST',
+    data: options,
+  });
+}

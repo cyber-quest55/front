@@ -432,7 +432,7 @@ const EditPivotGeneralComponent: React.FunctionComponent<any> = (props) => {
                 request={getEditPivotDeviceControlTable}
                 requestChange={patchChangeControlManualRadio}
                 requestSwapChange={patchChangeControlRadio}
-
+                requestDeviceId={"pivotId"}
                 fieldIndex={'control'}
               />
               <RadioInputContainer

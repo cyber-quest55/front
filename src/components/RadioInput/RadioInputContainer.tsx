@@ -24,6 +24,7 @@ interface IRadioInputContainerProps {
   name?: string[];
   fieldIndex?: string;
   form: any;
+  requestDeviceId: string,
   queryPivotByIdStart: typeof queryPivotByIdStart;
 }
 

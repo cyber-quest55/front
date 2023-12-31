@@ -100,6 +100,13 @@ export default [
   },
 
   {
+    path: 'farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',
+    name: 'Edit Meter',
+    hideInMenu: true,
+    component: './Meter/Edit.tsx',
+  },
+
+  {
     path: '/notifications/',
     name: 'Notificações',
     icon: 'bellOutlined',
