@@ -69,31 +69,33 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
   const onBlurBilling: FocusEventHandler<HTMLInputElement> = async (v) => {
     const { data } = await getCep(v.target.value);
     const formsValue = form2Ref.current?.getFieldsValue();
+    console.log('asdygsaygdgyas', !data.erro)
 
-    if (data) {
-      form2Ref.current?.setFieldsValue({
-        ...formsValue,
-        billing: {
-          ...formsValue.billing,
-          address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
-          state: data.uf,
-          city: data.localidade,
-        },
-      });
+    if (data && !data.erro) {
+        form2Ref.current?.setFieldsValue({
+          ...formsValue,
+          billing: {
+            ...formsValue.billing,
+            address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
+            state: data.uf,
+            city: data.localidade,
+          },
+        });
     }
   };
 
   const onBlurDefault: FocusEventHandler<HTMLInputElement> = async (v) => {
     const { data } = await getCep(v.target.value);
     const formsValue = form3Ref.current?.getFieldsValue();
+    
 
-    if (data) {
-      form3Ref.current?.setFieldsValue({
-        ...formsValue.billing,
-        address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
-        state: data.uf,
-        city: data.localidade,
-      });
+    if (data && !data.erro) {
+         form3Ref.current?.setFieldsValue({
+          ...formsValue.billing,
+          address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
+          state: data.uf,
+          city: data.localidade,
+        });
     }
   };
 
@@ -287,7 +289,7 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
   return (
     <>
       <a onClick={() => setVisible(true)}> Nova Fazenda</a>
-   
+
       <StepsForm
         onFinish={async (v) => {
           try {
