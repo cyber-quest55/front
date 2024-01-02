@@ -1,7 +1,11 @@
 import { AvatarDropdown, AvatarName } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined, UserOutlined } from '@ant-design/icons';
-import { SettingDrawer, type Settings as LayoutSettings } from '@ant-design/pro-components';
+import {
+  ProConfigProvider,
+  SettingDrawer,
+  type Settings as LayoutSettings,
+} from '@ant-design/pro-components';
 import { LoadScript } from '@react-google-maps/api';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
@@ -135,32 +139,34 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-    token: initialState?.settings?.navTheme === 'realDark'? {} : defaultSettings.token,
+    token: initialState?.settings?.navTheme === 'realDark' ? {} : defaultSettings.token,
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
         <App>
-          <OfflineNetworkContainer />
-          <LoadScript
-            libraries={libraries as any}
-            id={loaderId}
-            loadingElement={<div>Carregando</div>}
-            googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-          >
-            {children}
-            <SettingDrawer
-              disableUrlParams
-              themeOnly
-              enableDarkTheme
-              settings={initialState?.settings}
-              onSettingChange={(settings) => {
-                setInitialState((preInitialState: any) => ({
-                  ...preInitialState,
-                  settings 
-                }));
-              }}
-            />
-          </LoadScript>
+          <ProConfigProvider token={{colorPrimary: defaultSettings.colorPrimary}}>
+            <OfflineNetworkContainer />
+            <LoadScript
+              libraries={libraries as any}
+              id={loaderId}
+              loadingElement={<div>Carregando</div>}
+              googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+            >
+              {children}
+              <SettingDrawer
+                disableUrlParams
+                themeOnly
+                enableDarkTheme
+                settings={initialState?.settings}
+                onSettingChange={(settings) => {
+                  setInitialState((preInitialState: any) => ({
+                    ...preInitialState,
+                    settings,
+                  }));
+                }}
+              />
+            </LoadScript>
+          </ProConfigProvider>
         </App>
       );
     },
