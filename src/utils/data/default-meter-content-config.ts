@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export function numPad(n: number, zerosBefore: number) {
+function numPad(n: number, zerosBefore: number) {
   let zerosString = '';
 
   for (let i = 0; i < zerosBefore; i++) {
@@ -10,7 +10,7 @@ export function numPad(n: number, zerosBefore: number) {
   return (zerosString + n).slice(-zerosBefore);
 }
 
-export function getDefaultPeakTimeConfig(latestConfig: any) {
+export function getDefaultMeterContentConfig(latestConfig: any) {
   const pauseTimeStatus1 = latestConfig.content.enable_peak_time.enable === 1;
   const pauseTimeStatus2 =
     (latestConfig.content?.peak_time.start_hour_1 === 0 &&

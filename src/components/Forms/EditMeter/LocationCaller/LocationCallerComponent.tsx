@@ -1,4 +1,4 @@
-import { patchIMeter, postMeterSystemConfig } from '@/services/metersystem';
+import { patchMeter, postMeterSystemConfig } from '@/services/metersystem';
 import { SaveOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
@@ -7,7 +7,7 @@ import { App, Button, Typography } from 'antd';
 import * as React from 'react';
 import MarkerGreen from '../../../../../public/images/devices/marker-green.svg';
 import LocationFormContainer from '../../Location/LocationContainer';
-import { getDefaultPeakTimeConfig } from '../General/util';
+import { getDefaultMeterContentConfig } from '@/utils/data/default-meter-content-config';
 
 const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) => {
   const meter = props.meter;
@@ -16,7 +16,7 @@ const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) =
     long: Number(props.meter.imeter_set[0].latest_config.position_imeter.split(',')[1]),
   };
   const postMeterSystemConfigReq = useRequest(postMeterSystemConfig, { manual: true });
-  const patchIMeterReq = useRequest(patchIMeter, { manual: true });
+  const patchIMeterReq = useRequest(patchMeter, { manual: true });
   const params = useParams();
   const { message } = App.useApp();
   const intl = useIntl();
@@ -29,11 +29,11 @@ const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) =
   const onFinish = async () => {
     try {
       const latestConfig = meter.imeter_set[0].latest_config;
-      const defaultPeakTimeConfig = getDefaultPeakTimeConfig(latestConfig);
+      const defaultContentConfig = getDefaultMeterContentConfig(latestConfig);
 
       const newConfig = {
         content: {
-          ...defaultPeakTimeConfig,
+          ...defaultContentConfig,
         },
         graphic_max_value: latestConfig?.graphic_max_value,
         sensor_offset: latestConfig?.sensor_offset,
@@ -52,7 +52,7 @@ const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) =
         {
           farmId: params.farmId as any,
           meterSystemId: params.meterSystemId as any,
-          iMeterId: params.meterId as any,
+          meterId: params.meterId as any,
         },
         newConfig as any,
       );
@@ -67,7 +67,7 @@ const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) =
         {
           farmId: params.farmId as any,
           meterSystemId: params.meterSystemId as any,
-          iMeterId: params.meterId as any,
+          meterId: params.meterId as any,
         },
         iMeterPatchData,
       );

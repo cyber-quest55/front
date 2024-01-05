@@ -62,7 +62,7 @@ export async function getMeterSystemTable(
 
 export async function getMeterSystemSensors() {
   return request<{
-    data: any;
+    data: API.GetMeterSystemSensorsResponse;
   }>(`/sensors/`, {
     method: 'GET',
   });
@@ -70,12 +70,12 @@ export async function getMeterSystemSensors() {
 
 export async function postMeterSystemConfig(
   props: API.PostMeterSystemConfigParams,
-  options: APIModels.PostMeterSystemConfig,
+  options: APIModels.MeterConfig,
 ) {
   return request<{
-    data: any;
+    data: API.PostMeterSystemConfigResponse;
   }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.iMeterId}/config/standard/`,
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/standard/`,
     {
       method: 'POST',
       data: options,
@@ -83,14 +83,14 @@ export async function postMeterSystemConfig(
   );
 }
 
-export async function patchIMeter(
-  props: API.PatchIMeterParams,
-  options: APIModels.PatchIMeter,
+export async function patchMeter(
+  props: API.PatchMeterParams,
+  options: APIModels.PatchMeter,
 ) {
   return request<{
-    data: any;
+    data: API.PatchMeterResponse;
   }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.iMeterId}/`,
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/`,
     {
       method: 'PATCH',
       data: options,
@@ -103,7 +103,7 @@ export async function patchMeterSystem(
   options: APIModels.PatchMeterSystem,
 ) {
   return request<{
-    data: any;
+    data: API.PatchMeterSystemResponse;
   }>(
     `/farms/${props.farmId}/metersystems/${props.meterSystemId}/`,
     {
@@ -126,11 +126,16 @@ export async function getEditMeterDeviceIManageTable(
 }
 
 export async function patchChangeIManageRadio(
-  props: any,
+  props: {
+    farmId: number,
+    meterSystemId: number,
+    meterId: number,
+    newMeterId: number,
+  },
   options?: { radio_id: string },
 ) {
   return request<{
-    data: any;
+    data: { radio_id: string };
   }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/swap/${props.newMeterId}/`, {
     method: 'PATCH',
     data: options,
@@ -138,11 +143,15 @@ export async function patchChangeIManageRadio(
 }
 
 export async function patchChangeIManageManualRadio(
-  props: any,
+  props: {
+    farmId: number,
+    meterSystemId: number,
+    meterId: number,
+  },
   options?: { radio_id: string },
 ) {
   return request<{
-    data: any;
+    data: { radio_id: string };
   }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/edit_radio/`, {
     method: 'POST',
     data: options,

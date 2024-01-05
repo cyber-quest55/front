@@ -12,7 +12,7 @@ import {
   ThunderboltFilled,
 } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { history, useParams } from '@umijs/max';
+import { Link, useParams } from '@umijs/max';
 import { Button, Col, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
@@ -39,9 +39,6 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const { md } = useScreenHook();
   // const navigate = useNavigate();
   const params = useParams();
-
-  console.log({params});
-  
 
   const { options, device, type, onChangeDevice } = props;
 
@@ -203,7 +200,6 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       }
     }
   };
-  console.log({device});
 
   const actions = (type: DeviceType) => {
     switch (type) {
@@ -224,7 +220,11 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Meter: {
         return (
           <Space>
-            <Button onClick={() => history.push(`/farms/${params.id}/metersystem/${device.id}/meter/${device.imeterSetId}/edit`)} icon={<EditFilled />}>Edit</Button>
+            <Link
+              to={`/farms/${params.id}/metersystem/${device.id}/meter/${device.imeterSetId}/edit`}
+            >
+              <Button icon={<EditFilled />}>Edit</Button>
+            </Link>
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
               Close
             </Button>

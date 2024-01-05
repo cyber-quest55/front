@@ -1,5 +1,3 @@
-import { queryMeterSystemById } from '@/models/meter-by-id';
-import { queryPivotByIdStart } from '@/models/pivot-by-id';
 import { PresetStatusColorType } from '@/typings';
 import { EditOutlined, LoadingOutlined, QrcodeOutlined, SaveOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
@@ -28,7 +26,7 @@ interface IRadioInputComponentProps {
   setFieldValue: any;
   form: any;
   requestDeviceId: string;
-  queryMeterSystemById: typeof queryMeterSystemById
+  requestAfterChange?: any
 }
 
 const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = (props) => {
@@ -99,7 +97,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
                 pivotId: params.pivotId as any,
                 deviceId: item.id as any,
               });
-              queryPivotByIdStart({
+              props.requestAfterChange({
                 farmId: params.farmId as any,
                 pivotId: params.pivotId as any,
               });
@@ -113,7 +111,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
                 },
                 { radio_id: item.radio },
               );
-              props.queryMeterSystemById({
+              props.requestAfterChange({
                 farmId: params.farmId as any,
                 meterId: params.meterSystemId as any,
               });
@@ -128,8 +126,6 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       ],
     },
   ];
-
-  console.log(props.requestDeviceId);
 
   return (
     <Col {...span}>

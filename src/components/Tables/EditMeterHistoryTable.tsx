@@ -2,7 +2,7 @@ import { queryMeterSystemById } from '@/models/meter-by-id';
 import {
   favoriteMeterConfig,
   getEditMeterHistory,
-  patchIMeter,
+  patchMeter,
   patchMeterSystem,
   postMeterSystemConfig,
 } from '@/services/metersystem';
@@ -33,24 +33,16 @@ export const waitTime = async (time: number = 100) => {
   await waitTimePromise(time);
 };
 
-type GithubIssueItem = {
-  url: string;
-  id: number;
-  number: number;
+type ColumnItem = {
   title: string;
-  labels: {
-    name: string;
-    color: string;
-  }[];
-  state: string;
-  comments: number;
-  created_at: string;
-  updated_at: string;
-  closed_at?: string;
+  key: string,
+  dataIndex: string,
+  valueType: string,
 };
 
 interface IEditMeterHistoryTableProps {
   setTabCount: any;
+  setTab: any;
   showOnlyFavorites?: boolean;
   queryMeterSystemById: typeof queryMeterSystemById;
   sensorOptions: any;
@@ -62,7 +54,7 @@ const EditMeterHistoryTable: React.FunctionComponent<IEditMeterHistoryTableProps
   const reqEditMeter = useRequest(getEditMeterHistory, { manual: true });
   const reqFavorite = useRequest(favoriteMeterConfig, { manual: true });
   const postReq = useRequest(postMeterSystemConfig, { manual: true });
-  const patchIMeterReq = useRequest(patchIMeter, { manual: true });
+  const patchMeterReq = useRequest(patchMeter, { manual: true });
   const patchMeterSystemReq = useRequest(patchMeterSystem, { manual: true });
   const [currentPage, setCurrentPage] = React.useState<number>(1);
 
@@ -80,12 +72,12 @@ const EditMeterHistoryTable: React.FunctionComponent<IEditMeterHistoryTableProps
       {
         farmId: params.farmId as any,
         meterSystemId: params.meterSystemId as any,
-        iMeterId: params.meterId as any,
+        meterId: params.meterId as any,
       },
       { ...newFull },
     );
 
-    const iMeterPatchData = {
+    const meterPatchData = {
       name: newFull.imeter_name,
       position: newFull.position_imeter,
       sensor_process_controller_pair: newFull.sensor_process_controller_pair,
@@ -95,13 +87,13 @@ const EditMeterHistoryTable: React.FunctionComponent<IEditMeterHistoryTableProps
       name: newFull.metersystem_name,
     };
 
-    await patchIMeterReq.runAsync(
+    await patchMeterReq.runAsync(
       {
         farmId: params.farmId as any,
         meterSystemId: params.meterSystemId as any,
-        iMeterId: params.meterId as any,
+        meterId: params.meterId as any,
       },
-      iMeterPatchData,
+      meterPatchData,
     );
 
     await patchMeterSystemReq.runAsync(
@@ -119,9 +111,10 @@ const EditMeterHistoryTable: React.FunctionComponent<IEditMeterHistoryTableProps
 
     message.success('Success');
     props.setTabCount('configuration');
+    props.setTab('general');
   };
 
-  let columns: ProColumns<GithubIssueItem>[] = props.showOnlyFavorites
+  let columns: ProColumns<ColumnItem>[] = props.showOnlyFavorites
   ? [
       {
         title: intl.formatMessage({
@@ -431,7 +424,7 @@ const EditMeterHistoryTable: React.FunctionComponent<IEditMeterHistoryTableProps
           })}
         </ProDescriptions.Item>
       </ProDescriptions>
-      <ProTable<GithubIssueItem>
+      <ProTable<ColumnItem>
         columns={columns}
         actionRef={actionRef}
         ghost

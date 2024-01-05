@@ -59,12 +59,6 @@ export default [
         name: 'Criar Fazenda',
         component: './Farms/create.tsx',
       },
-      {
-        path: '/farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',
-        name: 'Edit Meter',
-        hideInMenu: true,
-        component: './Meter/Edit.tsx',
-      },
     ],
   },
   {
@@ -104,8 +98,12 @@ export default [
     isHidden: true,
     component: './Pivot/Edit.tsx',
   },
-
-  
+  {
+    path: 'farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',
+    name: 'Edit Meter',
+    hideInMenu: true,
+    component: './Meter/Edit.tsx',
+  },
 
   {
     path: '/notifications/',

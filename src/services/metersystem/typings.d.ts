@@ -46,13 +46,13 @@ declare namespace API {
   type PostMeterSystemConfigParams = {
     farmId: number;
     meterSystemId: string;
-    iMeterId: string;
+    meterId: string;
   };
 
-  type PatchIMeterParams = {
+  type PatchMeterParams = {
     farmId: number;
     meterSystemId: string;
-    iMeterId: string;
+    meterId: string;
   };
 
   type PatchMeterSystemParams = {
@@ -99,5 +99,13 @@ declare namespace API {
   };
 
   type FavoriteMeterConfigResponse = APIModels.MeterSystem;
+
+  type PatchMeterSystemResponse = APIModels.MeterSystemById;
+
+  type GetMeterSystemSensorsResponse = APIModels.MeterSystemSensor[];
+  
+  type PostMeterSystemConfigResponse = APIModels.MeterConfig;
+
+  type PatchMeterResponse = APIModels.Meter;
 
 }

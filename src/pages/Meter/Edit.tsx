@@ -80,11 +80,10 @@ const EditMeter: React.FunctionComponent<Props> = (props) => {
         } else if (activeKey === 'history') {
           setTab('previoussettings');
         }
-
       }}
       token={{
         paddingBlockPageContainerContent: -8,
-        paddingInlinePageContainerContent: xs ? 8 : 32,
+        paddingInlinePageContainerContent: 32,
       }}
       tabProps={{
         hideAdd: true,
@@ -147,6 +146,7 @@ const EditMeter: React.FunctionComponent<Props> = (props) => {
                 children: (
                   <EditMeterHistoryTable
                     setTabCount={setTabCont}
+                    setTab={setTab}
                     queryMeterSystemById={props.queryMeterSystemById}
                     sensorOptions={sensorOptions}
                   />
@@ -160,6 +160,7 @@ const EditMeter: React.FunctionComponent<Props> = (props) => {
                 children: (
                   <EditMeterHistoryTable
                     setTabCount={setTabCont}
+                    setTab={setTab}
                     showOnlyFavorites
                     queryMeterSystemById={props.queryMeterSystemById}
                     sensorOptions={sensorOptions}

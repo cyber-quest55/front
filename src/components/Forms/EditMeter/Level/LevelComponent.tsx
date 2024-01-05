@@ -1,6 +1,7 @@
 import { postMeterSystemConfig } from '@/services/metersystem';
 
 import { yupValidator } from '@/utils/adapters/yup';
+import { getDefaultMeterContentConfig } from '@/utils/data/default-meter-content-config';
 import { SaveOutlined } from '@ant-design/icons';
 import { ProCard, ProForm, ProFormDigit, ProFormGroup } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
@@ -8,7 +9,6 @@ import { useRequest } from 'ahooks';
 import { App, Button, Form, Row, Typography } from 'antd';
 import * as React from 'react';
 import * as yup from 'yup';
-import { getDefaultPeakTimeConfig } from '../General/util';
 
 const EditMeterLevelComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
@@ -106,10 +106,10 @@ const EditMeterLevelComponent: React.FunctionComponent<any> = (props) => {
 
               try {
                 const latestConfig = meter.imeter_set[0].latest_config;
-                const defaultPeakTimeConfig = getDefaultPeakTimeConfig(latestConfig);
+                const defaultContentConfig = getDefaultMeterContentConfig(latestConfig);
 
                 const newConfig = {
-                  content: { ...defaultPeakTimeConfig },
+                  content: { ...defaultContentConfig },
                   graphic_max_value: parseFloat(
                     values.imeter_set[0].latest_config.graphic_max_value.toString(),
                   ),
@@ -130,7 +130,7 @@ const EditMeterLevelComponent: React.FunctionComponent<any> = (props) => {
                   {
                     farmId: params.farmId as any,
                     meterSystemId: params.meterSystemId as any,
-                    iMeterId: params.meterId as any,
+                    meterId: params.meterId as any,
                   },
                   newConfig,
                 );

@@ -3,12 +3,13 @@ import {
   getEditMeterDeviceIManageTable,
   patchChangeIManageManualRadio,
   patchChangeIManageRadio,
-  patchIMeter,
+  patchMeter,
   patchMeterSystem,
   postMeterSystemConfig,
 } from '@/services/metersystem';
 
 import { yupValidator } from '@/utils/adapters/yup';
+import { getDefaultMeterContentConfig } from '@/utils/data/default-meter-content-config';
 import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
@@ -27,7 +28,6 @@ import { App, Button, Form, Row, Typography } from 'antd';
 import moment from 'moment';
 import * as React from 'react';
 import * as yup from 'yup';
-import { getDefaultPeakTimeConfig } from './util';
 
 const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
@@ -36,7 +36,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
   const ref = React.useRef();
   const params = useParams();
   const postMeterSystemConfigReq = useRequest(postMeterSystemConfig, { manual: true });
-  const patchIMeterReq = useRequest(patchIMeter, { manual: true });
+  const patchIMeterReq = useRequest(patchMeter, { manual: true });
   const patchMeterSystemReq = useRequest(patchMeterSystem, { manual: true });
   const [loading, setLoading] = React.useState(false);
 
@@ -149,13 +149,13 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
 
               try {
                 const latestConfig = meter.imeter_set[0].latest_config;
-                const defaultPeakTimeConfig = getDefaultPeakTimeConfig(latestConfig);
+                const defaultContentConfig = getDefaultMeterContentConfig(latestConfig);
 
                 const deviceClock = moment(values.deviceClock);
 
                 const newConfig = {
                   content: {
-                    ...defaultPeakTimeConfig,
+                    ...defaultContentConfig,
                     clock: {
                       second: values.deviceHour ? deviceClock.second() : moment().second(),
                       minute: values.deviceHour ? deviceClock.minute() : moment().minute(),
@@ -196,7 +196,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                   {
                     farmId: params.farmId as any,
                     meterSystemId: params.meterSystemId as any,
-                    iMeterId: params.meterId as any,
+                    meterId: params.meterId as any,
                   },
                   newConfig,
                 );
@@ -205,7 +205,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                   {
                     farmId: params.farmId as any,
                     meterSystemId: params.meterSystemId as any,
-                    iMeterId: params.meterId as any,
+                    meterId: params.meterId as any,
                   },
                   iMeterPatchData,
                 );
@@ -272,7 +272,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                 requestSwapChange={patchChangeIManageRadio}
                 requestDeviceId={'meterSystemId'}
                 fieldIndex={'imeter_device'}
-                queryMeterSystemById={props.queryMeterSystemById}
+                requestAfterChange={props.queryMeterSystemById}
               />
             </Row>
             <ProFormGroup
