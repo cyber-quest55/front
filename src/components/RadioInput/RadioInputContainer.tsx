@@ -7,6 +7,7 @@ import RadioInputComponent from './RadioInputComponent';
 import RadioInputSkeleton from './RadioInputSkeleton';
 import { Dispatch } from '@umijs/max';
 import { queryPivotByIdStart } from '@/models/pivot-by-id';
+import { queryMeterSystemById } from '@/models/meter-by-id';
 type ColSpanType = number | string;
 
 interface IRadioInputContainerProps {
@@ -25,7 +26,8 @@ interface IRadioInputContainerProps {
   fieldIndex?: string;
   form: any;
   requestDeviceId: string,
-  queryPivotByIdStart: typeof queryPivotByIdStart;
+  queryPivotByIdStart: typeof queryPivotByIdStart,
+  queryMeterSystemById: typeof queryMeterSystemById;
 }
 
 const RadioInputContainer: React.FunctionComponent<IRadioInputContainerProps> = (props) => {

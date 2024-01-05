@@ -1,7 +1,6 @@
 import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import {
   getEditMeterDeviceIManageTable,
-  getMeterSystemSensors,
   patchChangeIManageManualRadio,
   patchChangeIManageRadio,
   patchIMeter,
@@ -37,12 +36,9 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
   const ref = React.useRef();
   const params = useParams();
   const postMeterSystemConfigReq = useRequest(postMeterSystemConfig, { manual: true });
-  const sensorsReq = useRequest(getMeterSystemSensors, { manual: true });
   const patchIMeterReq = useRequest(patchIMeter, { manual: true });
   const patchMeterSystemReq = useRequest(patchMeterSystem, { manual: true });
-
   const [loading, setLoading] = React.useState(false);
-  const [sensorOptions, setSensorOptions] = React.useState<any[]>([]);
 
   const schema = yup.object().shape({
     name: yup
@@ -82,7 +78,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
             }),
           ),
         sensor_process_controller_pair: yup.object({
-          sensor: yup.string().required(
+          id: yup.number().required(
             intl.formatMessage({
               id: 'validations.required',
             }),
@@ -108,17 +104,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
     form.setFieldValue(['imanage_radio_id'], value);
   };
 
-  React.useEffect(() => {
-    sensorsReq.runAsync().then((data: any) => {
-      const sensors = data
-        .filter((sensor: any) => sensor.available)
-        .map((sensor: any) => ({
-          label: sensor.sensor.name,
-          value: sensor.id,
-        }));
-      setSensorOptions(sensors);
-    });
-  }, []);
+  
 
   return (
     <ProCard
@@ -184,7 +170,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                   measure_scale: latestConfig.measure_scale,
                   measure_unit: latestConfig.measure_unit,
                   min_limit: latestConfig?.min_limit,
-                  max_limit: latestConfig?.min_limit,
+                  max_limit: latestConfig?.max_limit,
                   position_imeter: latestConfig.position_imeter,
                   metersystem_name: values.name,
                   imeter_name: values.imeter_set[0].name,
@@ -192,14 +178,14 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                     values.imeter_set[0].latest_config.flow_curve_equation,
                   ) as any,
                   sensor_process_controller_pair:
-                    values.imeter_set[0].sensor_process_controller_pair.sensor,
+                    values.imeter_set[0].sensor_process_controller_pair.id,
                 };
 
                 const iMeterPatchData = {
                   name: values.imeter_set[0].name,
                   position: latestConfig.position_imeter,
                   sensor_process_controller_pair:
-                    values.imeter_set[0].sensor_process_controller_pair.sensor,
+                    values.imeter_set[0].sensor_process_controller_pair.id,
                 };
 
                 const meterSystemPatchData = {
@@ -263,7 +249,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                 status={'processing'}
                 span={{
                   xs: 24,
-                  md: 6,
+                  md: 8,
                 }}
                 deviceType=""
                 device=""
@@ -277,7 +263,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                 })}
                 deviceId={meter.imeter_set[0].imeter_device.id}
                 status={'processing'}
-                span={{ xs: 24, md: 6 }}
+                span={{ xs: 24, md: 8 }}
                 deviceType="Medidor"
                 device="imanage"
                 form={form}
@@ -286,6 +272,7 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
                 requestSwapChange={patchChangeIManageRadio}
                 requestDeviceId={'meterSystemId'}
                 fieldIndex={'imeter_device'}
+                queryMeterSystemById={props.queryMeterSystemById}
               />
             </Row>
             <ProFormGroup
@@ -311,12 +298,12 @@ const EditMeterGeneralComponent: React.FunctionComponent<any> = (props) => {
               />
               <ProFormSelect
                 rules={[yupSync]}
-                name={['imeter_set', '0', 'sensor_process_controller_pair', 'sensor']}
+                name={['imeter_set', '0', 'sensor_process_controller_pair', 'id']}
                 label={intl.formatMessage({
                   id: 'component.edit.meter.general.generalconfig.sensor.label',
                 })}
                 colProps={{ xs: 24, md: 8, xl: 8 }}
-                options={sensorOptions}
+                options={props.sensorOptions}
               />
             </ProFormGroup>
 

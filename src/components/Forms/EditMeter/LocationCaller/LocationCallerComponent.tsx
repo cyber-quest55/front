@@ -1,4 +1,4 @@
-import { postMeterSystemConfig } from '@/services/metersystem';
+import { patchIMeter, postMeterSystemConfig } from '@/services/metersystem';
 import { SaveOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
@@ -7,7 +7,6 @@ import { App, Button, Typography } from 'antd';
 import * as React from 'react';
 import MarkerGreen from '../../../../../public/images/devices/marker-green.svg';
 import LocationFormContainer from '../../Location/LocationContainer';
-import moment from 'moment';
 import { getDefaultPeakTimeConfig } from '../General/util';
 
 const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) => {
@@ -17,6 +16,7 @@ const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) =
     long: Number(props.meter.imeter_set[0].latest_config.position_imeter.split(',')[1]),
   };
   const postMeterSystemConfigReq = useRequest(postMeterSystemConfig, { manual: true });
+  const patchIMeterReq = useRequest(patchIMeter, { manual: true });
   const params = useParams();
   const { message } = App.useApp();
   const intl = useIntl();
@@ -40,12 +40,12 @@ const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) =
         measure_scale: latestConfig.measure_scale,
         measure_unit: latestConfig.measure_unit,
         min_limit: latestConfig?.min_limit,
-        max_limit: latestConfig?.min_limit,
+        max_limit: latestConfig?.max_limit,
         position_imeter: `${first.lat},${first.lng}`,
         metersystem_name: meter.name,
         imeter_name: meter.imeter_set[0].name,
         flow_curve_equation: latestConfig.flow_curve_equation,
-        sensor_process_controller_pair: meter.imeter_set[0].sensor_process_controller_pair.sensor,
+        sensor_process_controller_pair: meter.imeter_set[0].sensor_process_controller_pair.id,
       };
 
       await postMeterSystemConfigReq.runAsync(
@@ -55,6 +55,21 @@ const EditMeterLocationCallerComponent: React.FunctionComponent<any> = (props) =
           iMeterId: params.meterId as any,
         },
         newConfig as any,
+      );
+
+      const iMeterPatchData = {
+        name: meter.imeter_set[0].name,
+        position: `${first.lat},${first.lng}`,
+        sensor_process_controller_pair: meter.imeter_set[0].sensor_process_controller_pair.id
+      };
+
+      await patchIMeterReq.runAsync(
+        {
+          farmId: params.farmId as any,
+          meterSystemId: params.meterSystemId as any,
+          iMeterId: params.meterId as any,
+        },
+        iMeterPatchData,
       );
 
       await props.queryMeterSystemById({

@@ -1,30 +1,45 @@
 import EditMeterGeneralContainer from '@/components/Forms/EditMeter/General/GeneralContainer';
-// import EditPivotFavoriteHistoryTable from '@/components/Tables/EditPivotFavoriteTable';
-// import EditPivotHistoryTable from '@/components/Tables/EditPivotHistoryTable';
 import { useScreenHook } from '@/hooks/screen';
 import { queryMeterSystemById } from '@/models/meter-by-id';
 import { PageContainer, ProCard, ProFormSelect } from '@ant-design/pro-components';
 import { Dispatch, useIntl, useParams } from '@umijs/max';
 import React, { useState } from 'react';
 
-import LocationCallerContainer from '@/components/Forms/EditMeter/LocationCaller/LocationCallerContainer';
-import { connect } from 'dva';
 import EditLevelContainer from '@/components/Forms/EditMeter/Level/LevelContainer';
+import LocationCallerContainer from '@/components/Forms/EditMeter/LocationCaller/LocationCallerContainer';
+import EditMeterHistoryTable from '@/components/Tables/EditMeterHistoryTable';
+import { getMeterSystemSensors } from '@/services/metersystem';
+import { useRequest } from 'ahooks';
+import { connect } from 'dva';
 interface Props {
   queryMeterSystemById: typeof queryMeterSystemById;
-//   loadPivotConfig: typeof loadPivotConfig;
 }
 
-const NoFoundPage: React.FunctionComponent<Props> = (props) => {
-  const [tab, setTab] = useState('tab1');
-  const [tabCont, setTabCont] = useState('tab1');
+const EditMeter: React.FunctionComponent<Props> = (props) => {
+  const [tab, setTab] = useState('general');
+  const [tabCont, setTabCont] = useState('configuration');
   const params = useParams();
   const intl = useIntl();
+  const sensorsReq = useRequest(getMeterSystemSensors, { manual: true });
+  const [sensorOptions, setSensorOptions] = React.useState<any[]>([]);
 
   const { xs } = useScreenHook();
 
   React.useEffect(() => {
-    props.queryMeterSystemById({ farmId: params.farmId as any, meterId: params.meterSystemId as any });
+    props.queryMeterSystemById({
+      farmId: params.farmId as any,
+      meterId: params.meterSystemId as any,
+    });
+
+    sensorsReq.runAsync().then((data: any) => {
+      const sensors = data
+        .filter((sensor: any) => sensor.available)
+        .map((sensor: any) => ({
+          label: sensor.sensor.name,
+          value: sensor.id,
+        }));
+      setSensorOptions(sensors);
+    });
   }, []);
 
   return (
@@ -47,18 +62,26 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
           tab: intl.formatMessage({
             id: 'pages.edit.meter.tab.header.configuration',
           }),
-          key: 'tab1',
+          key: 'configuration',
           closable: false,
         },
         {
           tab: intl.formatMessage({
             id: 'pages.edit.meter.tab.header.history',
           }),
-          key: 'tab2',
+          key: 'history',
         },
       ]}
       tabActiveKey={tabCont}
-      onTabChange={(e) => setTabCont(e)}
+      onTabChange={(activeKey) => {
+        setTabCont(activeKey);
+        if (activeKey === 'configuration') {
+          setTab('general');
+        } else if (activeKey === 'history') {
+          setTab('previoussettings');
+        }
+
+      }}
       token={{
         paddingBlockPageContainerContent: -8,
         paddingInlinePageContainerContent: xs ? 8 : 32,
@@ -68,38 +91,38 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
         onEdit: (e, action) => console.log(e, action),
       }}
     >
-      {tabCont === 'tab1' ? (
+      {tabCont === 'configuration' ? (
         <ProCard
           split="vertical"
           tabs={{
             tabPosition: xs ? 'top' : 'left',
             activeKey: tab,
-           
+            defaultActiveKey: 'general',
             destroyInactiveTabPane: true,
             items: [
               {
                 label: (
-                  <div style={{ minWidth: xs? ''  : 135, textAlign: 'left' }}>
+                  <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                     {intl.formatMessage({
                       id: 'pages.edit.meter.tab.options.general',
                     })}
                   </div>
                 ),
-                key: 'tab1',
-                children: <EditMeterGeneralContainer />,
+                key: 'general',
+                children: <EditMeterGeneralContainer sensorOptions={sensorOptions} />,
               },
               {
                 label: intl.formatMessage({
                   id: 'pages.edit.meter.tab.options.location',
                 }),
-                key: 'tab2',
+                key: 'location',
                 children: <LocationCallerContainer />,
               },
               {
                 label: intl.formatMessage({
                   id: 'pages.edit.meter.tab.options.level',
                 }),
-                key: 'tab3',
+                key: 'level',
                 children: <EditLevelContainer />,
               },
             ],
@@ -108,37 +131,48 @@ const NoFoundPage: React.FunctionComponent<Props> = (props) => {
             },
           }}
         ></ProCard>
-      ) : null
-    //   (
-    //     <ProCard
-    //       split="vertical"
-    //       tabs={{
-    //         defaultActiveKey: '1',
-    //         tabPosition: xs ? 'top' : 'left',
-    //         destroyInactiveTabPane: true,
-    //         items: [
-    //           {
-    //             label: intl.formatMessage({
-    //               id: 'pages.edit.meter.tab.options.favorites',
-    //             }),
-    //             key: '1',
-    //             children: <EditPivotHistoryTable setTabCount={setTabCont} loadPivotConfig={props.loadPivotConfig}/>,
-    //           },
-    //           {
-    //             label: intl.formatMessage({
-    //               id: 'pages.edit.meter.tab.options.previoussettings',
-    //             }),
-    //             key: '2',
-    //             children: <EditPivotFavoriteHistoryTable setTabCount={setTabCont} loadPivotConfig={props.loadPivotConfig}/>,
-    //           },
-    //         ],
-    //         onChange: (key) => {
-    //           setTab(key);
-    //         },
-    //       }}
-    //     ></ProCard>
-    //   )
-      }
+      ) : (
+        <ProCard
+          split="vertical"
+          tabs={{
+            defaultActiveKey: 'previoussettings',
+            tabPosition: xs ? 'top' : 'left',
+            destroyInactiveTabPane: true,
+            items: [
+              {
+                label: intl.formatMessage({
+                  id: 'pages.edit.meter.tab.options.previoussettings',
+                }),
+                key: 'previoussettings',
+                children: (
+                  <EditMeterHistoryTable
+                    setTabCount={setTabCont}
+                    queryMeterSystemById={props.queryMeterSystemById}
+                    sensorOptions={sensorOptions}
+                  />
+                ),
+              },
+              {
+                label: intl.formatMessage({
+                  id: 'pages.edit.meter.tab.options.favorites',
+                }),
+                key: 'favorites',
+                children: (
+                  <EditMeterHistoryTable
+                    setTabCount={setTabCont}
+                    showOnlyFavorites
+                    queryMeterSystemById={props.queryMeterSystemById}
+                    sensorOptions={sensorOptions}
+                  />
+                ),
+              },
+            ],
+            onChange: (key) => {
+              setTab(key);
+            },
+          }}
+        ></ProCard>
+      )}
     </PageContainer>
   );
 };
@@ -147,8 +181,6 @@ const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryMeterSystemById: (props: any) => dispatch(queryMeterSystemById(props)),
-//   loadPivotConfig: (props: any) => dispatch(loadPivotConfig(props)),
-
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoFoundPage);
+export default connect(mapStateToProps, mapDispatchToProps)(EditMeter);

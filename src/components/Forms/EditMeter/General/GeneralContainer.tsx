@@ -9,6 +9,7 @@ import EditMeterGeneralSkeleton from './GeneralSkeleton';
 interface Props {
   meterSystemById: GetMeterSystemByIdModelProps;
   queryMeterSystemById: typeof queryMeterSystemById;
+  sensorOptions: any[];
 }
 
 const EditMeterGeneralContainer: React.FunctionComponent<Props> = (props) => {
@@ -22,11 +23,13 @@ const EditMeterGeneralContainer: React.FunctionComponent<Props> = (props) => {
         <EditMeterGeneralComponent
           meter={props.meterSystemById.unformated}
           queryMeterSystemById={props.queryMeterSystemById}
+          sensorOptions={props.sensorOptions}
         />
       ) : (
         <EditMeterGeneralComponent
           meter={props.meterSystemById.unformated}
           queryMeterSystemById={props.queryMeterSystemById}
+          sensorOptions={props.sensorOptions}
         />
       )}
     </>

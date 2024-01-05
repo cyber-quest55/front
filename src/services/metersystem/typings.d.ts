@@ -76,4 +76,28 @@ declare namespace API {
         taken: null | string;
       };
   }>
+
+  type GetEditMeterHistoryParams = {
+    farmId: number;
+    meterSystemId: string;
+    meterId: string;
+  };
+
+  type GetMeterHistoryResponse = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<APIModels.MeterHistory>
+  }
+
+  type FavoriteMeterConfigParams = {
+    configId: number;
+    farmId: number;
+    meterSystemId: string;
+    meterId: string;
+  };
+
+  type FavoriteMeterConfigResponse = APIModels.MeterSystem;
+
 }

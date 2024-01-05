@@ -123,7 +123,7 @@ const EditMeterLevelComponent: React.FunctionComponent<any> = (props) => {
                   imeter_name: meter.imeter_set[0].name,
                   flow_curve_equation: latestConfig.flow_curve_equation,
                   sensor_process_controller_pair:
-                    meter.imeter_set[0].sensor_process_controller_pair.sensor,
+                    meter.imeter_set[0].sensor_process_controller_pair.id,
                 };
 
                 await postMeterSystemConfigReq.runAsync(

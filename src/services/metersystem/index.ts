@@ -148,3 +148,27 @@ export async function patchChangeIManageManualRadio(
     data: options,
   });
 }
+
+export async function getEditMeterHistory(
+  props: API.GetEditMeterHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetMeterHistoryResponse;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function favoriteMeterConfig(
+  props: API.FavoriteMeterConfigParams,
+  options?: {  [key: string]: any },
+) {
+
+  return request<{
+    data: API.FavoriteMeterConfigResponse;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`, {
+    method: 'PATCH',
+   data: options});
+}

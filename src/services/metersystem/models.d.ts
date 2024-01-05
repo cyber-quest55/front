@@ -507,4 +507,106 @@ declare namespace APIModels {
     position: string,
     sensor_process_controller_pair: number,
   }
+
+  type MeterHistory = {
+    id: number;
+    created_by: {
+      username: string;
+      email: string;
+      first_name: string;
+      last_name: string;
+      id: number;
+      profile_id: number;
+      pending: boolean;
+    };
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      clock: {
+        day: number;
+        hour: number;
+        year: number;
+        month: number;
+        minute: number;
+        second: number;
+      };
+      holidays: {
+        day: number;
+        month: number;
+        number_editing: number;
+      }[];
+      peak_time: {
+        stop_hour_1: number;
+        stop_hour_2: number;
+        start_hour_1: number;
+        start_hour_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        stop_minute_1: number;
+        stop_minute_2: number;
+        sunday_enable: number;
+        start_minute_1: number;
+        start_minute_2: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      sensor_rule: {
+        rule: number;
+        value_1: number;
+        value_2: number;
+        number_editing: number;
+      }[];
+      imanage_sensors: {
+        max_value: number;
+        min_value: number;
+        sensor_type: number;
+        number_editing: number;
+      }[];
+      enable_peak_time: {
+        enable: number;
+      };
+      datalogger_address: {
+        address: string;
+      };
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      imeter_power_source: {
+        power_source: number;
+      };
+      event_stream_indexes: {
+        indexes: string;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+      periodic_stream_indexes: {
+        indexes: string;
+      };
+    };
+    graphic_max_value: number;
+    flow_curve_equation: number[];
+    sensor_offset: number;
+    measure_scale: number;
+    measure_unit: string;
+    min_limit: number;
+    max_limit: number;
+    metersystem_name: string;
+    imeter_name: string;
+    position_imeter: string;
+    pinned: boolean;
+    name: string;
+    device: number;
+    equipment: number;
+    sensor_process_controller_pair: number;
+  }
 }

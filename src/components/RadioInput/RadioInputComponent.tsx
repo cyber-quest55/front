@@ -1,3 +1,4 @@
+import { queryMeterSystemById } from '@/models/meter-by-id';
 import { queryPivotByIdStart } from '@/models/pivot-by-id';
 import { PresetStatusColorType } from '@/typings';
 import { EditOutlined, LoadingOutlined, QrcodeOutlined, SaveOutlined } from '@ant-design/icons';
@@ -27,7 +28,7 @@ interface IRadioInputComponentProps {
   setFieldValue: any;
   form: any;
   requestDeviceId: string;
-  queryPivotByIdStart: typeof queryPivotByIdStart;
+  queryMeterSystemById: typeof queryMeterSystemById
 }
 
 const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = (props) => {
@@ -47,7 +48,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
 
   const onSave = async () => {
     try {
-      if(device === 'pivô') {
+      if (device === 'pivô') {
         await reqManual.runAsync(
           {
             farmId: params.farmId as any,
@@ -55,8 +56,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
           },
           { radio_id: props.form.getFieldValue(props.name) },
         );
-      }
-      else if (device === 'imanage') {
+      } else if (device === 'imanage') {
         await reqManual.runAsync(
           {
             farmId: params.farmId as any,
@@ -93,31 +93,32 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         <a
           key="editable"
           onClick={async () => {
-            console.log(item)
-
             if (device === 'pivô') {
               await reqPost.runAsync({
                 farmId: params.farmId as any,
                 pivotId: params.pivotId as any,
                 deviceId: item.id as any,
               });
-            }
-            else if (device === 'imanage') {
-              await reqPost.runAsync({
+              queryPivotByIdStart({
                 farmId: params.farmId as any,
-                meterSystemId: params.meterSystemId as any,
-                meterId: params.meterId,
-                newMeterId: item.id
-              },
-              { radio_id: item.radio },
+                pivotId: params.pivotId as any,
+              });
+            } else if (device === 'imanage') {
+              await reqPost.runAsync(
+                {
+                  farmId: params.farmId as any,
+                  meterSystemId: params.meterSystemId as any,
+                  meterId: params.meterId,
+                  newMeterId: item.id,
+                },
+                { radio_id: item.radio },
               );
+              props.queryMeterSystemById({
+                farmId: params.farmId as any,
+                meterId: params.meterSystemId as any,
+              });
             }
 
-            // if (device === 'pivô')
-            //   props.queryPivotByIdStart({
-              //     farmId: params.farmId as any,
-              //     [props.requestDeviceId]: params[props.requestDeviceId] as any,
-              //   });
             message.success('Rádios trocados com sucesso');
             setIsOpen(false);
           }}
