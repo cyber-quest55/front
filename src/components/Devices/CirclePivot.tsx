@@ -22,7 +22,7 @@ export type CirclePivotProps = {
   referencedLng: number;
   gpsLat: number;
   gpsLong: number;
-  pivotColor?: string;
+  deviceColor?: string;
   lineColor?: string;
   dashed?: boolean;
   referenceAngle: number;
@@ -91,7 +91,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
   /** Props */
   const { centerLat, centerLng, referencedLat, referencedLng, gpsLat, gpsLong } = props;
 
-  const pivotColor = props.pivotColor ? props.pivotColor : '#000';
+  const deviceColor = props.deviceColor ? props.deviceColor : '#000';
   const lineColor = props.lineColor ? props.lineColor : '#fff';
 
   const centerPositionGMaps = new LatLng(centerLat, centerLng);
@@ -249,7 +249,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
         >
           <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
             <Typography.Title level={5}>{props.name}</Typography.Title>
-            <Tag color={props.pivotColor}>{props.statusText}</Tag>
+            <Tag color={props.deviceColor}>{props.statusText}</Tag>
             <Typography.Text>{props.updated}</Typography.Text>
           </Space>
         </InfoWindowF>
@@ -264,8 +264,8 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
               center={{ lat: centerLat, lng: centerLng }}
               options={{
                 ...circleOptions,
-                strokeColor: pivotColor,
-                fillColor: pivotColor,
+                strokeColor: deviceColor,
+                fillColor: deviceColor,
                 radius: referenceRadius,
                 clickable: true,
               }}
@@ -279,8 +279,8 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
                 center={{ lat: centerLat, lng: centerLng }}
                 options={{
                   ...circleOptions,
-                  strokeColor: pivotColor,
-                  fillColor: pivotColor,
+                  strokeColor: deviceColor,
+                  fillColor: deviceColor,
                   radius: referenceRadius,
                   strokeOpacity: 0,
                   strokeWeight: 0.5,
@@ -387,10 +387,10 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
             <>
               <Polygon
                 options={{
-                  strokeColor: props.pivotColor,
+                  strokeColor: props.deviceColor,
                   strokeOpacity: 0.5,
                   strokeWeight: 0.5,
-                  fillColor: props.pivotColor,
+                  fillColor: props.deviceColor,
                   fillOpacity: 0.5,
                 }}
               />

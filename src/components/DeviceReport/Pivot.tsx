@@ -13,6 +13,7 @@ import { DeviceType } from '@/utils/enum/device-type';
 import { G2, Line, Pie } from '@ant-design/plots';
 import { ProCard, ProSkeleton, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useIntl } from '@umijs/max';
 import { Col, Modal, Row } from 'antd';
 import { useState } from 'react';
 import { connect } from 'umi';
@@ -774,22 +775,30 @@ const PivotReport: React.FC<Props> = (props) => {
   const G = G2.getEngine('canvas');
   const { md, xxl } = useScreenHook();
   const { tab, setTab } = useTabsHook('tab1');
+  const intl = useIntl();
 
   const [option, setOption] = useState<undefined | number>(undefined);
+  const energyConsumption = props.pivotReport.result.energy_consumption;
 
   const data = [
     {
-      type: 'Horas em pico',
+      type: intl.formatMessage({
+        id: 'component.pivot.voltage.chart.legend.1',
+      }),
       value: parseInt(props.pivotReport.result?.energy_consumption?.ponta?.hours.toString()),
     },
     {
-      type: 'Horas em fora de pico',
+      type: intl.formatMessage({
+        id: 'component.pivot.voltage.chart.legend.2',
+      }),
       value: parseInt(
         props.pivotReport.result?.energy_consumption?.fora_de_ponta?.hours?.toString(),
       ),
     },
     {
-      type: 'Horas em reduzido',
+      type: intl.formatMessage({
+        id: 'component.pivot.voltage.chart.legend.3',
+      }),
       value: parseInt(props.pivotReport.result?.energy_consumption?.reduzido?.hours.toString()),
       color: 'red',
     },
@@ -831,19 +840,30 @@ const PivotReport: React.FC<Props> = (props) => {
       newList.push({
         angle: index,
         value: element.water_pressure,
-        name: 'Pressão de Comparação',
+        name: intl.formatMessage({
+          id: 'component.pivot.pressure.chart.tooltip.label.1',
+        }),
       });
     });
     Object.values(pressures.current_pressure_by_angle).forEach((element, index) => {
       newList.push({
         angle: index,
         value: element.water_pressure,
-        name: 'Pressão',
+        name: intl.formatMessage({
+          id: 'component.pivot.pressure.chart.tooltip.label.2',
+        }),
       });
     });
     return newList;
   };
 
+  const classNamePieChart = useEmotionCss(({ token }) => {
+    return {
+      '.g2-html-annotation': {
+        color: `${token.colorText} !important`,
+      },
+    };
+  });
   return (
     <>
       <Modal
@@ -884,10 +904,19 @@ const PivotReport: React.FC<Props> = (props) => {
               onClick={() => setOption(1)}
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
-                title: 'Falta de pressão',
+                title: intl.formatMessage({
+                  id: 'component.pivot.unexpectedstops.1',
+                }),
                 value: props.pivotReport.result?.unexpected_stops?.lack_of_pressure,
                 description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
+                  <Statistic
+                    className={className}
+                    title={intl.formatMessage({
+                      id: 'component.pivot.unexpectedstops.5',
+                    })}
+                    value="8.04%"
+                    trend="down"
+                  />
                 ),
               }}
             />
@@ -897,10 +926,19 @@ const PivotReport: React.FC<Props> = (props) => {
               onClick={() => setOption(2)}
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
-                title: 'Queda de energia',
+                title: intl.formatMessage({
+                  id: 'component.pivot.unexpectedstops.2',
+                }),
                 value: props.pivotReport.result?.unexpected_stops?.energy_blackot,
                 description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
+                  <Statistic
+                    className={className}
+                    title={intl.formatMessage({
+                      id: 'component.pivot.unexpectedstops.5',
+                    })}
+                    value="8.04%"
+                    trend="down"
+                  />
                 ),
               }}
             />
@@ -915,10 +953,19 @@ const PivotReport: React.FC<Props> = (props) => {
               onClick={() => setOption(3)}
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
-                title: 'Desalinhado',
+                title: intl.formatMessage({
+                  id: 'component.pivot.unexpectedstops.3',
+                }),
                 value: props.pivotReport.result?.unexpected_stops?.misalignment,
                 description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
+                  <Statistic
+                    className={className}
+                    title={intl.formatMessage({
+                      id: 'component.pivot.unexpectedstops.5',
+                    })}
+                    value="8.04%"
+                    trend="down"
+                  />
                 ),
               }}
             />
@@ -928,17 +975,28 @@ const PivotReport: React.FC<Props> = (props) => {
               onClick={() => setOption(4)}
               style={{ height: 'calc(275px / 2)' }}
               statistic={{
-                title: 'Oscilação de energia',
+                title: intl.formatMessage({
+                  id: 'component.pivot.unexpectedstops.4',
+                }),
                 value: props.pivotReport.result?.unexpected_stops?.power_surge,
                 description: (
-                  <Statistic className={className} title="Último mês" value="8.04%" trend="down" />
+                  <Statistic
+                    className={className}
+                    title={intl.formatMessage({
+                      id: 'component.pivot.unexpectedstops.5',
+                    })}
+                    value="8.04%"
+                    trend="down"
+                  />
                 ),
               }}
             />
           </ProCard>
         </ProCard>
         <ProCard
-          title="Consumo de energia"
+          title={intl.formatMessage({
+            id: 'component.pivot.voltage.title',
+          })}
           split={md ? 'horizontal' : 'horizontal'}
           headerBordered
           style={{ minHeight: 450 }}
@@ -951,7 +1009,9 @@ const PivotReport: React.FC<Props> = (props) => {
                   loading={props.pivotReport.loading}
                   onClick={() => {}}
                   statistic={{
-                    title: 'Volume total',
+                    title: intl.formatMessage({
+                      id: 'component.pivot.voltage.label.1',
+                    }),
                     value: props.pivotReport.result?.flow?.total_m3h.toFixed(2),
                     suffix: 'm³',
                   }}
@@ -960,7 +1020,9 @@ const PivotReport: React.FC<Props> = (props) => {
                 <StatisticCard
                   loading={props.pivotReport.loading}
                   statistic={{
-                    title: 'Horas trabalhadas',
+                    title: intl.formatMessage({
+                      id: 'component.pivot.voltage.label.3',
+                    }),
                     value: props.pivotReport.result?.hours_count?.wet_total_hours.toFixed(3),
                     suffix: 'h',
                   }}
@@ -970,7 +1032,9 @@ const PivotReport: React.FC<Props> = (props) => {
                 <StatisticCard
                   loading={props.pivotReport.loading}
                   statistic={{
-                    title: 'Volume total mês anterior',
+                    title: intl.formatMessage({
+                      id: 'component.pivot.voltage.label.2',
+                    }),
                     value: '99.000,31',
                     suffix: 'm³',
                   }}
@@ -978,7 +1042,9 @@ const PivotReport: React.FC<Props> = (props) => {
                 <StatisticCard
                   loading={props.pivotReport.loading}
                   statistic={{
-                    title: 'Horas trabalhadas mês anterior',
+                    title: intl.formatMessage({
+                      id: 'component.pivot.voltage.label.4',
+                    }),
                     value: '150,03',
                     suffix: 'h',
                   }}
@@ -989,7 +1055,9 @@ const PivotReport: React.FC<Props> = (props) => {
             <StatisticCard
               loading={props.pivotReport.loading && <SkeletonPieChart />}
               style={{ width: '100%' }}
-              title="Horas de Trabalho Molhado (h)"
+              title={intl.formatMessage({
+                id: 'component.pivot.voltage.label.5',
+              })}
               chart={
                 <Pie
                   appendPadding={10}
@@ -1000,9 +1068,19 @@ const PivotReport: React.FC<Props> = (props) => {
                   legend={false}
                   autoFit
                   color={({ type }) => {
-                    if (type === 'Horas em pico') {
+                    if (
+                      type ===
+                      intl.formatMessage({
+                        id: 'component.pivot.voltage.chart.legend.1',
+                      })
+                    ) {
                       return '#ff4d4f';
-                    } else if (type === 'Horas em fora de pico') {
+                    } else if (
+                      type ===
+                      intl.formatMessage({
+                        id: 'component.pivot.voltage.chart.legend.2',
+                      })
+                    ) {
                       return '#4169E1';
                     }
                     return '#40E0D0';
@@ -1032,16 +1110,7 @@ const PivotReport: React.FC<Props> = (props) => {
                           fill: mappingData.color,
                         },
                       });
-                      group.addShape({
-                        type: 'text',
-                        attrs: {
-                          x: 0,
-                          y: 25,
-                          text: `${data.value}个 ${(data.percent * 100).toFixed(2)}%`,
-                          fill: 'rgba(0, 0, 0, 0.65)',
-                          fontWeight: 700,
-                        },
-                      });
+
                       return group;
                     },
                   }}
@@ -1067,9 +1136,12 @@ const PivotReport: React.FC<Props> = (props) => {
               loading={props.pivotReport.loading && <SkeletonPieChart />}
               colSpan={{ xs: 24, lg: 24 }}
               style={{ width: '100%' }}
-              title="Custo total de energia (R$)"
+              title={intl.formatMessage({
+                id: 'component.pivot.voltage.label.6',
+              })}
               chart={
                 <Pie
+                  className={classNamePieChart}
                   height={275}
                   appendPadding={10}
                   data={data}
@@ -1091,13 +1163,34 @@ const PivotReport: React.FC<Props> = (props) => {
                         textOverflow: 'ellipsis',
                         fontSize: '16px',
                       },
-                      content: 'R$130,00\nTotal',
+                      content: intl.formatMessage(
+                        {
+                          id: 'component.pivot.voltage.label.11',
+                        },
+                        {
+                          value: `R$ ${(
+                            energyConsumption?.fora_de_ponta.total +
+                            energyConsumption?.ponta.total +
+                            energyConsumption?.reduzido.total
+                          ).toFixed(2)}`,
+                        },
+                      ),
                     },
                   }}
                   color={({ type }) => {
-                    if (type === 'Horas em pico') {
+                    if (
+                      type ===
+                      intl.formatMessage({
+                        id: 'component.pivot.voltage.chart.legend.1',
+                      })
+                    ) {
                       return '#ff4d4f';
-                    } else if (type === 'Horas em fora de pico') {
+                    } else if (
+                      type ===
+                      intl.formatMessage({
+                        id: 'component.pivot.voltage.chart.legend.2',
+                      })
+                    ) {
                       return '#4169E1';
                     }
                     return '#40E0D0';
@@ -1130,7 +1223,9 @@ const PivotReport: React.FC<Props> = (props) => {
             >
               <StatisticCard
                 loading={props.pivotReport.loading}
-                title={'Tensões do Pivô '}
+                title={intl.formatMessage({
+                  id: 'component.pivot.voltage.label.5',
+                })}
                 colSpan={{ xs: 24, lg: 16 }}
                 style={{ width: '100%' }}
                 chart={
@@ -1141,7 +1236,9 @@ const PivotReport: React.FC<Props> = (props) => {
                     tooltip={{
                       formatter: (datum) => {
                         return {
-                          name: 'Tensão',
+                          name: intl.formatMessage({
+                            id: 'component.pivot.voltage.label.12',
+                          }),
                           value: `${parseFloat(datum.scales).toFixed(2)}(V)`,
                         };
                       },
@@ -1178,7 +1275,9 @@ const PivotReport: React.FC<Props> = (props) => {
                     <StatisticCard
                       loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
-                        title: 'Mínimo',
+                        title: intl.formatMessage({
+                          id: 'component.pivot.voltage.label.8',
+                        }),
                         value: props.pivotReport.result?.voltage_min
                           ? props.pivotReport.result?.voltage_min[0]
                           : 0,
@@ -1190,7 +1289,9 @@ const PivotReport: React.FC<Props> = (props) => {
                     <StatisticCard
                       loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
-                        title: 'Médio',
+                        title: intl.formatMessage({
+                          id: 'component.pivot.voltage.label.9',
+                        }),
                         value: props.pivotReport.result?.voltage_med
                           ? props.pivotReport.result?.voltage_med[0]
                           : 0,
@@ -1202,7 +1303,9 @@ const PivotReport: React.FC<Props> = (props) => {
                     <StatisticCard
                       loading={props.pivotReport.loading && <SkeletonStatistic />}
                       statistic={{
-                        title: 'Máximo',
+                        title: intl.formatMessage({
+                          id: 'component.pivot.voltage.label.10',
+                        }),
                         value: props.pivotReport.result?.voltage_max
                           ? props.pivotReport.result?.voltage_max[0]
                           : 0,
@@ -1219,7 +1322,9 @@ const PivotReport: React.FC<Props> = (props) => {
           <ProCard
             loading={props.pivotHistory.loading && <ProSkeleton type="list" />}
             style={{ minHeight: 1032 }}
-            title="Histórico"
+            title={intl.formatMessage({
+              id: 'component.pivot.tab.history.title',
+            })}
             tabs={
               props.pivotHistory.loading
                 ? undefined
@@ -1228,13 +1333,17 @@ const PivotReport: React.FC<Props> = (props) => {
                     activeKey: tab,
                     items: [
                       {
-                        label: `Eventos`,
+                        label: intl.formatMessage({
+                          id: 'component.pivot.tab.history.event',
+                        }),
                         key: 'tab1',
 
                         children: <PivotEventTable />,
                       },
                       {
-                        label: `Operações`,
+                        label: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations',
+                        }),
                         key: 'tab2',
                         children: <PivotOperationTable />,
                       },
@@ -1250,10 +1359,15 @@ const PivotReport: React.FC<Props> = (props) => {
           <StatisticCard
             loading={props.pivotReport.loading && <SkeletonList size={12} rows={13} p={3} />}
             style={{ marginTop: 16 }}
-            title="Comparativo de Pressão"
+            title={intl.formatMessage({
+              id: 'component.pivot.pressure.label.1',
+            })}
             chart={
               <Line
                 tooltip={{
+                  title: intl.formatMessage({
+                    id: 'component.pivot.pressure.chart.tooltip.label.5',
+                  }),
                   formatter: (datum) => {
                     return {
                       name: datum.name,
@@ -1287,15 +1401,25 @@ const PivotReport: React.FC<Props> = (props) => {
         </ProCard>
 
         <StatisticCard
-          title="Gráfico de Lâmina"
+          title={intl.formatMessage({
+            id: 'component.pivot.pressure.label.2',
+          })}
           chart={
             <Line
               height={320}
               tooltip={{
+                title: intl.formatMessage({
+                  id: 'component.pivot.pressure.chart.tooltip.label.4',
+                }),
                 formatter: (datum) => {
                   return {
-                    name: `Pressão no ângulo ${datum.Ângulo}°`,
-                    value: parseFloat(datum.value).toFixed(2),
+                    name: intl.formatMessage(
+                      {
+                        id: 'component.pivot.pressure.chart.tooltip.label.3',
+                      },
+                      { value: datum.Ângulo },
+                    ),
+                    value: `${parseFloat(datum.value).toFixed(2)} bar`,
                   };
                 },
               }}

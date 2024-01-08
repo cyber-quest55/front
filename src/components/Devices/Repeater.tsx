@@ -8,7 +8,7 @@ export type RepeaterProps = {
   id: number | string;
   centerLat: number;
   centerLng: number;
-  pivotColor?: string;
+  deviceColor?: string;
   lineColor?: string;
   name: string;
   updated: string;

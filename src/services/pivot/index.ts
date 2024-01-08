@@ -41,10 +41,11 @@ export async function getPivotHistory(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: API.GetPivotsInformationResponse;
+    data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
     method: 'GET',
-  });
+    params: options
+  },);
 }
 
 /** GET /farms/${farmId}/pivotReport/ */

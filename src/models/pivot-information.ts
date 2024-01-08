@@ -62,7 +62,7 @@ export default {
         payload.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
       );
 
-      newResult[index].pivotColor = getPivotColor(
+      newResult[index].deviceColor = getPivotColor(
         payload.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
       );
 
@@ -115,7 +115,7 @@ export default {
         let sectorAngle;
         let stopAngle;
         let type: 'sectorial' | 'central' = 'central';
-        let pivotColor;
+        let deviceColor;
         let statusText = '';
 
         /** Invalid drawer pivot */
@@ -194,7 +194,7 @@ export default {
         let endAngle = parseFloat(item.controllerconfig?.content?.sector?.end_angle as any);
 
         if (item.controllerstream_panel?.content?.irrigation_status?.irrigation_status) {
-          pivotColor = getPivotColor(
+          deviceColor = getPivotColor(
             item.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
           );
         }
@@ -221,7 +221,7 @@ export default {
           type: type,
           dashed: false,
           lineColor: '#fff',
-          pivotColor: pivotColor,
+          deviceColor: deviceColor,
           sectorAngle: sectorAngle,
           hasMarker: true,
           irrigationStatus: item.controllerstream_panel?.content?.irrigation_status as any,

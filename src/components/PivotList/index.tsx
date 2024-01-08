@@ -145,7 +145,7 @@ const PivotList: React.FC<Props> = (props) => {
           <span>{props.pivot.result?.find((subItem) => subItem.id === item.id)?.name}</span>
         </Col>
         <Col>
-          <Tag color={item.pivotColor}>{item.statusText}</Tag>
+          <Tag color={item.deviceColor}>{item.statusText}</Tag>
         </Col>
       </Row>
     ),

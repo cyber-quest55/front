@@ -7,7 +7,7 @@ import { AxiosError } from 'axios';
 export interface GetIrpdByIdModelProps {
   unformated: any;
   result: LakeLevelMeterProps;
-  pivotColor?: string;
+  deviceColor?: string;
   statusText?: string;
   loading: boolean;
   loaded: boolean;

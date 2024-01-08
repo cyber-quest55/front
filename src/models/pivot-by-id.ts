@@ -3,6 +3,7 @@ import { getPivotById } from '@/services/pivot';
 import { getPivotColor } from '@/utils/formater/get-pivot-color';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { AxiosError } from 'axios';
+import dayjs from 'dayjs';
 
 export interface GetPivotByIdModelProps {
   unformated: API.GetPivotByIdInformationResponse;
@@ -98,7 +99,7 @@ export default {
       let sectorAngle;
       let stopAngle;
       let type: 'sectorial' | 'central' = 'central';
-      let pivotColor;
+      let deviceColor;
       let statusText = '';
 
       /** Invalid drawer pivot */
@@ -169,7 +170,7 @@ export default {
       let endAngle = item.controllerconfig?.content?.sector?.end_angle;
 
       if (item.controllerstream_panel?.content?.irrigation_status?.irrigation_status) {
-        pivotColor = getPivotColor(
+        deviceColor = getPivotColor(
           item.controllerstream_panel?.content?.irrigation_status?.irrigation_status,
         );
         statusText = getPivotStatus(
@@ -193,14 +194,14 @@ export default {
         type: type,
         dashed: false,
         lineColor: '#fff',
-        pivotColor: pivotColor,
+        deviceColor: deviceColor,
         sectorAngle: sectorAngle,
         hasMarker: true,
         irrigationStatus: item.controllerstream_panel?.content?.irrigation_status as any,
         lpmGpsStreamLng: 30,
         lpmGpsStreamLat: 30,
         zoom: 15,
-        updated: new Date(item.updated).toLocaleString(),
+        updated: dayjs(item.updated).toLocaleString(),
         name: item.name,
         statusText: statusText,
         onSelect: () => null,

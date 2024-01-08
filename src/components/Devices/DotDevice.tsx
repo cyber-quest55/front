@@ -8,7 +8,7 @@ export type CirclePivotProps = {
   centerLng: number;
   name: string;
   updated: string;
-  pivotColor?: string;
+  deviceColor?: string;
   lineColor?: string;
   infoWindow?: boolean;
 };
@@ -29,7 +29,7 @@ const DotDevice: React.FC<CirclePivotProps> = (props) => {
   const { centerLat, centerLng } = props;
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
 
-  const pivotColor = props.pivotColor ? props.pivotColor : '#000';
+  const deviceColor = props.deviceColor ? props.deviceColor : '#000';
 
   return (
     <>
@@ -39,8 +39,8 @@ const DotDevice: React.FC<CirclePivotProps> = (props) => {
         onMouseOut={() => setInfoWindowVisible(false)}
         options={{
           ...circleOptions,
-          strokeColor: pivotColor,
-          fillColor: pivotColor,
+          strokeColor: deviceColor,
+          fillColor: deviceColor,
           radius: 50,
           clickable: true,
         }}

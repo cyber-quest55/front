@@ -1,7 +1,6 @@
 import { useScreenHook } from '@/hooks/screen';
 import { setDeviceClose } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
-import { PivotStatusColor } from '@/utils/enum/pivot-status';
 import {
   CaretDownOutlined,
   ClockCircleOutlined,
@@ -12,7 +11,9 @@ import {
   ThunderboltFilled,
 } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Button, Col, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { useIntl } from '@umijs/max';
+import { Button, Col, Dropdown, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { MenuProps } from 'rc-menu';
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
@@ -36,6 +37,7 @@ type Props = {
 
 export const DevicePanelComponent: React.FC<Props> = (props) => {
   const { md } = useScreenHook();
+  const intl = useIntl();
 
   const { options, device, type, onChangeDevice } = props;
 
@@ -164,16 +166,49 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     }
   };
 
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: intl.formatMessage({
+        id: 'component.pivot.operationalpanel.button.start.opt.1',
+      }),
+    },
+    {
+      key: '2',
+      label: intl.formatMessage({
+        id: 'component.pivot.operationalpanel.button.start.opt.2',
+      }),
+    },
+    {
+      key: '3',
+      label: intl.formatMessage({
+        id: 'component.pivot.operationalpanel.button.start.opt.3',
+      }),
+    },
+    {
+      key: '4',
+      label: intl.formatMessage({
+        id: 'component.pivot.operationalpanel.button.start.opt.4',
+      }),
+    },
+  ];
+
   const deviceActions = (type: DeviceType) => {
     switch (type) {
       case DeviceType.Pivot: {
         return (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-            <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-              Start Pivot
-            </Button>
+            <Dropdown menu={{ items }} placement="top" arrow>
+              <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
+                {intl.formatMessage({
+                  id: 'component.pivot.operationalpanel.button.start',
+                })}
+              </Button>
+            </Dropdown>
             <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-              Stop Pivot
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.stop',
+              })}{' '}
             </Button>
           </Space>
         );
@@ -187,10 +222,14 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
         return (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-              Ligar Bomba
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.start',
+              })}
             </Button>
             <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-              Parar Bomba
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.stop',
+              })}{' '}
             </Button>
           </Space>
         );
@@ -206,9 +245,15 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
             <Button icon={<GiPadlockOpen />} />
             <Button icon={<GiSolidLeaf />} />
             <Button icon={<CloudFilled />} />
-            <Button icon={<EditFilled />}>Edit</Button>
+            <Button icon={<EditFilled />}>
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.edit',
+              })}
+            </Button>
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-              Close
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.close',
+              })}
             </Button>
           </Space>
         );
@@ -217,9 +262,15 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Meter: {
         return (
           <Space>
-            <Button icon={<EditFilled />}>Edit</Button>
+            <Button icon={<EditFilled />}>
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.edit',
+              })}
+            </Button>
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-              Close
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.close',
+              })}
             </Button>
           </Space>
         );
@@ -228,9 +279,15 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space>
-            <Button icon={<EditFilled />}>Edit</Button>
+            <Button icon={<EditFilled />}>
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.edit',
+              })}
+            </Button>
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-              Close
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.close',
+              })}
             </Button>
           </Space>
         );
@@ -241,7 +298,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const status = (type: DeviceType) => {
     switch (type) {
       case DeviceType.Pivot: {
-        return <Tag color={PivotStatusColor.off}>{'LIGADA APÓS QUEDA DE ENERGIA'}</Tag>;
+        return <Tag color={device.deviceColor}>{device.statusText}</Tag>;
       }
 
       case DeviceType.Meter: {
@@ -249,7 +306,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       }
 
       case DeviceType.Pump: {
-        return <Tag color={'#115186'}>{'LIGADA APÓS QUEDA DE ENERGIA'}</Tag>;
+        return <Tag color={device.deviceColor}>{device.statusText}</Tag>;
       }
     }
   };
@@ -279,7 +336,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
         </Col>
         <Col>
           <Text type="secondary" style={{ fontSize: 11 }}>
-            Last communication: 19 May 10:15
+            {intl.formatMessage({ id: 'component.lastcomunication' }, { value: device.updated })}
           </Text>
         </Col>
       </Row>

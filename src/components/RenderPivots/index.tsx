@@ -180,7 +180,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 referencedLng={item.referencedLng}
                 gpsLat={item.gpsLat}
                 gpsLong={item.gpsLong}
-                pivotColor={item.pivotColor}
+                deviceColor={item.deviceColor}
                 lineColor="#fff"
                 referenceAngle={item.referenceAngle}
                 irrigationDirection={item.irrigationDirection}
