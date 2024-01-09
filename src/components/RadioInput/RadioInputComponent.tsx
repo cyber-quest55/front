@@ -1,4 +1,3 @@
-import { queryPivotByIdStart } from '@/models/pivot-by-id';
 import { PresetStatusColorType } from '@/typings';
 import { EditOutlined, LoadingOutlined, QrcodeOutlined, SaveOutlined } from '@ant-design/icons';
 import { ActionType, ProCard, ProColumns, ProFormText, ProTable } from '@ant-design/pro-components';
@@ -26,7 +25,8 @@ interface IRadioInputComponentProps {
   name?: string[];
   setFieldValue: any;
   form: any;
-  queryPivotByIdStart: typeof queryPivotByIdStart;
+  requestDeviceId: string;
+  requestAfterChange?: any
 }
 
 const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = (props) => {
@@ -45,22 +45,30 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   const { label, status, operable, span, device, deviceType, fieldIndex } = props;
 
   const onSave = async () => {
-    try{
-
-    await reqManual.runAsync(
-      {
-        farmId: params.farmId as any,
-        pivotId: params.pivotId as any,
-      },
-      { radio_id: props.form.getFieldValue(props.name) },
-    );
-    setIsEditing(false);
-    message.success('Salvo com sucesso');
-
-  } catch (err) {
-    message.error('Fail');
-  }
-
+    try {
+      if (device === 'pivô') {
+        await reqManual.runAsync(
+          {
+            farmId: params.farmId as any,
+            pivotId: params.pivotId as any,
+          },
+          { radio_id: props.form.getFieldValue(props.name) },
+        );
+      } else if (device === 'imanage') {
+        await reqManual.runAsync(
+          {
+            farmId: params.farmId as any,
+            meterSystemId: params.meterSystemId,
+            meterId: params.meterId,
+          },
+          { radio_id: props.form.getFieldValue(props.name) },
+        );
+      }
+      setIsEditing(false);
+      message.success('Salvo com sucesso');
+    } catch (err) {
+      message.error('Fail');
+    }
   };
 
   const columns: ProColumns<any>[] = [
@@ -83,17 +91,33 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         <a
           key="editable"
           onClick={async () => {
-            await reqPost.runAsync({
-              farmId: params.farmId as any,
-              pivotId: params.pivotId as any,
-              deviceId: item.id as any,
-            });
-            message.success('Rádios trocados com sucesso');
-            if (device === 'pivô')
-              props.queryPivotByIdStart({
+            if (device === 'pivô') {
+              await reqPost.runAsync({
+                farmId: params.farmId as any,
+                pivotId: params.pivotId as any,
+                deviceId: item.id as any,
+              });
+              props.requestAfterChange({
                 farmId: params.farmId as any,
                 pivotId: params.pivotId as any,
               });
+            } else if (device === 'imanage') {
+              await reqPost.runAsync(
+                {
+                  farmId: params.farmId as any,
+                  meterSystemId: params.meterSystemId as any,
+                  meterId: params.meterId,
+                  newMeterId: item.id,
+                },
+                { radio_id: item.radio },
+              );
+              props.requestAfterChange({
+                farmId: params.farmId as any,
+                meterId: params.meterSystemId as any,
+              });
+            }
+
+            message.success('Rádios trocados com sucesso');
             setIsOpen(false);
           }}
         >
@@ -124,10 +148,20 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             actionRef={actionRef}
             ghost
             request={async () => {
-              const result: any = await reqGet.runAsync({
-                farmId: params.farmId as any,
-                pivotId: params.pivotId as any,
-              });
+              let result: any = [];
+              if (device === 'pivô') {
+                result = await reqGet.runAsync({
+                  farmId: params.farmId as any,
+                  pivotId: params.pivotId as any,
+                });
+              }
+
+              if (device === 'imanage') {
+                result = await reqGet.runAsync({
+                  farmId: params.farmId as any,
+                  meterSystemId: params.meterSystemId as any,
+                });
+              }
 
               const mapped = result.map((item: any, index: number) => ({
                 name: item.name,

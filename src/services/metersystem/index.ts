@@ -59,3 +59,125 @@ export async function getMeterSystemTable(
     },
   );
 }
+
+export async function getMeterSystemSensors() {
+  return request<{
+    data: API.GetMeterSystemSensorsResponse;
+  }>(`/sensors/`, {
+    method: 'GET',
+  });
+}
+
+export async function postMeterSystemConfig(
+  props: API.PostMeterSystemConfigParams,
+  options: APIModels.MeterConfig,
+) {
+  return request<{
+    data: API.PostMeterSystemConfigResponse;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/standard/`,
+    {
+      method: 'POST',
+      data: options,
+    },
+  );
+}
+
+export async function patchMeter(
+  props: API.PatchMeterParams,
+  options: APIModels.PatchMeter,
+) {
+  return request<{
+    data: API.PatchMeterResponse;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/`,
+    {
+      method: 'PATCH',
+      data: options,
+    },
+  );
+}
+
+export async function patchMeterSystem(
+  props: API.PatchMeterSystemParams,
+  options: APIModels.PatchMeterSystem,
+) {
+  return request<{
+    data: API.PatchMeterSystemResponse;
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/`,
+    {
+      method: 'PATCH',
+      data: options,
+    },
+  );
+}
+
+export async function getEditMeterDeviceIManageTable(
+  props: API.GetMeterDevicesParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetMeterDevicesResponse;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/devices`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function patchChangeIManageRadio(
+  props: {
+    farmId: number,
+    meterSystemId: number,
+    meterId: number,
+    newMeterId: number,
+  },
+  options?: { radio_id: string },
+) {
+  return request<{
+    data: { radio_id: string };
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/swap/${props.newMeterId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function patchChangeIManageManualRadio(
+  props: {
+    farmId: number,
+    meterSystemId: number,
+    meterId: number,
+  },
+  options?: { radio_id: string },
+) {
+  return request<{
+    data: { radio_id: string };
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/edit_radio/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function getEditMeterHistory(
+  props: API.GetEditMeterHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetMeterHistoryResponse;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function favoriteMeterConfig(
+  props: API.FavoriteMeterConfigParams,
+  options?: {  [key: string]: any },
+) {
+
+  return request<{
+    data: API.FavoriteMeterConfigResponse;
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`, {
+    method: 'PATCH',
+   data: options});
+}

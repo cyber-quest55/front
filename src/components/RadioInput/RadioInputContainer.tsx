@@ -24,7 +24,8 @@ interface IRadioInputContainerProps {
   name?: string[];
   fieldIndex?: string;
   form: any;
-  queryPivotByIdStart: typeof queryPivotByIdStart;
+  requestDeviceId: string,
+  requestAfterChange?: any,
 }
 
 const RadioInputContainer: React.FunctionComponent<IRadioInputContainerProps> = (props) => {
