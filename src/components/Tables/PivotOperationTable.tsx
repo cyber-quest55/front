@@ -1,18 +1,19 @@
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { getPivotHistory } from '@/services/pivot';
- 
+import { getPivotListGpsStream, getPivotListOperation } from '@/services/pivot';
+import { getPivotDirection } from '@/utils/formater/get-pivot-direction';
+import { getPivotStatus } from '@/utils/formater/get-pivot-status';
+
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
   LightFilter,
-  ProDescriptions,
   ProFormDateRangePicker,
   ProTable,
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space } from 'antd';
+import { App, Button, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
@@ -23,9 +24,12 @@ type Props = {
 };
 
 const PivotOperationTable: React.FC<Props> = (props) => {
-  const reqGetData = useRequest(getPivotHistory, { manual: true });
-   const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
+  const reqGetData = useRequest(getPivotListOperation, { manual: true });
+  const reqGetGPSData = useRequest(getPivotListGpsStream, { manual: true });
+
+  const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
   const intl = useIntl();
+  const { modal } = App.useApp();
 
   const ref = useRef<ActionType>();
 
@@ -45,9 +49,9 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                 fieldProps={{
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
-                      setDates(v)
-                      ref.current?.reload()
-                    };
+                      setDates(v);
+                      ref.current?.reload();
+                    }
                   },
 
                   value: dates,
@@ -66,24 +70,22 @@ const PivotOperationTable: React.FC<Props> = (props) => {
           ),
         }}
         request={async (p, sort, filter): Promise<any> => {
-          const result: API.GetPivotHistoryResponse = (await reqGetData.runAsync(
+          const result: API.GetPivotHistoryOperationResponse = (await reqGetData.runAsync(
             {
-              farmId: props.selectedDevice.farmId as any,
               pivotId: props.selectedDevice.deviceId as any,
             },
             {
-              gps: true,
-              central: true,
               page: p.current,
               date_start: dates[0].toISOString(),
               date_end: dates[1].toISOString(),
             },
           )) as any;
 
-         
-
           return {
-            data: mapped,
+            data: result.results.map((item, index) => ({
+              ...item,
+              key: `history_operation_${index}`,
+            })),
             success: true,
             total: result.count,
             page: result.current_page,
@@ -92,9 +94,9 @@ const PivotOperationTable: React.FC<Props> = (props) => {
         columns={[
           {
             title: intl.formatMessage({
-              id: 'component.pivot.tab.history.event.table.col.1',
+              id: 'component.pivot.tab.history.operations.table.col.1',
             }),
-            dataIndex: 'date',
+            dataIndex: 'start_date',
 
             render: (value, item) => {
               if (item) return <>{dayjs(item.update).format('DD/MM/YYYY')}</>;
@@ -102,123 +104,181 @@ const PivotOperationTable: React.FC<Props> = (props) => {
           },
           {
             title: intl.formatMessage({
-              id: 'component.pivot.tab.history.event.table.col.2',
+              id: 'component.pivot.tab.history.operations.table.col.2',
             }),
-            dataIndex: 'customType',
-            responsive: ['lg'],
-            render: (item, entity) => {
-              return entity.customType;
+            dataIndex: 'end_date',
+
+            render: (value, item) => {
+              if (item) return <>{dayjs(item.update).format('DD/MM/YYYY')}</>;
             },
           },
           {
             title: intl.formatMessage({
-              id: 'component.pivot.tab.history.event.table.col.3',
+              id: 'component.pivot.tab.history.operations.table.col.3',
             }),
-            dataIndex: 'customStatus',
+            dataIndex: 'hour_p',
+            render: (value: any) => {
+              return <>{value.toFixed(2)}h</>;
+            },
+          },
+          {
+            title: intl.formatMessage({
+              id: 'component.pivot.tab.history.operations.table.col.4',
+            }),
+            dataIndex: 'hour_total',
+            render: (value: any) => {
+              return <>{value.toFixed(2)}h</>;
+            },
+          },
+          {
+            title: intl.formatMessage({
+              id: 'component.pivot.tab.history.operations.table.col.5',
+            }),
+            dataIndex: 'water_blade',
+            render: (value: any) => {
+              return <>{value.toFixed(2)}mm</>;
+            },
+          },
+          {
+            title: intl.formatMessage({
+              id: 'component.pivot.tab.history.operations.table.col.6',
+            }),
+            dataIndex: 'irrigation_mode',
+            valueEnum: {
+              1: intl.formatMessage({
+                id: 'component.pivot.tab.history.operations.table.col.6.value.1',
+              }),
+              2: intl.formatMessage({
+                id: 'component.pivot.tab.history.operations.table.col.6.value.2',
+              }),
+            },
           },
         ]}
         rowKey="key"
         options={false}
         search={false}
         dateFormatter="string"
-        expandable={{
-          expandedRowRender: (record) => {
-            return (
-              <ProDescriptions
-                column={2}
-                title={intl.formatMessage({
-                  id: 'component.pivot.tab.history.event.description',
-                })}
-                dataSource={record}
-              >
-                {record.created ? (
-                  <ProDescriptions.Item
-                    hide
-                    label={intl.formatMessage({
-                      id: 'component.pivot.tab.history.event.description.label.created',
-                    })}
-                    dataIndex={['created']}
-                    fieldProps={{
-                      format: 'DD/MM/YYYY HH:mm',
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              modal.info({
+                title: 'GPS Information List',
+                closable: true,
+                width: '90vw',
+                footer: null,
+                content: (
+                  <ProTable<APIModels.PivotListGpsStream>
+                    ghost
+                    request={async (p, sort, filter): Promise<any> => {
+                      const result: API.GetPivotHistoryOperationResponse =
+                        (await reqGetGPSData.runAsync(
+                          {
+                            pivotId: props.selectedDevice.deviceId as any,
+                          },
+                          {
+                            date_start: record.start_date,
+                            date_end:record.end_date ,
+                            page: p.current,
+                          },
+                        )) as any;
+
+                      return {
+                        data: result.results.map((item, index) => ({
+                          ...item,
+                          key: `gps_stream_${index}`,
+                        })),
+                        success: true,
+                        total: result.count,
+                        page: result.current_page,
+                      };
                     }}
-                    valueType={'dateTime'}
+                    columns={[
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.1',
+                        }),
+                        dataIndex: 'created',
+
+                        render: (_, item) => {
+                          if (item) return <>{dayjs(item.created).format('DD/MM/YYYY HH:MM:ss')}</>;
+                        },
+                      },
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.2',
+                        }),
+                        render: (_, item) => {
+                          return <>{item?.content?.current_angle?.current_angle.toFixed(1)}°</>;
+                        },
+                      },
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.3',
+                        }),
+                        render: (_, item) => {
+                          const position = `${item?.content?.latitude_longitude_gps?.latitude_gps},${item?.content?.latitude_longitude_gps?.longitude_gps}`;
+                          return (
+                            <Typography.Link
+                              href={`https://www.google.com/maps?t=k&q=${position}`}
+                              target="_blank"
+                            >
+                              {position}
+                            </Typography.Link>
+                          );
+                        },
+                      },
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.4',
+                        }),
+
+                        render: (_, item) => {
+                          return getPivotDirection(
+                            item?.content?.current_irrigation_information?.direction,
+                          );
+                        },
+                      },
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.5',
+                        }),
+                      },
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.6',
+                        }),
+                        render: (_, item) => {
+                          return getPivotStatus(
+                            item?.content?.irrigation_status?.irrigation_status,
+                          );
+                        },
+                      },
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.7',
+                        }),
+                        render: (_, item) => {
+                          return `${item?.content?.end_tower_pressure?.end_tower_pressure.toFixed(2)} bar` ;
+                        },
+                      },
+                      {
+                        title: intl.formatMessage({
+                          id: 'component.pivot.tab.history.operations.table.latest.table.col.8',
+                        }),
+                        render: (_, item) => {
+                          return `${item?.content?.operation_time.total_hour}h ${item?.content?.operation_time.total_minute}min`;
+                        },
+                      },
+                    ]}
+                    rowKey="key"
+                    options={false}
+                    search={false}
+                    dateFormatter="string"
                   />
-                ) : null}
-
-                {record.updated ? (
-                  <ProDescriptions.Item
-                    hide
-                    label={intl.formatMessage({
-                      id: 'component.pivot.tab.history.event.description.label.updated',
-                    })}
-                    dataIndex={['updated']}
-                    fieldProps={{
-                      format: 'DD/MM/YYYY HH:mm',
-                    }}
-                    valueType={'dateTime'}
-                  />
-                ) : null}
-
-                {record.arrived ? (
-                  <ProDescriptions.Item
-                    hide
-                    label={intl.formatMessage({
-                      id: 'component.pivot.tab.history.event.description.label.arrived',
-                    })}
-                    dataIndex={['arrived']}
-                    fieldProps={{
-                      format: 'DD/MM/YYYY HH:mm',
-                    }}
-                    valueType={'dateTime'}
-                  />
-                ) : null}
-
-                {record.current_angle && record.current_angle >= 0 ? (
-                  <ProDescriptions.Item
-                    hide
-                    label={intl.formatMessage({
-                      id: 'component.pivot.tab.history.event.description.label.currentangle',
-                    })}
-                  >
-                    {record.current_angle}°
-                  </ProDescriptions.Item>
-                ) : null}
-
-                {record?.content?.center_pressure?.center_pressure ? (
-                  <ProDescriptions.Item
-                    hide
-                    label={intl.formatMessage({
-                      id: 'component.pivot.tab.history.event.description.label.pressure',
-                    })}
-                    dataIndex={['content', 'center_pressure', 'center_pressure']}
-                  />
-                ) : null}
-
-                {record?.content?.latitude_longitude_gps?.latitude_gps ? (
-                  <ProDescriptions.Item
-                    hide
-                    label={intl.formatMessage({
-                      id: 'component.pivot.tab.history.event.description.label.location',
-                    })}
-                    dataIndex={['content', 'latitude_longitude_gps', 'latitude_longitude_gps']}
-                  >
-                    {record?.content?.latitude_longitude_gps?.latitude_gps},
-                    {record?.content?.latitude_longitude_gps?.longitude_gps}
-                  </ProDescriptions.Item>
-                ) : null}
-
-                {record.username ? (
-                  <ProDescriptions.Item
-                    hide
-                    label={intl.formatMessage({
-                      id: 'component.pivot.tab.history.event.description.label.user',
-                    })}
-                    dataIndex={['username']}
-                  />
-                ) : null}
-              </ProDescriptions>
-            );
-          },
+                ),
+              });
+            },
+          };
         }}
         actionRef={ref}
       />

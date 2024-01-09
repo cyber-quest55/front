@@ -41,13 +41,29 @@ declare namespace API {
     results: Array<APIModels.PivotHistory>
   }
 
+  type GetPivotHistoryOperationResponse = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<APIModels.PivotHistoryOperation>
+  }
+
+  type GetPivotListGpsStreamResponse = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<APIModels.PivotListGpsStream>
+  }
+
   type GetPivotReportParams = {
     farmId: number;
     pivotId: string;
   };
 
   type GetEditPivotHistoryParams = {
-    farmId: number;
+    farmId?: number;
     pivotId: string;
   };
 

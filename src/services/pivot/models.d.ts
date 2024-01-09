@@ -705,6 +705,108 @@ declare namespace APIModels {
     }
   };
 
+  type PivotHistoryOperation = {
+    id: number
+    start_angle: number
+    end_angle: number
+    operation_note?: string
+    irrigation_mode: number
+    start_date: string
+    end_date: string
+    hour_p: number
+    hour_hfp: number
+    hour_r: number
+    hour_total: number
+    water_blade: number
+    created: string
+    updated: string
+    pivot: number
+  }
+
+  type PivotListGpsStream = {
+    id: number
+    current_angle: number
+    end_tower_pressure: number
+    content: {
+      current_angle: {
+        current_angle: number
+      }
+      operation_time: {
+        wet_hour: number
+        pump_hour: number
+        total_hour: number
+        wet_minute: number
+        endgun_hour: number
+        pump_minute: number
+        total_minute: number
+        endgun_minute: number
+        injection_pump_hour: number
+        injection_pump_minutes: number
+      }
+      center_pressure: {
+        center_pressure: number
+      }
+      current_segment: {
+        current_segment: number
+      }
+      voltage_measure: {
+        voltage_measure: number
+      }
+      current_schedule: {
+        current_schedule: number
+      }
+      irrigation_status: {
+        irrigation_type: number
+        irrigation_status: number
+      }
+      pluviometer_total: {
+        total_measure: number
+      }
+      end_tower_pressure: {
+        end_tower_pressure: number
+      }
+      devices_current_status: {
+        pump: number
+        motor: number
+        endgun: number
+        irripump: number
+        injection_pump: number
+      }
+      latitude_longitude_gps: {
+        altitude: number
+        latitude_gps: number
+        longitude_gps: number
+      }
+      irrigation_remaining_time: {
+        hours: number
+        minutes: number
+      }
+      current_irrigation_information: {
+        mode: number
+        direction: number
+        stop_mode: number
+        stop_angle: number
+        total_round: number
+        current_round: number
+        irrigation_percent: number
+        rain_meter_percent: number
+      }
+    }
+    uuid: string
+    created_on_hardware: boolean
+    created: string
+    updated: string
+    arrived: string
+    message_status: number
+    message_error: string
+    message_packets: Array<number>
+    message_subtype: string
+    content_hash: number
+    created_by: any
+    device: number
+    equipment: number
+  }
+  
   type PivotReport = {
     pivot_id: number;
     start_date: string;

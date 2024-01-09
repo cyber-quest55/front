@@ -74,6 +74,32 @@ export async function getEditPivotHistory(
   });
 }
 
+/** GET /farms/${farmId}/pivots/${pivotId}/list */
+export async function getPivotListOperation(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryOperationResponse;
+  }>(`/reports/pivots/${props.pivotId}/list/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** GET /farms/${farmId}/pivots/${pivotId}/list */
+export async function getPivotListGpsStream(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotListGpsStreamResponse;
+  }>(`/reports/pivots/${props.pivotId}/list_gps_streams_v5/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
 /** POST /farms/${farmId}/pivots/${pivotId}/config/${configId} */
 export async function favoritePivotConfig(
   props: API.FavoritePivotConfigParams,
