@@ -44,5 +44,7 @@ export default {
   'pages.edit.meter.tab.options.level': 'Level',
   'pages.edit.meter.tab.options.favorites': 'Favorites',
   'pages.edit.meter.tab.options.previoussettings': 'Previous settings',
-
+  'pages.edit.repeater.tab.header.configuration': 'Configurations',
+  'pages.edit.repeater.tab.options.general': 'General',
+  'pages.edit.repeater.tab.options.location': 'Location',
  };

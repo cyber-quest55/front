@@ -104,7 +104,12 @@ export default [
     hideInMenu: true,
     component: './Meter/Edit.tsx',
   },
-
+  {
+    path: 'farms/:farmId/repeater/:repeaterId/edit',
+    name: 'Edit Repeater',
+    hideInMenu: true,
+    component: './Repeater/Edit.tsx',
+  },
   {
     path: '/notifications/',
     name: 'Notificações',
