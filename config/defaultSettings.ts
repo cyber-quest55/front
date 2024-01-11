@@ -9,7 +9,8 @@ const Settings: ProLayoutProps & {
   // 拂晓蓝
   colorPrimary: '#00b96b',
   layout: 'side',
-  theme: 'light',
+  theme: 'dark',
+  navTheme: 'realDark',
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,

@@ -235,14 +235,17 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
       {/** Draw Info Window */}
       {infoWindowVisible && props.infoWindow ? (
         <InfoWindowF
+          
           position={{
             lat: centerLat,
             lng: centerLng,
           }}
           options={{
+            
             zIndex: 12,
           }}
           zIndex={12}
+
         >
           <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
             <Typography.Title level={5}>{props.name}</Typography.Title>

@@ -1,7 +1,11 @@
 import { AvatarDropdown, AvatarName } from '@/components';
 import { currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined, UserOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import {
+  ProConfigProvider,
+  SettingDrawer,
+  type Settings as LayoutSettings,
+} from '@ant-design/pro-components';
 import { LoadScript } from '@react-google-maps/api';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
@@ -14,10 +18,10 @@ import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect/FarmSelectContainer';
 import LocaleSelectorContainer from './components/LocaleSelector/LocaleSelectorContainer';
+import OfflineNetworkContainer from './components/Modals/OfflineNetwork/OfflineNetworkContainer';
 import ForbidenPage from './pages/403';
 import NoFoundPage from './pages/404';
 import { errorConfig } from './requestErrorConfig';
-import OfflineNetworkContainer from './components/Modals/OfflineNetwork/OfflineNetworkContainer';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -86,8 +90,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       setInitialState({ ...initialState, collapsed: !initialState?.collapsed });
     },
     actionsRender: ({ collapsed, isMobile }) => {
-      if ( isMobile ) {
-        return []
+      if (isMobile) {
+        return [];
       }
       return [
         <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
@@ -121,30 +125,48 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
             <LinkOutlined />
             <span>OpenAPI 文档</span>
           </Link>,
-        
         ]
       : [],
     menuHeaderRender: undefined,
 
-    menuExtraRender: ({ collapsed }) => !collapsed && <div style={{paddingInline: 12}}><FarmSelect /></div>,
+    menuExtraRender: ({ collapsed }) =>
+      !collapsed && (
+        <div style={{ paddingInline: 12 }}>
+          <FarmSelect />
+        </div>
+      ),
 
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
-
+    token: initialState?.settings?.navTheme === 'realDark' ? {} : defaultSettings.token,
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <App  >
-          <OfflineNetworkContainer/>
-          <LoadScript
-            libraries={libraries as  any}
-            id={loaderId}
-            loadingElement={<div>Carregando</div>}
-            googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-          >
-            {children}
-          </LoadScript>
+        <App>
+          <ProConfigProvider token={{colorPrimary: defaultSettings.colorPrimary}}>
+            <OfflineNetworkContainer />
+            <LoadScript
+              libraries={libraries as any}
+              id={loaderId}
+              loadingElement={<div>Carregando</div>}
+              googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+            >
+              {children}
+              <SettingDrawer
+                disableUrlParams
+                themeOnly
+                enableDarkTheme
+                settings={initialState?.settings}
+                onSettingChange={(settings) => {
+                  setInitialState((preInitialState: any) => ({
+                    ...preInitialState,
+                    settings,
+                  }));
+                }}
+              />
+            </LoadScript>
+          </ProConfigProvider>
         </App>
       );
     },
