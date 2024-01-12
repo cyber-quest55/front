@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 
 export interface GetPivotByIdModelProps {
-  unformated: API.GetPivotByIdInformationResponse;
+  unformated: APIModels.PivotInformation;
   result: CirclePivotProps;
   loading: boolean;
 
@@ -154,7 +154,8 @@ export default {
 
       stopAngle =
         (item.protocol === 5
-          ? item.controllerstream_panel?.content.current_irrigation_information.stop_angle
+          ? item.controllerstream_panel?.content?.current_irrigation_information?.stop_angle |
+            item.controllerstream_gps?.content?.current_irrigation_information?.stop_angle
           : item.irrigation_end_angle) + item.reference_angle;
 
       if (item.config && item.config.setorial) {

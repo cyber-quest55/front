@@ -237,7 +237,7 @@ declare namespace APIModels {
     };
     controllerstream_gps: {
       id: number;
-      current_angle: number;
+      current_angle: any;
       end_tower_pressure: number;
       content: {
         current_angle: {

@@ -184,7 +184,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 lineColor="#fff"
                 referenceAngle={item.referenceAngle}
                 irrigationDirection={item.irrigationDirection}
-                stopAngle={item.stopAngle}
+                stopAngle={item.stopAngle | 360}
                 endAngle={item.endAngle}
                 sectorAngle={item.sectorAngle}
                 lpmGpsStreamLat={item.lpmGpsStreamLat}

@@ -44,8 +44,8 @@ export async function getPivotHistory(
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
     method: 'GET',
-    params: options
-  },);
+    params: options,
+  });
 }
 
 /** GET /farms/${farmId}/pivotReport/ */
@@ -105,14 +105,13 @@ export async function favoritePivotConfig(
   props: API.FavoritePivotConfigParams,
   options?: { [key: string]: any },
 ) {
-
   return request<{
     data: API.FavoritePivotConfigResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/${props.configId}/`, {
     method: 'PATCH',
-   data: options});
+    data: options,
+  });
 }
-
 
 /** GET /farms/${farmId}/pivots/${pivotId}/devices/control/ */
 export async function getEditPivotDeviceControlTable(
@@ -141,10 +140,7 @@ export async function getEditPivotDeviceMonitorTable(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/control/ */
-export async function patchChangeControlRadio(
-  props: any,
-  options?: { radio_id: string },
-) {
+export async function patchChangeControlRadio(props: any, options?: { radio_id: string }) {
   return request<{
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/control/`, {
@@ -154,10 +150,7 @@ export async function patchChangeControlRadio(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId}/${deviceId}/control/ */
-export async function patchChangeControlManualRadio(
-  props: any,
-  options?: { [key: string]: any },
-) {
+export async function patchChangeControlManualRadio(props: any, options?: { [key: string]: any }) {
   return request<{
     data: any;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/control/`, {
@@ -167,10 +160,7 @@ export async function patchChangeControlManualRadio(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/monitor/ */
-export async function patchChangeMonitorRadio(
-  props: any,
-  options?: { [key: string]: any },
-) {
+export async function patchChangeMonitorRadio(props: any, options?: { [key: string]: any }) {
   return request<{
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/monitor/`, {
@@ -193,14 +183,45 @@ export async function postPivotConfig(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId} */
-export async function patchPivotGlobalConfig(
-  props: API.GetEditPivotHistoryParams,
-  options: any,
-) {
+export async function patchPivotGlobalConfig(props: API.GetEditPivotHistoryParams, options: any) {
   return request<{
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/`, {
     method: 'PATCH',
     data: options,
   });
+}
+
+/**  /farms/${farmID}/pivots/${pivotID}/device/${deviceID}/action/ */
+export async function postSimpleIrrigation(
+  props: { farmId: number; pivotId: number; deviceId: number },
+  options: API.PostSimpleIrrigation,
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/device/${props.deviceId}/action/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+/**  /farms/${farmID}/pivots/${pivotID}/device/${deviceID}/action/ */
+export async function getEstimatedTime(props: {}, options: API.GetEstimatedTimeParams) {
+  return request<API.GetEstimatedTimeResponse>(`/estimated-time/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function getLastSimpleIrrigation(
+  props: { farmId: number; pivotId: number },
+  options: {},
+) {
+  return request<API.GetLastSimpleIrrigation>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/controlleraction/simple/latest/`,
+    {
+      method: 'GET',
+      params: options,
+    },
+  );
 }

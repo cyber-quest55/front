@@ -94,6 +94,10 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
   const deviceColor = props.deviceColor ? props.deviceColor : '#000';
   const lineColor = props.lineColor ? props.lineColor : '#fff';
 
+  if (!centerLat || !centerLng || !referencedLat || !referencedLng) {
+    return <></>;
+  }
+
   const centerPositionGMaps = new LatLng(centerLat, centerLng);
   const referencePositionGMaps = new LatLng(referencedLat, referencedLng);
   const gpsPositionGMaps = new LatLng(gpsLat, gpsLong);
@@ -211,6 +215,8 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
     scale: 2,
   };
 
+  console.log('HEHREEE', centerPositionGMaps, referenceRadius, props.stopAngle);
+
   const endIrrigationDashedLine = computeOffset(
     centerPositionGMaps,
     referenceRadius,
@@ -235,17 +241,14 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
       {/** Draw Info Window */}
       {infoWindowVisible && props.infoWindow ? (
         <InfoWindowF
-          
           position={{
             lat: centerLat,
             lng: centerLng,
           }}
           options={{
-            
             zIndex: 12,
           }}
           zIndex={12}
-
         >
           <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
             <Typography.Title level={5}>{props.name}</Typography.Title>
@@ -307,6 +310,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
                 }}
               />
               {/** Draw dashed line */}
+
               <Polyline
                 options={{
                   strokeOpacity: 0,

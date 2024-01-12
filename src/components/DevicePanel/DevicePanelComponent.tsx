@@ -17,6 +17,7 @@ import { MenuProps } from 'rc-menu';
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
+import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
 
 const { Text } = Typography;
 
@@ -41,7 +42,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
 
   const { options, device, type, onChangeDevice } = props;
 
-  const classNameSelect = useEmotionCss(() => {
+  const classNameSelect = useEmotionCss(({token}) => {
     return {
       '.ant-select-selection-item': {
         fontWeight: 700,
@@ -51,12 +52,12 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
         padding: '0 !important',
       },
       '.ant-select-arrow': {
-        color: 'black',
+        color: token.colorTextBase,
         fontSize: 20,
       },
     };
   });
-
+ 
   const destroyOnClick = () => {
     props.setDeviceClose();
   };
@@ -169,9 +170,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: intl.formatMessage({
-        id: 'component.pivot.operationalpanel.button.start.opt.1',
-      }),
+      label: <StartPivotSimpleFormContainer />,
     },
     {
       key: '2',
@@ -320,8 +319,9 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       <Row style={{ maxWidth: 250 }}>
         <Col style={{ width: '100%' }}>
           <Select
+          
             className={classNameSelect}
-            suffixIcon={<CaretDownOutlined />}
+            suffixIcon={<CaretDownOutlined className="" />}
             bordered={false}
             showSearch
             value={device?.name?.toString()}
