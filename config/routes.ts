@@ -111,6 +111,12 @@ export default [
     component: './Repeater/Edit.tsx',
   },
   {
+    path: 'farms/:farmId/irpd/:irpdId/edit',
+    name: 'Edit Pump',
+    hideInMenu: true,
+    component: './Irpd/Edit.tsx',
+  },
+  {
     path: '/notifications/',
     name: 'Notificações',
     icon: 'bellOutlined',

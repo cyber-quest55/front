@@ -55,4 +55,56 @@ export async function getIrpdEvents(
 
   });
 }
- 
+
+export async function patchIrpdConfig(
+  props: API.PatchIrpdConfigParams,
+  options: APIModels.IrpdConfigPayload,
+) {
+  return request<{
+    data: API.PatchIrpdConfigResponse;
+
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function getEditIrpdDeviceTable(props: API.GetIrpdDevicesParams) {
+  return request<{
+    data: API.GetIrpdDevicesResponse;
+  }>(`/farms/${props.farmId}/irpds/devices`, {
+    method: 'GET',
+  });
+}
+
+export async function patchChangeIrpdRadio(props: API.PatchChangeIrpdRadioParams) {
+  return request<{
+    data: API.PatchChangeIrpdRadioResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/swap/${props.irpdToSwapId}/`, {
+    method: 'PATCH',
+  });
+}
+
+export async function postChangeIrpdManualRadio(
+  props: API.PostChangeIrpdManualRadioParams,
+  options?: { radio_id: string },
+) {
+  return request<{
+    data: API.PostChangeIrpdManualRadioResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/edit_radio/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function patchIrpd(
+  props: API.PatchIrpdParams,
+  options?: APIModels.IrpdPayload,
+) {
+  return request<{
+    data: API.PatchIrpdResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}

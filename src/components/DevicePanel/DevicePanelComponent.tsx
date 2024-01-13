@@ -235,7 +235,11 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space>
-            <Button icon={<EditFilled />}>Edit</Button>
+            <Link
+              to={`/farms/${params.id}/irpd/${device.id}/edit`}
+            >
+              <Button icon={<EditFilled />}>Edit</Button>
+            </Link>
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
               Close
             </Button>

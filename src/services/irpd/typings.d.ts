@@ -39,4 +39,28 @@ declare namespace API {
   };
 
   type GetIrpdEventsResponse = APIModels.IrpdEventsResponse;
+
+  type PatchIrpdConfigParams = {
+    farmId: number;
+    irpdId: string;
+  };
+
+  type PatchIrpdConfigResponse = APIModels.IrpdConfig;
+
+  type GetIrpdDevicesParams = { farmId: string };
+
+  type GetIrpdDevicesResponse = Array<APIModels.IrpdDevice>;
+
+  type PatchChangeIrpdRadioParams = { farmId: number; irpdId: string; irpdToSwapId: string };
+
+  type PatchChangeIrpdRadioResponse = { radio_id: number; };
+
+  type PostChangeIrpdManualRadioParams = { farmId: number; irpdId: string; };
+
+  type PostChangeIrpdManualRadioResponse = { radio_id: number; };
+
+  type PatchIrpdParams = { farmId: number; irpdId: string; };
+
+  type PatchIrpdResponse = APIModels.Irpd;
+
 }

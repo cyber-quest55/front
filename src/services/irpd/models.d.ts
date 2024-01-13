@@ -387,13 +387,13 @@ declare namespace APIModels {
         irpd: number;
       };
     }>;
-  }
+  };
 
   type IrpdWaterConsumption = {
     year: string;
     type: string;
     value: number;
-  }
+  };
 
   type IrpdEventsResponse = {
     count: number;
@@ -413,5 +413,176 @@ declare namespace APIModels {
       updated: string;
       irpd: number;
     }>;
-  }
+  };
+
+  type IrpdConfigPayload = {
+    content: {
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      datalogger_address: {
+        address: string;
+      };
+      enable_peak_time: {
+        enable: number;
+      };
+      peak_time: {
+        start_hour_1: number;
+        start_minute_1: number;
+        stop_hour_1: number;
+        stop_minute_1: number;
+        start_hour_2: number;
+        start_minute_2: number;
+        stop_hour_2: number;
+        stop_minute_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        sunday_enable: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      holidays: [];
+      clock: {
+        second: number;
+        minute: number;
+        hour: number;
+        day: number;
+        month: number;
+        year: number;
+      };
+      pump_power_time: {
+        minutes: number;
+      };
+      imanage_sensors: Array<{
+        number_editing: number;
+        sensor_type: number;
+        max_value: number;
+        min_value: number;
+      }>;
+    };
+    monthly_water_limit: number;
+    has_pressure_sensor: boolean;
+    name_irpd_on_config: string;
+    flow: number;
+    position: string;
+    potency: number;
+    kwh_peak: number;
+    kwh_out_of_peak: number;
+    kwh_reduced: number;
+  };
+
+  type IrpdConfig = {
+    id: number;
+    created_by: {
+      username: string;
+      email: string;
+      first_name: string;
+      last_name: string;
+      id: number;
+      profile_id: number;
+      pending: boolean;
+    };
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      datalogger_address: {
+        address: string;
+      };
+      enable_peak_time: {
+        enable: number;
+      };
+      peak_time: {
+        start_hour_1: number;
+        start_minute_1: number;
+        stop_hour_1: number;
+        stop_minute_1: number;
+        start_hour_2: number;
+        start_minute_2: number;
+        stop_hour_2: number;
+        stop_minute_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        sunday_enable: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      holidays: {
+        day: number;
+        month: number;
+        number_editing: number;
+      }[];
+      clock: {
+        second: number;
+        minute: number;
+        hour: number;
+        day: number;
+        month: number;
+        year: number;
+      };
+      pump_power_time: {
+        minutes: number;
+      };
+      imanage_sensors: {
+        number_editing: number;
+        sensor_type: number;
+        max_value: number;
+        min_value: number;
+      }[];
+      periodic_stream_indexes: {
+        indexes: string;
+      };
+      event_stream_indexes: {
+        indexes: string;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+    };
+    monthly_water_limit: number;
+    has_pressure_sensor: boolean;
+    name_irpd_on_config: string;
+    flow: number;
+    position: string;
+    potency: number;
+    pinned: boolean;
+    name: string;
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    device: number;
+    irpd: number;
+  };
+
+  type IrpdDevice = {
+    id: number;
+    name: string;
+    pump: {
+      id: number;
+      created: string;
+      updated: string;
+      radio_id: string;
+      taken: null | string; // Assuming taken can be either null or a string
+    };
+  };
+
+  type IrpdPayload = {
+    name: string;
+    potency: number;
+    position: string;
+    flow: number;
+  };
 }

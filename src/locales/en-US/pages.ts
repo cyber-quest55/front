@@ -47,4 +47,8 @@ export default {
   'pages.edit.repeater.tab.header.configuration': 'Configurations',
   'pages.edit.repeater.tab.options.general': 'General',
   'pages.edit.repeater.tab.options.location': 'Location',
+  'pages.edit.irpd.tab.header.configuration': 'Configurations',
+  'pages.edit.irpd.tab.header.history': 'History',
+  'pages.edit.irpd.tab.options.general': 'General',
+  'pages.edit.irpd.tab.options.location': 'Location'
  };
