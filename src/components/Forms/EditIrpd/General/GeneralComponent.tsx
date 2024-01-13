@@ -61,7 +61,7 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
     enableSensorScale: yup.boolean(),
     flow: yup
       .number()
-      .min(1, intl.formatMessage({ id: 'validations.min.number' }, { value: 0 }))
+      .min(1, intl.formatMessage({ id: 'validations.min.number' }, { value: 1 }))
       .max(1000, intl.formatMessage({ id: 'validations.max.number' }, { value: 1000 }))
       .required(
         intl.formatMessage({

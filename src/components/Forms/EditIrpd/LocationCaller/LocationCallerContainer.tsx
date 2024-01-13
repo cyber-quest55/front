@@ -1,45 +1,45 @@
 import { useScreenHook } from '@/hooks/screen';
 import * as React from 'react';
-import EditMeterLocationCallerComponent from './LocationCallerComponent'; 
+import EditEditLocationCallerComponent from './LocationCallerComponent'; 
 import { connect } from 'dva';
 import { Dispatch } from '@umijs/max';
-import { GetMeterSystemByIdModelProps, queryMeterSystemById } from '@/models/meter-by-id';
+import { GetIrpdByIdModelProps, queryIrpdById } from '@/models/irpd-by-id';
 
-interface IEditMeterLocationCallerContainer {
-  meterSystemById: GetMeterSystemByIdModelProps;
-  queryMeterSystemById: typeof queryMeterSystemById;
+interface IEditIrpdLocationCallerContainer {
+  irpdById: GetIrpdByIdModelProps;
+  queryIrpdById: typeof queryIrpdById;
 }
 
-const EditMeterLocationCallerContainer: React.FunctionComponent<IEditMeterLocationCallerContainer> = (
+const EditIrpdLocationCallerContainer: React.FunctionComponent<IEditIrpdLocationCallerContainer> = (
   props,
 ) => {
   const { xs } = useScreenHook();
 
   return (
     <>
-      {props.meterSystemById.loading ? (
+      {props.irpdById.loading ? (
         <> </>
       ) : xs ? (
-        <EditMeterLocationCallerComponent
-          meter={props.meterSystemById.unformated}
-          queryMeterSystemById={props.queryMeterSystemById}
+        <EditEditLocationCallerComponent
+          irpd={props.irpdById.unformated}
+          queryIrpdById={props.queryIrpdById}
         />
       ) : (
-        <EditMeterLocationCallerComponent
-          meter={props.meterSystemById.unformated}
-          queryMeterSystemById={props.queryMeterSystemById}
+        <EditEditLocationCallerComponent
+          irpd={props.irpdById.unformated}
+          queryIrpdById={props.queryIrpdById}
         />
       )}
     </>
   );
 };
  
-const mapStateToProps = ({ meterSystemById }: any) => ({
-  meterSystemById,
+const mapStateToProps = ({ irpdById }: any) => ({
+  irpdById,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  queryMeterSystemById: (props: any) => dispatch(queryMeterSystemById(props)),
+  queryIrpdById: (props: any) => dispatch(queryIrpdById(props)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditMeterLocationCallerContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(EditIrpdLocationCallerContainer);

@@ -281,5 +281,7 @@ export default {
   'component.edit.irpd.general.equipmentdate.label': 'Equipment Date',
   'component.edit.irpd.general.equipmentclock.label': 'Sensor scale',
   'component.edit.irpd.general.pressuresensor.label': 'Pressure sensor',
-  
+  'component.edit.irpd.location.title': 'Location',
+  'component.edit.irpd.location.desc': 'Device localization in the field is an essential technology that allows you to track and identify the geographic position of objects or equipment. This capability is valuable in a variety of industries, from logistics and transportation to environmental monitoring and security',
+  'component.edit.irpd.location.input.label': 'Device Location'
 }; 
