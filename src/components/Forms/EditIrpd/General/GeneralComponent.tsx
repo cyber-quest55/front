@@ -173,7 +173,11 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
                     imanage_sensors: [
                       {
                         ...defaultContentConfig.imanage_sensors[0],
-                        max_value: parseInt(String(values.latest_irpd_config_v5.content.imanage_sensors[0].max_value * 10)),
+                        max_value: parseInt(
+                          String(
+                            values.latest_irpd_config_v5.content.imanage_sensors[0].max_value * 10,
+                          ),
+                        ),
                       },
                     ],
                     clock: {
@@ -246,18 +250,15 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
                 irpd.latest_irpd_config_v5?.content?.imanage_sensors[0]?.max_value / 10 !== 0,
               );
               pform.setFieldValue(
-                ['latest_irpd_config_v5','content', 'imanage_sensors', '0', 'max_value'],
+                ['latest_irpd_config_v5', 'content', 'imanage_sensors', '0', 'max_value'],
                 irpd.latest_irpd_config_v5?.content?.imanage_sensors[0]?.max_value / 10,
               );
-              pform.setFieldValue(
-                'flow',
-                irpd.latest_irpd_config_v5?.flow ? irpd.flow : 1,
-              );
+              pform.setFieldValue('flow', irpd.latest_irpd_config_v5?.flow ? irpd.flow : 1);
               pform.setFieldValue('pump', irpd.pump);
             }}
-            initialValues={{ 
+            initialValues={{
               ...irpd,
-             }}
+            }}
           >
             <Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
               <RadioInputContainer
@@ -357,7 +358,10 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
               <ProFormCheckbox name={'enableMonthlyWaterLimit'} colProps={{ xs: 24, md: 8 }} />
 
               <ProFormDependency name={['enableMonthlyWaterLimit']}>
-                {({ enableMonthlyWaterLimit }) => {
+                {({ enableMonthlyWaterLimit }, form) => {
+                  if (!enableMonthlyWaterLimit) {
+                    form.setFieldValue(['latest_irpd_config_v5', 'monthly_water_limit'], 0);
+                  }
                   return (
                     <ProFormDigit
                       rules={[yupSync]}
@@ -380,9 +384,19 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
               </ProFormDependency>
             </ProFormGroup>
             <ProFormGroup>
-              <ProFormCheckbox name={'enableSensorScale'} colProps={{ xs: 24, md: 8 }} />
+              <ProFormCheckbox
+                name={'enableSensorScale'}
+                colProps={{ xs: 24, md: 8 }}
+              />
               <ProFormDependency name={['enableSensorScale']}>
-                {({ enableSensorScale }) => {
+                {({ enableSensorScale }, form) => {
+                  if (!enableSensorScale) {
+                    // Set the value to 0 when enableSensorScale is false
+                    form.setFieldValue(
+                      ['latest_irpd_config_v5', 'content', 'imanage_sensors', '0', 'max_value'],
+                      0,
+                    );
+                  }
                   return (
                     <ProFormDigit
                       rules={[yupSync]}

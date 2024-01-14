@@ -63,4 +63,25 @@ declare namespace API {
 
   type PatchIrpdResponse = APIModels.Irpd;
 
+  type GetEditIrpdHistoryParams = {
+    farmId: number;
+    irpdId: string;
+  };
+
+  type GetIrpdHistoryResponse = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<APIModels.IrpdHistory>
+  }
+
+  type FavoriteIrpdConfigParams = {
+    configId: number;
+    farmId: number;
+    irpdId: string;
+  };
+
+  type FavoriteIrpdConfigResponse = APIModels.IrpdSystem;
+
 }

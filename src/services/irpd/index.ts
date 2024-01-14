@@ -108,3 +108,27 @@ export async function patchIrpd(
     data: options,
   });
 }
+
+export async function getEditIrpdHistory(
+  props: API.GetEditIrpdHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetIrpdHistoryResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function favoriteIrpdConfig(
+  props: API.FavoriteIrpdConfigParams,
+  options?: {  [key: string]: any },
+) {
+
+  return request<{
+    data: API.FavoriteIrpdConfigResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/${props.configId}/`, {
+    method: 'PATCH',
+   data: options});
+}

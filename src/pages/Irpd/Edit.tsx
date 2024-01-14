@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 
 // import EditLevelContainer from '@/components/Forms/EditMeter/Level/LevelContainer';
 import LocationCallerContainer from '@/components/Forms/EditIrpd/LocationCaller/LocationCallerContainer';
-// import EditMeterHistoryTable from '@/components/Tables/EditMeterHistoryTable';
+import EditIrpdHistoryTable from '@/components/Tables/EditIrpdHistoryTable';
 import { connect } from 'dva';
 
 interface Props {
@@ -117,49 +117,49 @@ const EditIrpd: React.FunctionComponent<Props> = (props) => {
             },
           }}
         ></ProCard>
-      ) : null
-      // (
-      //   <ProCard
-      //     split="vertical"
-      //     tabs={{
-      //       defaultActiveKey: 'previoussettings',
-      //       tabPosition: xs ? 'top' : 'left',
-      //       destroyInactiveTabPane: true,
-      //       items: [
-      //         {
-      //           label: intl.formatMessage({
-      //             id: 'pages.edit.meter.tab.options.previoussettings',
-      //           }),
-      //           key: 'previoussettings',
-      //           children: (
-      //             <EditMeterHistoryTable
-      //               setTabCount={setTabCont}
-      //               setTab={setTab}
-      //               queryIrpdById={props.queryIrpdById}
-      //             />
-      //           ),
-      //         },
-      //         {
-      //           label: intl.formatMessage({
-      //             id: 'pages.edit.meter.tab.options.favorites',
-      //           }),
-      //           key: 'favorites',
-      //           children: (
-      //             <EditMeterHistoryTable
-      //               setTabCount={setTabCont}
-      //               setTab={setTab}
-      //               showOnlyFavorites
-      //               queryIrpdById={props.queryIrpdById}
-      //             />
-      //           ),
-      //         },
-      //       ],
-      //       onChange: (key) => {
-      //         setTab(key);
-      //       },
-      //     }}
-      //   ></ProCard>
-      // )
+      ) : 
+      (
+        <ProCard
+          split="vertical"
+          tabs={{
+            defaultActiveKey: 'previoussettings',
+            tabPosition: xs ? 'top' : 'left',
+            destroyInactiveTabPane: true,
+            items: [
+              {
+                label: intl.formatMessage({
+                  id: 'pages.edit.meter.tab.options.previoussettings',
+                }),
+                key: 'previoussettings',
+                children: (
+                  <EditIrpdHistoryTable
+                    setTabCount={setTabCont}
+                    setTab={setTab}
+                    queryIrpdById={props.queryIrpdById}
+                  />
+                ),
+              },
+              {
+                label: intl.formatMessage({
+                  id: 'pages.edit.meter.tab.options.favorites',
+                }),
+                key: 'favorites',
+                children: (
+                  <EditIrpdHistoryTable
+                    setTabCount={setTabCont}
+                    setTab={setTab}
+                    showOnlyFavorites
+                    queryIrpdById={props.queryIrpdById}
+                  />
+                ),
+              },
+            ],
+            onChange: (key) => {
+              setTab(key);
+            },
+          }}
+        ></ProCard>
+      )
       }
     </PageContainer>
   );
