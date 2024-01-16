@@ -62,6 +62,8 @@ export default {
        * Validar o latestPanelStream
        * Validar latestGpsPosition linha 184, 196
        */
+      console.log(payload)
+
 
       for (let index = 0; index < payload.length; index++) {
         const item = payload[index];
@@ -75,7 +77,8 @@ export default {
           updated: new Date(payload[index].updated).toLocaleString(),
           deviceColor: getIrpdColor(status),
           statusText: getIrpdStatus(status),
-          waterId: item?.latest_irpd_config_v5?.flow
+          waterId: item?.latest_irpd_config_v5?.flow,
+          protocol: item.protocol
         });
       }
 

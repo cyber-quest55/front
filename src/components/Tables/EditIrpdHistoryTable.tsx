@@ -3,7 +3,7 @@ import {
   favoriteIrpdConfig,
   getEditIrpdHistory,
   patchIrpd,
-  patchIrpdConfig,
+  postIrpdConfig,
 } from '@/services/irpd';
 import { HistoryOutlined, StarFilled, UploadOutlined } from '@ant-design/icons';
 import {
@@ -52,7 +52,7 @@ const EditIrpdHistoryTable: React.FunctionComponent<IEditIrpdHistoryTableProps> 
   const actionRef = React.useRef<ActionType>();
   const reqEditIrpdHistory = useRequest(getEditIrpdHistory, { manual: true });
   const reqFavorite = useRequest(favoriteIrpdConfig, { manual: true });
-  const postReq = useRequest(patchIrpdConfig, { manual: true });
+  const postReq = useRequest(postIrpdConfig, { manual: true });
   const patchIrpdReq = useRequest(patchIrpd, { manual: true });
   const [currentPage, setCurrentPage] = React.useState<number>(1);
 
@@ -331,7 +331,7 @@ const EditIrpdHistoryTable: React.FunctionComponent<IEditIrpdHistoryTableProps> 
           </ProDescriptions.Item>
           <ProDescriptions.Item
             label={intl.formatMessage({
-              id: 'component.edit.irpd.general.pumptime.label',
+              id: 'component.edit.irpd.general.powertime.label',
             })}
             valueType="text"
           >

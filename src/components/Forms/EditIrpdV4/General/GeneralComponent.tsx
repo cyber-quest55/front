@@ -3,12 +3,11 @@ import {
   getEditIrpdDeviceTable,
   patchChangeIrpdRadio,
   patchIrpd,
-  postIrpdConfig,
   postChangeIrpdManualRadio,
+  postIrpdConfigV4,
 } from '@/services/irpd';
 
 import { yupValidator } from '@/utils/adapters/yup';
-import { getDefaultIrpdContentConfig } from '@/utils/data/default-irpd-content-config';
 import { SaveOutlined } from '@ant-design/icons';
 import {
   ProCard,
@@ -19,6 +18,7 @@ import {
   ProFormDigit,
   ProFormField,
   ProFormGroup,
+  ProFormTimePicker,
 } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
@@ -27,14 +27,16 @@ import moment from 'moment';
 import * as React from 'react';
 import * as yup from 'yup';
 
-const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
+const TIME_FORMAT = 'HH:mm';
+
+const EditIrpdV4GeneralComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
   const intl = useIntl();
   const { message } = App.useApp();
   const ref = React.useRef();
   const params = useParams();
   const { irpd } = props;
-  const patchIrpdConfigReq = useRequest(postIrpdConfig, { manual: true });
+  const postIrpdConfigV4Req = useRequest(postIrpdConfigV4, { manual: true });
   const patchIrpdReq = useRequest(patchIrpd, { manual: true });
   const [loading, setLoading] = React.useState(false);
 
@@ -58,7 +60,6 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
     deviceHour: yup.boolean(),
     deviceClock: yup.string().nullable(),
     enableMonthlyWaterLimit: yup.boolean(),
-    enableSensorScale: yup.boolean(),
     flow: yup
       .number()
       .min(1, intl.formatMessage({ id: 'validations.min.number' }, { value: 1 }))
@@ -68,11 +69,22 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
           id: 'validations.required',
         }),
       ),
-    latest_irpd_config_v5: yup.object().shape({
-      potency: yup
+    potency: yup
+      .number()
+      .min(1, intl.formatMessage({ id: 'validations.min.number' }, { value: 1 }))
+      .max(22000, intl.formatMessage({ id: 'validations.max.number' }, { value: 22000 }))
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+    latest_irpd_config: yup.object().shape({
+      hour_range_min: yup.string(),
+      hour_range_max: yup.string(),
+      energy_time: yup
         .number()
-        .min(1, intl.formatMessage({ id: 'validations.min.number' }, { value: 1 }))
-        .max(22000, intl.formatMessage({ id: 'validations.max.number' }, { value: 22000 }))
+        .min(0, intl.formatMessage({ id: 'validations.min.number' }, { value: 0 }))
+        .max(300, intl.formatMessage({ id: 'validations.max.number' }, { value: 300 }))
         .required(
           intl.formatMessage({
             id: 'validations.required',
@@ -87,32 +99,6 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
             id: 'validations.required',
           }),
         ),
-      content: yup.object().shape({
-        imanage_sensors: yup.array().of(
-          yup.object().shape({
-            max_value: yup
-              .number()
-              .min(-100, intl.formatMessage({ id: 'validations.min.number' }, { value: -100 }))
-              .max(100, intl.formatMessage({ id: 'validations.max.number' }, { value: 100 }))
-              .required(
-                intl.formatMessage({
-                  id: 'validations.required',
-                }),
-              ),
-          }),
-        ),
-        pump_power_time: yup.object().shape({
-          minutes: yup
-            .number()
-            .min(0, intl.formatMessage({ id: 'validations.min.number' }, { value: 0 }))
-            .max(300, intl.formatMessage({ id: 'validations.max.number' }, { value: 300 }))
-            .required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            ),
-        }),
-      }),
     }),
   });
 
@@ -162,57 +148,25 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
             name="general_form"
             onFinish={async (values: any) => {
               setLoading(true);
-
               try {
-                const defaultContentConfig = getDefaultIrpdContentConfig(irpd);
-                const deviceClock = moment(values.deviceClock);
-
                 const newConfig = {
-                  content: {
-                    ...defaultContentConfig,
-                    imanage_sensors: [
-                      {
-                        ...defaultContentConfig.imanage_sensors[0],
-                        max_value: parseInt(
-                          String(
-                            values.latest_irpd_config_v5.content.imanage_sensors[0].max_value * 10,
-                          ),
-                        ),
-                      },
-                    ],
-                    clock: {
-                      second: values.deviceHour ? deviceClock.second() : moment().second(),
-                      minute: values.deviceHour ? deviceClock.minute() : moment().minute(),
-                      hour: values.deviceHour ? deviceClock.hour() : moment().hour(),
-                      day: values.deviceHour ? deviceClock.date() : moment().date(),
-                      month: values.deviceHour ? deviceClock.month() + 1 : moment().month() + 1,
-                      year: values.deviceHour ? deviceClock.year() - 2000 : moment().year() - 2000,
-                    },
-                    pump_power_time: {
-                      minutes: values.latest_irpd_config_v5.content.pump_power_time.minutes
-                    }
-                  },
                   monthly_water_limit: !values.enableMonthlyWaterLimit
                     ? 0
-                    : parseInt(values.latest_irpd_config_v5.monthly_water_limit),
-                  has_pressure_sensor: values.latest_irpd_config_v5.has_pressure_sensor,
-                  name_irpd_on_config: values.name,
-                  flow: parseFloat(values.flow),
-                  position: irpd.position,
-                  potency: values.latest_irpd_config_v5.potency,
-                  kwh_peak: irpd.latest_irpd_config_v5?.kwh_peak,
-                  kwh_out_of_peak: irpd.latest_irpd_config_v5?.kwh_out_of_peak,
-                  kwh_reduced: irpd.latest_irpd_config_v5?.kwh_reduced,
+                    : parseInt(values.latest_irpd_config.monthly_water_limit),
+                  hour_range_max: `${values.latest_irpd_config.hour_range_max}:00`,
+                  hour_range_min: `${values.latest_irpd_config.hour_range_min}:00`,
+                  rtc: moment(values.deviceClock).toISOString(),
+                  energy_time: parseInt(values.latest_irpd_config.energy_time),
                 };
 
                 const irpdPatchData = {
                   name: values.name,
-                  potency: values.latest_irpd_config_v5.potency,
+                  potency: values.potency,
                   position: irpd.position,
                   flow: parseFloat(values.flow),
                 };
 
-                await patchIrpdConfigReq.runAsync(
+                await postIrpdConfigV4Req.runAsync(
                   {
                     farmId: params.farmId as any,
                     irpdId: params.irpdId as any,
@@ -245,19 +199,22 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
               pform.setFieldValue('deviceHour', false);
               pform.setFieldValue('deviceClock', moment());
               pform.setFieldValue(
+                ['latest_irpd_config', 'hour_range_max'],
+                irpd.latest_irpd_config.hour_range_max
+                  ? moment(irpd.latest_irpd_config.hour_range_max, 'H:mm')
+                  : moment(),
+              );
+              pform.setFieldValue(
+                ['latest_irpd_config', 'hour_range_min'],
+                irpd.latest_irpd_config.hour_range_min
+                  ? moment(irpd.latest_irpd_config.hour_range_min, 'H:mm')
+                  : moment(),
+              );
+
+              pform.setFieldValue(
                 'enableMonthlyWaterLimit',
-                irpd.latest_irpd_config_v5?.monthly_water_limit !== 0,
+                irpd.latest_irpd_config?.monthly_water_limit !== 0,
               );
-              pform.setFieldValue(
-                'enableSensorScale',
-                irpd.latest_irpd_config_v5?.content?.imanage_sensors[0]?.max_value / 10 !== 0,
-              );
-              pform.setFieldValue(
-                ['latest_irpd_config_v5', 'content', 'imanage_sensors', '0', 'max_value'],
-                irpd.latest_irpd_config_v5?.content?.imanage_sensors[0]?.max_value / 10,
-              );
-              pform.setFieldValue('flow', irpd.latest_irpd_config_v5?.flow ? irpd.flow : 1);
-              pform.setFieldValue('pump', irpd.pump);
             }}
             initialValues={{
               ...irpd,
@@ -286,7 +243,7 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
                 label={intl.formatMessage({
                   id: 'component.edit.irpd.general.pumpradio.label',
                 })}
-                deviceId={irpd.latest_irpd_config_v5.device}
+                deviceId={irpd.latest_irpd_config.device}
                 status={'processing'}
                 span={{ xs: 24, md: 8 }}
                 deviceType="pump"
@@ -311,7 +268,7 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
               />
               <ProFormDigit
                 rules={[yupSync]}
-                name={['latest_irpd_config_v5', 'potency']}
+                name={'potency'}
                 label={intl.formatMessage({
                   id: 'component.edit.irpd.general.pumppower.label',
                 })}
@@ -328,7 +285,7 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
             <ProFormGroup>
               <ProFormDigit
                 rules={[yupSync]}
-                name={['latest_irpd_config_v5', 'content', 'pump_power_time', 'minutes']}
+                name={['latest_irpd_config', 'energy_time']}
                 label={intl.formatMessage({
                   id: 'component.edit.irpd.general.powertime.label',
                 })}
@@ -358,17 +315,42 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
               />
             </ProFormGroup>
             <ProFormGroup>
+              <>
+                <ProFormTimePicker
+                  rules={[yupSync]}
+                  name={['latest_irpd_config', 'hour_range_min']}
+                  dataFormat={TIME_FORMAT}
+                  label={intl.formatMessage({
+                    id: 'component.edit.irpd.pausetime.peak_time_start.label',
+                  })}
+                  fieldProps={{ format: TIME_FORMAT }}
+                  colProps={{ xs: 24, md: 8 }}
+                />
+                <ProFormTimePicker
+                  rules={[yupSync]}
+                  name={['latest_irpd_config', 'hour_range_max']}
+                  dataFormat={TIME_FORMAT}
+                  label={intl.formatMessage({
+                    id: 'component.edit.irpd.pausetime.peak_time_end.label',
+                  })}
+                  fieldProps={{ format: TIME_FORMAT }}
+                  colProps={{ xs: 24, md: 8 }}
+                />
+              </>
+            </ProFormGroup>
+
+            <ProFormGroup>
               <ProFormCheckbox name={'enableMonthlyWaterLimit'} colProps={{ xs: 24, md: 8 }} />
 
               <ProFormDependency name={['enableMonthlyWaterLimit']}>
                 {({ enableMonthlyWaterLimit }, form) => {
                   if (enableMonthlyWaterLimit !== undefined && !enableMonthlyWaterLimit) {
-                    form.setFieldValue(['latest_irpd_config_v5', 'monthly_water_limit'], 0);
+                    form.setFieldValue(['latest_irpd_config', 'monthly_water_limit'], 0);
                   }
                   return (
                     <ProFormDigit
                       rules={[yupSync]}
-                      name={['latest_irpd_config_v5', 'monthly_water_limit']}
+                      name={['latest_irpd_config', 'monthly_water_limit']}
                       label={intl.formatMessage({
                         id: 'component.edit.irpd.general.monthlywaterconsumptionlimit.label',
                       })}
@@ -381,47 +363,6 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
                         type: 'number',
                       }}
                       disabled={!enableMonthlyWaterLimit}
-                    />
-                  );
-                }}
-              </ProFormDependency>
-            </ProFormGroup>
-            <ProFormGroup>
-              <ProFormCheckbox
-                name={'enableSensorScale'}
-                colProps={{ xs: 24, md: 8 }}
-              />
-              <ProFormDependency name={['enableSensorScale']}>
-                {({ enableSensorScale }, form) => {
-                  if (enableSensorScale !== undefined && !enableSensorScale) {
-                    // Set the value to 0 when enableSensorScale is false
-                    form.setFieldValue(
-                      ['latest_irpd_config_v5', 'content', 'imanage_sensors', '0', 'max_value'],
-                      0,
-                    );
-                  }
-                  return (
-                    <ProFormDigit
-                      rules={[yupSync]}
-                      name={[
-                        'latest_irpd_config_v5',
-                        'content',
-                        'imanage_sensors',
-                        '0',
-                        'max_value',
-                      ]}
-                      label={intl.formatMessage({
-                        id: 'component.edit.irpd.general.sensorscale.label',
-                      })}
-                      colProps={{ xs: 24, md: 8 }}
-                      min={-100}
-                      max={100}
-                      fieldProps={{
-                        addonAfter: 'bar',
-                        controls: false,
-                        type: 'number',
-                      }}
-                      disabled={!enableSensorScale}
                     />
                   );
                 }}
@@ -450,16 +391,6 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
                 }}
               </ProFormDependency>
             </ProFormGroup>
-            <ProFormGroup>
-              <ProFormCheckbox
-                name={['latest_irpd_config_v5', 'has_pressure_sensor']}
-                colProps={{ xs: 24, md: 8 }}
-              >
-                {intl.formatMessage({
-                  id: 'component.edit.irpd.general.pressuresensor.label',
-                })}
-              </ProFormCheckbox>
-            </ProFormGroup>
           </ProForm>
         </>
       ) : null}
@@ -467,4 +398,4 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
   );
 };
 
-export default EditIrpdGeneralComponent;
+export default EditIrpdV4GeneralComponent;

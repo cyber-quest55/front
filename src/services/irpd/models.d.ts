@@ -585,4 +585,30 @@ declare namespace APIModels {
     position: string;
     flow: number;
   };
+
+  type IrpdConfigPayloadV4 = {
+    monthly_water_limit: number;
+    hour_range_max: string;
+    hour_range_min: string;
+    rtc: string;
+    energy_time: number;
+  };
+
+  type IrpdConfigV4 = {
+    id: number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    updated: string;
+    hour_range_max: string;
+    hour_range_min: string;
+    rtc: string;
+    energy_time: number;
+    sent: boolean;
+    delivered: boolean;
+    manual: boolean;
+    monthly_water_limit: number;
+    user: any;
+    irpd: number;
+  };
 }

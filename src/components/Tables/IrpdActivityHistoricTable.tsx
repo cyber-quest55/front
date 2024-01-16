@@ -58,7 +58,7 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
             title: 'Início',
             dataIndex: 'created',
             render: (value, item) => {
-              return <>{formatDate(item.created)}</>;
+              return <>{formatDate(item?.created)}</>;
             },
           },
           {

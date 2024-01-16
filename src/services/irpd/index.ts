@@ -56,14 +56,27 @@ export async function getIrpdEvents(
   });
 }
 
-export async function patchIrpdConfig(
-  props: API.PatchIrpdConfigParams,
+export async function postIrpdConfig(
+  props: API.PostIrpdConfigParams,
   options: APIModels.IrpdConfigPayload,
 ) {
   return request<{
-    data: API.PatchIrpdConfigResponse;
+    data: API.PostIrpdConfigResponse;
 
   }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function postIrpdConfigV4(
+  props: API.PostIrpdConfigV4Params,
+  options: APIModels.IrpdConfigPayloadV4,
+) {
+  return request<{
+    data: API.PostIrpdConfigV4Response;
+
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/config/`, {
     method: 'POST',
     data: options,
   });

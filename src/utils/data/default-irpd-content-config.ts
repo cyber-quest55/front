@@ -27,7 +27,7 @@ export function getDefaultIrpdContentConfig(irpd: any) {
   });
   const pauseTimeEnd1 = moment().set({
     hour: pauseTimeStatus1 ? latestConfig.content.peak_time.stop_hour_1 : 0,
-    minute: pauseTimeStatus1 ? latestConfig.content.peak_time.end_minute_1 : 0,
+    minute: pauseTimeStatus1 ? latestConfig.content.peak_time.stop_minute_1 : 0,
     second: 0,
     millisecond: 0,
   });

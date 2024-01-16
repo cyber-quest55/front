@@ -40,12 +40,19 @@ declare namespace API {
 
   type GetIrpdEventsResponse = APIModels.IrpdEventsResponse;
 
-  type PatchIrpdConfigParams = {
+  type PostIrpdConfigParams = {
     farmId: number;
     irpdId: string;
   };
 
-  type PatchIrpdConfigResponse = APIModels.IrpdConfig;
+  type PostIrpdConfigResponse = APIModels.IrpdConfig;
+
+  type PostIrpdConfigV4Params = {
+    farmId: number;
+    irpdId: string;
+  };
+
+  type PostIrpdConfigV4Response = APIModels.IrpdConfigV4;
 
   type GetIrpdDevicesParams = { farmId: string };
 
