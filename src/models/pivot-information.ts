@@ -161,13 +161,13 @@ export default {
           gpsLong = parseFloat(gpsPosition[1]);
         } else {
           centerLat = parseFloat(
-            item.controllerconfig.content?.pivot_positions.latitude_center as any,
+            item.controllerconfig.content?.pivot_positions?.latitude_center as any,
           );
           centerLng = parseFloat(
-            item.controllerconfig.content?.pivot_positions.longitude_center as any,
+            item.controllerconfig.content?.pivot_positions?.longitude_center as any,
           );
-          referencedLat = parseFloat(item.controllerconfig.content?.pivot_positions.latitude_reference as any);
-          referencedLng = parseFloat(item.controllerconfig.content?.pivot_positions.longitude_reference as any);
+          referencedLat = parseFloat(item.controllerconfig.content?.pivot_positions?.latitude_reference as any);
+          referencedLng = parseFloat(item.controllerconfig.content?.pivot_positions?.longitude_reference as any);
           gpsLat = parseFloat(
             item.controllerstream_gps.content?.latitude_longitude_gps?.latitude_gps as any,
           );

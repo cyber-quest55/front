@@ -225,3 +225,53 @@ export async function getLastSimpleIrrigation(
     },
   );
 }
+
+export async function getPressureComparison(
+  props: { pivotId: number },
+  options: {
+    comparison_start_date: string;
+    comparison_end_date: string;
+    current_start_date: string;
+    current_end_date: string;
+  },
+) {
+  return request<API.GetLastSimpleIrrigation>(`/reports/pivots/${props.pivotId}/pressure_chart/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function patchPivotMaintnanceMode(
+  props: { farmId: number; pivotId: number },
+  options: {
+    maintenance: boolean;
+  },
+) {
+  return request<{}>(`/farms/${props.farmId}/pivots/${props.pivotId}/maintenance/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function getPivotMaintnanceMode(
+  props: { farmId: number; pivotId: number },
+  options: {},
+) {
+  return request<{ maintenance: boolean }>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/maintenance/`,
+    {
+      method: 'GET',
+      data: options,
+    },
+  );
+}
+
+export async function stopPivot(props: { farmId: number; pivotId: number }, options: {}) {
+  return request<{ maintenance: boolean }>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/actions/stop/`,
+    {
+      method: 'Post',
+      data: options,
+    },
+  );
+}

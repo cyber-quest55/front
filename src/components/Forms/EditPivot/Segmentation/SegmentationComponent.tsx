@@ -74,8 +74,8 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
   const { message } = App.useApp();
   const { xs } = useScreenHook();
   const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(15, {
-    lat: positions.latitude_center,
-    lng: positions.longitude_center,
+    lat: positions?.latitude_center,
+    lng: positions?.longitude_center,
   });
 
   const [editableKeys, setEditableRowKeys] = React.useState<React.Key[]>([]);
@@ -365,8 +365,8 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
           zoom={zoom}
         >
           <SegmentedPivotDevice
-            center={{ lat: positions.latitude_center, lng: positions.longitude_center }}
-            referenced={{ lat: positions.latitude_reference, lng: positions.longitude_reference }}
+            center={{ lat: positions?.latitude_center, lng: positions?.longitude_center }}
+            referenced={{ lat: positions?.latitude_reference, lng: positions?.longitude_reference }}
             segments={dataSource}
           />
         </GoogleMap>

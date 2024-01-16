@@ -25,6 +25,11 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
   const { centerLat, centerLng } = props;
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
 
+  if (!centerLat || !centerLng ) {
+    return <></>;
+  }
+
+
   return (
     <>
       <OverlayViewF

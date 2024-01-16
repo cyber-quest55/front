@@ -144,10 +144,10 @@ export default {
         gpsLat = parseFloat(gpsPosition[0]).toFixed(6);
         gpsLong = parseFloat(gpsPosition[1]).toFixed(6);
       } else {
-        centerLat = item.controllerconfig.content?.pivot_positions.latitude_center;
-        centerLng = item.controllerconfig.content?.pivot_positions.longitude_center;
-        referencedLat = item.controllerconfig.content?.pivot_positions.latitude_reference;
-        referencedLng = item.controllerconfig.content?.pivot_positions.longitude_reference;
+        centerLat = item.controllerconfig.content?.pivot_positions?.latitude_center;
+        centerLng = item.controllerconfig.content?.pivot_positions?.longitude_center;
+        referencedLat = item.controllerconfig.content?.pivot_positions?.latitude_reference;
+        referencedLng = item.controllerconfig.content?.pivot_positions?.longitude_reference;
         gpsLat = item.controllerstream_gps.content?.latitude_longitude_gps?.latitude_gps;
         gpsLong = item.controllerstream_gps.content?.latitude_longitude_gps?.longitude_gps;
       }

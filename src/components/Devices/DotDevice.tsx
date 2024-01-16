@@ -27,7 +27,13 @@ const circleOptions = {
 const DotDevice: React.FC<CirclePivotProps> = (props) => {
   /** Props */
   const { centerLat, centerLng } = props;
+  
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
+
+  if (!centerLat || !centerLng ) {
+    return <></>;
+  }
+
 
   const deviceColor = props.deviceColor ? props.deviceColor : '#000';
 

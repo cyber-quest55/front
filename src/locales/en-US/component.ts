@@ -383,6 +383,7 @@ export default {
   'component.pivot.startirr.simple.currentangl': 'Current angle: ',
   'component.pivot.startirr.simple.oprtdrforecast': 'Operation duration forecast: ',
   'component.pivot.startirr.simple.enddtforecast': 'End date forecast:  ',
- 
+  'component.pivot.operationalpanel.button.tooltip.maintain': 'Enable Maintenance Mode',
+  'component.pivot.operationalpanel.button.tooltip.croop': 'Crop',
 
 };

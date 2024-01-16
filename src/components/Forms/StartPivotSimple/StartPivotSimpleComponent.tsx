@@ -41,36 +41,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
   const postReq = useRequest(postSimpleIrrigation, { manual: true });
   const getEstimated = useRequest(getEstimatedTime, { manual: true });
   const getLastSimple = useRequest(getLastSimpleIrrigation, { manual: true });
-  /**
- *    initialValues={{
-        garbage: {
-          unformated_date: dayjs(),
-          preciptation: PTPToMillimeter(pivot, 100).toFixed(4),
-        },
-        message_subtype: 'simple',
-        content: {
-          injection_pump_command: {
-            command: false,
-            note: '',
-          },
-          autoreversion_command: {
-            command: 1,
-          },
-          simple_irrigation_parameters: {
-            mode: 1,
-            percent: 100,
-            stop_mode: 0,
-            stop_angle: 1,
-            rounds: 1,
-            start_mode: 1,
-          },
-          irrigation_status: {
-            irrigation_status: 1,
-            irrigation_type: 1,
-          },
-        },
-      }}
- */
+ 
   const schema = yup.object().shape({
     garbage: yup.object().shape({
       unformated_date: yup.string().required(
@@ -273,6 +244,8 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
           if (fields[0].value === 0) form.setFieldValue(['garbage', 'unformated_date'], dayjs());
         }
       }}
+
+      // Caso mude qualquer valor, recalcular o estimated time
       onValuesChange={async (_, values) => {
         const simpleIrr = values?.content?.simple_irrigation_parameters;
         const result = await getEstimated.runAsync(
@@ -286,8 +259,8 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
             ),
             farm_timezone: 'America/Sao_Paulo',
             irrigation_start_date: values?.garbage?.unformated_date,
-            last_tower_distance: pivot.controllerconfig.content?.pivot_parameters?.radius_last,
-            last_tower_speed: pivot.controllerconfig.content?.pivot_parameters?.speed,
+            last_tower_distance: pivot?.controllerconfig?.content?.pivot_parameters?.radius_last,
+            last_tower_speed: pivot?.controllerconfig?.content?.pivot_parameters?.speed,
             pause_time_1: JSON.stringify(pauseTime1),
             pause_time_2: JSON.stringify(pauseTime2),
             pause_time_weekdays: [1, 2, 3, 4].join(','),
@@ -392,6 +365,12 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
               },
             },
           );
+
+          message.success(
+            intl.formatMessage({
+              id: 'component.message.success',
+            }),
+          );
         } catch (err) {
           message.error(
             intl.formatMessage({
@@ -399,13 +378,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
             }),
           );
           return false;
-        } finally {
-          message.success(
-            intl.formatMessage({
-              id: 'component.message.success',
-            }),
-          );
-        }
+        }  
         return true;
       }}
     >

@@ -51,6 +51,7 @@ const RenderSegment: React.FC<any> = (props) => {
   const centerLat = props.center.lat; // Latitud;
   const centerLng = props.center.lng; // Longitude
 
+
   // Raio em metros
   const radiusMeters = props.radius;
 
@@ -130,6 +131,10 @@ const SegmentedPivotDevice: React.FC<SegmentedPivotDeviceProps> = (props) => {
 
   const referencedLat = props.referenced.lat;
   const referencedLng = props.referenced.lng;
+
+  if (!centerLat || !centerLng || !referencedLat || !referencedLng) {
+    return <></>;
+  }
 
   const centerPositionGMaps = new LatLng(centerLat, centerLng);
   const referencePositionGMaps = new LatLng(referencedLat, referencedLng);

@@ -20,6 +20,10 @@ const RepeaterDevice: React.FC<RepeaterProps> = (props) => {
   const { centerLat, centerLng } = props;
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
 
+  if (!centerLat || !centerLng  ) {
+    return <></>;
+  }
+
   return (
     <>
       <OverlayViewF

@@ -24,6 +24,10 @@ const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
   const { centerLat, centerLng } = props;
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
 
+  if (!centerLat || !centerLng) {
+    return <></>;
+  }
+
   return (
     <>
       <OverlayViewF

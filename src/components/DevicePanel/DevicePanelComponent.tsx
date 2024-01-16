@@ -1,5 +1,6 @@
 import { useScreenHook } from '@/hooks/screen';
 import { setDeviceClose } from '@/models/selected-device';
+import { getPivotMaintnanceMode, patchPivotMaintnanceMode, stopPivot } from '@/services/pivot';
 import { DeviceType } from '@/utils/enum/device-type';
 import {
   CaretDownOutlined,
@@ -11,13 +12,28 @@ import {
   ThunderboltFilled,
 } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useIntl } from '@umijs/max';
-import { Button, Col, Dropdown, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { Link, useIntl, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import {
+  App,
+  Button,
+  Col,
+  Dropdown,
+  Popconfirm,
+  Row,
+  Select,
+  Space,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
 import { MenuProps } from 'rc-menu';
+import { useEffect } from 'react';
 import { BsFillCloudRainFill } from 'react-icons/bs';
-import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
+import { GiPadlock, GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
 import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
+import StartPivotScheduleContainer from '../Forms/StartPivotSchedule/StartPivotScheduleContainer';
 
 const { Text } = Typography;
 
@@ -39,10 +55,16 @@ type Props = {
 export const DevicePanelComponent: React.FC<Props> = (props) => {
   const { md } = useScreenHook();
   const intl = useIntl();
+  const { message } = App.useApp();
+  const params = useParams();
+
+  const mtncReq = useRequest(patchPivotMaintnanceMode, { manual: true });
+  const mtncGetReq = useRequest(getPivotMaintnanceMode, { manual: true });
+  const stopReq = useRequest(stopPivot, { manual: true });
 
   const { options, device, type, onChangeDevice } = props;
 
-  const classNameSelect = useEmotionCss(({token}) => {
+  const classNameSelect = useEmotionCss(({ token }) => {
     return {
       '.ant-select-selection-item': {
         fontWeight: 700,
@@ -57,9 +79,69 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       },
     };
   });
- 
+
   const destroyOnClick = () => {
     props.setDeviceClose();
+  };
+
+  const onMaintenanceModeToggle = async () => {
+    try {
+      if (mtncGetReq.data) {
+        await mtncReq.runAsync(
+          {
+            farmId: params.id as any,
+            pivotId: device.id as any,
+          },
+          {
+            maintenance: !mtncGetReq.data?.maintenance,
+          },
+        );
+
+        await mtncGetReq.refreshAsync();
+
+        message.success(
+          intl.formatMessage({
+            id: 'component.message.success',
+          }),
+        );
+      }
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'component.message.error',
+        }),
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleStopPivot = async () => {
+    try {
+      await stopReq.runAsync(
+        {
+          farmId: params.id as any,
+          pivotId: device.id as any,
+        },
+        {
+          maintenance: !mtncGetReq.data?.maintenance,
+        },
+      );
+
+      message.success(
+        intl.formatMessage({
+          id: 'component.message.success',
+        }),
+      );
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'component.message.error',
+        }),
+      );
+      return false;
+    }
+    return true;
   };
 
   const extra = (type: DeviceType) => {
@@ -186,11 +268,21 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     },
     {
       key: '4',
-      label: intl.formatMessage({
-        id: 'component.pivot.operationalpanel.button.start.opt.4',
-      }),
+      label: <StartPivotScheduleContainer/>
     },
   ];
+
+  // To load maintain mode
+  useEffect(() => {
+    if (device.id && type === DeviceType.Pivot && !mtncGetReq.loading)
+      mtncGetReq.run(
+        {
+          farmId: params.id as any,
+          pivotId: device.id as any,
+        },
+        {},
+      );
+  }, [device]);
 
   const deviceActions = (type: DeviceType) => {
     switch (type) {
@@ -204,7 +296,13 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                 })}
               </Button>
             </Dropdown>
-            <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
+            <Button
+              loading={stopReq.loading}
+              onClick={handleStopPivot}
+              type="default"
+              danger
+              style={{ width: md ? '200px' : '100%' }}
+            >
               {intl.formatMessage({
                 id: 'component.pivot.operationalpanel.button.stop',
               })}{' '}
@@ -241,14 +339,23 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pivot: {
         return (
           <Space>
-            <Button icon={<GiPadlockOpen />} />
+            <Popconfirm
+              onConfirm={onMaintenanceModeToggle}
+              title={`${intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.tooltip.maintain',
+              })}?`}
+            >
+              <Button icon={mtncGetReq.data?.maintenance ? <GiPadlockOpen /> : <GiPadlock />} />
+            </Popconfirm>
             <Button icon={<GiSolidLeaf />} />
             <Button icon={<CloudFilled />} />
-            <Button icon={<EditFilled />}>
-              {intl.formatMessage({
-                id: 'component.pivot.operationalpanel.button.edit',
-              })}
-            </Button>
+            <Link to={`/farms/${params.id}/pivot/${device.id}/edit`}>
+              <Button icon={<EditFilled />}>
+                {intl.formatMessage({
+                  id: 'component.pivot.operationalpanel.button.edit',
+                })}
+              </Button>
+            </Link>
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
               {intl.formatMessage({
                 id: 'component.pivot.operationalpanel.button.close',
@@ -319,7 +426,6 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       <Row style={{ maxWidth: 250 }}>
         <Col style={{ width: '100%' }}>
           <Select
-          
             className={classNameSelect}
             suffixIcon={<CaretDownOutlined className="" />}
             bordered={false}

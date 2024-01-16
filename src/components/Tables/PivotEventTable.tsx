@@ -45,7 +45,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
                 label={intl.formatMessage({
                   id: 'component.pivot.tab.history.rangepicker.label',
                 })}
-                allowClear
+                
                 fieldProps={{
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
@@ -53,7 +53,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
                       ref.current?.reload()
                     };
                   },
-
+                  allowClear: false,
                   value: dates,
                 }}
               />
