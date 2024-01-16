@@ -1,10 +1,5 @@
 import { queryIrpdById } from '@/models/irpd-by-id';
-import {
-  favoriteIrpdConfig,
-  getEditIrpdHistory,
-  patchIrpd,
-  postIrpdConfig,
-} from '@/services/irpd';
+import { favoriteIrpdConfig, getEditIrpdHistory, patchIrpd, postIrpdConfig } from '@/services/irpd';
 import { HistoryOutlined, StarFilled, UploadOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -18,7 +13,6 @@ import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Form, Space, Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import moment from 'moment';
 import * as React from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
@@ -546,73 +540,71 @@ const EditIrpdHistoryTable: React.FunctionComponent<IEditIrpdHistoryTableProps> 
           >
             {full.content.peak_time.saturday_enable}
           </ProDescriptions.Item>
-          <ProDescriptions.Item
-            label={intl.formatMessage({
-              id: 'component.edit.irpd.pausetime.peak_time_start.label',
-            })}
-            valueType="text"
-          >
-            {moment()
-              .set({
-                hour: full.content.peak_time.start_hour_1,
-                minute: full.content.peak_time.start_minute_1,
-                second: 0,
-                millisecond: 0,
-              })
-              .format('HH:mm')}
-          </ProDescriptions.Item>
-          <ProDescriptions.Item
-            label={intl.formatMessage({
-              id: 'component.edit.irpd.pausetime.peak_time_end.label',
-            })}
-            valueType="text"
-          >
-            {moment()
-              .set({
-                hour: full.content.peak_time.stop_hour_1,
-                minute: full.content.peak_time.stop_hour_1,
-                second: 0,
-                millisecond: 0,
-              })
-              .format('HH:mm')}
-          </ProDescriptions.Item>
+          <ProDescriptions column={2}>
+            <ProDescriptions.Item
+              label={
+                '1. ' +
+                intl.formatMessage({
+                  id: 'component.edit.irpd.pausetime.peak_time_start.label',
+                })
+              }
+              span={2}
+              valueType="text"
+            >
+              {dayjs()
+                .hour(full.content?.peak_time.start_hour_1)
+                .minute(full.content?.peak_time.start_minute_1)
+                .format('HH:mm')}
+            </ProDescriptions.Item>
+            <ProDescriptions.Item
+              labelStyle={{ paddingLeft: 16 }}
+              label={intl.formatMessage({
+                id: 'component.edit.irpd.pausetime.peak_time_end.label',
+              })}
+              span={2}
+              valueType="text"
+            >
+              {dayjs()
+                .hour(full.content?.peak_time.stop_hour_1)
+                .minute(full.content?.peak_time.stop_minute_1)
+                .format('HH:mm')}
+            </ProDescriptions.Item>
+          </ProDescriptions>
 
           {full.content?.peak_time.start_hour_2 === 0 &&
           full.content?.peak_time.start_minute_2 === 0 &&
           full.content?.peak_time.stop_hour_2 === 0 &&
           full.content?.peak_time.stop_minute_2 === 0 ? null : (
-            <>
+            <ProDescriptions column={2}>
               <ProDescriptions.Item
-                label={intl.formatMessage({
-                  id: 'component.edit.irpd.pausetime.peak_time_start.label',
-                })}
+                label={
+                  '2. ' +
+                  intl.formatMessage({
+                    id: 'component.edit.irpd.pausetime.peak_time_start.label',
+                  })
+                }
+                span={2}
                 valueType="text"
               >
-                {moment()
-                  .set({
-                    hour: full.content.peak_time.stop_hour_2,
-                    minute: full.content.peak_time.stop_hour_2,
-                    second: 0,
-                    millisecond: 0,
-                  })
+                {dayjs()
+                  .hour(full.content?.peak_time.start_hour_2)
+                  .minute(full.content?.peak_time.start_minute_2)
                   .format('HH:mm')}
               </ProDescriptions.Item>
               <ProDescriptions.Item
+              labelStyle={{ paddingLeft: 16 }}
                 label={intl.formatMessage({
                   id: 'component.edit.irpd.pausetime.peak_time_end.label',
                 })}
+                span={2}
                 valueType="text"
               >
-                {moment()
-                  .set({
-                    hour: full.content.peak_time.stop_hour_2,
-                    minute: full.content.peak_time.stop_hour_2,
-                    second: 0,
-                    millisecond: 0,
-                  })
+                {dayjs()
+                  .hour(full.content?.peak_time.stop_hour_2)
+                  .minute(full.content?.peak_time.stop_minute_2)
                   .format('HH:mm')}
               </ProDescriptions.Item>
-            </>
+            </ProDescriptions>
           )}
         </ProDescriptions>
       </Space>
@@ -650,14 +642,14 @@ const EditIrpdHistoryTable: React.FunctionComponent<IEditIrpdHistoryTableProps> 
             },
             { pinned: !!props.showOnlyFavorites, page: currentPage },
           );
-          const data = result.results?.map((item: any, index: number) => ({
+          const data = result.results?.map((item: any) => ({
             created: item.created,
             created_by: item.created_by?.username,
             irpd: item.message_status,
             name: item.name,
-            key: `table-history-edit-irpd-${index}`,
-            id: `table-history-edit-irpd-${index}`,
-            index: `table-history-edit-irpd-${index}`,
+            key: `table-history-edit-irpd-${item.id}`,
+            id: `table-history-edit-irpd-${item.id}`,
+            index: `table-history-edit-irpd-${item.id}`,
             full: item,
           }));
 
@@ -684,7 +676,6 @@ const EditIrpdHistoryTable: React.FunctionComponent<IEditIrpdHistoryTableProps> 
             setCurrentPage(page);
           },
         }}
-        dateFormatter="string"
         headerTitle={intl.formatMessage({
           id: 'component.edit.irpd.history.table.title',
         })}

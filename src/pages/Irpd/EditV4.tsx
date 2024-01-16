@@ -6,7 +6,7 @@ import { Dispatch, useIntl, useParams } from '@umijs/max';
 import React, { useState } from 'react';
 
 // import EditLevelContainer from '@/components/Forms/EditMeter/Level/LevelContainer';
-import LocationCallerContainer from '@/components/Forms/EditIrpd/LocationCaller/LocationCallerContainer';
+import EditIrpdV4LocationCallerComponent from '@/components/Forms/EditIrpdV4/LocationCaller/LocationCallerContainer';
 import { connect } from 'dva';
 
 interface Props {
@@ -86,7 +86,7 @@ const EditIrpdV4: React.FunctionComponent<Props> = (props) => {
                   id: 'pages.edit.irpd.tab.options.location',
                 }),
                 key: 'location',
-                children: <LocationCallerContainer />,
+                children: <EditIrpdV4LocationCallerComponent />,
               },
             ],
             onChange: (key) => {

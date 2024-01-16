@@ -332,6 +332,9 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
                 label={intl.formatMessage({
                   id: 'component.edit.irpd.general.powertime.label',
                 })}
+                tooltip={intl.formatMessage({
+                  id: 'component.edit.irpd.general.powertime.tooltip',
+                })}
                 colProps={{ xs: 24, md: 8 }}
                 min={0}
                 max={300}
@@ -358,76 +361,6 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
               />
             </ProFormGroup>
             <ProFormGroup>
-              <ProFormCheckbox name={'enableMonthlyWaterLimit'} colProps={{ xs: 24, md: 8 }} />
-
-              <ProFormDependency name={['enableMonthlyWaterLimit']}>
-                {({ enableMonthlyWaterLimit }, form) => {
-                  if (enableMonthlyWaterLimit !== undefined && !enableMonthlyWaterLimit) {
-                    form.setFieldValue(['latest_irpd_config_v5', 'monthly_water_limit'], 0);
-                  }
-                  return (
-                    <ProFormDigit
-                      rules={[yupSync]}
-                      name={['latest_irpd_config_v5', 'monthly_water_limit']}
-                      label={intl.formatMessage({
-                        id: 'component.edit.irpd.general.monthlywaterconsumptionlimit.label',
-                      })}
-                      colProps={{ xs: 24, md: 8 }}
-                      min={0}
-                      max={100000}
-                      fieldProps={{
-                        addonAfter: 'm³',
-                        controls: false,
-                        type: 'number',
-                      }}
-                      disabled={!enableMonthlyWaterLimit}
-                    />
-                  );
-                }}
-              </ProFormDependency>
-            </ProFormGroup>
-            <ProFormGroup>
-              <ProFormCheckbox
-                name={'enableSensorScale'}
-                colProps={{ xs: 24, md: 8 }}
-              />
-              <ProFormDependency name={['enableSensorScale']}>
-                {({ enableSensorScale }, form) => {
-                  if (enableSensorScale !== undefined && !enableSensorScale) {
-                    // Set the value to 0 when enableSensorScale is false
-                    form.setFieldValue(
-                      ['latest_irpd_config_v5', 'content', 'imanage_sensors', '0', 'max_value'],
-                      0,
-                    );
-                  }
-                  return (
-                    <ProFormDigit
-                      rules={[yupSync]}
-                      name={[
-                        'latest_irpd_config_v5',
-                        'content',
-                        'imanage_sensors',
-                        '0',
-                        'max_value',
-                      ]}
-                      label={intl.formatMessage({
-                        id: 'component.edit.irpd.general.sensorscale.label',
-                      })}
-                      colProps={{ xs: 24, md: 8 }}
-                      min={-100}
-                      max={100}
-                      fieldProps={{
-                        addonAfter: 'bar',
-                        controls: false,
-                        type: 'number',
-                      }}
-                      disabled={!enableSensorScale}
-                    />
-                  );
-                }}
-              </ProFormDependency>
-            </ProFormGroup>
-            <ProFormGroup>
               <ProFormCheckbox name={'deviceHour'} colProps={{ xs: 24, md: 8 }}>
                 {intl.formatMessage({
                   id: 'component.edit.irpd.general.equipmentdate.label',
@@ -451,6 +384,76 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
               </ProFormDependency>
             </ProFormGroup>
             <ProFormGroup>
+              <ProFormCheckbox name={'enableMonthlyWaterLimit'} colProps={{ xs: 3, md: 1 }} />
+
+              <ProFormDependency name={['enableMonthlyWaterLimit']}>
+                {({ enableMonthlyWaterLimit }, form) => {
+                  if (enableMonthlyWaterLimit !== undefined && !enableMonthlyWaterLimit) {
+                    form.setFieldValue(['latest_irpd_config_v5', 'monthly_water_limit'], 0);
+                  }
+                  return (
+                    <ProFormDigit
+                      rules={[yupSync]}
+                      name={['latest_irpd_config_v5', 'monthly_water_limit']}
+                      label={intl.formatMessage({
+                        id: 'component.edit.irpd.general.monthlywaterconsumptionlimit.label',
+                      })}
+                      colProps={{ xs: 21, md: 7 }}
+                      min={0}
+                      max={100000}
+                      fieldProps={{
+                        addonAfter: 'm³',
+                        controls: false,
+                        type: 'number',
+                      }}
+                      disabled={!enableMonthlyWaterLimit}
+                    />
+                  );
+                }}
+              </ProFormDependency>
+            </ProFormGroup>
+            <ProFormGroup>
+              <ProFormCheckbox
+                name={'enableSensorScale'}
+                colProps={{ xs: 3, md: 1 }}
+              />
+              <ProFormDependency name={['enableSensorScale']}>
+                {({ enableSensorScale }, form) => {
+                  if (enableSensorScale !== undefined && !enableSensorScale) {
+                    // Set the value to 0 when enableSensorScale is false
+                    form.setFieldValue(
+                      ['latest_irpd_config_v5', 'content', 'imanage_sensors', '0', 'max_value'],
+                      0,
+                    );
+                  }
+                  return (
+                    <ProFormDigit
+                      rules={[yupSync]}
+                      name={[
+                        'latest_irpd_config_v5',
+                        'content',
+                        'imanage_sensors',
+                        '0',
+                        'max_value',
+                      ]}
+                      label={intl.formatMessage({
+                        id: 'component.edit.irpd.general.sensorscale.label',
+                      })}
+                      colProps={{ xs: 21, md: 7 }}
+                      min={-100}
+                      max={100}
+                      fieldProps={{
+                        addonAfter: 'bar',
+                        controls: false,
+                        type: 'number',
+                      }}
+                      disabled={!enableSensorScale}
+                    />
+                  );
+                }}
+              </ProFormDependency>
+            </ProFormGroup>
+            <ProFormGroup>
               <ProFormCheckbox
                 name={['latest_irpd_config_v5', 'has_pressure_sensor']}
                 colProps={{ xs: 24, md: 8 }}
@@ -460,6 +463,7 @@ const EditIrpdGeneralComponent: React.FunctionComponent<any> = (props) => {
                 })}
               </ProFormCheckbox>
             </ProFormGroup>
+           
           </ProForm>
         </>
       ) : null}

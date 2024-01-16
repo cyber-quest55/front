@@ -1,4 +1,4 @@
-import { patchIrpd, postIrpdConfig } from '@/services/irpd';
+import { patchIrpd } from '@/services/irpd';
 import { SaveOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
@@ -7,15 +7,13 @@ import { App, Button, Typography } from 'antd';
 import * as React from 'react';
 import MarkerGreen from '../../../../../public/images/devices/marker-green.svg';
 import LocationFormContainer from '../../Location/LocationContainer';
-import { getDefaultIrpdContentConfig } from '@/utils/data/default-irpd-content-config';
 
-const EditIrpdLocationCallerComponent: React.FunctionComponent<any> = (props) => {
+const EditIrpdV4LocationCallerComponent: React.FunctionComponent<any> = (props) => {
   const irpd = props.irpd;
   const positions = {
     lat: Number(irpd.position.split(',')[0]),
     long: Number(irpd.position.split(',')[1]),
   };
-  const patchIrpdConfigReq = useRequest(postIrpdConfig, { manual: true });
   const patchIrpdReq = useRequest(patchIrpd, { manual: true });
   const params = useParams();
   const { message } = App.useApp();
@@ -28,37 +26,12 @@ const EditIrpdLocationCallerComponent: React.FunctionComponent<any> = (props) =>
 
   const onFinish = async () => {
     try {
-      const defaultContentConfig = getDefaultIrpdContentConfig(irpd);
-
-      const newConfig = {
-        content: {
-          ...defaultContentConfig,
-        },
-        monthly_water_limit: irpd.latest_irpd_config_v5.monthly_water_limit,
-        has_pressure_sensor: irpd.latest_irpd_config_v5.has_pressure_sensor,
-        name_irpd_on_config: irpd.name,
-        flow: parseFloat(irpd.flow),
-        position: `${first.lat},${first.lng}`,
-        potency: irpd.latest_irpd_config_v5.potency,
-        kwh_peak: parseFloat(irpd.latest_irpd_config_v5?.kwh_peak ?? 1),
-        kwh_out_of_peak: parseFloat(irpd.latest_irpd_config_v5?.kwh_out_of_peak ?? 1),
-        kwh_reduced: parseFloat(irpd.latest_irpd_config_v5?.kwh_reduced ?? 1),
-      };
-
       const irpdPatchData = {
         name: irpd.name,
-        potency: irpd.latest_irpd_config_v5.potency,
+        potency: irpd.potency,
         position: `${first.lat},${first.lng}`,
-        flow: parseFloat(irpd.flow),
+        flow: irpd.flow,
       };
-
-      await patchIrpdConfigReq.runAsync(
-        {
-          farmId: params.farmId as any,
-          irpdId: params.irpdId as any,
-        },
-        newConfig,
-      );
 
       await patchIrpdReq.runAsync(
         {
@@ -93,7 +66,7 @@ const EditIrpdLocationCallerComponent: React.FunctionComponent<any> = (props) =>
       ghost
       extra={
         <Button
-          loading={patchIrpdConfigReq.loading}
+          loading={patchIrpdReq.loading}
           onClick={onFinish}
           icon={<SaveOutlined />}
           type="primary"
@@ -131,4 +104,4 @@ const EditIrpdLocationCallerComponent: React.FunctionComponent<any> = (props) =>
   );
 };
 
-export default EditIrpdLocationCallerComponent;
+export default EditIrpdV4LocationCallerComponent;

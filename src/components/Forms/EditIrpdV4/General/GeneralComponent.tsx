@@ -281,13 +281,14 @@ const EditIrpdV4GeneralComponent: React.FunctionComponent<any> = (props) => {
                   type: 'number',
                 }}
               />
-            </ProFormGroup>
-            <ProFormGroup>
               <ProFormDigit
                 rules={[yupSync]}
                 name={['latest_irpd_config', 'energy_time']}
                 label={intl.formatMessage({
                   id: 'component.edit.irpd.general.powertime.label',
+                })}
+                tooltip={intl.formatMessage({
+                  id: 'component.edit.irpd.general.powertime.tooltip',
                 })}
                 colProps={{ xs: 24, md: 8 }}
                 min={0}
@@ -298,6 +299,8 @@ const EditIrpdV4GeneralComponent: React.FunctionComponent<any> = (props) => {
                   type: 'number',
                 }}
               />
+            </ProFormGroup>
+            <ProFormGroup>
               <ProFormDigit
                 rules={[yupSync]}
                 name="flow"
@@ -313,34 +316,30 @@ const EditIrpdV4GeneralComponent: React.FunctionComponent<any> = (props) => {
                   type: 'number',
                 }}
               />
-            </ProFormGroup>
-            <ProFormGroup>
-              <>
-                <ProFormTimePicker
-                  rules={[yupSync]}
-                  name={['latest_irpd_config', 'hour_range_min']}
-                  dataFormat={TIME_FORMAT}
-                  label={intl.formatMessage({
-                    id: 'component.edit.irpd.pausetime.peak_time_start.label',
-                  })}
-                  fieldProps={{ format: TIME_FORMAT }}
-                  colProps={{ xs: 24, md: 8 }}
-                />
-                <ProFormTimePicker
-                  rules={[yupSync]}
-                  name={['latest_irpd_config', 'hour_range_max']}
-                  dataFormat={TIME_FORMAT}
-                  label={intl.formatMessage({
-                    id: 'component.edit.irpd.pausetime.peak_time_end.label',
-                  })}
-                  fieldProps={{ format: TIME_FORMAT }}
-                  colProps={{ xs: 24, md: 8 }}
-                />
-              </>
+              <ProFormTimePicker
+                rules={[yupSync]}
+                name={['latest_irpd_config', 'hour_range_min']}
+                dataFormat={TIME_FORMAT}
+                label={intl.formatMessage({
+                  id: 'component.edit.irpd.pausetime.peak_time_start.label',
+                })}
+                fieldProps={{ format: TIME_FORMAT, style: { width: '100%' } }}
+                colProps={{ xs: 24, md: 8 }}
+              />
+              <ProFormTimePicker
+                rules={[yupSync]}
+                name={['latest_irpd_config', 'hour_range_max']}
+                dataFormat={TIME_FORMAT}
+                label={intl.formatMessage({
+                  id: 'component.edit.irpd.pausetime.peak_time_end.label',
+                })}
+                fieldProps={{ format: TIME_FORMAT, style: { width: '100%' } }}
+                colProps={{ xs: 24, md: 8 }}
+              />
             </ProFormGroup>
 
             <ProFormGroup>
-              <ProFormCheckbox name={'enableMonthlyWaterLimit'} colProps={{ xs: 24, md: 8 }} />
+              <ProFormCheckbox name={'enableMonthlyWaterLimit'} colProps={{ xs: 3, md: 1 }} />
 
               <ProFormDependency name={['enableMonthlyWaterLimit']}>
                 {({ enableMonthlyWaterLimit }, form) => {
@@ -354,7 +353,7 @@ const EditIrpdV4GeneralComponent: React.FunctionComponent<any> = (props) => {
                       label={intl.formatMessage({
                         id: 'component.edit.irpd.general.monthlywaterconsumptionlimit.label',
                       })}
-                      colProps={{ xs: 24, md: 8 }}
+                      colProps={{ xs: 21, md: 7 }}
                       min={0}
                       max={100000}
                       fieldProps={{

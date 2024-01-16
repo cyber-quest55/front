@@ -264,6 +264,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                   addonBefore: '$',
                   controls: false,
                   type: 'number',
+                  precision: 2
                 }}
               />
               <ProFormDigit
@@ -279,6 +280,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                   addonBefore: '$',
                   controls: false,
                   type: 'number',
+                  precision: 2
                 }}
               />
               <ProFormDigit
@@ -294,6 +296,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                   addonBefore: '$',
                   controls: false,
                   type: 'number',
+                  precision: 2,
                 }}
               />
             </ProFormGroup>
@@ -308,7 +311,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                     <>
                       <ProFormCheckbox
                         name={['latest_irpd_config_v5', 'content', 'peak_time', 'monday_enable']}
-                        colProps={{ xs: 24, md: 8 }}
+                        colProps={{ xs: 6, md: 3 }}
                         disabled={!enableFirstPickTime}
                       >
                         {intl.formatMessage({
@@ -317,7 +320,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                       </ProFormCheckbox>
                       <ProFormCheckbox
                         name={['latest_irpd_config_v5', 'content', 'peak_time', 'tuesday_enable']}
-                        colProps={{ xs: 24, md: 8 }}
+                        colProps={{ xs: 6, md: 3 }}
                         disabled={!enableFirstPickTime}
                       >
                         {intl.formatMessage({
@@ -326,7 +329,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                       </ProFormCheckbox>
                       <ProFormCheckbox
                         name={['latest_irpd_config_v5', 'content', 'peak_time', 'wednesday_enable']}
-                        colProps={{ xs: 24, md: 8 }}
+                        colProps={{ xs: 6, md: 3 }}
                         disabled={!enableFirstPickTime}
                       >
                         {intl.formatMessage({
@@ -335,7 +338,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                       </ProFormCheckbox>
                       <ProFormCheckbox
                         name={['latest_irpd_config_v5', 'content', 'peak_time', 'thursday_enable']}
-                        colProps={{ xs: 24, md: 8 }}
+                        colProps={{ xs: 6, md: 3 }}
                         disabled={!enableFirstPickTime}
                       >
                         {intl.formatMessage({
@@ -344,7 +347,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                       </ProFormCheckbox>
                       <ProFormCheckbox
                         name={['latest_irpd_config_v5', 'content', 'peak_time', 'friday_enable']}
-                        colProps={{ xs: 24, md: 8 }}
+                        colProps={{ xs: 6, md: 3 }}
                         disabled={!enableFirstPickTime}
                       >
                         {intl.formatMessage({
@@ -353,7 +356,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                       </ProFormCheckbox>
                       <ProFormCheckbox
                         name={['latest_irpd_config_v5', 'content', 'peak_time', 'saturday_enable']}
-                        colProps={{ xs: 24, md: 8 }}
+                        colProps={{ xs: 6, md: 3 }}
                         disabled={!enableFirstPickTime}
                       >
                         {intl.formatMessage({
@@ -362,7 +365,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                       </ProFormCheckbox>
                       <ProFormCheckbox
                         name={['latest_irpd_config_v5', 'content', 'peak_time', 'sunday_enable']}
-                        colProps={{ xs: 24, md: 8 }}
+                        colProps={{ xs: 6, md: 3 }}
                         disabled={!enableFirstPickTime}
                       >
                         {intl.formatMessage({
@@ -396,7 +399,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                         label={intl.formatMessage({
                           id: 'component.edit.irpd.pausetime.peak_time_start.label',
                         })}
-                        fieldProps={{ format: TIME_FORMAT }}
+                        fieldProps={{ format: TIME_FORMAT, style: { width: '100%' } }}
                         colProps={{ xs: 24, md: 8 }}
                         disabled={!enableFirstPickTime}
                       />
@@ -407,7 +410,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                         label={intl.formatMessage({
                           id: 'component.edit.irpd.pausetime.peak_time_end.label',
                         })}
-                        fieldProps={{ format: TIME_FORMAT }}
+                        fieldProps={{ format: TIME_FORMAT, style: { width: '100%' } }}
                         colProps={{ xs: 24, md: 8 }}
                         disabled={!enableFirstPickTime}
                       />
@@ -432,7 +435,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                                 label={intl.formatMessage({
                                   id: 'component.edit.irpd.pausetime.peak_time_start.label',
                                 })}
-                                fieldProps={{ format: TIME_FORMAT }}
+                                fieldProps={{ format: TIME_FORMAT, style: { width: '100%' } }}
                                 colProps={{ xs: 24, md: 8 }}
                                 disabled={!enableSecondPickTime}
                               />
@@ -443,7 +446,7 @@ const EditIrpdPauseTimeComponent: React.FunctionComponent<any> = (props) => {
                                 label={intl.formatMessage({
                                   id: 'component.edit.irpd.pausetime.peak_time_end.label',
                                 })}
-                                fieldProps={{ format: TIME_FORMAT }}
+                                fieldProps={{ format: TIME_FORMAT, style: { width: '100%' } }}
                                 colProps={{ xs: 24, md: 8 }}
                                 disabled={!enableSecondPickTime}
                               />
