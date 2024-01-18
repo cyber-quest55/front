@@ -98,7 +98,30 @@ export default [
     isHidden: true,
     component: './Pivot/Edit.tsx',
   },
-
+  {
+    path: 'farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',
+    name: 'Edit Meter',
+    hideInMenu: true,
+    component: './Meter/Edit.tsx',
+  },
+  {
+    path: 'farms/:farmId/repeater/:repeaterId/edit',
+    name: 'Edit Repeater',
+    hideInMenu: true,
+    component: './Repeater/Edit.tsx',
+  },
+  {
+    path: 'farms/:farmId/irpd/:irpdId/edit',
+    name: 'Edit Pump',
+    hideInMenu: true,
+    component: './Irpd/Edit.tsx',
+  },
+  {
+    path: 'farms/:farmId/irpd/:irpdId/editv4',
+    name: 'Edit Pump',
+    hideInMenu: true,
+    component: './Irpd/EditV4.tsx',
+  },
   {
     path: '/notifications/',
     name: 'Notificações',
