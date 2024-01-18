@@ -71,6 +71,14 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
           },
           { radio_id: props.form.getFieldValue(props.name) },
         );
+      } else if (device === 'pump') {
+        await reqManual.runAsync(
+          {
+            farmId: params.farmId as any,
+            irpdId: params.irpdId,
+          },
+          { radio_id: props.form.getFieldValue(props.name) },
+        );
       }
       setIsEditing(false);
       message.success('Salvo com sucesso');
@@ -135,6 +143,18 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
                 farmId: params.farmId as any,
                 repeaterId: params.repeaterId as any,
               });
+            } else if (device === 'pump') {
+              await reqPost.runAsync(
+                {
+                  farmId: params.farmId as any,
+                  irpdId: params.irpdId as any,
+                  irpdToSwapId: item.id,
+                },
+              );
+              props.requestAfterChange({
+                farmId: params.farmId as any,
+                irpdId: params.irpdId as any,
+              });
             }
 
             message.success('Rádios trocados com sucesso');
@@ -182,6 +202,11 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
                 });
               }
               else if (device === 'repeater') {
+                result = await reqGet.runAsync({
+                  farmId: params.farmId as any,
+                });
+              }
+              else if (device === 'pump') {
                 result = await reqGet.runAsync({
                   farmId: params.farmId as any,
                 });

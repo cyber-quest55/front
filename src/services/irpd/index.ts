@@ -55,4 +55,93 @@ export async function getIrpdEvents(
 
   });
 }
- 
+
+export async function postIrpdConfig(
+  props: API.PostIrpdConfigParams,
+  options: APIModels.IrpdConfigPayload,
+) {
+  return request<{
+    data: API.PostIrpdConfigResponse;
+
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function postIrpdConfigV4(
+  props: API.PostIrpdConfigV4Params,
+  options: APIModels.IrpdConfigPayloadV4,
+) {
+  return request<{
+    data: API.PostIrpdConfigV4Response;
+
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/config/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function getEditIrpdDeviceTable(props: API.GetIrpdDevicesParams) {
+  return request<{
+    data: API.GetIrpdDevicesResponse;
+  }>(`/farms/${props.farmId}/irpds/devices`, {
+    method: 'GET',
+  });
+}
+
+export async function patchChangeIrpdRadio(props: API.PatchChangeIrpdRadioParams) {
+  return request<{
+    data: API.PatchChangeIrpdRadioResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/swap/${props.irpdToSwapId}/`, {
+    method: 'PATCH',
+  });
+}
+
+export async function postChangeIrpdManualRadio(
+  props: API.PostChangeIrpdManualRadioParams,
+  options?: { radio_id: string },
+) {
+  return request<{
+    data: API.PostChangeIrpdManualRadioResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/edit_radio/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function patchIrpd(
+  props: API.PatchIrpdParams,
+  options?: APIModels.IrpdPayload,
+) {
+  return request<{
+    data: API.PatchIrpdResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function getEditIrpdHistory(
+  props: API.GetEditIrpdHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetIrpdHistoryResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function favoriteIrpdConfig(
+  props: API.FavoriteIrpdConfigParams,
+  options?: {  [key: string]: any },
+) {
+
+  return request<{
+    data: API.FavoriteIrpdConfigResponse;
+  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/${props.configId}/`, {
+    method: 'PATCH',
+   data: options});
+}
