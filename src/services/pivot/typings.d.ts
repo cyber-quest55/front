@@ -83,38 +83,78 @@ declare namespace API {
     deviceId: string;
   };
 
-  type PostSimpleIrrigation = {
-    message_subtype: string;
-    equipment: number;
-    end_date_forecast: string;
-    operation_duration_forecast: number;
-    content: {
-      injection_pump_command: {
-        command: number;
-        note: string;
+  type PostSimpleIrrigation =
+    | {
+        message_subtype: string;
+        equipment: number;
+        end_date_forecast: string;
+        operation_duration_forecast: number;
+        content: {
+          injection_pump_command: {
+            command: number;
+            note: string;
+          };
+          autoreversion_command: {
+            command: number;
+          };
+          simple_irrigation_parameters: {
+            mode: number;
+            percent: number;
+            stop_mode: number;
+            stop_angle: number;
+            rounds: number;
+            start_modenumber;
+            start_year: number;
+            start_month: number;
+            start_day: number;
+            start_hour: number;
+            start_minute: number;
+          };
+          irrigation_status: {
+            irrigation_status: number;
+            irrigation_type: number;
+          };
+        };
+      }
+    | {
+        message_subtype: string;
+        equipment: number;
+        content: {
+          injection_pump_command: {
+            command: number;
+            note: string;
+          };
+          autoreversion_command: {
+            command: number;
+          };
+          schedule_irrigation_parameters: Array<{
+            number_editing: number;
+            mode: number;
+            percent: number;
+            millimeter: number;
+            start_now: boolean;
+            start_on_a_date: boolean;
+            start_day: number;
+            start_month: number;
+            start_year: number;
+            start_hour: number;
+            start_minute: number;
+            end_day: number;
+            end_month: number;
+            end_year: number;
+            end_hour: number;
+            end_minute: number;
+            direction: number;
+            stop_mode: number;
+            stop_angle: number;
+            schedule_rounds: number;
+          }>;
+          irrigation_status: {
+            irrigation_type: number;
+            irrigation_status: number;
+          };
+        };
       };
-      autoreversion_command: {
-        command: number;
-      };
-      simple_irrigation_parameters: {
-        mode: number;
-        percent: number;
-        stop_mode: number;
-        stop_angle: number;
-        rounds: number;
-        start_modenumber;
-        start_year: number;
-        start_month: number;
-        start_day: number;
-        start_hour: number;
-        start_minute: number;
-      };
-      irrigation_status: {
-        irrigation_status: number;
-        irrigation_type: number;
-      };
-    };
-  };
 
   type GetEstimatedTimeParams = {
     last_tower_distance: number;
@@ -135,7 +175,54 @@ declare namespace API {
 
   type GetEstimatedTimeResponse = { raw_duration: number; total_duration: number };
 
-  type GetLastSimpleIrrigation  = {
+  type GetLastSimpleIrrigation = {
+    id: number;
+    username: string;
+    current_angle: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content: {
+      irrigation_status: {
+        irrigation_type: number;
+        irrigation_status: number;
+      };
+      autoreversion_command: {
+        command: number;
+      };
+      injection_pump_command: {
+        note: string;
+        command: number;
+      };
+      simple_irrigation_parameters: {
+        mode: number;
+        rounds: number;
+        percent: number;
+        start_day: number;
+        stop_mode: number;
+        start_hour: number;
+        start_mode: number;
+        start_year: number;
+        stop_angle: number;
+        start_month: number;
+        start_minute: number;
+      };
+    };
+    end_date_forecast: string;
+    operation_duration_forecast: number;
+    angle_V5: boolean;
+    created_by: number;
+    device: number;
+    equipment: number;
+  };
+
+  type GetLastScheduleIrrigation = {
     id: number
     username: string
     current_angle: number
@@ -160,22 +247,31 @@ declare namespace API {
         note: string
         command: number
       }
-      simple_irrigation_parameters: {
+      schedule_irrigation_parameters: Array<{
         mode: number
-        rounds: number
+        end_day: number
         percent: number
+        end_hour: number
+        end_year: number
+        direction: number
+        end_month: number
         start_day: number
+        start_now: boolean
         stop_mode: number
+        end_minute: number
+        millimeter: number
         start_hour: number
-        start_mode: number
         start_year: number
         stop_angle: number
         start_month: number
         start_minute: number
-      }
+        number_editing: number
+        schedule_rounds: number
+        start_on_a_date: boolean
+      }>
     }
-    end_date_forecast: string
-    operation_duration_forecast: number
+    end_date_forecast: any
+    operation_duration_forecast: any
     angle_V5: boolean
     created_by: number
     device: number

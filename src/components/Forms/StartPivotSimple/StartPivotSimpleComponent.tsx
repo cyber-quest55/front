@@ -15,7 +15,7 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { App, Button, Form, Typography } from 'antd';
+import { App, Button, Form, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import * as yup from 'yup';
@@ -41,7 +41,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
   const postReq = useRequest(postSimpleIrrigation, { manual: true });
   const getEstimated = useRequest(getEstimatedTime, { manual: true });
   const getLastSimple = useRequest(getLastSimpleIrrigation, { manual: true });
- 
+
   const schema = yup.object().shape({
     garbage: yup.object().shape({
       unformated_date: yup.string().required(
@@ -244,7 +244,6 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
           if (fields[0].value === 0) form.setFieldValue(['garbage', 'unformated_date'], dayjs());
         }
       }}
-
       // Caso mude qualquer valor, recalcular o estimated time
       onValuesChange={async (_, values) => {
         const simpleIrr = values?.content?.simple_irrigation_parameters;
@@ -274,9 +273,18 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
 
         setExpected({ rawDuration: result.raw_duration, totalDuration: result.total_duration });
       }}
-      title={intl.formatMessage({
-        id: 'component.pivot.startirr.simple.title',
-      })}
+      title={
+        <Space>
+          {intl.formatMessage({
+            id: 'component.pivot.startirr.title',
+          })}
+          <Button loading={getLastSimple.loading} onClick={handleFetchLastConfig} style={{}}>
+            {intl.formatMessage({
+              id: 'component.pivot.startirr.button.loadlast',
+            })}
+          </Button>
+        </Space>
+      }
       trigger={
         <Typography.Link style={{ width: '100%' }}>
           {intl.formatMessage({
@@ -378,21 +386,14 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
             }),
           );
           return false;
-        }  
+        }
         return true;
       }}
-    >
-      <ProForm.Group>
-        <Button onClick={handleFetchLastConfig} style={{ marginBlock: 12 }}>
-          {intl.formatMessage({
-            id: 'component.pivot.startirr.simple.button.loadlast',
-          })}
-        </Button>
-      </ProForm.Group>
+    > 
       <ProForm.Group style={{ marginBottom: 12 }}>
         <Typography.Text>
           {intl.formatMessage({
-            id: 'component.pivot.startirr.simple.currentangl',
+            id: 'component.pivot.startirr.currentangl',
           })}{' '}
           {pivot?.controllerstream_gps?.current_angle |
             pivot?.controllerstream_gps?.current_angle?.current_angle}
@@ -405,18 +406,18 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
           name={['content', 'irrigation_status', 'irrigation_status']}
           radioType="button"
           label={intl.formatMessage({
-            id: 'component.pivot.startirr.simple.form.label.1',
+            id: 'component.pivot.startirr.form.label.1',
           })}
           options={[
             {
               label: intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.1.opt.1',
+                id: 'component.pivot.startirr.form.label.1.opt.1',
               }),
               value: 1,
             },
             {
               label: intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.1.opt.2',
+                id: 'component.pivot.startirr.form.label.1.opt.2',
               }),
               value: 2,
             },
@@ -426,18 +427,18 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
           name={['content', 'simple_irrigation_parameters', 'mode']}
           radioType="button"
           label={intl.formatMessage({
-            id: 'component.pivot.startirr.simple.form.label.2',
+            id: 'component.pivot.startirr.form.label.2',
           })}
           options={[
             {
               label: intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.2.opt.1',
+                id: 'component.pivot.startirr.form.label.2.opt.1',
               }),
               value: 1,
             },
             {
               label: intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.2.opt.2',
+                id: 'component.pivot.startirr.form.label.2.opt.2',
               }),
               value: 2,
             },
@@ -451,7 +452,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
             pivot.controllerconfig?.injection_pump ? (
               <ProFormCheckbox width="xs" name={['content', 'injection_pump_command', 'command']}>
                 {intl.formatMessage({
-                  id: 'component.pivot.startirr.simple.form.label.9',
+                  id: 'component.pivot.startirr.form.label.9',
                 })}
               </ProFormCheckbox>
             ) : null
@@ -466,7 +467,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
               <ProFormTextArea
                 name={['content', 'injection_pump_command', 'note']}
                 label={intl.formatMessage({
-                  id: 'component.pivot.startirr.simple.form.label.10',
+                  id: 'component.pivot.startirr.form.label.10',
                 })}
                 width="xl"
               />
@@ -479,7 +480,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
         <ProFormDigit
           rules={[yupSync]}
           label={intl.formatMessage({
-            id: 'component.pivot.startirr.simple.form.label.3',
+            id: 'component.pivot.startirr.form.label.3',
           })}
           name={['content', 'simple_irrigation_parameters', 'percent']}
           width="md"
@@ -491,7 +492,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
         <ProFormDigit
           disabled
           label={intl.formatMessage({
-            id: 'component.pivot.startirr.simple.form.label.4',
+            id: 'component.pivot.startirr.form.label.4',
           })}
           name={['garbage', 'preciptation']}
           width="md"
@@ -507,26 +508,26 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
             {
               value: 0,
               label: intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.5.opt.1',
+                id: 'component.pivot.startirr.form.label.5.opt.1',
               }),
             },
             {
               value: 1,
               label: intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.5.opt.2',
+                id: 'component.pivot.startirr.form.label.5.opt.2',
               }),
             },
             {
               value: 2,
               label: intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.5.opt.3',
+                id: 'component.pivot.startirr.form.label.5.opt.3',
               }),
             },
           ]}
           width="md"
           name={['content', 'simple_irrigation_parameters', 'start_mode']}
           label={intl.formatMessage({
-            id: 'component.pivot.startirr.simple.form.label.5',
+            id: 'component.pivot.startirr.form.label.5',
           })}
         />
         <ProFormDependency name={['content']} colon style={{ width: '100%' }}>
@@ -539,7 +540,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
                 fieldProps={{}}
                 name={['garbage', 'unformated_date']}
                 label={intl.formatMessage({
-                  id: 'component.pivot.startirr.simple.form.label.6',
+                  id: 'component.pivot.startirr.form.label.6',
                 })}
               />
             );
@@ -550,30 +551,30 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
         name={['content', 'simple_irrigation_parameters', 'stop_mode']}
         radioType="button"
         label={intl.formatMessage({
-          id: 'component.pivot.startirr.simple.form.label.7',
+          id: 'component.pivot.startirr.form.label.7',
         })}
         options={[
           {
             label: intl.formatMessage({
-              id: 'component.pivot.startirr.simple.form.label.7.opt.1',
+              id: 'component.pivot.startirr.form.label.7.opt.1',
             }),
             value: 0,
           },
           {
             label: intl.formatMessage({
-              id: 'component.pivot.startirr.simple.form.label.7.opt.2',
+              id: 'component.pivot.startirr.form.label.7.opt.2',
             }),
             value: 1,
           },
           {
             label: intl.formatMessage({
-              id: 'component.pivot.startirr.simple.form.label.7.opt.3',
+              id: 'component.pivot.startirr.form.label.7.opt.3',
             }),
             value: 3,
           },
           {
             label: intl.formatMessage({
-              id: 'component.pivot.startirr.simple.form.label.7.opt.4',
+              id: 'component.pivot.startirr.form.label.7.opt.4',
             }),
             value: 4,
           },
@@ -587,7 +588,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
               rules={[yupSync]}
               name={['content', 'simple_irrigation_parameters', 'stop_angle']}
               label={intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.8',
+                id: 'component.pivot.startirr.form.label.8',
               })}
               width="sm"
               fieldProps={{
@@ -605,7 +606,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
               rules={[yupSync]}
               name={['content', 'simple_irrigation_parameters', 'rounds']}
               label={intl.formatMessage({
-                id: 'component.pivot.startirr.simple.form.label.11',
+                id: 'component.pivot.startirr.form.label.11',
               })}
               width="sm"
               fieldProps={{
@@ -620,12 +621,12 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
           return content?.simple_irrigation_parameters?.stop_mode !== 0 ? (
             <Typography.Text>
               {intl.formatMessage({
-                id: 'component.pivot.startirr.simple.oprtdrforecast',
+                id: 'component.pivot.startirr.oprtdrforecast',
               })}
               : {dayjs().add(expected.rawDuration, 'hours').toISOString()}
               <br />
               {intl.formatMessage({
-                id: 'component.pivot.startirr.simple.enddtforecast',
+                id: 'component.pivot.startirr.enddtforecast',
               })}
               : {dayjs().toISOString()}
             </Typography.Text>

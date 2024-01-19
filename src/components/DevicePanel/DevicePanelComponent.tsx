@@ -289,7 +289,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pivot: {
         return (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-            <Dropdown menu={{ items }} placement="top" arrow>
+          <Dropdown trigger={["click"]} menu={{ items }} placement="top" arrow>
               <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
                 {intl.formatMessage({
                   id: 'component.pivot.operationalpanel.button.start',
@@ -326,7 +326,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
             <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
               {intl.formatMessage({
                 id: 'component.pivot.operationalpanel.button.stop',
-              })}{' '}
+              })}
             </Button>
           </Space>
         );
