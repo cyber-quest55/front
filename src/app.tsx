@@ -1,5 +1,5 @@
 import { AvatarDropdown, AvatarName } from '@/components';
-import { currentUser as queryCurrentUser } from '@/services/user/index';
+import { getUserInfo, currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined, UserOutlined } from '@ant-design/icons';
 import {
   ProConfigProvider,
@@ -51,7 +51,8 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({});
-      return msg.profile;
+      const data = await getUserInfo({});
+      return {...msg.profile, ...data};
     } catch (error) {
       //history.push(loginPath);
     }

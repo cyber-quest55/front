@@ -44,5 +44,7 @@ export default {
   'pages.edit.meter.tab.options.level': 'Level',
   'pages.edit.meter.tab.options.favorites': 'Favorites',
   'pages.edit.meter.tab.options.previoussettings': 'Previous settings',
-
+  'pages.edit.profile.tab.header.configuration': 'Configurations',
+  'pages.edit.profile.tab.options.general': 'General',
+  'pages.edit.profile.tab.options.security': 'Security',
  };

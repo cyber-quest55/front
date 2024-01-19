@@ -104,7 +104,12 @@ export default [
     hideInMenu: true,
     component: './Meter/Edit.tsx',
   },
-
+  {
+    path: 'profile',
+    name: 'User Profile',
+    hideInMenu: true,
+    component: './Profile',
+  },
   {
     path: '/notifications/',
     name: 'Notificações',

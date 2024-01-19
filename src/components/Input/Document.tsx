@@ -13,11 +13,11 @@ interface IDocumentProps {
   country: string;
 }
 
-const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
+const CustomComponent = (props: any) => {
   const cnt = countries.find((item) => item.iso === props.country);
+
   const mask1: string = cnt ? cnt.masks.documentPeson.value : '';
   const mask2 = cnt ? cnt.masks.documentEmployer.value : '';
-
   const [docType, setDocType] = React.useState(1);
 
   const onChangeDocType = (doc: number) => {
@@ -25,6 +25,45 @@ const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
     props.onChangeDocType(doc);
   };
 
+  return (
+    <Space.Compact style={{ width: '100%', margin: 0, padding: 0 }}>
+      <div>
+        <ProFormSelect
+          onChange={onChangeDocType}
+          fieldProps={{
+            value: docType,
+            allowClear: false,
+          }}
+          request={async () => {
+            return [
+              {
+                label: cnt?.masks.documentPeson.label,
+                value: 1,
+              },
+              {
+                label: cnt?.masks.documentEmployer.label,
+                value: 2,
+              },
+            ];
+          }}
+        />
+      </div>
+      <div style={{ width: '100%' }}>
+        <MaskedInput
+          style={{
+            borderRadius: '0px 6px 6px 0px',
+            height: 32,
+            width: '100%',
+          }}
+          {...props}
+          mask={docType === 1 ? mask1 : mask2}
+        />
+      </div>
+    </Space.Compact>
+  );
+};
+
+const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
   const className = useEmotionCss(({}) => {
     return {
       '.ant-form-item': {
@@ -35,29 +74,27 @@ const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
 
   const classNameDark = useEmotionCss(({ token }) => {
     return {
-        '.ant-input': {
-          lineHeight: 1.5714285714285714,
-          backgroundColor: token.colorBgContainer,
-          backgroundImage: 'none',
-          borderWidth: ' 1px',
-          borderStyle: 'solid',
-          borderColor: token.colorBorder,
-          borderRadius: '6px',
-          transition: 'all 0.2s',
-          color: token.colorText,
-          ':focus': {
-            borderColor: token.colorPrimary,
-          },
-          ':hover': {
-            borderColor: token.colorPrimary,
-          }, 
+      '.ant-input': {
+        lineHeight: 1.5714285714285714,
+        backgroundColor: token.colorBgContainer,
+        backgroundImage: 'none',
+        borderWidth: ' 1px',
+        borderStyle: 'solid',
+        borderColor: token.colorBorder,
+        borderRadius: '6px',
+        transition: 'all 0.2s',
+        color: token.colorText,
+        ':focus': {
+          borderColor: token.colorPrimary,
         },
-      
-        '.ant-input-status-error': {
-          borderColor: token.colorError
+        ':hover': {
+          borderColor: token.colorPrimary,
         },
-        
-      
+      },
+
+      '.ant-input-status-error': {
+        borderColor: token.colorError,
+      },
     };
   });
 
@@ -68,32 +105,7 @@ const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
         style={{ width: '100%', marginBottom: 0, paddingBottom: 0 }}
         {...props.formItemProps}
       >
-        <Space.Compact style={{ width: '100%', margin: 0, padding: 0 }}>
-          <ProFormSelect
-            onChange={onChangeDocType}
-            fieldProps={{
-              value: docType,
-              allowClear: false,
-            }}
-            width={'xs'}
-            request={async () => {
-              return [
-                {
-                  label: cnt?.masks.documentPeson.label,
-                  value: 1,
-                },
-                {
-                  label: cnt?.masks.documentEmployer.label,
-                  value: 2,
-                },
-              ];
-            }}
-          />
-          <MaskedInput
-            style={{ borderRadius: '0px 6px 6px 0px', height: 32, borderLeft: 0, width: '100%' }}
-            mask={docType === 1 ? mask1 : mask2}
-          />
-        </Space.Compact>
+        <CustomComponent country={props.country} onChangeDocType={props.onChangeDocType} />
       </ProFormItem>
     </Col>
   );
