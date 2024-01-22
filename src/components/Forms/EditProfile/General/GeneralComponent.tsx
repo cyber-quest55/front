@@ -299,7 +299,7 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
                         name: 'cpf',
                       }}
                       country={country}
-                      form={form}
+                      formRef={ref}
                       selectItemProps={{
                         name: 'doc_type',
                       }}

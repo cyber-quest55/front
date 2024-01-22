@@ -3,7 +3,6 @@ import { ProFormItem, ProFormItemProps, ProFormSelect } from '@ant-design/pro-co
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Col, Space } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
-import { FormInstance } from 'antd-mobile/es/components/form';
 import { ColProps } from 'antd/lib';
 import * as React from 'react';
 
@@ -12,7 +11,7 @@ interface IDocumentProps {
   formItemProps: ProFormItemProps;
   country: string;
   selectItemProps: ProFormItemProps;
-  form: FormInstance;
+  formRef: any;
 }
 
 const CustomDocumentInput = (props: any) => {
@@ -25,10 +24,10 @@ const CustomDocumentInput = (props: any) => {
     const mask = doc === 1 ? mask1 : mask2;
     const maskFormatted = mask.replaceAll("0", "_");
 
-    props.form.resetFields([props.name]);
-    props.form.setFieldValue(props.name, maskFormatted);
+    props.formRef.current?.resetFields([props.name]);
+    props.formRef.current?.setFieldValue(props.name, maskFormatted);
 
-    props.form.setFieldValue(props.selectItemProps.name, doc);
+    props.formRef.current?.setFieldValue(props.selectItemProps.name, doc);
   };
 
   return (
@@ -63,7 +62,7 @@ const CustomDocumentInput = (props: any) => {
           }}
           onChange={props.onChange}
           value={props.value}
-          mask={props.form.getFieldValue(props.selectItemProps.name) === 1 ? mask1 : mask2}
+          mask={props.formRef.current?.getFieldValue(props.selectItemProps.name) === 1 ? mask1 : mask2}
         />
       </div>
     </Space.Compact>
@@ -116,7 +115,7 @@ const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
           country={props.country}
           name={props.formItemProps?.name}
           selectItemProps={props.selectItemProps}
-          form={props.form}
+          formRef={props.formRef}
         />
       </ProFormItem>
     </Col>
