@@ -3,26 +3,32 @@ import { ProFormItem, ProFormItemProps, ProFormSelect } from '@ant-design/pro-co
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Col, Space } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
+import { FormInstance } from 'antd-mobile/es/components/form';
 import { ColProps } from 'antd/lib';
 import * as React from 'react';
 
 interface IDocumentProps {
-  onChangeDocType: any;
   colProps?: ColProps;
-  formItemProps?: ProFormItemProps;
+  formItemProps: ProFormItemProps;
   country: string;
+  selectItemProps: ProFormItemProps;
+  form: FormInstance;
 }
 
-const CustomComponent = (props: any) => {
+const CustomDocumentInput = (props: any) => {
   const cnt = countries.find((item) => item.iso === props.country);
 
   const mask1: string = cnt ? cnt.masks.documentPeson.value : '';
   const mask2 = cnt ? cnt.masks.documentEmployer.value : '';
-  const [docType, setDocType] = React.useState(1);
 
   const onChangeDocType = (doc: number) => {
-    setDocType(doc);
-    props.onChangeDocType(doc);
+    const mask = doc === 1 ? mask1 : mask2;
+    const maskFormatted = mask.replaceAll("0", "_");
+
+    props.form.resetFields([props.name]);
+    props.form.setFieldValue(props.name, maskFormatted);
+
+    props.form.setFieldValue(props.selectItemProps.name, doc);
   };
 
   return (
@@ -31,7 +37,6 @@ const CustomComponent = (props: any) => {
         <ProFormSelect
           onChange={onChangeDocType}
           fieldProps={{
-            value: docType,
             allowClear: false,
           }}
           request={async () => {
@@ -46,6 +51,7 @@ const CustomComponent = (props: any) => {
               },
             ];
           }}
+          {...props.selectItemProps}
         />
       </div>
       <div style={{ width: '100%' }}>
@@ -55,8 +61,9 @@ const CustomComponent = (props: any) => {
             height: 32,
             width: '100%',
           }}
-          {...props}
-          mask={docType === 1 ? mask1 : mask2}
+          onChange={props.onChange}
+          value={props.value}
+          mask={props.form.getFieldValue(props.selectItemProps.name) === 1 ? mask1 : mask2}
         />
       </div>
     </Space.Compact>
@@ -105,7 +112,12 @@ const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
         style={{ width: '100%', marginBottom: 0, paddingBottom: 0 }}
         {...props.formItemProps}
       >
-        <CustomComponent country={props.country} onChangeDocType={props.onChangeDocType} />
+        <CustomDocumentInput
+          country={props.country}
+          name={props.formItemProps?.name}
+          selectItemProps={props.selectItemProps}
+          form={props.form}
+        />
       </ProFormItem>
     </Col>
   );

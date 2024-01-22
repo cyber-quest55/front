@@ -41,7 +41,7 @@ export async function changePassword(
 ) {
   return request<{
     data: API.PostChangePasswordResponse;
-  }>(`/auth/change`, {
+  }>(`/auth/change/`, {
     method: 'POST',
     data: options,
   });

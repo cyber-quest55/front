@@ -4,7 +4,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import { ProCard, ProForm, ProFormGroup, ProFormText } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Form, Typography } from 'antd';
+import { App, Button, Col, Form, Row, Typography } from 'antd';
 import * as React from 'react';
 import * as yup from 'yup';
 
@@ -13,6 +13,7 @@ const EditSecurityComponent: React.FunctionComponent<any> = (props) => {
   const intl = useIntl();
   const ref = React.useRef();
   const { currentUser } = props;
+  const { message } = App.useApp();
   const changePasswordReq = useRequest(changePassword, { manual: true });
 
   const schema = yup.object().shape({
@@ -24,6 +25,10 @@ const EditSecurityComponent: React.FunctionComponent<any> = (props) => {
         intl.formatMessage({
           id: 'validations.strong.password',
         }),
+      ).required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
       ),
     new_password: yup
       .string()
@@ -32,6 +37,10 @@ const EditSecurityComponent: React.FunctionComponent<any> = (props) => {
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_])[A-Za-z\d@'"!$!-_%*#?&]{8,}$/,
         intl.formatMessage({
           id: 'validations.strong.password',
+        }),
+      ).required(
+        intl.formatMessage({
+          id: 'validations.required',
         }),
       ),
     confirm_new_password: yup
@@ -44,9 +53,13 @@ const EditSecurityComponent: React.FunctionComponent<any> = (props) => {
         }),
       )
       .oneOf(
-        [yup.ref('password')],
+        [yup.ref('new_password')],
         intl.formatMessage({
           id: 'validations.password.match',
+        }),
+      ).required(
+        intl.formatMessage({
+          id: 'validations.required',
         }),
       ),
   });
@@ -88,46 +101,57 @@ const EditSecurityComponent: React.FunctionComponent<any> = (props) => {
           formRef={ref}
           name="general_form"
           onFinish={async (values: any) => {
-            await changePasswordReq.runAsync({
-              current_password: values.current_password,
-              new_password: values.new_password,
-            });
+            try {
+              await changePasswordReq.runAsync({
+                current_password: values.current_password,
+                new_password: values.new_password,
+              });
+              form.resetFields();
+              message.success('Senha Atualizada com Sucesso');
+            } catch (err) {
+              console.error(err);
+              message.error('Fail');
+            }
           }}
         >
           <ProFormGroup>
-            <ProFormText.Password
-              rules={[yupSync]}
-              colProps={{ md: 24, lg: 12 }}
-              name="current_password"
-              placeholder={intl.formatMessage({
-                id: 'component.edit.profile.security.currentpassword.label',
-              })}
-              label={intl.formatMessage({
-                id: 'component.edit.profile.security.currentpassword.label',
-              })}
-            />
-            <ProFormText.Password
-              rules={[yupSync]}
-              colProps={{ md: 24, lg: 12 }}
-              name="new_password"
-              placeholder={intl.formatMessage({
-                id: 'component.edit.profile.security.newpassword.label',
-              })}
-              label={intl.formatMessage({
-                id: 'component.edit.profile.security.newpassword.label',
-              })}
-            />
-            <ProFormText.Password
-              rules={[yupSync]}
-              colProps={{ md: 24, lg: 12 }}
-              name="confirm_new_password"
-              placeholder={intl.formatMessage({
-                id: 'component.edit.profile.security.confirmnewpassword.label',
-              })}
-              label={intl.formatMessage({
-                id: 'component.edit.profile.security.confirmnewpassword.label',
-              })}
-            />
+            <Row style={{ width: '100%' }} gutter={[12, 12]}>
+              <Col xs={24}>
+                <ProFormText.Password
+                  rules={[yupSync]}
+                  colProps={{ md: 24, lg: 12 }}
+                  name="current_password"
+                  placeholder={intl.formatMessage({
+                    id: 'component.edit.profile.security.currentpassword.label',
+                  })}
+                  label={intl.formatMessage({
+                    id: 'component.edit.profile.security.currentpassword.label',
+                  })}
+                />
+                <ProFormText.Password
+                  rules={[yupSync]}
+                  colProps={{ md: 24, lg: 12 }}
+                  name="new_password"
+                  placeholder={intl.formatMessage({
+                    id: 'component.edit.profile.security.newpassword.label',
+                  })}
+                  label={intl.formatMessage({
+                    id: 'component.edit.profile.security.newpassword.label',
+                  })}
+                />
+                <ProFormText.Password
+                  rules={[yupSync]}
+                  colProps={{ md: 24, lg: 12 }}
+                  name="confirm_new_password"
+                  placeholder={intl.formatMessage({
+                    id: 'component.edit.profile.security.confirmnewpassword.label',
+                  })}
+                  label={intl.formatMessage({
+                    id: 'component.edit.profile.security.confirmnewpassword.label',
+                  })}
+                />
+              </Col>
+            </Row>
           </ProFormGroup>
         </ProForm>
       ) : null}

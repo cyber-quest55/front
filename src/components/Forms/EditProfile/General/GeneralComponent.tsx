@@ -20,6 +20,14 @@ import moment from 'moment';
 import * as React from 'react';
 import * as yup from 'yup';
 
+const removeNotNumbersOfString = (string: string) => {
+  return string?.replaceAll(/[^\d]/g, '') ?? null;
+};
+
+const removeNotNumbersAndZeroOfString = (string: string) => {
+  return string?.replaceAll(/[^\d^0]/g, '') ?? null;
+};
+
 const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
   const intl = useIntl();
@@ -60,11 +68,14 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
         id: 'validations.required',
       }),
     ),
-    email: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
+    email: yup
+      .string()
+      .email()
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
     prefix_cell_phone: yup.string().required(
       intl.formatMessage({
         id: 'validations.required',
@@ -76,7 +87,15 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
         id: 'validations.required',
       }),
     ),
-    phone: yup.string(),
+    phone: yup
+      .string()
+      .nullable()
+      .matches(
+        /^(?=.*\d)[^_]*$|^[^0-9]*_+[^0-9]*$|^$/,
+        intl.formatMessage({
+          id: 'validations.invalid',
+        }),
+      ),
     birth: yup.string().required(
       intl.formatMessage({
         id: 'validations.required',
@@ -88,34 +107,46 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
         id: 'validations.required',
       }),
     ),
-    state: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
-    city: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
-    address_1: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
-    district: yup.string(),
-    number: yup.string(),
-    address_2: yup.string(),
+    state: yup
+      .string()
+      .min(2, intl.formatMessage({ id: 'validations.min' }, { value: 2 }))
+      .max(36, intl.formatMessage({ id: 'validations.max' }, { value: 36 }))
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+    city: yup
+      .string()
+      .min(3, intl.formatMessage({ id: 'validations.min' }, { value: 3 }))
+      .max(60, intl.formatMessage({ id: 'validations.max' }, { value: 60 }))
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+    address_1: yup
+      .string()
+      .min(3, intl.formatMessage({ id: 'validations.min' }, { value: 3 }))
+      .max(140, intl.formatMessage({ id: 'validations.max' }, { value: 140 }))
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+    district: yup.string().max(140, intl.formatMessage({ id: 'validations.max' }, { value: 140 })),
+    number: yup.number(),
+    address_2: yup.string().max(140, intl.formatMessage({ id: 'validations.max' }, { value: 140 })),
   });
 
-  const yupSync = yupValidator(schema, ref.current?.getFieldsValue as any);
+  const yupSync = yupValidator(schema, form.getFieldsValue as any);
 
   const onBlurBilling: React.FocusEventHandler<HTMLInputElement> = async (v) => {
     const { data } = await getCep(v.target.value);
-    const formsValue = ref.current?.getFieldsValue();
+    const formsValue = form.getFieldsValue();
 
     if (data && !data.erro) {
-      ref.current?.setFieldsValue({
+      form.setFieldsValue({
         ...formsValue,
         address_1: data.logradouro,
         district: data.bairro,
@@ -169,11 +200,11 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
                 address_1: values.address_1,
                 address_2: values.address_2,
                 number: values.number,
-                postal_code: values.postal_code?.replaceAll(/[^\d]/g, '') ?? null,
-                phone: values.phone?.replaceAll(/[^\d]/g, '') ?? null,
-                prefix_cell_phone: values.prefix_cell_phone?.replaceAll(/[^\d]/g, '') ?? null,
-                cell_phone: values.cell_phone?.replaceAll(/[^\d]/g, '') ?? null,
-                cpf: values.cpf?.replaceAll(/[^\d]/g, '') ?? null,
+                postal_code: removeNotNumbersOfString(values.postal_code),
+                phone: removeNotNumbersAndZeroOfString(values.phone),
+                prefix_cell_phone: removeNotNumbersOfString(values.prefix_cell_phone),
+                cell_phone: removeNotNumbersOfString(values.cell_phone),
+                cpf: removeNotNumbersOfString(values.cpf),
                 language: currentUser.language,
                 role: null,
               });
@@ -199,7 +230,7 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
               currentUser.prefix_cell_phone.padStart(4, '0'),
             );
           }}
-          initialValues={{ ...currentUser }}
+          initialValues={{ ...currentUser, doc_type: 1 }}
         >
           <ProFormGroup
             title={intl.formatMessage({
@@ -260,7 +291,6 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
                   <>
                     <CustomInput.Document
                       colProps={{ xs: 24, sm: 8, md: 8 }}
-                      onChangeDocType={() => {}}
                       formItemProps={{
                         rules: [yupSync],
                         label: intl.formatMessage({
@@ -269,6 +299,10 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
                         name: 'cpf',
                       }}
                       country={country}
+                      form={form}
+                      selectItemProps={{
+                        name: 'doc_type',
+                      }}
                     />
                     <ProFormDatePicker
                       rules={[yupSync]}
