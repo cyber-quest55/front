@@ -18,7 +18,7 @@ import {
 } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useParams } from '@umijs/max';
+import { useParams, useNavigate } from '@umijs/max';
 import {
   Col,
   Divider,
@@ -65,6 +65,7 @@ const scrollToBottom = () => {
 const PivotList: React.FC<Props> = (props) => {
   const params = useParams();
   const { md } = useScreenHook();
+  const navigate = useNavigate();
 
   const classNameScrollable = useEmotionCss(({}) => {
     return {
@@ -186,7 +187,7 @@ const PivotList: React.FC<Props> = (props) => {
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
-          <span>{item.name}</span>
+          <span onClick={() => { navigate(`/farms/${params.id}/repeater/${item.id}/edit`) }}>{item.name}</span>
         </Col>
       </Row>
     ),
