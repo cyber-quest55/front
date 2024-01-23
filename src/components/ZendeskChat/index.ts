@@ -11,7 +11,7 @@ function shouldHideChat(locationPathname: string) {
   return ROUTES_TO_HIDE_CHAT.some((route) => locationPathname.includes(route));
 }
 
-export default function ZendeskChat() {
+const ZendeskChat: React.FC<Record<string, never>> = () => {
   const [scriptLoaded, setScriptLoaded] = useState<boolean>(false);
   let location = useLocation();
 
@@ -63,4 +63,6 @@ export default function ZendeskChat() {
   }, []);
 
   return null;
-}
+};
+
+export default ZendeskChat;
