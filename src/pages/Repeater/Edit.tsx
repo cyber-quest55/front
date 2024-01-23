@@ -5,6 +5,7 @@ import { PageContainer, ProCard, ProFormSelect } from '@ant-design/pro-component
 import { Dispatch, useIntl, useParams } from '@umijs/max';
 import React, { useState } from 'react';
 import { connect } from 'dva';
+import EditMeterLocationCallerContainer from '@/components/Forms/EditRepeater/LocationCaller/LocationCallerContainer';
 
 interface Props {
   queryRepeaterById: typeof queryRepeaterById;
@@ -75,6 +76,17 @@ const EditRepeater: React.FunctionComponent<Props> = (props) => {
                 ),
                 key: 'general',
                 children: <EditRepeaterGeneralContainer />,
+              },
+              {
+                label: (
+                  <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
+                    {intl.formatMessage({
+                      id: 'pages.edit.repeater.tab.options.location',
+                    })}
+                  </div>
+                ),
+                key: 'location',
+                children: <EditMeterLocationCallerContainer />,
               },
             ],
             onChange: (key) => {
