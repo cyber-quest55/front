@@ -231,7 +231,7 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
       })
     }
 
-    const newValues = {
+     const newValues = {
       ...formValues,
       content: {
         ...formValues.content,
@@ -459,6 +459,8 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
 
         delete values?.content?.segment_irrigation_parameters?.garbage;
 
+        const isStartMode = startMode !== 0 && startMode !== 1
+ 
         try {
           await postReq.runAsync(
             {
@@ -483,11 +485,11 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
 
                   rounds: values.content?.segment_irrigation_parameters?.rounds | 1,
                   stop_angle: values.content?.segment_irrigation_parameters?.stop_angle | 360,
-                  start_time_year: startMode === 0 ? 0 : startTime.get('y') - 2000,
-                  start_time_month: startMode === 0 ? 0 : startTime.get('M') + 1,
-                  start_time_day: startMode === 0 ? 0 : startTime.get('D'),
-                  start_time_hour: startMode === 0 ? 0 : startTime.get('h'),
-                  start_time_minute: startMode === 0 ? 0 : startTime.get('m'),
+                  start_time_year: isStartMode ? 0 : startTime.get('y') - 2000,
+                  start_time_month: isStartMode ? 0 : startTime.get('M') + 1,
+                  start_time_day: isStartMode? 0 : startTime.get('D'),
+                  start_time_hour: isStartMode? 0 : startTime.get('h'),
+                  start_time_minute: isStartMode ? 0 : startTime.get('m'),
                   end_time_year: endMode !== 5 ? 0 : endTime.get('y') - 2000,
                   end_time_month: endMode !== 5 ? 0 : endTime.get('M') + 1,
                   end_time_day: endMode !== 5 ? 0 : endTime.get('D'),
