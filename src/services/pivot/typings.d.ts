@@ -277,5 +277,46 @@ declare namespace API {
     device: number
     equipment: number
   }
-  
+
+
+  type GetLastSegmentedIrrigation = {
+    message_subtype: string
+    equipment: number
+    content: {
+      injection_pump_command: {
+        command: number
+        note: string
+      }
+      autoreversion_command: {
+        command: number
+      }
+      segment_irrigation_parameters: {
+        start_mode: number
+        end_mode: number
+        rounds: number
+        start_time_day: number
+        start_time_month: number
+        start_time_year: number
+        start_time_hour: number
+        start_time_minute: number
+        end_time_day: number
+        end_time_month: number
+        end_time_year: number
+        end_time_hour: number
+        end_time_minute: number
+        stop_angle: number
+      }
+      segment_modes: Array<{
+        number_editing: number
+        percent_forward: number
+        percent_reverse: number
+        mode_forward: number
+        mode_reverse: number
+      }>
+      irrigation_status: {
+        irrigation_type: number
+        irrigation_status: number
+      }
+    }
+  }
 }

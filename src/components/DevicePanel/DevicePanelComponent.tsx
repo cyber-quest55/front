@@ -34,6 +34,7 @@ import { GiPadlock, GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
 import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
 import StartPivotScheduleContainer from '../Forms/StartPivotSchedule/StartPivotScheduleContainer';
+import StartPivotSegmentContainer from '../Forms/StartPivotSegment/StartPivotSegmentContainer';
 
 const { Text } = Typography;
 
@@ -262,9 +263,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     },
     {
       key: '3',
-      label: intl.formatMessage({
-        id: 'component.pivot.operationalpanel.button.start.opt.3',
-      }),
+      label: <StartPivotSegmentContainer/>,
     },
     {
       key: '4',

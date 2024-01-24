@@ -180,7 +180,7 @@ const StartPivotScheduleComponent: React.FunctionComponent<IStartPivotScheduleCo
       {},
     );
 
-    const shduleFormated = result.content.schedule_irrigation_parameters.map((item) => ({
+    const shduleFormated = result?.content?.schedule_irrigation_parameters?.map((item) => ({
       ...item,
       garbage: {
         start_mode: 1,
@@ -191,7 +191,7 @@ const StartPivotScheduleComponent: React.FunctionComponent<IStartPivotScheduleCo
           .hour(item.start_hour)
           .minute(item.start_minute),
         end_date: dayjs()
-          .year(item.start_year + 2000)
+          .year(item.end_year + 2000)
           .month(item.end_month)
           .date(item.end_day)
           .hour(item.end_hour)
@@ -254,7 +254,7 @@ const StartPivotScheduleComponent: React.FunctionComponent<IStartPivotScheduleCo
           {intl.formatMessage({
             id: 'component.pivot.startirr.title',
           })}
-          <Button loading={getLastSchedule.loading} onClick={handleFetchLastConfig} style={{ }}>
+          <Button loading={getLastSchedule.loading} onClick={handleFetchLastConfig} style={{}}>
             {intl.formatMessage({
               id: 'component.pivot.startirr.button.loadlast',
             })}

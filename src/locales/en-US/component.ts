@@ -356,6 +356,8 @@ export default {
   'component.pivot.pressure.chart.tooltip.label.4': 'Pressure by angle',
   'component.pivot.pressure.chart.tooltip.label.5': 'Pressure Comparative',
   'component.pivot.startirr.title': 'Simple Irrigation',
+  'component.pivot.startirr.segment.title': 'Segment Irrigation',
+
   'component.pivot.startirr.button.loadlast': 'Load last irrigation',
   'component.pivot.startirr.form.label.1': 'Direction',
   'component.pivot.startirr.form.label.1.opt.1': 'Forward',

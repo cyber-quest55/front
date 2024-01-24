@@ -239,6 +239,20 @@ export async function getLastScheduleIrrigation(
   );
 }
 
+export async function getLastSegmentIrrigation(
+  props: { farmId: number; pivotId: number },
+  options: {},
+) {
+  return request<API.GetLastSegmentedIrrigation>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/controlleraction/segment/latest/`,
+    {
+      method: 'GET',
+      params: options,
+    },
+  );
+}
+
+
 export async function getPressureComparison(
   props: { pivotId: number },
   options: {
