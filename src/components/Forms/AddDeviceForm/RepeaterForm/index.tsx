@@ -1,48 +1,27 @@
-import { createMeterSystem, getMeterSystemSensors } from '@/services/metersystem';
+import { createRepeater } from '@/services/repeaters';
 import { yupValidator } from '@/utils/adapters/yup';
-import {
-  ProForm,
-  ProFormDigit,
-  ProFormItem,
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { App, Col, Row, Skeleton } from 'antd';
-import { useEffect, useState } from 'react';
+import { App, Col, Row } from 'antd';
 import * as yup from 'yup';
 
-const MeterSystemForm: React.FC<any> = (props) => {
-  const createMeterSystemReq = useRequest(createMeterSystem, { manual: true });
-  const sensorsReq = useRequest(getMeterSystemSensors, { manual: true });
-  const [sensorOptions, setSensorOptions] = useState<any[]>([]);
+const RepeaterForm: React.FC<any> = (props) => {
+  const createRepeaterReq = useRequest(createRepeater, { manual: true });
   const intl = useIntl();
   const { message } = App.useApp();
   const params = useParams();
-
-  useEffect(() => {
-    sensorsReq.runAsync().then((data: any) => {
-      const sensors = data
-        .filter((sensor: any) => sensor.available)
-        .map((sensor: any) => ({
-          label: sensor.sensor.name,
-          value: sensor.id,
-        }));
-      setSensorOptions(sensors);
-    });
-  }, []);
 
   const schema = yup.object().shape({
     name: yup
       .string()
       .max(
-        20,
+        16,
         intl.formatMessage(
           {
             id: 'validations.max',
           },
-          { value: 20 },
+          { value: 16 },
         ),
       )
       .required(
@@ -60,12 +39,12 @@ const MeterSystemForm: React.FC<any> = (props) => {
         id: 'validations.required',
       }),
     ),
-    sensor_id: yup.string().required(
+    energy_type: yup.string().required(
       intl.formatMessage({
         id: 'validations.required',
       }),
     ),
-    imeter_device: yup
+    repeater: yup
       .string()
       .matches(
         /[0-9A-F]{16}/g,
@@ -81,7 +60,6 @@ const MeterSystemForm: React.FC<any> = (props) => {
   });
 
   const yupSync = yupValidator(schema, props.form.getFieldsValue);
-
   return (
     <ProForm
       validateTrigger="onBlur"
@@ -96,15 +74,12 @@ const MeterSystemForm: React.FC<any> = (props) => {
           const position = `${values.latitude},${values.longitude}`;
           const data = {
             name: values.name,
-            position: position,
-            imeter_device: values.imeter_device,
             base: props.base,
-            local_actuation: false,
-            protocol: '5.2',
-            function: 'LEVEL',
-            sensor_id: Number(values.sensor_id),
+            position: position,
+            repeater: values.repeater,
+            energy_type: values.energy_type,
           };
-          await createMeterSystemReq.runAsync({ farmId: params.id as any }, data);
+          await createRepeaterReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
         } catch (err) {
           console.error(err);
@@ -116,31 +91,35 @@ const MeterSystemForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={8}>
-          <ProFormText name="name" rules={[yupSync]} label="Nome do equipamento" />
+          <ProFormText name="name" label="Nome do equipamento" rules={[yupSync]} />
         </Col>
+
         <Col xs={24} sm={8}>
           <ProFormText
-            name="imeter_device"
+            name="repeater"
+            label="Rádio do Repetidor"
             rules={[yupSync]}
-            label="Radio do IMeter"
             fieldProps={{
               onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
             }}
           />
         </Col>
         <Col xs={24} sm={8}>
-          {sensorsReq.loading ? (
-            <ProFormItem label="Sensor">
-              <Skeleton.Input />
-            </ProFormItem>
-          ) : (
-            <ProFormSelect
-              name="sensor_id"
-              label="Sensor"
-              rules={[yupSync]}
-              options={sensorOptions}
-            />
-          )}
+          <ProFormSelect
+            name="energy_type"
+            rules={[yupSync]}
+            label="Tipo"
+            options={[
+                {
+                  value: 'Solar',
+                  label: 'Solar',
+                },
+                {
+                  value: 'Bivolt',
+                  label: 'Bivolt',
+                },
+              ]}
+          />
         </Col>
         <Col xs={24} sm={12}>
           <ProFormDigit
@@ -152,7 +131,7 @@ const MeterSystemForm: React.FC<any> = (props) => {
             fieldProps={{
               controls: false,
               type: 'number',
-              precision: 6
+              precision: 6,
             }}
           />
         </Col>
@@ -166,7 +145,7 @@ const MeterSystemForm: React.FC<any> = (props) => {
             fieldProps={{
               controls: false,
               type: 'number',
-              precision: 6
+              precision: 6,
             }}
           />
         </Col>
@@ -175,4 +154,4 @@ const MeterSystemForm: React.FC<any> = (props) => {
   );
 };
 
-export default MeterSystemForm;
+export default RepeaterForm;

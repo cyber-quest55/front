@@ -13,6 +13,7 @@ import { Button, Col, Form, Row, Steps } from 'antd';
 import React from 'react';
 import LinearPivotMonitorForm from './LinearPivotMonitorForm';
 import MeterSystemForm from './MeterSystemForm';
+import RepeaterForm from './RepeaterForm';
 
 const AddDeviceForm: React.FC<any> = (props) => {
   const [form] = Form.useForm<{
@@ -335,37 +336,9 @@ const AddDeviceForm: React.FC<any> = (props) => {
     </Row>
   );
 
-  const repeaterForm = (
-    <Row gutter={[12, 12]}>
-      <Col xs={24} sm={8}>
-        <ProFormText name="company" label="Nome do equipamento" placeholder="Dispositivo..." />
-      </Col>
-
-      <Col xs={24} sm={8}>
-        <ProFormText name="company" label="Rádio do Repetidor" placeholder="Selecione" />
-      </Col>
-      <Col xs={24} sm={8}>
-        <ProFormSelect
-          name="builder"
-          label="Tipo"
-          placeholder="Selecione"
-          valueEnum={{
-            solar: 'Solar',
-            bivolt: 'Bivolt',
-          }}
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Latitude" placeholder="Selecione" />
-      </Col>
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Longitude" placeholder="Selecione" />
-      </Col>
-    </Row>
-  );
-
   const [linearPivotMonitorForm] = Form.useForm<any>();
   const [meterSystemForm] = Form.useForm<any>();
+  const [repeaterForm] = Form.useForm<any>();
   const [loading, setLoading] = React.useState<boolean>(false);
 
   return (
@@ -400,7 +373,9 @@ const AddDeviceForm: React.FC<any> = (props) => {
           setStep(1);
         } else if (step !== 0 && form.getFieldValue('device') === 3) {
           linearPivotMonitorForm.submit();
-        }  else if (step !== 0 && form.getFieldValue('device') === 6) {
+        } else if (step !== 0 && form.getFieldValue('device') === 5) {
+          repeaterForm.submit();
+        } else if (step !== 0 && form.getFieldValue('device') === 6) {
           meterSystemForm.submit();
         }
       }}
@@ -504,7 +479,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
             ) : form.getFieldValue('device') === 4 ? (
               actionBombRemoteForm
             ) : form.getFieldValue('device') === 5 ? (
-              repeaterForm
+              <RepeaterForm form={repeaterForm} base={props.base} setLoading={setLoading} />
             ) : form.getFieldValue('device') === 6 ? (
               <MeterSystemForm form={meterSystemForm} base={props.base} setLoading={setLoading} />
             ) : null;
