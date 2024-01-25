@@ -177,3 +177,39 @@ export async function patchPivotGlobalConfig(
     data: options,
   });
 }
+
+export async function createPivot(
+  props: API.CreatePivotParams,
+  options: APIModels.CreatePivotPayload,
+) {
+  return request<{ // automation_type: 0
+    data: null;
+  }>(`/farms/${props.farmId}/pivots/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function createPivotMonitor(
+  props: API.CreatePivotMonitorParams,
+  options: APIModels.CreatePivotMonitorPayload,
+) {
+  return request<{// automation_type: 1
+    data: null;
+  }>(`/farms/${props.farmId}/pivots/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function createLinearPivotMonitor(
+  props: API.CreateLinearPivotMonitorParams,
+  options: APIModels.CreateLinearPivotMonitorPayload,
+) {
+  return request<{// automation_type: 2
+    data: null;
+  }>(`/farms/${props.farmId}/pivots/`, {
+    method: 'POST',
+    data: options,
+  });
+}

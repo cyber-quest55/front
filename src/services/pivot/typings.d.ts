@@ -66,5 +66,17 @@ declare namespace API {
     pivotId: string;
     deviceId: string;
   };
+
+  type CreateLinearPivotMonitorParams = { 
+    farmId: number 
+  };
+
+  type CreatePivotMonitorParams = { 
+    farmId: number 
+  };
+
+  type CreatePivotParams = { 
+    farmId: number 
+  };
 }
 

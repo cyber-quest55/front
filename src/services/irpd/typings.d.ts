@@ -91,4 +91,10 @@ declare namespace API {
 
   type FavoriteIrpdConfigResponse = APIModels.IrpdSystem;
 
+  type CreateIrpdParams = {
+    configId: number;
+    farmId: number;
+    irpdId: string;
+  };
+
 }
