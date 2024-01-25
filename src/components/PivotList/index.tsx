@@ -402,12 +402,14 @@ const PivotList: React.FC<Props> = (props) => {
       </div>
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>
-          <AddDeviceForm />
+          <AddDeviceForm base={(props.selectedFarm as any)?.base?.radio_id} />
         </Col>
       </Row>
     </div>
   );
 };
+
+
 
 const mapStateToProps = ({
   pivot,

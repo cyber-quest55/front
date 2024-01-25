@@ -10,8 +10,10 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { Button, Col, Form, Row, Steps } from 'antd';
- 
-const AddDeviceForm = () => {
+import React from 'react';
+import LinearPivotMonitorForm from './LinearPivotMonitorForm';
+
+const AddDeviceForm: React.FC<any> = (props) => {
   const [form] = Form.useForm<{
     device: number;
     version: string;
@@ -19,7 +21,7 @@ const AddDeviceForm = () => {
     potency: string;
   }>();
 
-  const {step, setStep} = useStepHook(0);
+  const { step, setStep } = useStepHook(0);
 
   const automationPivotForm = (
     <Row gutter={[12, 12]}>
@@ -236,58 +238,7 @@ const AddDeviceForm = () => {
     </Row>
   );
 
-  const linearPivotMonitorForm = (
-    <Row gutter={[12, 12]}>
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Nome do equipamento" placeholder="Dispositivo..." />
-      </Col>
-      <Col xs={24} sm={12}>
-        <ProFormSelect
-          name="builder"
-          label="Fabricante"
-          placeholder="Selecione"
-          valueEnum={{
-            bauer: 'Bauer',
-            carborundum: 'Carborundum',
-            fockink: 'Fockink',
-            irrigabras: 'Irrigabras',
-            krebs: 'Krebs',
-            lindsay: 'Lindsay',
-            reinke: 'Reinke',
-            valley: 'Valley',
-            outro: 'Outro',
-          }}
-        />
-      </Col>
-      <ProForm.Item noStyle shouldUpdate>
-        {(form) => {
-          return form.getFieldValue('builder') === 'outro' ? (
-            <>
-              <Col xs={24} sm={12}>
-                <ProFormText name="dd" label="Nome do Fabricante" placeholder="Selecione" />
-              </Col>
-            </>
-          ) : null;
-        }}
-      </ProForm.Item>
-
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Rádio do Monitor" placeholder="Selecione" />
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Vazão" placeholder="Selecione" />
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Comprimento" placeholder="Selecione" />
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Velocidade" placeholder="Selecione" />
-      </Col>
-    </Row>
-  );
+ 
 
   const actionBombRemoteForm = (
     <Row gutter={[12, 12]}>
@@ -442,6 +393,9 @@ const AddDeviceForm = () => {
     </Row>
   );
 
+  const [linearPivotMonitorForm] = Form.useForm<any>();
+  const [loading, setLoading] = React.useState<boolean>(false);
+
   return (
     <ModalForm<{
       device: number;
@@ -464,6 +418,7 @@ const AddDeviceForm = () => {
           Cadastrar Equipamento
         </Button>
       }
+      loading={loading}
       form={form}
       autoFocusFirstInput
       onOpenChange={() => setStep(0)}
@@ -471,6 +426,8 @@ const AddDeviceForm = () => {
       onFinish={async (v: any) => {
         if (step === 0 && v.device) {
           setStep(1);
+        } else if (step !== 0 && form.getFieldValue('device') === 3) {
+          linearPivotMonitorForm.submit();
         }
       }}
       modalProps={{
@@ -560,19 +517,19 @@ const AddDeviceForm = () => {
       ) : (
         <ProForm.Item noStyle shouldUpdate>
           {(form) => {
-            return form.getFieldValue('device') === 1
-              ? automationPivotForm
-              : form.getFieldValue('device') === 2
-              ? monitorPivotForm
-              : form.getFieldValue('device') === 3
-              ? linearPivotMonitorForm
-              : form.getFieldValue('device') === 4
-              ? actionBombRemoteForm
-              : form.getFieldValue('device') === 5
-              ? repeaterForm
-              : form.getFieldValue('device') === 6
-              ? measureSystemForm
-              : null;
+            return form.getFieldValue('device') === 1 ? (
+              automationPivotForm
+            ) : form.getFieldValue('device') === 2 ? (
+              monitorPivotForm
+            ) : form.getFieldValue('device') === 3 ? (
+              <LinearPivotMonitorForm form={linearPivotMonitorForm} base={props.base} setLoading={setLoading} />
+            ) : form.getFieldValue('device') === 4 ? (
+              actionBombRemoteForm
+            ) : form.getFieldValue('device') === 5 ? (
+              repeaterForm
+            ) : form.getFieldValue('device') === 6 ? (
+              measureSystemForm
+            ) : null;
           }}
         </ProForm.Item>
       )}

@@ -68,15 +68,15 @@ declare namespace API {
   };
 
   type CreateLinearPivotMonitorParams = { 
-    farmId: number 
+    farmId: string 
   };
 
   type CreatePivotMonitorParams = { 
-    farmId: number 
+    farmId: string 
   };
 
   type CreatePivotParams = { 
-    farmId: number 
+    farmId: string 
   };
 }
 
