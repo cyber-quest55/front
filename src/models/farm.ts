@@ -32,7 +32,7 @@ export default {
       yield put({ type: 'queryFarmStart' });
       try {
         const response: API.GetFarmResponse = yield call(getFarms, payload);
-        const selectedFarm = response[1];
+        const selectedFarm = response[0];
         yield put({ type: 'queryFarmSuccess', payload: { data: response, id: payload.id } });
 
         yield put({ type: 'selectedFarm/setSelectedFarm', payload: selectedFarm });
@@ -64,7 +64,7 @@ export default {
         ...state,
         loading: false,
         loaded: true,
-        selectedFarm: payload.data[1],
+        selectedFarm: payload.data[0],
         result: payload.data,
         error: {},
       };

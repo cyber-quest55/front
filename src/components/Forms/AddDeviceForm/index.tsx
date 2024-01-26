@@ -1,19 +1,12 @@
 import { useStepHook } from '@/hooks/step';
 import { PlusCircleFilled } from '@ant-design/icons';
-import {
-  CheckCard,
-  ModalForm,
-  ProForm,
-  ProFormCheckbox,
-  ProFormRadio,
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { CheckCard, ModalForm, ProForm } from '@ant-design/pro-components';
 import { Button, Col, Form, Row, Steps } from 'antd';
 import React from 'react';
 import IrpdForm from './IrpdForm';
 import LinearPivotMonitorForm from './LinearPivotMonitorForm';
 import MeterSystemForm from './MeterSystemForm';
+import PivotForm from './PivotForm';
 import MonitorPivotForm from './PivotMonitor';
 import RepeaterForm from './RepeaterForm';
 
@@ -26,147 +19,12 @@ const AddDeviceForm: React.FC<any> = (props) => {
   }>();
 
   const { step, setStep } = useStepHook(0);
-
-  const automationPivotForm = (
-    <Row gutter={[12, 12]}>
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Nome do equipamento" placeholder="Dispositivo..." />
-      </Col>
-      <Col xs={24} sm={12}>
-        <ProFormSelect
-          name="builder"
-          label="Fabricante"
-          placeholder="Selecione"
-          valueEnum={{
-            bauer: 'Bauer',
-            carborundum: 'Carborundum',
-            fockink: 'Fockink',
-            irrigabras: 'Irrigabras',
-            krebs: 'Krebs',
-            lindsay: 'Lindsay',
-            reinke: 'Reinke',
-            valley: 'Valley',
-            outro: 'Outro',
-          }}
-        />
-      </Col>
-
-      <ProForm.Item noStyle shouldUpdate>
-        {(form) => {
-          return form.getFieldValue('builder') === 'outro' ? (
-            <>
-              <Col xs={24} sm={8}>
-                <ProFormText name="dd" label="Nome do Fabricante" placeholder="Selecione" />
-              </Col>
-              <Col xs={24} sm={8}>
-                <ProFormSelect
-                  valueEnum={{
-                    g1: 'G1',
-                    g2: 'G2',
-                  }}
-                  name="version"
-                  label="Versão"
-                  placeholder="Selecione"
-                ></ProFormSelect>
-              </Col>
-              <Col xs={24} sm={8}>
-                <ProFormSelect name="company" label="Tipo de Painel" placeholder="Selecione" />
-              </Col>
-            </>
-          ) : (
-            <>
-              <Col xs={24} sm={12}>
-                <ProFormSelect
-                  valueEnum={{
-                    g1: 'G1',
-                    g2: 'G2',
-                  }}
-                  name="version"
-                  label="Versão"
-                  placeholder="Selecione"
-                ></ProFormSelect>
-              </Col>
-              <Col xs={24} sm={12}>
-                <ProFormSelect name="company" label="Tipo de Painel" placeholder="Selecione" />
-              </Col>
-            </>
-          );
-        }}
-      </ProForm.Item>
-
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Rádio do Controlador" placeholder="Selecione" />
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Rádio do GPS" placeholder="Selecione" />
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <ProFormText
-          name="company"
-          label="Rádio do Cabo de Bomba (Spoti)"
-          placeholder="Selecione"
-        />
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <ProFormRadio.Group
-          name="potency"
-          layout="horizontal"
-          label="Unidade de Potência"
-          options={[
-            {
-              label: 'CV',
-              value: 'a',
-            },
-            {
-              label: 'kW',
-              value: 'b',
-            },
-          ]}
-        />
-      </Col>
-      <ProForm.Item noStyle shouldUpdate>
-        {(form) => {
-          return form.getFieldValue('potency') === 'a' ? (
-            <>
-              <Col xs={24} sm={8}>
-                <ProFormText name="company" label="Potência" placeholder="Selecione" />
-              </Col>
-              <Col xs={24} sm={8}>
-                <ProFormText name="company" label="Rendimento" placeholder="Selecione" />
-              </Col>
-              <Col xs={24} sm={8}>
-                <ProFormText name="company" label="Potência Convertida" placeholder="Selecione" />
-              </Col>
-            </>
-          ) : (
-            <Col xs={24} sm={8}>
-              <ProFormText name="company" label="Potência da Bomba" placeholder="Selecione" />
-            </Col>
-          );
-        }}
-      </ProForm.Item>
-      <ProForm.Item noStyle shouldUpdate>
-        {(form) => {
-          return form.getFieldValue('version') === 'g1' ? (
-            <>
-              <Col xs={24} sm={12}>
-                <ProFormCheckbox label="Pluviômetro" name="check" />
-              </Col>
-            </>
-          ) : null;
-        }}
-      </ProForm.Item>
-    </Row>
-  );
-
+  const [pivotForm] = Form.useForm<any>();
+  const [pivotMonitorForm] = Form.useForm<any>();
   const [linearPivotMonitorForm] = Form.useForm<any>();
+  const [irpdForm] = Form.useForm<any>();
   const [meterSystemForm] = Form.useForm<any>();
   const [repeaterForm] = Form.useForm<any>();
-  const [irpdForm] = Form.useForm<any>();
-  const [pivotMonitorForm] = Form.useForm<any>();
   const [loading, setLoading] = React.useState<boolean>(false);
 
   return (
@@ -199,6 +57,8 @@ const AddDeviceForm: React.FC<any> = (props) => {
       onFinish={async (v: any) => {
         if (step === 0 && v.device) {
           setStep(1);
+        } else if (step !== 0 && form.getFieldValue('device') === 1) {
+          pivotForm.submit();
         } else if (step !== 0 && form.getFieldValue('device') === 2) {
           pivotMonitorForm.submit();
         } else if (step !== 0 && form.getFieldValue('device') === 3) {
@@ -299,7 +159,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
         <ProForm.Item noStyle shouldUpdate>
           {(form) => {
             return form.getFieldValue('device') === 1 ? (
-              automationPivotForm
+              <PivotForm form={pivotForm} base={props.base} setLoading={setLoading} />
             ) : form.getFieldValue('device') === 2 ? (
               <MonitorPivotForm form={pivotMonitorForm} base={props.base} setLoading={setLoading} />
             ) : form.getFieldValue('device') === 3 ? (
