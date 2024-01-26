@@ -89,7 +89,7 @@ const MeterSystemForm: React.FC<any> = (props) => {
       submitter={false}
       preserve={false}
       form={props.form}
-      name="linear_pivot_monitor_form"
+      name="meter_system_form"
       onFinish={async (values: any) => {
         try {
           props.setLoading(true);
