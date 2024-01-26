@@ -68,7 +68,7 @@ const MeterSystemForm: React.FC<any> = (props) => {
     imeter_device: yup
       .string()
       .matches(
-        /[0-9A-F]{16}/g,
+        /^[0-9A-F]{16}$/,
         intl.formatMessage({
           id: 'validations.invalid',
         }),

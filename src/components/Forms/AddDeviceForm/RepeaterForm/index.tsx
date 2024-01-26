@@ -47,7 +47,7 @@ const RepeaterForm: React.FC<any> = (props) => {
     repeater: yup
       .string()
       .matches(
-        /[0-9A-F]{16}/g,
+        /^[0-9A-F]{16}$/,
         intl.formatMessage({
           id: 'validations.invalid',
         }),

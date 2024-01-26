@@ -14,6 +14,7 @@ import React from 'react';
 import IrpdForm from './IrpdForm';
 import LinearPivotMonitorForm from './LinearPivotMonitorForm';
 import MeterSystemForm from './MeterSystemForm';
+import MonitorPivotForm from './PivotMonitor';
 import RepeaterForm from './RepeaterForm';
 
 const AddDeviceForm: React.FC<any> = (props) => {
@@ -161,90 +162,11 @@ const AddDeviceForm: React.FC<any> = (props) => {
     </Row>
   );
 
-  const monitorPivotForm = (
-    <Row gutter={[12, 12]}>
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Nome do equipamento" placeholder="Dispositivo..." />
-      </Col>
-      <Col xs={24} sm={12}>
-        <ProFormSelect
-          name="builder"
-          label="Fabricante"
-          placeholder="Selecione"
-          valueEnum={{
-            bauer: 'Bauer',
-            carborundum: 'Carborundum',
-            fockink: 'Fockink',
-            irrigabras: 'Irrigabras',
-            krebs: 'Krebs',
-            lindsay: 'Lindsay',
-            reinke: 'Reinke',
-            valley: 'Valley',
-            outro: 'Outro',
-          }}
-        />
-      </Col>
-
-      <ProForm.Item noStyle shouldUpdate>
-        {(form) => {
-          return form.getFieldValue('builder') === 'outro' ? (
-            <>
-              <Col xs={24} sm={12}>
-                <ProFormText name="dd" label="Nome do Fabricante" placeholder="Selecione" />
-              </Col>
-            </>
-          ) : null;
-        }}
-      </ProForm.Item>
-      <Col xs={24} sm={12}>
-        <ProFormText name="company" label="Rádio do Monitor" placeholder="Selecione" />
-      </Col>
-
-      <Col xs={24} sm={24}>
-        <ProFormRadio.Group
-          name="potency"
-          layout="horizontal"
-          label="Unidade de Potência"
-          options={[
-            {
-              label: 'CV',
-              value: 'a',
-            },
-            {
-              label: 'kW',
-              value: 'b',
-            },
-          ]}
-        />
-      </Col>
-      <ProForm.Item noStyle shouldUpdate>
-        {(form) => {
-          return form.getFieldValue('potency') === 'a' ? (
-            <>
-              <Col xs={24} sm={8}>
-                <ProFormText name="company" label="Potência" placeholder="Selecione" />
-              </Col>
-              <Col xs={24} sm={8}>
-                <ProFormText name="company" label="Rendimento" placeholder="Selecione" />
-              </Col>
-              <Col xs={24} sm={8}>
-                <ProFormText name="company" label="Potência Convertida" placeholder="Selecione" />
-              </Col>
-            </>
-          ) : (
-            <Col xs={24} sm={8}>
-              <ProFormText name="company" label="Potência da Bomba" placeholder="Selecione" />
-            </Col>
-          );
-        }}
-      </ProForm.Item>
-    </Row>
-  );
-
   const [linearPivotMonitorForm] = Form.useForm<any>();
   const [meterSystemForm] = Form.useForm<any>();
   const [repeaterForm] = Form.useForm<any>();
   const [irpdForm] = Form.useForm<any>();
+  const [pivotMonitorForm] = Form.useForm<any>();
   const [loading, setLoading] = React.useState<boolean>(false);
 
   return (
@@ -277,6 +199,8 @@ const AddDeviceForm: React.FC<any> = (props) => {
       onFinish={async (v: any) => {
         if (step === 0 && v.device) {
           setStep(1);
+        } else if (step !== 0 && form.getFieldValue('device') === 2) {
+          pivotMonitorForm.submit();
         } else if (step !== 0 && form.getFieldValue('device') === 3) {
           linearPivotMonitorForm.submit();
         } else if (step !== 0 && form.getFieldValue('device') === 4) {
@@ -377,7 +301,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
             return form.getFieldValue('device') === 1 ? (
               automationPivotForm
             ) : form.getFieldValue('device') === 2 ? (
-              monitorPivotForm
+              <MonitorPivotForm form={pivotMonitorForm} base={props.base} setLoading={setLoading} />
             ) : form.getFieldValue('device') === 3 ? (
               <LinearPivotMonitorForm
                 form={linearPivotMonitorForm}

@@ -53,7 +53,7 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
       monitor: yup
         .string()
         .matches(
-          /[0-9A-F]{16}/g,
+          /^[0-9A-F]{16}$/,
           intl.formatMessage({
             id: 'validations.invalid',
           }),
@@ -133,7 +133,7 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
             monitor: values.monitor,
             base: props.base,
             automation_type: 2,
-            brand_model: values.brand_model ? values.brand_model : values.other_brand_model,
+            brand_model: values.brand_model !== 'other' ? values.brand_model : values.other_brand_model,
             protocol: '5.0',
             flowRate: parseFloat(values.flow_rate),
             pivotLength: parseFloat(values.pivot_length),
