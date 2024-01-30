@@ -24,7 +24,7 @@ import dayjs from 'dayjs';
 import * as React from 'react';
 import * as yup from 'yup';
 
-interface IStartPivotSegmentComponentProps {
+interface IStartPivotAngleComponentProps {
   pivotById: GetPivotByIdModelProps;
 }
 
@@ -36,7 +36,7 @@ const containerStyle = {
   borderRadius: '5px',
 };
 
-const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComponentProps> = (
+const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponentProps> = (
   props,
 ) => {
   const pivot = props.pivotById.unformated;
@@ -438,7 +438,7 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
       trigger={
         <Typography.Link style={{ width: '100%' }}>
           {intl.formatMessage({
-            id: 'component.pivot.operationalpanel.button.start.opt.3',
+            id: 'component.pivot.operationalpanel.button.start.opt.2',
           })}
         </Typography.Link>
       }
@@ -806,4 +806,4 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
   );
 };
 
-export default StartPivotSegmentComponent;
+export default StartPivotAngleComponent;

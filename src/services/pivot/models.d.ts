@@ -991,4 +991,10 @@ declare namespace APIModels {
       };
     };
   };
+
+  type WaterBySegment = Array<{
+    segment: number
+    water_blade: number
+  }>
+  
 }

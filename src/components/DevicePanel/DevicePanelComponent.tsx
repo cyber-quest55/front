@@ -35,6 +35,8 @@ import { TbBrandFlightradar24 } from 'react-icons/tb';
 import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
 import StartPivotScheduleContainer from '../Forms/StartPivotSchedule/StartPivotScheduleContainer';
 import StartPivotSegmentContainer from '../Forms/StartPivotSegment/StartPivotSegmentContainer';
+import StartPivotAngleContainer from '../Forms/StartPivotAngle/StartPivotAngleContainer';
+import CropSegmentsModalContainer from '../Modals/Crop/CropContainer';
 
 const { Text } = Typography;
 
@@ -257,9 +259,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     },
     {
       key: '2',
-      label: intl.formatMessage({
-        id: 'component.pivot.operationalpanel.button.start.opt.2',
-      }),
+      label: <StartPivotAngleContainer/>,
     },
     {
       key: '3',
@@ -346,7 +346,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
             >
               <Button icon={mtncGetReq.data?.maintenance ? <GiPadlockOpen /> : <GiPadlock />} />
             </Popconfirm>
-            <Button icon={<GiSolidLeaf />} />
+            <CropSegmentsModalContainer/>
             <Button icon={<CloudFilled />} />
             <Link to={`/farms/${params.id}/pivot/${device.id}/edit`}>
               <Button icon={<EditFilled />}>

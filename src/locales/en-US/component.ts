@@ -390,4 +390,10 @@ export default {
   'component.pivot.operationalpanel.button.tooltip.croop': 'Crop',
   'component.pivot.startirr.card.collapse.title': 'Schedule {value}',
   'component.pivot.startirr.plusirr.txt': 'Schedule',
+  'component.pivot.startirr.segment.directio.opt.1': 'Reverse',
+  'component.pivot.startirr.segment.directio.opt.2': 'Forward',
+  'component.pivot.crop.modal.title': 'Crop',
+  'component.pivot.crop.segment.list.title': 'Segments',
+  'component.pivot.crop.segment.list.daterange': 'Date range: ',
+  'component.pivot.crop.segment.list.accblade': 'Accumulated Blade: ',
 };

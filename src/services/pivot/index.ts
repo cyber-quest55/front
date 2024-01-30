@@ -302,3 +302,16 @@ export async function stopPivot(props: { farmId: number; pivotId: number }, opti
     },
   );
 }
+
+export async function getPivotWaterConsumptionBySegment(
+  props: {   pivotId: number },
+  options: {},
+) {
+  return request<API.GetWaterBySegment>(
+    `/reports/pivots/${props.pivotId}/pivot_water_consumption_by_segment/`,
+    {
+      method: 'GET',
+      
+    },
+  );
+}

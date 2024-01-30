@@ -278,7 +278,6 @@ declare namespace API {
     equipment: number
   }
 
-
   type GetLastSegmentedIrrigation = {
     message_subtype: string
     equipment: number
@@ -319,4 +318,6 @@ declare namespace API {
       }
     }
   }
+
+  type GetWaterBySegment = APIModels.WaterBySegment;
 }
