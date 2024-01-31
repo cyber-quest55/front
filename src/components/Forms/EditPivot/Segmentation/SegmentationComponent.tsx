@@ -2,6 +2,7 @@ import SegmentedPivotDevice from '@/components/Devices/SegmentedPivot';
 import { useMapHook } from '@/hooks/map';
 import { useScreenHook } from '@/hooks/screen';
 import { postPivotConfig } from '@/services/pivot';
+import { getSegmentsInPivot } from '@/utils/formater/get-segments';
 import { SaveOutlined } from '@ant-design/icons';
 import { EditableProTable, ProCard, ProColumns, ProFormDigit } from '@ant-design/pro-components';
 import { GoogleMap } from '@react-google-maps/api';
@@ -74,8 +75,8 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
   const { message } = App.useApp();
   const { xs } = useScreenHook();
   const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(15, {
-    lat: positions.latitude_center,
-    lng: positions.longitude_center,
+    lat: positions?.latitude_center,
+    lng: positions?.longitude_center,
   });
 
   const [editableKeys, setEditableRowKeys] = React.useState<React.Key[]>([]);
@@ -174,9 +175,7 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
           rules: [{ required: true, message: 'required field' }],
         };
       },
-      editable: (text, record, index) => {
-        return index !== 0;
-      },
+      
       width: '14%',
     },
     {
@@ -190,9 +189,7 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
           rules: [{ required: true, message: 'required field ' }],
         };
       },
-      editable: (text, record, index) => {
-        return index !== 0;
-      },
+     
       width: '14%',
     },
     {
@@ -365,8 +362,8 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
           zoom={zoom}
         >
           <SegmentedPivotDevice
-            center={{ lat: positions.latitude_center, lng: positions.longitude_center }}
-            referenced={{ lat: positions.latitude_reference, lng: positions.longitude_reference }}
+            center={{ lat: positions?.latitude_center, lng: positions?.longitude_center }}
+            referenced={{ lat: positions?.latitude_reference, lng: positions?.longitude_reference }}
             segments={dataSource}
           />
         </GoogleMap>
@@ -395,30 +392,14 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
           loading={false}
           columns={columns}
           request={async () => {
-            const newData = [];
-
-            for (let i = 0; i < pivot?.controllerconfig?.content?.segments?.length; i++) {
-              const segment = pivot?.controllerconfig?.content?.segments[i];
-              const group = pivot?.controllerconfig?.segments_crop[i];
-
-              newData.push({
-                name: group.name,
-                plantingType: group.segment_type,
-                begin: segment.angle_start,
-                end: segment.angle_end,
-                plantingDate: group.crop_plant_date,
-                harvestDate: group.crop_harvest_date,
-                color: colors[i],
-                id: `key-table-segment-${i}`,
-              } as any);
-            }
+            const newData = getSegmentsInPivot(pivot)
 
             return {
               data: newData,
               total: pivot?.controllerconfig?.content?.segments?.length,
               success: true,
               pageSize: 4,
-            };
+            } as any;
           }}
           ghost
           value={dataSource}

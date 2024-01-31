@@ -64,9 +64,11 @@ const useMapHook: (
 
   useEffect(() => {
     if (!defaultLocation) {
+      setMapCenter(mpCenter)
       setLoading(false);
     } else {
       getInstance().then((item) => {
+        console.log('nasdnsajdnjas asd')
         setMapCenter(item.pure);
       });
       setLoading(false);

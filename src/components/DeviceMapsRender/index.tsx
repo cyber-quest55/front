@@ -78,7 +78,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               referencedLng={item.referencedLng}
               gpsLat={item.gpsLat}
               gpsLong={item.gpsLong}
-              pivotColor={item.pivotColor}
+              deviceColor={item.deviceColor}
               lineColor="#fff"
               referenceAngle={item.referenceAngle}
               irrigationDirection={item.irrigationDirection}

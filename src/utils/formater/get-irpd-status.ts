@@ -1,73 +1,78 @@
+import { getIntl } from "@umijs/max";
+
 export function getIrpdStatus(status: number): string {
-  switch (status) {
+  const intl = getIntl()
+
+   switch (status) {
+    case 0: {
+      return  intl.formatMessage({id: 'component.irpd.status.0'}) ;
+    }
     case 1: {
-      return 'Ligada via internet';
+      return  intl.formatMessage({id: 'component.irpd.status.1'}) ;
     }
     case 2: {
-      return 'Ligada manualmente';
+      return  intl.formatMessage({id: 'component.irpd.status.2'}) ;
     }
     case 3: {
-      return 'Ligada após Horário de Pico';
+      return  intl.formatMessage({id: 'component.irpd.status.3'}) ;
     }
     case 4: {
-      return 'Ligada após queda de energia';
+      return  intl.formatMessage({id: 'component.irpd.status.4'}) ;
     }
     case 5: {
-      return 'Programada';
+      return  intl.formatMessage({id: 'component.irpd.status.5'}) ;
     }
     case 6: {
-      return 'Energizada';
+      return  intl.formatMessage({id: 'component.irpd.status.6'}) ;
     }
     case 7: {
-      return 'Bomba ligada via sensor';
+      return  intl.formatMessage({id: 'component.irpd.status.7'}) ;
     }
     case 8: {
-      return 'Esperando tempo após queda de energia';
-    }
-    case 192: {
-      return 'Horímetro não contabilizado';
-    }
-    case 193: {
-      return 'Possivelmente desligado';
-    }
-    case 194: {
-      return 'Operando';
-    }
-    case 247: {
-      return 'Programação Expirada';
-    }
-    case 248: {
-      return 'Agendamento incorreto';
-    }
-    case 249: {
-      return 'Desligada após fim do agendamento';
-    }
-    case 0: {
-      return 'Sem energia';
-    }
-    case 250: {
-      return 'Pump is OFF by a sensor (250)';
-    }
-    case 251: {
-      return 'Device is powered OFF (251)';
-    }
-    case 252: {
-      return 'Desligada por queda de energia';
-    }
-    case 253: {
-      return 'Desligada por horário de pico';
-    }
-    case 254: {
-      return 'Desligada manualmente';
-    }
-    case 255: {
-      return 'Bomba Desligada pela Web';
+      return  intl.formatMessage({id: 'component.irpd.status.8'}) ;
     }
     case 66: {
-      return 'Status desconhecido';
+      return  intl.formatMessage({id: 'component.irpd.status.66'}) ;
     }
+    case 192: {
+      return  intl.formatMessage({id: 'component.irpd.status.192'}) ;
+    }
+    case 193: {
+      return  intl.formatMessage({id: 'component.irpd.status.193'}) ;
+    }
+    case 194: {
+      return  intl.formatMessage({id: 'component.irpd.status.194'}) ;
+    }
+    case 247: {
+      return  intl.formatMessage({id: 'component.irpd.status.247'}) ;
+    }
+    case 248: {
+      return  intl.formatMessage({id: 'component.irpd.status.248'}) ;
+    }
+    case 249: {
+      return  intl.formatMessage({id: 'component.irpd.status.249'}) ;
+    }
+    case 250: {
+      return  intl.formatMessage({id: 'component.irpd.status.250'}) ;
+    }
+    case 251: {
+      return  intl.formatMessage({id: 'component.irpd.status.251'}) ;
+    }
+    case 252: {
+      return  intl.formatMessage({id: 'component.irpd.status.252'}) ;
+    }
+    case 253: {
+      return  intl.formatMessage({id: 'component.irpd.status.253'}) ;
+    }
+    case 254: {
+      return  intl.formatMessage({id: 'component.irpd.status.254'}) ;
+    }
+    case 255: {
+      return  intl.formatMessage({id: 'component.irpd.status.255'}) ;
+    }
+ 
     default: {
-      return 'Status desconhecido';
+      return  intl.formatMessage({id: 'component.irpd.status'}) ;
     }
   }
 }

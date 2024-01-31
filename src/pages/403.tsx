@@ -6,7 +6,7 @@ import React from 'react';
 
 const ForbidenPage: React.FC = () => {
   const intl = useIntl();
-
+ 
   return (
     <ProCard
       ghost

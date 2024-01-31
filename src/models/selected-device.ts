@@ -45,9 +45,7 @@ export default {
 
   effects: {
     *setSelectedDevice({ payload }: { payload: SelectedType }, { put }: { put: any }) {
-      console.log('chegou aqui')
       const { type, farmId, deviceId, otherProps } = payload;
-      console.log('otherProps', otherProps)
       yield put({
         type: 'setSelectedDeviceDefinition',
         payload: { type, farmId, deviceId, otherProps },
