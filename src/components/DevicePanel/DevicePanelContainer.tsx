@@ -2,6 +2,7 @@ import { useScreenHook } from '@/hooks/screen';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
+import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 import {
   SelectedDeviceModelProps,
   setDeviceClose,
@@ -15,7 +16,6 @@ import { useEffect, useState } from 'react';
 import { DevicePanelComponent } from './DevicePanelComponent';
 import DevicePanelMobile from './DevicePanelMobile';
 import { DevicePanelSkeleton } from './DevicePanelSkeleton';
-import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 
 type Props = {
   type: DeviceType;
@@ -34,17 +34,29 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   const [device, setDevice] = useState<any>({});
   const [options, setOptions] = useState<Array<{ value: number; label: string }>>([]);
 
-  const { irpd, pivot, pivotById, meterSystem, type, selectedDevice, setSelectedDevice, setDeviceClose } =
-    props;
+  const {
+    irpd,
+    pivot,
+    pivotById,
+    meterSystem,
+    type,
+    selectedDevice,
+    setSelectedDevice,
+    setDeviceClose,
+  } = props;
 
   const loading = pivot.loading || irpd.loading || meterSystem.loading;
 
   useEffect(() => {
-    console.log(pivotById)
+    console.log(pivotById);
     switch (type) {
       case DeviceType.Pivot: {
         const device = pivotById.result;
-        setDevice(device);
+        setDevice({
+          ...device,
+          base_radio_id: pivotById.unformated.base_radio_id,
+          unformated: pivotById.unformated,
+        });
         break;
       }
       case DeviceType.Meter: {

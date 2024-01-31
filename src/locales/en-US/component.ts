@@ -387,6 +387,7 @@ export default {
   'component.pivot.startirr.oprtdrforecast': 'Operation duration forecast: ',
   'component.pivot.startirr.enddtforecast': 'End date forecast:  ',
   'component.pivot.operationalpanel.button.tooltip.maintain': 'Enable Maintenance Mode',
+  'component.pivot.operationalpanel.button.tooltip.maintain.2': 'Disabe Maintenance Mode',
   'component.pivot.operationalpanel.button.tooltip.croop': 'Crop',
   'component.pivot.startirr.card.collapse.title': 'Schedule {value}',
   'component.pivot.startirr.plusirr.txt': 'Schedule',
@@ -396,4 +397,7 @@ export default {
   'component.pivot.crop.segment.list.title': 'Segments',
   'component.pivot.crop.segment.list.daterange': 'Date range: ',
   'component.pivot.crop.segment.list.accblade': 'Accumulated Blade: ',
+  'component.pivot.alert.without': 'Pivot without internet  ',
+  'component.pivot.alert.maintenance': 'Pivot under maintenance  '
+
 };

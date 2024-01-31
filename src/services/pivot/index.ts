@@ -252,7 +252,6 @@ export async function getLastSegmentIrrigation(
   );
 }
 
-
 export async function getPressureComparison(
   props: { pivotId: number },
   options: {
@@ -293,6 +292,13 @@ export async function getPivotMaintnanceMode(
   );
 }
 
+export async function getDeviceIsOnline(props: { deviceId: number }, options: {}) {
+  return request<{ is_online: boolean }>(`/devices/${props.deviceId}/is-online/`, {
+    method: 'GET',
+    data: options,
+  });
+}
+
 export async function stopPivot(props: { farmId: number; pivotId: number }, options: {}) {
   return request<{ maintenance: boolean }>(
     `/farms/${props.farmId}/pivots/${props.pivotId}/actions/stop/`,
@@ -303,15 +309,11 @@ export async function stopPivot(props: { farmId: number; pivotId: number }, opti
   );
 }
 
-export async function getPivotWaterConsumptionBySegment(
-  props: {   pivotId: number },
-  options: {},
-) {
+export async function getPivotWaterConsumptionBySegment(props: { pivotId: number }, options: {}) {
   return request<API.GetWaterBySegment>(
     `/reports/pivots/${props.pivotId}/pivot_water_consumption_by_segment/`,
     {
       method: 'GET',
-      
     },
   );
 }
