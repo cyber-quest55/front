@@ -10,43 +10,44 @@ interface IDocumentProps {
   colProps?: ColProps;
   formItemProps?: ProFormItemProps;
   countryCode?: string;
-  country: string;
+  country?: string;
 }
 
 const InputCellphone: React.FunctionComponent<IDocumentProps> = (props) => {
-  const key = 'cellphone'
-  const cnt = countries.find(item => item.iso === props.country)
-  const mask = cnt?  cnt.masks[key] : ''
+  const key = 'cellphone';
+  const cnt = props.country
+    ? countries.find((item) => item.iso === props.country)
+    : countries.find((item) => item.phone === props.countryCode);
+  const mask = cnt ? cnt.masks[key] : '';
 
   const className = useEmotionCss(({ token }) => {
     return {
-        '.ant-input': {
-          lineHeight: 1.5714285714285714,
-          backgroundColor: token.colorBgContainer,
-          backgroundImage: 'none',
-          borderWidth: ' 1px',
-          borderStyle: 'solid',
-          borderColor: token.colorBorder,
-          borderRadius: '6px',
-          transition: 'all 0.2s',
-          color: token.colorText,
-          ':focus': {
-            borderColor: token.colorPrimary,
-          },
-          ':hover': {
-            borderColor: token.colorPrimary,
-          }, 
+      '.ant-input': {
+        lineHeight: 1.5714285714285714,
+        backgroundColor: token.colorBgContainer,
+        backgroundImage: 'none',
+        borderWidth: ' 1px',
+        borderStyle: 'solid',
+        borderColor: token.colorBorder,
+        borderRadius: '6px',
+        transition: 'all 0.2s',
+        color: token.colorText,
+        ':focus': {
+          borderColor: token.colorPrimary,
         },
-      
-        '.ant-input-status-error': {
-          borderColor: token.colorError
+        ':hover': {
+          borderColor: token.colorPrimary,
         },
-        '.ant-input-group-addon':{
-          color: token.colorText,
-          borderColor: token.colorBorder,
-          backgroundColor: token.colorBgContainer,
+      },
 
-        }
+      '.ant-input-status-error': {
+        borderColor: token.colorError,
+      },
+      '.ant-input-group-addon': {
+        color: token.colorText,
+        borderColor: token.colorBorder,
+        backgroundColor: token.colorBgContainer,
+      },
     };
   });
 

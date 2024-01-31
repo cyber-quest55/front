@@ -41,4 +41,71 @@ declare namespace API {
   };
 
   type GetMeterSystemTableResponse = APIModels.MeterSystemTable
+
+
+  type PostMeterSystemConfigParams = {
+    farmId: number;
+    meterSystemId: string;
+    meterId: string;
+  };
+
+  type PatchMeterParams = {
+    farmId: number;
+    meterSystemId: string;
+    meterId: string;
+  };
+
+  type PatchMeterSystemParams = {
+    farmId: number;
+    meterSystemId: string;
+  };
+
+  type GetMeterDevicesParams = {
+    farmId: number;
+    meterSystemId: string;
+  };
+
+  type GetMeterDevicesResponse = Array<{
+      id: number;
+      name: string;
+      imeter_device: {
+        id: number;
+        created: string;
+        updated: string;
+        radio_id: string;
+        taken: null | string;
+      };
+  }>
+
+  type GetEditMeterHistoryParams = {
+    farmId: number;
+    meterSystemId: string;
+    meterId: string;
+  };
+
+  type GetMeterHistoryResponse = {
+    count: number;
+    current_page: number;
+    next: string;
+    previous: any;
+    results: Array<APIModels.MeterHistory>
+  }
+
+  type FavoriteMeterConfigParams = {
+    configId: number;
+    farmId: number;
+    meterSystemId: string;
+    meterId: string;
+  };
+
+  type FavoriteMeterConfigResponse = APIModels.MeterSystem;
+
+  type PatchMeterSystemResponse = APIModels.MeterSystemById;
+
+  type GetMeterSystemSensorsResponse = APIModels.MeterSystemSensor[];
+  
+  type PostMeterSystemConfigResponse = APIModels.MeterConfig;
+
+  type PatchMeterResponse = APIModels.Meter;
+
 }

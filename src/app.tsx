@@ -1,5 +1,5 @@
 import { AvatarDropdown, AvatarName } from '@/components';
-import { currentUser as queryCurrentUser } from '@/services/user/index';
+import { getUserInfo, currentUser as queryCurrentUser } from '@/services/user/index';
 import { LinkOutlined, UserOutlined } from '@ant-design/icons';
 import {
   ProConfigProvider,
@@ -19,6 +19,7 @@ import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect/FarmSelectContainer';
 import LocaleSelectorContainer from './components/LocaleSelector/LocaleSelectorContainer';
 import OfflineNetworkContainer from './components/Modals/OfflineNetwork/OfflineNetworkContainer';
+import ZendeskChat from './components/ZendeskChat';
 import ForbidenPage from './pages/403';
 import NoFoundPage from './pages/404';
 import { errorConfig } from './requestErrorConfig';
@@ -51,7 +52,8 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({});
-      return msg.profile;
+      const data = await getUserInfo({});
+      return {...msg.profile, ...data};
     } catch (error) {
       //history.push(loginPath);
     }
@@ -144,7 +146,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // if (initialState?.loading) return <PageLoading />;
       return (
         <App>
-          <ProConfigProvider token={{colorPrimary: defaultSettings.colorPrimary}}>
+          <ProConfigProvider token={{ colorPrimary: defaultSettings.colorPrimary }}>
             <OfflineNetworkContainer />
             <LoadScript
               libraries={libraries as any}
@@ -165,6 +167,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
                   }));
                 }}
               />
+              <ZendeskChat />
             </LoadScript>
           </ProConfigProvider>
         </App>

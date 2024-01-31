@@ -16,7 +16,7 @@ import {
   HistoryOutlined,
   ThunderboltFilled,
 } from '@ant-design/icons';
-import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useEmotionCss } from '@ant-design/use-emotion-css'; 
 import { Link, useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import {
@@ -34,7 +34,7 @@ import {
   Typography,
 } from 'antd';
 import { MenuProps } from 'rc-menu';
-import { useEffect } from 'react';
+import { useEffect } from 'react'; 
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlock, GiPadlockOpen } from 'react-icons/gi';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
@@ -63,6 +63,7 @@ type Props = {
 
 export const DevicePanelComponent: React.FC<Props> = (props) => {
   const { md } = useScreenHook();
+ 
   const intl = useIntl();
   const { message } = App.useApp();
   const params = useParams();
@@ -73,6 +74,9 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const isOnReq = useRequest(getDeviceIsOnline, { manual: true });
 
   const isDisabled = !isOnReq.data?.is_online || mtncGetReq.data?.maintenance;
+ 
+  // const navigate = useNavigate(); 
+ 
 
   const { options, device, type, onChangeDevice } = props;
 
@@ -402,11 +406,17 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Meter: {
         return (
           <Space>
-            <Button icon={<EditFilled />}>
+ 
+            <Link
+              to={`/farms/${params.id}/metersystem/${device.id}/meter/${device.imeterSetId}/edit`}
+            >
+                <Button icon={<EditFilled />}>
               {intl.formatMessage({
                 id: 'component.pivot.operationalpanel.button.edit',
               })}
             </Button>
+            </Link>
+ 
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
               {intl.formatMessage({
                 id: 'component.pivot.operationalpanel.button.close',
@@ -419,16 +429,25 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space>
-            <Button icon={<EditFilled />}>
-              {intl.formatMessage({
-                id: 'component.pivot.operationalpanel.button.edit',
-              })}
-            </Button>
-            <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-              {intl.formatMessage({
-                id: 'component.pivot.operationalpanel.button.close',
-              })}
-            </Button>
+ 
+            {device.protocol === 5 ? (
+              <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
+                <Button icon={<EditFilled />}>
+                  {intl.formatMessage({
+                    id: 'component.pivot.operationalpanel.button.edit',
+                  })}
+                </Button>
+              </Link>
+            ) : (
+              <Link to={`/farms/${params.id}/irpd/${device.id}/editv4`}>
+                 <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
+                    {intl.formatMessage({
+                      id: 'component.pivot.operationalpanel.button.close',
+                    })}
+                  </Button>
+              </Link>
+            )}
+           
           </Space>
         );
       }
