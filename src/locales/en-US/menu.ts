@@ -11,5 +11,6 @@ export default {
   'menu.Relatórios.Relatório da Fazenda': 'Farm Report',
   'menu.Edit Pivot': 'Edit Pivot',
   'menu.Edit Meter': 'Edit Meter',
+  'menu.User Profile': 'User Profile',
   'menu.Edit Pump': 'Edit Pump',
 };

@@ -1,112 +1,116 @@
+import { getIntl } from "@umijs/max";
+
 export function getPivotStatus(status: number): string {
+  const intl = getIntl()
+  
   switch (status) {
     case 0: {
-      return 'Parado via internet';
+      return  intl.formatMessage({id: 'component.pivot.status.0'}) ;
     }
     case 1: {
-      return 'Ligado em avanço';
+      return  intl.formatMessage({id: 'component.pivot.status.1'}) ;
     }
     case 2: {
-      return 'Ligado em reverso';
+      return  intl.formatMessage({id: 'component.pivot.status.2'}) ;
     }
     case 3: {
-      return 'Esperando pressurização';
+      return  intl.formatMessage({id: 'component.pivot.status.3'}) ;
     }
     case 4: {
-      return 'Irrigando';
+      return  intl.formatMessage({id: 'component.pivot.status.4'}) ;
     }
     case 5: {
-      return 'Esperando tempo de retardo';
+      return  intl.formatMessage({id: 'component.pivot.status.5'}) ;
     }
     case 6: {
-      return 'Movendo a seco';
+      return  intl.formatMessage({id: 'component.pivot.status.6'}) ;
     }
     case 7: {
-      return 'Programado';
+      return  intl.formatMessage({id: 'component.pivot.status.7'}) ;
     }
     case 8: {
-      return 'Preparando para religar';
+      return  intl.formatMessage({id: 'component.pivot.status.8'}) ;
     }
     case 9: {
-      return 'Parado por horário de pico';
+      return  intl.formatMessage({id: 'component.pivot.status.9'}) ;
     }
     case 10: {
-      return 'Irrigação finalizada';
+      return  intl.formatMessage({id: 'component.pivot.status.10'}) ;
     }
     case 11: {
-      return 'Parado em autorreversão';
+      return  intl.formatMessage({id: 'component.pivot.status.11'}) ;
     }
     case 12: {
-      return 'Parado via internet';
+      return  intl.formatMessage({id: 'component.pivot.status.12'}) ;
     }
     case 13: {
-      return 'Parado via painel';
+      return  intl.formatMessage({id: 'component.pivot.status.13'}) ;
     }
     case 14: {
-      return 'Painel energizado';
+      return  intl.formatMessage({id: 'component.pivot.status.14'}) ;
     }
     case 15: {
-      return 'Desalinhado';
+      return  intl.formatMessage({id: 'component.pivot.status.15'}) ;
     }
     case 16: {
-      return 'Falha de pressão';
+      return  intl.formatMessage({id: 'component.pivot.status.16'}) ;
     }
     case 17: {
-      return 'Direção de irrigação inválida';
+      return  intl.formatMessage({id: 'component.pivot.status.17'}) ;
     }
     case 18: {
-      return 'Queda de energia';
+      return  intl.formatMessage({id: 'component.pivot.status.18'}) ;
     }
     case 19: {
-      return 'Tensão fora da faixa permitida';
+      return  intl.formatMessage({id: 'component.pivot.status.19'}) ;
     }
     case 20: {
-      return 'Erro de parâmetro';
+      return  intl.formatMessage({id: 'component.pivot.status.20'}) ;
     }
     case 21: {
-      return 'Erro desconhecido';
+      return  intl.formatMessage({id: 'component.pivot.status.21'}) ;
     }
     case 22: {
-      return 'Painel desligado';
+      return  intl.formatMessage({id: 'component.pivot.status.22'}) ;
     }
     case 23: {
-      return 'Tempo de bomba excedido';
+      return  intl.formatMessage({id: 'component.pivot.status.23'}) ;
     }
     case 24: {
-      return 'Irrigação começou';
+      return  intl.formatMessage({id: 'component.pivot.status.24'}) ;
     }
     case 25: {
-      return 'Botão parar pressionado (bomba ligada)';
+      return  intl.formatMessage({id: 'component.pivot.status.25'}) ;
     }
     case 26: {
-      return 'Erro na bomba';
+      return  intl.formatMessage({id: 'component.pivot.status.26'}) ;
     }
     case 27: {
-      return 'Movendo a seco pelo pluviômetro';
+      return  intl.formatMessage({id: 'component.pivot.status.27'}) ;
     }
     case 28: {
-      return 'Parado pelo pluviômetro';
+      return  intl.formatMessage({id: 'component.pivot.status.28'}) ;
     }
     case 29: {
-      return 'Parado por erro no relógio interno';
+      return  intl.formatMessage({id: 'component.pivot.status.29'}) ;
     }
     case 30: {
-      return 'Fertirrigação ligada';
+      return  intl.formatMessage({id: 'component.pivot.status.30'}) ;
     }
     case 31: {
-      return 'Fertirrigação desligada';
+      return  intl.formatMessage({id: 'component.pivot.status.31'}) ;
     }
     case 32: {
-      return 'Desligado';
+      return  intl.formatMessage({id: 'component.pivot.status.32'}) ;
     }
     case 33: {
-      return 'Status desconhecido';
+      return  intl.formatMessage({id: 'component.pivot.status.33'}) ;
     }
     case 38: {
-      return 'Possivelmente parado';
+      return  intl.formatMessage({id: 'component.pivot.status.38'}) ;
     }
     default: {
-      return 'Possivelmente parado';
+      return  intl.formatMessage({id: 'component.pivot.status'}) ;
     }
   }
 }

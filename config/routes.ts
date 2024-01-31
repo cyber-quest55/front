@@ -105,6 +105,12 @@ export default [
     component: './Meter/Edit.tsx',
   },
   {
+    path: 'profile',
+    name: 'User Profile',
+    hideInMenu: true,
+    component: './Profile',
+  },
+  {
     path: 'farms/:farmId/repeater/:repeaterId/edit',
     name: 'Edit Repeater',
     hideInMenu: true,

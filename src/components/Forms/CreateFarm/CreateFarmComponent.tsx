@@ -41,16 +41,11 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
   const form4Ref = useRef<ProFormInstance<any> | undefined>();
 
   const [visible, setVisible] = React.useState(false);
-  const [docType, setDocType] = React.useState(1);
   const [disabled, setDisabled] = React.useState(true);
   const [billAddrs, setBillAddrs] = React.useState(false);
   const postReq = useRequest(createFarm, { manual: true });
   const timezones = Intl.supportedValuesOf('timeZone');
   const { message } = App.useApp();
-
-  const onChangeDocType = (doc: any) => {
-    setDocType(doc);
-  };
 
   useEffect(() => {
     console.log(formMapRef.current[2]);
@@ -69,33 +64,32 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
   const onBlurBilling: FocusEventHandler<HTMLInputElement> = async (v) => {
     const { data } = await getCep(v.target.value);
     const formsValue = form2Ref.current?.getFieldsValue();
-    console.log('asdygsaygdgyas', !data.erro)
+    console.log('asdygsaygdgyas', !data.erro);
 
     if (data && !data.erro) {
-        form2Ref.current?.setFieldsValue({
-          ...formsValue,
-          billing: {
-            ...formsValue.billing,
-            address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
-            state: data.uf,
-            city: data.localidade,
-          },
-        });
+      form2Ref.current?.setFieldsValue({
+        ...formsValue,
+        billing: {
+          ...formsValue.billing,
+          address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
+          state: data.uf,
+          city: data.localidade,
+        },
+      });
     }
   };
 
   const onBlurDefault: FocusEventHandler<HTMLInputElement> = async (v) => {
     const { data } = await getCep(v.target.value);
     const formsValue = form3Ref.current?.getFieldsValue();
-    
 
     if (data && !data.erro) {
-         form3Ref.current?.setFieldsValue({
-          ...formsValue.billing,
-          address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
-          state: data.uf,
-          city: data.localidade,
-        });
+      form3Ref.current?.setFieldsValue({
+        ...formsValue.billing,
+        address: `${data.logradouro}-${data.bairro} ${data.complemento}`,
+        state: data.uf,
+        city: data.localidade,
+      });
     }
   };
 
@@ -179,7 +173,12 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
         }),
       ),
 
-      document: yup.string(),
+      document: yup.string().matches(
+        /^[^_]+$/,
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
       company_name: yup.string().required(
         intl.formatMessage({
           id: 'validations.required',
@@ -297,7 +296,7 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
               {},
               {
                 ...v,
-                billing: { ...v.billing, docType },
+                billing: { ...v.billing, docType: form2Ref.current?.getFieldValue(['billing', 'docType']) },
                 administrators: [2050],
               },
             );
@@ -409,6 +408,7 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
                   postal_code: '',
                   email: '',
                   phone: '',
+                  docType: 1
                 },
               }}
               name="billing"
@@ -517,7 +517,6 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
                         <Row gutter={[12, 0]} style={{ width: '100%' }}>
                           <CustomInput.Document
                             colProps={{ xs: 24, sm: 24, md: 12 }}
-                            onChangeDocType={onChangeDocType}
                             formItemProps={{
                               rules: [yupSync2],
                               label: intl.formatMessage({
@@ -526,6 +525,10 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
                               name: ['billing', 'document'],
                             }}
                             country={billing.country}
+                            formRef={form2Ref}
+                            selectItemProps={{
+                              name: ['billing', 'docType'],
+                            }}
                           />
 
                           <Col xs={24} sm={24} md={12}>

@@ -20,8 +20,6 @@ import { useRequest } from 'ahooks';
 import { App, Button, Form, Row, Typography } from 'antd';
 import * as React from 'react';
 import * as yup from 'yup';
-import MarkerGreen from '../../../../../public/images/devices/marker-green.svg';
-import LocationFormContainer from '../../Location/LocationContainer';
 
 const EditRepeaterGeneralComponent: React.FunctionComponent<any> = (props) => {
   const [form] = Form.useForm<any>();
@@ -32,14 +30,6 @@ const EditRepeaterGeneralComponent: React.FunctionComponent<any> = (props) => {
   const { repeater } = props;
   const patchRepeaterConfigReq = useRequest(patchRepeaterConfig, { manual: true });
   const [loading, setLoading] = React.useState(false);
-  const positions = {
-    lat: Number(repeater.position.split(',')[0]),
-    long: Number(repeater.position.split(',')[1]),
-  };
-  const [first, setFirst] = React.useState({
-    lat: positions.lat,
-    lng: positions.long,
-  });
 
   const schema = yup.object().shape({
     name: yup
@@ -114,7 +104,7 @@ const EditRepeaterGeneralComponent: React.FunctionComponent<any> = (props) => {
 
               const newConfigData = {
                 name: values.name,
-                position: `${first.lat},${first.lng}`,
+                position: repeater.position,
                 energy_type: values.energy_type,
               };
 
@@ -210,36 +200,6 @@ const EditRepeaterGeneralComponent: React.FunctionComponent<any> = (props) => {
                     label: intl.formatMessage({
                       id: 'component.edit.repeater.general.type.bivolt.value',
                     }),
-                  },
-                ]}
-              />
-            </ProFormGroup>
-            <ProFormGroup
-              title={intl.formatMessage({
-                id: 'component.edit.repeater.location.title',
-              })}
-              titleStyle={{ marginBlockEnd: 20 }}
-            >
-              <div style={{ marginBottom: 20, marginLeft: 5 }}>
-                <Typography.Text>
-                  {intl.formatMessage({
-                    id: 'component.edit.repeater.location.desc',
-                  })}
-                </Typography.Text>
-              </div>
-              <LocationFormContainer
-                lat={positions.lat}
-                lng={positions.long}
-                northValue={false}
-                locations={[
-                  {
-                    color: 'green',
-                    value: { lat: first.lat, lng: first.lng },
-                    name: intl.formatMessage({
-                      id: 'component.edit.meter.location.input.label',
-                    }),
-                    onChange: (v: any) => setFirst(v),
-                    marker: MarkerGreen,
                   },
                 ]}
               />

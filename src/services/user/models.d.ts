@@ -1,4 +1,4 @@
-declare namespace Models {
+declare namespace APIModels {
   /** Model of User */
   type CurrentUser = {
     name?: string;
@@ -19,5 +19,62 @@ declare namespace Models {
     };
     address?: string;
     phone?: string;
+  };
+
+  type ProfileData = {
+    id: number;
+    birth: any;
+    country: string;
+    state: any;
+    city: any;
+    district: any;
+    address_1: any;
+    address_2: any;
+    number: any;
+    postal_code: any;
+    prefix_cell_phone: any;
+    cell_phone: any;
+    phone: any;
+    cpf: any;
+    updated: string;
+    language: string;
+    is_accept_policy: boolean;
+    accept_policy_date: string;
+    zendesk_customer_id: any;
+    reset_password: boolean;
+    user: number;
+    accept_policy_version: number;
+    email: string;
+  };
+
+  type PostProfilePayload = {
+    name: string;
+    email: string;
+    birth: string;
+    country: string;
+    state: string;
+    city: string;
+    district: string;
+    address_1: string;
+    address_2: string;
+    number: string;
+    postal_code: string;
+    phone: string;
+    prefix_cell_phone: string;
+    cell_phone: string;
+    cpf: string;
+    language: string;
+    role: any;
+  };
+
+  type PatchUserInfoPayload = {
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+
+  type PostChangePasswordPayload = {
+    current_password: string;
+    new_password: string;
   };
 }

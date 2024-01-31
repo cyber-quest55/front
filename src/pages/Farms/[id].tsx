@@ -232,10 +232,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
   return (
     <div className={classNamts}>
       <PageContainer
-       token={{
-        paddingBlockPageContainerContent:  0,
-        paddingInlinePageContainerContent: 0,
-      }}
         header={{ children: <div style={{ display: 'none' }}>asd</div> }}
         ghost
         breadcrumb={{}}

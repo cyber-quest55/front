@@ -41,9 +41,10 @@ export async function getPivotHistory(
   options?: { [key: string]: any },
 ) {
   return request<{
-    data: API.GetPivotsInformationResponse;
+    data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
     method: 'GET',
+    params: options,
   });
 }
 
@@ -73,19 +74,44 @@ export async function getEditPivotHistory(
   });
 }
 
+/** GET /farms/${farmId}/pivots/${pivotId}/list */
+export async function getPivotListOperation(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotHistoryOperationResponse;
+  }>(`/reports/pivots/${props.pivotId}/list/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+/** GET /farms/${farmId}/pivots/${pivotId}/list */
+export async function getPivotListGpsStream(
+  props: API.GetEditPivotHistoryParams,
+  options?: { [key: string]: any },
+) {
+  return request<{
+    data: API.GetPivotListGpsStreamResponse;
+  }>(`/reports/pivots/${props.pivotId}/list_gps_streams_v5/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
 /** POST /farms/${farmId}/pivots/${pivotId}/config/${configId} */
 export async function favoritePivotConfig(
   props: API.FavoritePivotConfigParams,
   options?: { [key: string]: any },
 ) {
-
   return request<{
     data: API.FavoritePivotConfigResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/config/${props.configId}/`, {
     method: 'PATCH',
-   data: options});
+    data: options,
+  });
 }
-
 
 /** GET /farms/${farmId}/pivots/${pivotId}/devices/control/ */
 export async function getEditPivotDeviceControlTable(
@@ -114,10 +140,7 @@ export async function getEditPivotDeviceMonitorTable(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/control/ */
-export async function patchChangeControlRadio(
-  props: any,
-  options?: { radio_id: string },
-) {
+export async function patchChangeControlRadio(props: any, options?: { radio_id: string }) {
   return request<{
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/control/`, {
@@ -127,10 +150,7 @@ export async function patchChangeControlRadio(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId}/${deviceId}/control/ */
-export async function patchChangeControlManualRadio(
-  props: any,
-  options?: { [key: string]: any },
-) {
+export async function patchChangeControlManualRadio(props: any, options?: { [key: string]: any }) {
   return request<{
     data: any;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/control/`, {
@@ -140,10 +160,7 @@ export async function patchChangeControlManualRadio(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId}/swap/${deviceId}/monitor/ */
-export async function patchChangeMonitorRadio(
-  props: any,
-  options?: { [key: string]: any },
-) {
+export async function patchChangeMonitorRadio(props: any, options?: { [key: string]: any }) {
   return request<{
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/swap/${props.deviceId}/monitor/`, {
@@ -166,14 +183,137 @@ export async function postPivotConfig(
 }
 
 /** PATCH /farms/${farmId}/pivots/${pivotId} */
-export async function patchPivotGlobalConfig(
-  props: API.GetEditPivotHistoryParams,
-  options: any,
-) {
+export async function patchPivotGlobalConfig(props: API.GetEditPivotHistoryParams, options: any) {
   return request<{
     data: API.GetPivotHistoryResponse;
   }>(`/farms/${props.farmId}/pivots/${props.pivotId}/`, {
     method: 'PATCH',
     data: options,
   });
+}
+
+/**  /farms/${farmID}/pivots/${pivotID}/device/${deviceID}/action/ */
+export async function postSimpleIrrigation(
+  props: { farmId: number; pivotId: number; deviceId: number },
+  options: API.PostSimpleIrrigation,
+) {
+  return request<{
+    data: API.GetPivotHistoryResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/device/${props.deviceId}/action/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+/**  /farms/${farmID}/pivots/${pivotID}/device/${deviceID}/action/ */
+export async function getEstimatedTime(props: {}, options: API.GetEstimatedTimeParams) {
+  return request<API.GetEstimatedTimeResponse>(`/estimated-time/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function getLastSimpleIrrigation(
+  props: { farmId: number; pivotId: number },
+  options: {},
+) {
+  return request<API.GetLastSimpleIrrigation>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/controlleraction/simple/latest/`,
+    {
+      method: 'GET',
+      params: options,
+    },
+  );
+}
+
+export async function getLastScheduleIrrigation(
+  props: { farmId: number; pivotId: number },
+  options: {},
+) {
+  return request<API.GetLastScheduleIrrigation>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/controlleraction/schedule/latest/`,
+    {
+      method: 'GET',
+      params: options,
+    },
+  );
+}
+
+export async function getLastSegmentIrrigation(
+  props: { farmId: number; pivotId: number },
+  options: {},
+) {
+  return request<API.GetLastSegmentedIrrigation>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/controlleraction/segment/latest/`,
+    {
+      method: 'GET',
+      params: options,
+    },
+  );
+}
+
+export async function getPressureComparison(
+  props: { pivotId: number },
+  options: {
+    comparison_start_date: string;
+    comparison_end_date: string;
+    current_start_date: string;
+    current_end_date: string;
+  },
+) {
+  return request<API.GetLastSimpleIrrigation>(`/reports/pivots/${props.pivotId}/pressure_chart/`, {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function patchPivotMaintnanceMode(
+  props: { farmId: number; pivotId: number },
+  options: {
+    maintenance: boolean;
+  },
+) {
+  return request<{}>(`/farms/${props.farmId}/pivots/${props.pivotId}/maintenance/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function getPivotMaintnanceMode(
+  props: { farmId: number; pivotId: number },
+  options: {},
+) {
+  return request<{ maintenance: boolean }>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/maintenance/`,
+    {
+      method: 'GET',
+      data: options,
+    },
+  );
+}
+
+export async function getDeviceIsOnline(props: { deviceId: number }, options: {}) {
+  return request<{ is_online: boolean }>(`/devices/${props.deviceId}/is-online/`, {
+    method: 'GET',
+    data: options,
+  });
+}
+
+export async function stopPivot(props: { farmId: number; pivotId: number }, options: {}) {
+  return request<{ maintenance: boolean }>(
+    `/farms/${props.farmId}/pivots/${props.pivotId}/actions/stop/`,
+    {
+      method: 'Post',
+      data: options,
+    },
+  );
+}
+
+export async function getPivotWaterConsumptionBySegment(props: { pivotId: number }, options: {}) {
+  return request<API.GetWaterBySegment>(
+    `/reports/pivots/${props.pivotId}/pivot_water_consumption_by_segment/`,
+    {
+      method: 'GET',
+    },
+  );
 }

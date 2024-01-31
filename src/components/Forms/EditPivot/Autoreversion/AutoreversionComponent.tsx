@@ -71,7 +71,7 @@ const EditPivotAutoreversionComponent: React.FunctionComponent<any> = (props) =>
                 ...pivot.controllerconfig.content,
                 ...values.controllerconfig.content,
                 autoreversion_command: {
-                  command: values.controllerconfig.content.autoreversion_command.command ? 1 : 0,
+                  command: values.controllerconfig?.content?.autoreversion_command?.command ? 1 : 0,
                 },
               },
               name_pivot_on_config: pivot.name,
@@ -115,7 +115,7 @@ const EditPivotAutoreversionComponent: React.FunctionComponent<any> = (props) =>
         />
         <ProFormDependency name={['controllerconfig']}>
           {({ controllerconfig }) => {
-            if (controllerconfig.content.autoreversion_command.command)
+            if (controllerconfig?.content?.autoreversion_command?.command)
               return (
                 <>
                   <ProFormSegmented
