@@ -11,7 +11,6 @@ import {
   CaretDownOutlined,
   ClockCircleOutlined,
   CloseCircleFilled,
-  CloudFilled,
   EditFilled,
   HistoryOutlined,
   ThunderboltFilled,
@@ -43,6 +42,7 @@ import StartPivotScheduleContainer from '../Forms/StartPivotSchedule/StartPivotS
 import StartPivotSegmentContainer from '../Forms/StartPivotSegment/StartPivotSegmentContainer';
 import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
 import CropSegmentsModalContainer from '../Modals/Crop/CropContainer';
+import WeatherStationOverviewContainer from '../Modals/WeatherStationOverview/WeatherStationOverviewContainer';
 
 const { Text } = Typography;
 
@@ -386,7 +386,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
               <Button icon={mtncGetReq.data?.maintenance ? <GiPadlock /> : <GiPadlockOpen/>} />
             </Popconfirm>
             <CropSegmentsModalContainer />
-            <Button icon={<CloudFilled />} />
+            <WeatherStationOverviewContainer />
             <Link to={`/farms/${params.id}/pivot/${device.id}/edit`}>
               <Button icon={<EditFilled />}>
                 {intl.formatMessage({
