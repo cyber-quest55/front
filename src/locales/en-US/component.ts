@@ -399,7 +399,7 @@ export default {
   'component.pivot.crop.segment.list.daterange': 'Date range: ',
   'component.pivot.crop.segment.list.accblade': 'Accumulated Blade: ',
   'component.pivot.alert.without': 'Pivot without internet  ',
-  'component.pivot.alert.maintenance': 'Pivot under maintenance  '
+  'component.pivot.alert.maintenance': 'Pivot under maintenance  ',
 
   'component.edit.meter.general.title': 'General',
   'component.edit.meter.button.save': 'Save',
