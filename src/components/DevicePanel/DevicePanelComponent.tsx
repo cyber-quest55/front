@@ -376,14 +376,14 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
               title={
                 mtncGetReq.data?.maintenance
                   ? `${intl.formatMessage({
-                      id: 'component.pivot.operationalpanel.button.tooltip.maintain',
+                      id: 'component.pivot.operationalpanel.button.tooltip.maintain.2',
                     })}?`
                   : `${intl.formatMessage({
-                      id: 'component.pivot.operationalpanel.button.tooltip.maintain.2',
+                      id: 'component.pivot.operationalpanel.button.tooltip.maintain',
                     })}?`
               }
             >
-              <Button icon={mtncGetReq.data?.maintenance ? <GiPadlockOpen /> : <GiPadlock />} />
+              <Button icon={mtncGetReq.data?.maintenance ? <GiPadlock /> : <GiPadlockOpen/>} />
             </Popconfirm>
             <CropSegmentsModalContainer />
             <Button icon={<CloudFilled />} />

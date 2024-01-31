@@ -388,7 +388,7 @@ export default {
   'component.pivot.startirr.oprtdrforecast': 'Operation duration forecast: ',
   'component.pivot.startirr.enddtforecast': 'End date forecast:  ',
   'component.pivot.operationalpanel.button.tooltip.maintain': 'Enable Maintenance Mode',
-  'component.pivot.operationalpanel.button.tooltip.maintain.2': 'Disabe Maintenance Mode',
+  'component.pivot.operationalpanel.button.tooltip.maintain.2': 'Disable Maintenance Mode',
   'component.pivot.operationalpanel.button.tooltip.croop': 'Crop',
   'component.pivot.startirr.card.collapse.title': 'Schedule {value}',
   'component.pivot.startirr.plusirr.txt': 'Schedule',
