@@ -99,6 +99,12 @@ export default [
     component: './Pivot/Edit.tsx',
   },
   {
+    path: 'farms/:farmId/pivot/:pivotId/weatherstation',
+    name: 'Weatherstation',
+    hideInMenu: true,
+    component: './WeatherStation/index.tsx',
+  },
+  {
     path: 'farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',
     name: 'Edit Meter',
     hideInMenu: true,

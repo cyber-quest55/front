@@ -1,63 +1,14 @@
 import { CloudFilled } from '@ant-design/icons';
-import { useIntl, useParams } from '@umijs/max';
+import { useIntl, useNavigate, useParams } from '@umijs/max';
 import { Button, Modal, Row, Skeleton } from 'antd';
 import React, { useEffect } from 'react';
 
 import HumidityIcon from '@/icons/weatherstation/humidity-icon.svg';
 import RainIcon from '@/icons/weatherstation/rain-icon.svg';
 import TemperatureIcon from '@/icons/weatherstation/temperature-icon.svg';
-import WindDirectionIcon from '@/icons/weatherstation/wind-direction-icon.svg';
 import WindIcon from '@/icons/weatherstation/wind-icon.svg';
-
-import { IntlShape } from 'react-intl';
-
-export const isNotNull = (value: string | number | undefined) =>
-  value !== null && value !== undefined;
-
-export const toOneDecimalPlace = (temperature: number | undefined) => temperature?.toFixed(1);
-
-export const windDirectionStringByAngle = (deg: number | undefined, intl: IntlShape) => {
-  if (deg === undefined) return '-';
-  if (deg >= 337.5 || deg < 22.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.north',
-    });
-  if (deg >= 22.5 && deg < 67.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.northeast',
-    });
-  if (deg >= 67.5 && deg < 112.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.east',
-    });
-  if (deg >= 112.5 && deg < 157.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.southeast',
-    });
-  if (deg >= 157.5 && deg < 202.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.south',
-    });
-  if (deg >= 202.5 && deg < 247.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.southwest',
-    });
-  if (deg >= 247.5 && deg < 292.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.west',
-    });
-  if (deg >= 292.5 && deg < 337.5)
-    return intl.formatMessage({
-      id: 'component.weatherstation.winddirection.northwest',
-    });
-  return '-';
-};
-
-const WindDirectionRotatedIcon = ({ deg }: { deg: number | undefined }) => {
-  return (
-    <img src={WindDirectionIcon} style={{ transform: deg ? `rotateZ(${deg - 45}deg)` : '' }} />
-  );
-};
+import { FIVE_MIN_TIMEOUT, isNotNull, toOneDecimalPlace, windDirectionStringByAngle } from '@/utils/data/weatherstation';
+import WindDirectionRotatedIcon from '@/pages/WeatherStation/WindDirectionRotatedIcon';
 
 interface WeatherInfoProps {
   icon?: string;
@@ -89,8 +40,6 @@ const WeatherInfo = ({ icon, iconComponent, title, info, infoUnit, loading }: We
   ) : (
     <Skeleton style={{ transform: 'none', height: 130, width: 85 }} />
   );
-
-const FIVE_MIN_TIMEOUT = 300000;
 
 const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
   const params = useParams();
@@ -169,6 +118,8 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
 
 const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) => {
   const intl = useIntl();
+  const params = useParams();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const showModal = () => {
@@ -176,7 +127,7 @@ const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) =>
   };
 
   const handleOk = () => {
-    setIsModalOpen(false);
+    navigate(`/farms/${params.id}/pivot/${props.pivotId}/weatherstation`)
   };
 
   const handleCancel = () => {

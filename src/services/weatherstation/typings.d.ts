@@ -9,4 +9,11 @@ declare namespace API {
 
   type GetWeatherStationSummaryResponse = APIModels.WeatherStationResume;
 
+  type GetWeatherStationParams = {
+    farmId: string;
+    pivotId: string;
+  };
+
+  type GetWeatherStationResponse = APIModels.WeatherStationDavis | APIModels.WeatherStationPlugField;
+
 }
