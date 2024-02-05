@@ -133,7 +133,8 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
             monitor: values.monitor,
             base: props.base,
             automation_type: 2,
-            brand_model: values.brand_model !== 'other' ? values.brand_model : values.other_brand_model,
+            brand_model:
+              values.brand_model !== 'other' ? values.brand_model : values.other_brand_model,
             protocol: '5.0',
             flowRate: parseFloat(values.flow_rate),
             pivotLength: parseFloat(values.pivot_length),
@@ -141,6 +142,7 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
           };
           await createLinearPivotMonitorReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
+          window.location.reload();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -151,12 +153,20 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12}>
-          <ProFormText rules={[yupSync]} name="name" label="Nome do equipamento" />
+          <ProFormText
+            rules={[yupSync]}
+            name="name"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.linearpivotmonitor.name.label',
+            })}
+          />
         </Col>
         <Col xs={24} sm={12}>
           <ProFormSelect
             name="brand_model"
-            label="Fabricante"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.linearpivotmonitor.brand.label',
+            })}
             rules={[yupSync]}
             valueEnum={{
               bauer: 'Bauer',
@@ -179,7 +189,9 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
                   <ProFormText
                     rules={[yupSync]}
                     name="other_brand_model"
-                    label="Nome do Fabricante"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.linearpivotmonitor.otherbrand.label',
+                    })}
                   />
                 </Col>
               </>
@@ -191,7 +203,9 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
           <ProFormText
             rules={[yupSync]}
             name="monitor"
-            label="Rádio do Monitor"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.linearpivotmonitor.monitor.label',
+            })}
             fieldProps={{
               onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
             }}
@@ -202,7 +216,9 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="flow_rate"
-            label="Vazão"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.linearpivotmonitor.flowrate.label',
+            })}
             min={1}
             fieldProps={{
               addonAfter: 'm³/h',
@@ -216,7 +232,9 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="pivot_length"
-            label="Comprimento"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.linearpivotmonitor.length.label',
+            })}
             min={1}
             fieldProps={{
               addonAfter: 'm',
@@ -230,7 +248,9 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="pivot_speed"
-            label="Velocidade"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.linearpivotmonitor.speed.label',
+            })}
             min={1}
             fieldProps={{
               addonAfter: 'm/h',

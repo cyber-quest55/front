@@ -191,6 +191,7 @@ const IrpdForm: React.FC<any> = (props) => {
           };
           await createIrpdReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
+          window.location.reload();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -201,12 +202,20 @@ const IrpdForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12}>
-          <ProFormText name="name" label="Nome do equipamento" rules={[yupSync]} />
+          <ProFormText
+            name="name"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.name.label',
+            })}
+            rules={[yupSync]}
+          />
         </Col>
         <Col xs={24} sm={12}>
           <ProFormText
             name="pump"
-            label="Rádio do Cabo de Bomba (Irripump)"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.pump.label',
+            })}
             rules={[yupSync]}
             fieldProps={{
               onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
@@ -217,7 +226,9 @@ const IrpdForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="latitude"
-            label="Latitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.latitude.label',
+            })}
             min={-999}
             max={999}
             fieldProps={{
@@ -231,7 +242,9 @@ const IrpdForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="longitude"
-            label="Longitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.longitude.label',
+            })}
             min={-999}
             max={999}
             fieldProps={{
@@ -249,14 +262,18 @@ const IrpdForm: React.FC<any> = (props) => {
               '5.1': '5.1',
             }}
             name="protocol"
-            label="Versão"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.version.label',
+            })}
           />
         </Col>
         <Col xs={24} sm={24}>
           <ProFormRadio.Group
             name="potency_unit"
             layout="horizontal"
-            label="Unidade de Potência"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.potencyunit.label',
+            })}
             rules={[yupSync]}
             options={[
               {
@@ -277,7 +294,9 @@ const IrpdForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={8}>
                   <ProFormDigit
                     name="potency"
-                    label="Potência"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.irpd.potency.label',
+                    })}
                     rules={[yupSync]}
                     min={1}
                     fieldProps={{
@@ -299,7 +318,9 @@ const IrpdForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={8}>
                   <ProFormDigit
                     name="performance"
-                    label="Rendimento"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.irpd.performance.label',
+                    })}
                     rules={[yupSync]}
                     min={1}
                     fieldProps={{
@@ -321,7 +342,9 @@ const IrpdForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={8}>
                   <ProFormDigit
                     name="converted_potency"
-                    label="Potência Convertida"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.irpd.convertedpotency.label',
+                    })}
                     rules={[yupSync]}
                     min={1}
                     fieldProps={{
@@ -336,7 +359,9 @@ const IrpdForm: React.FC<any> = (props) => {
               <Col xs={24} sm={12}>
                 <ProFormDigit
                   name="pump_potency"
-                  label="Potência da Bomba"
+                  label={intl.formatMessage({
+                    id: 'component.adddevice.modal.form.step2.irpd.pumppotency.label',
+                  })}
                   rules={[yupSync]}
                   min={1}
                   fieldProps={{

@@ -96,7 +96,7 @@ const PivotForm: React.FC<any> = (props) => {
           }),
         )
         .when('communication_type', {
-          is: "0",
+          is: '0',
           then(schema) {
             return schema.required(
               intl.formatMessage({
@@ -114,7 +114,7 @@ const PivotForm: React.FC<any> = (props) => {
           }),
         )
         .when('communication_type', {
-          is: "0",
+          is: '0',
           then(schema) {
             return schema.required(
               intl.formatMessage({
@@ -138,7 +138,7 @@ const PivotForm: React.FC<any> = (props) => {
           }),
         )
         .when('communication_type', {
-          is: "1",
+          is: '1',
           then(schema) {
             return schema.required(
               intl.formatMessage({
@@ -278,6 +278,7 @@ const PivotForm: React.FC<any> = (props) => {
           };
           await createPivotReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
+          window.location.reload();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -288,13 +289,21 @@ const PivotForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={12}>
-          <ProFormText name="name" label="Nome do equipamento" rules={[yupSync]} />
+          <ProFormText
+            name="name"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivot.name.label',
+            })}
+            rules={[yupSync]}
+          />
         </Col>
 
         <Col xs={24} sm={12}>
           <ProFormSelect
             name="brand_model"
-            label="Fabricante"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivot.brand.label',
+            })}
             rules={[yupSync]}
             valueEnum={{
               bauer: 'Bauer',
@@ -317,7 +326,7 @@ const PivotForm: React.FC<any> = (props) => {
                 setPanelTypeOptions({ 1: 'Nexus' });
               }
 
-              props.form.setFieldValue('panel_type', null)
+              props.form.setFieldValue('panel_type', null);
             }}
           />
         </Col>
@@ -329,7 +338,9 @@ const PivotForm: React.FC<any> = (props) => {
                   <ProFormText
                     rules={[yupSync]}
                     name="other_brand_model"
-                    label="Nome do Fabricante"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.pivot.otherbrand.label',
+                    })}
                   />
                 </Col>
               </>
@@ -337,13 +348,22 @@ const PivotForm: React.FC<any> = (props) => {
           }}
         </ProForm.Item>
         <Col xs={24} sm={12}>
-          <ProFormSelect name="panel_type" label="Tipo de Painel" rules={[yupSync]} valueEnum={panelTypeOptions} />
+          <ProFormSelect
+            name="panel_type"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivot.paneltype.label',
+            })}
+            rules={[yupSync]}
+            valueEnum={panelTypeOptions}
+          />
         </Col>
 
         <Col xs={24} sm={12}>
           <ProFormSelect
             name="communication_type"
-            label="Tipo de Comunicação"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivot.communicationtype.label',
+            })}
             rules={[yupSync]}
             valueEnum={{
               '0': 'XBEE',
@@ -353,13 +373,17 @@ const PivotForm: React.FC<any> = (props) => {
         </Col>
         <ProForm.Item noStyle shouldUpdate>
           {() => {
-            {console.log(props.form.getFieldValue('communication_type'))}
-            return props.form.getFieldValue('communication_type') === "0" ? (
+            {
+              console.log(props.form.getFieldValue('communication_type'));
+            }
+            return props.form.getFieldValue('communication_type') === '0' ? (
               <>
                 <Col xs={24} sm={12}>
                   <ProFormText
                     name="control"
-                    label="Rádio do Controlador"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.pivot.control.label',
+                    })}
                     rules={[yupSync]}
                     fieldProps={{
                       onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
@@ -370,7 +394,9 @@ const PivotForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={12}>
                   <ProFormText
                     name="monitor"
-                    label="Rádio do Monitor"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.pivot.monitor.label',
+                    })}
                     rules={[yupSync]}
                     fieldProps={{
                       onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
@@ -381,7 +407,9 @@ const PivotForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={12}>
                   <ProFormText
                     name="pump"
-                    label="Rádio do Cabo de Bomba (Spoti)"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.pivot.pump.label',
+                    })}
                     rules={[yupSync]}
                     fieldProps={{
                       onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
@@ -393,7 +421,9 @@ const PivotForm: React.FC<any> = (props) => {
               <Col xs={24} sm={12}>
                 <ProFormText
                   name="gateway"
-                  label="Número do Gateway"
+                  label={intl.formatMessage({
+                    id: 'component.adddevice.modal.form.step2.pivot.gateway.label',
+                  })}
                   rules={[yupSync]}
                   fieldProps={{
                     onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
@@ -404,13 +434,19 @@ const PivotForm: React.FC<any> = (props) => {
           }}
         </ProForm.Item>
         <Col xs={24} sm={24}>
-          <ProFormCheckbox name="pluviometer">Pluviômetro</ProFormCheckbox>
+          <ProFormCheckbox name="pluviometer">
+            {intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivot.pluviometer.label',
+            })}
+          </ProFormCheckbox>
         </Col>
         <Col xs={24} sm={24}>
           <ProFormRadio.Group
             name="potency_unit"
             layout="horizontal"
-            label="Unidade de Potência"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivot.potencyunit.label',
+            })}
             rules={[yupSync]}
             options={[
               {
@@ -431,7 +467,9 @@ const PivotForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={8}>
                   <ProFormDigit
                     name="potency"
-                    label="Potência"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.pivot.potency.label',
+                    })}
                     rules={[yupSync]}
                     min={1}
                     fieldProps={{
@@ -453,7 +491,9 @@ const PivotForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={8}>
                   <ProFormDigit
                     name="performance"
-                    label="Rendimento"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.pivot.performance.label',
+                    })}
                     rules={[yupSync]}
                     min={1}
                     fieldProps={{
@@ -475,7 +515,9 @@ const PivotForm: React.FC<any> = (props) => {
                 <Col xs={24} sm={8}>
                   <ProFormDigit
                     name="converted_potency"
-                    label="Potência Convertida"
+                    label={intl.formatMessage({
+                      id: 'component.adddevice.modal.form.step2.pivot.convertedpotency.label',
+                    })}
                     rules={[yupSync]}
                     min={1}
                     fieldProps={{
@@ -490,7 +532,9 @@ const PivotForm: React.FC<any> = (props) => {
               <Col xs={24} sm={12}>
                 <ProFormDigit
                   name="pump_potency"
-                  label="Potência da Bomba"
+                  label={intl.formatMessage({
+                    id: 'component.adddevice.modal.form.step2.pivot.pumppotency.label',
+                  })}
                   rules={[yupSync]}
                   min={1}
                   fieldProps={{

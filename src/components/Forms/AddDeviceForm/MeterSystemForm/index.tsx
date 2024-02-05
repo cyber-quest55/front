@@ -106,6 +106,7 @@ const MeterSystemForm: React.FC<any> = (props) => {
           };
           await createMeterSystemReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
+          window.location.reload();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -116,13 +117,17 @@ const MeterSystemForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={8}>
-          <ProFormText name="name" rules={[yupSync]} label="Nome do equipamento" />
+          <ProFormText name="name" rules={[yupSync]} label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.metersystem.name.label',
+            })} />
         </Col>
         <Col xs={24} sm={8}>
           <ProFormText
             name="imeter_device"
             rules={[yupSync]}
-            label="Radio do IMeter"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.metersystem.imeter.label',
+            })}
             fieldProps={{
               onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
             }}
@@ -130,13 +135,17 @@ const MeterSystemForm: React.FC<any> = (props) => {
         </Col>
         <Col xs={24} sm={8}>
           {sensorsReq.loading ? (
-            <ProFormItem label="Sensor">
+            <ProFormItem label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.metersystem.sensor.label',
+            })}>
               <Skeleton.Input />
             </ProFormItem>
           ) : (
             <ProFormSelect
               name="sensor_id"
-              label="Sensor"
+              label={intl.formatMessage({
+                id: 'component.adddevice.modal.form.step2.metersystem.sensor.label',
+              })}
               rules={[yupSync]}
               options={sensorOptions}
             />
@@ -146,7 +155,9 @@ const MeterSystemForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="latitude"
-            label="Latitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.metersystem.latitude.label',
+            })}
             min={-999}
             max={999}
             fieldProps={{
@@ -160,7 +171,9 @@ const MeterSystemForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="longitude"
-            label="Longitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.metersystem.longitude.label',
+            })}
             min={-999}
             max={999}
             fieldProps={{

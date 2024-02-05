@@ -81,6 +81,7 @@ const RepeaterForm: React.FC<any> = (props) => {
           };
           await createRepeaterReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
+          window.location.reload();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -91,13 +92,17 @@ const RepeaterForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={8}>
-          <ProFormText name="name" label="Nome do equipamento" rules={[yupSync]} />
+          <ProFormText name="name" label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.repeater.name.label',
+            })} rules={[yupSync]} />
         </Col>
 
         <Col xs={24} sm={8}>
           <ProFormText
             name="repeater"
-            label="Rádio do Repetidor"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.repeater.repeater.label',
+            })}
             rules={[yupSync]}
             fieldProps={{
               onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
@@ -108,15 +113,21 @@ const RepeaterForm: React.FC<any> = (props) => {
           <ProFormSelect
             name="energy_type"
             rules={[yupSync]}
-            label="Tipo"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.repeater.energytype.label',
+            })}
             options={[
                 {
                   value: 'Solar',
-                  label: 'Solar',
+                  label: intl.formatMessage({
+                    id: 'component.adddevice.modal.form.step2.repeater.energytype.solar',
+                  }),
                 },
                 {
                   value: 'Bivolt',
-                  label: 'Bivolt',
+                  label: intl.formatMessage({
+                    id: 'component.adddevice.modal.form.step2.repeater.energytype.bivolt',
+                  }),
                 },
               ]}
           />
@@ -125,7 +136,9 @@ const RepeaterForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="latitude"
-            label="Latitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.repeater.latitude.label',
+            })}
             min={-999}
             max={999}
             fieldProps={{
@@ -139,7 +152,9 @@ const RepeaterForm: React.FC<any> = (props) => {
           <ProFormDigit
             rules={[yupSync]}
             name="longitude"
-            label="Longitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.repeater.longitude.label',
+            })}
             min={-999}
             max={999}
             fieldProps={{
