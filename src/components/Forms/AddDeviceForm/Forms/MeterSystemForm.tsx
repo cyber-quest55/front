@@ -1,3 +1,4 @@
+import { queryMeterSystem } from '@/models/meter-sysem';
 import { createMeterSystem, getMeterSystemSensors } from '@/services/metersystem';
 import { yupValidator } from '@/utils/adapters/yup';
 import {
@@ -13,7 +14,15 @@ import { App, Col, Row, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 
-const MeterSystemForm: React.FC<any> = (props) => {
+interface MeterSystemFormProps {
+  form: any;
+  base: string;
+  setLoading: (loading: boolean) => void;
+  closeModalForm: () => void;
+  queryMeterSystem: typeof queryMeterSystem;
+}
+
+const MeterSystemForm: React.FC<MeterSystemFormProps> = (props) => {
   const createMeterSystemReq = useRequest(createMeterSystem, { manual: true });
   const sensorsReq = useRequest(getMeterSystemSensors, { manual: true });
   const [sensorOptions, setSensorOptions] = useState<any[]>([]);
@@ -106,7 +115,10 @@ const MeterSystemForm: React.FC<any> = (props) => {
           };
           await createMeterSystemReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
-          window.location.reload();
+          props.queryMeterSystem({
+            id: parseInt(params.id as string),
+          });
+          props.closeModalForm();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -117,9 +129,13 @@ const MeterSystemForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={8}>
-          <ProFormText name="name" rules={[yupSync]} label={intl.formatMessage({
+          <ProFormText
+            name="name"
+            rules={[yupSync]}
+            label={intl.formatMessage({
               id: 'component.adddevice.modal.form.step2.metersystem.name.label',
-            })} />
+            })}
+          />
         </Col>
         <Col xs={24} sm={8}>
           <ProFormText
@@ -135,9 +151,11 @@ const MeterSystemForm: React.FC<any> = (props) => {
         </Col>
         <Col xs={24} sm={8}>
           {sensorsReq.loading ? (
-            <ProFormItem label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.metersystem.sensor.label',
-            })}>
+            <ProFormItem
+              label={intl.formatMessage({
+                id: 'component.adddevice.modal.form.step2.metersystem.sensor.label',
+              })}
+            >
               <Skeleton.Input />
             </ProFormItem>
           ) : (
@@ -163,7 +181,7 @@ const MeterSystemForm: React.FC<any> = (props) => {
             fieldProps={{
               controls: false,
               type: 'number',
-              precision: 6
+              precision: 6,
             }}
           />
         </Col>
@@ -179,7 +197,7 @@ const MeterSystemForm: React.FC<any> = (props) => {
             fieldProps={{
               controls: false,
               type: 'number',
-              precision: 6
+              precision: 6,
             }}
           />
         </Col>

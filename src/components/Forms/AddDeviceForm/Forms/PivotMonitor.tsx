@@ -1,8 +1,9 @@
-import { createPivot } from '@/services/pivot';
+import { queryPivotInformation } from '@/models/pivot-information';
+import { createPivotMonitor } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
+import { hpToCv } from '@/utils/data/potency-calc';
 import {
   ProForm,
-  ProFormCheckbox,
   ProFormDigit,
   ProFormRadio,
   ProFormSelect,
@@ -11,23 +12,21 @@ import {
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Col, Row } from 'antd';
-import { useState } from 'react';
 import * as yup from 'yup';
 
-const cvHpRatio = 0.7355;
+interface PivotMonitorFormProps {
+  form: any;
+  base: string;
+  setLoading: (loading: boolean) => void;
+  closeModalForm: () => void;
+  queryPivotInformation: typeof queryPivotInformation;
+}
 
-const hpToCv = (devicePotencyHP: number, devicePerformance: number) =>
-  ((devicePotencyHP * cvHpRatio * 100) / devicePerformance).toFixed(2);
-
-const PivotForm: React.FC<any> = (props) => {
-  const createPivotReq = useRequest(createPivot, { manual: true });
+const PivotMonitorForm: React.FC<PivotMonitorFormProps> = (props) => {
+  const createPivotMonitorReq = useRequest(createPivotMonitor, { manual: true });
   const intl = useIntl();
   const { message } = App.useApp();
   const params = useParams();
-  const [panelTypeOptions, setPanelTypeOptions] = useState<any>({
-    1: 'Nexus',
-    2: 'SmartConnect',
-  });
 
   const schema = yup.object().shape(
     {
@@ -77,34 +76,6 @@ const PivotForm: React.FC<any> = (props) => {
           );
         },
       }),
-      panel_type: yup.string().required(
-        intl.formatMessage({
-          id: 'validations.required',
-        }),
-      ),
-      communication_type: yup.string().required(
-        intl.formatMessage({
-          id: 'validations.required',
-        }),
-      ),
-      control: yup
-        .string()
-        .matches(
-          /^[0-9A-F]{16}$/,
-          intl.formatMessage({
-            id: 'validations.invalid',
-          }),
-        )
-        .when('communication_type', {
-          is: '0',
-          then(schema) {
-            return schema.required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            );
-          },
-        }),
       monitor: yup
         .string()
         .matches(
@@ -113,40 +84,11 @@ const PivotForm: React.FC<any> = (props) => {
             id: 'validations.invalid',
           }),
         )
-        .when('communication_type', {
-          is: '0',
-          then(schema) {
-            return schema.required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            );
-          },
-        }),
-      pump: yup.string().matches(
-        /^[0-9A-F]{16}$|^$/,
-        intl.formatMessage({
-          id: 'validations.invalid',
-        }),
-      ),
-      gateway: yup
-        .string()
-        .matches(
-          /^[0-9A-F]{16}$/,
+        .required(
           intl.formatMessage({
-            id: 'validations.invalid',
+            id: 'validations.required',
           }),
-        )
-        .when('communication_type', {
-          is: '1',
-          then(schema) {
-            return schema.required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            );
-          },
-        }),
+        ),
       potency_unit: yup.string().required(
         intl.formatMessage({
           id: 'validations.required',
@@ -249,10 +191,9 @@ const PivotForm: React.FC<any> = (props) => {
       submitter={false}
       preserve={false}
       form={props.form}
-      name="pivot_form"
+      name="pivot_monitor_form"
       initialValues={{
         potency_unit: 'kw',
-        communication_type: props.base ? '0' : '1',
       }}
       onFinish={async (values: any) => {
         try {
@@ -264,21 +205,21 @@ const PivotForm: React.FC<any> = (props) => {
                 ? values.pump_potency
                 : values.converted_potency,
             ),
-            communication_type: Number(values.communication_type),
-            base: values.communication_type === '0' ? props.base : null,
-            control: values.communication_type === '0' ? values.control : values.gateway,
-            monitor: values.monitor ? values.monitor : null,
-            automation_type: 0,
-            panel_type: Number(values.panel_type),
+            monitor: values.monitor,
+            base: props.base,
+            automation_type: 1,
             brand_model:
               values.brand_model !== 'other' ? values.brand_model : values.other_brand_model,
-            pluviometer: values.pluviometer,
-            pump: values.pump ? values.pump : null,
+            pump: values.pump !== '' ? values.pump : null,
             protocol: '5.0',
           };
-          await createPivotReq.runAsync({ farmId: params.id as any }, data);
+          await createPivotMonitorReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
-          window.location.reload();
+          props.queryPivotInformation({
+            id: parseInt(params.id as string),
+            params: {},
+          });
+          props.closeModalForm();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -292,17 +233,28 @@ const PivotForm: React.FC<any> = (props) => {
           <ProFormText
             name="name"
             label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivot.name.label',
+              id: 'component.adddevice.modal.form.step2.pivotmonitor.name.label',
             })}
             rules={[yupSync]}
           />
         </Col>
-
+        <Col xs={24} sm={12}>
+          <ProFormText
+            name="monitor"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivotmonitor.monitor.label',
+            })}
+            rules={[yupSync]}
+            fieldProps={{
+              onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
+            }}
+          />
+        </Col>
         <Col xs={24} sm={12}>
           <ProFormSelect
             name="brand_model"
             label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivot.brand.label',
+              id: 'component.adddevice.modal.form.step2.pivotmonitor.brand.label',
             })}
             rules={[yupSync]}
             valueEnum={{
@@ -316,18 +268,6 @@ const PivotForm: React.FC<any> = (props) => {
               valley: 'Valley',
               other: 'Outro',
             }}
-            onChange={(value) => {
-              if (value === 'bauer') {
-                setPanelTypeOptions({
-                  1: 'Nexus',
-                  2: 'SmartConnect',
-                });
-              } else {
-                setPanelTypeOptions({ 1: 'Nexus' });
-              }
-
-              props.form.setFieldValue('panel_type', null);
-            }}
           />
         </Col>
         <ProForm.Item noStyle shouldUpdate>
@@ -339,7 +279,7 @@ const PivotForm: React.FC<any> = (props) => {
                     rules={[yupSync]}
                     name="other_brand_model"
                     label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivot.otherbrand.label',
+                      id: 'component.adddevice.modal.form.step2.pivotmonitor.otherbrand.label',
                     })}
                   />
                 </Col>
@@ -347,105 +287,12 @@ const PivotForm: React.FC<any> = (props) => {
             ) : null;
           }}
         </ProForm.Item>
-        <Col xs={24} sm={12}>
-          <ProFormSelect
-            name="panel_type"
-            label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivot.paneltype.label',
-            })}
-            rules={[yupSync]}
-            valueEnum={panelTypeOptions}
-          />
-        </Col>
-
-        <Col xs={24} sm={12}>
-          <ProFormSelect
-            name="communication_type"
-            label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivot.communicationtype.label',
-            })}
-            rules={[yupSync]}
-            valueEnum={{
-              '0': 'XBEE',
-              '1': '4G',
-            }}
-          />
-        </Col>
-        <ProForm.Item noStyle shouldUpdate>
-          {() => {
-            {
-              console.log(props.form.getFieldValue('communication_type'));
-            }
-            return props.form.getFieldValue('communication_type') === '0' ? (
-              <>
-                <Col xs={24} sm={12}>
-                  <ProFormText
-                    name="control"
-                    label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivot.control.label',
-                    })}
-                    rules={[yupSync]}
-                    fieldProps={{
-                      onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
-                    }}
-                  />
-                </Col>
-
-                <Col xs={24} sm={12}>
-                  <ProFormText
-                    name="monitor"
-                    label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivot.monitor.label',
-                    })}
-                    rules={[yupSync]}
-                    fieldProps={{
-                      onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
-                    }}
-                  />
-                </Col>
-
-                <Col xs={24} sm={12}>
-                  <ProFormText
-                    name="pump"
-                    label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivot.pump.label',
-                    })}
-                    rules={[yupSync]}
-                    fieldProps={{
-                      onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
-                    }}
-                  />
-                </Col>
-              </>
-            ) : (
-              <Col xs={24} sm={12}>
-                <ProFormText
-                  name="gateway"
-                  label={intl.formatMessage({
-                    id: 'component.adddevice.modal.form.step2.pivot.gateway.label',
-                  })}
-                  rules={[yupSync]}
-                  fieldProps={{
-                    onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
-                  }}
-                />
-              </Col>
-            );
-          }}
-        </ProForm.Item>
-        <Col xs={24} sm={24}>
-          <ProFormCheckbox name="pluviometer">
-            {intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivot.pluviometer.label',
-            })}
-          </ProFormCheckbox>
-        </Col>
         <Col xs={24} sm={24}>
           <ProFormRadio.Group
             name="potency_unit"
             layout="horizontal"
             label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivot.potencyunit.label',
+              id: 'component.adddevice.modal.form.step2.pivotmonitor.potencyunit.label',
             })}
             rules={[yupSync]}
             options={[
@@ -468,7 +315,7 @@ const PivotForm: React.FC<any> = (props) => {
                   <ProFormDigit
                     name="potency"
                     label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivot.potency.label',
+                      id: 'component.adddevice.modal.form.step2.pivotmonitor.potency.label',
                     })}
                     rules={[yupSync]}
                     min={1}
@@ -492,7 +339,7 @@ const PivotForm: React.FC<any> = (props) => {
                   <ProFormDigit
                     name="performance"
                     label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivot.performance.label',
+                      id: 'component.adddevice.modal.form.step2.pivotmonitor.performance.label',
                     })}
                     rules={[yupSync]}
                     min={1}
@@ -516,7 +363,7 @@ const PivotForm: React.FC<any> = (props) => {
                   <ProFormDigit
                     name="converted_potency"
                     label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivot.convertedpotency.label',
+                      id: 'component.adddevice.modal.form.step2.pivotmonitor.convertedpotency.label',
                     })}
                     rules={[yupSync]}
                     min={1}
@@ -533,7 +380,7 @@ const PivotForm: React.FC<any> = (props) => {
                 <ProFormDigit
                   name="pump_potency"
                   label={intl.formatMessage({
-                    id: 'component.adddevice.modal.form.step2.pivot.pumppotency.label',
+                    id: 'component.adddevice.modal.form.step2.pivotmonitor.pumppotency.label',
                   })}
                   rules={[yupSync]}
                   min={1}
@@ -552,4 +399,4 @@ const PivotForm: React.FC<any> = (props) => {
   );
 };
 
-export default PivotForm;
+export default PivotMonitorForm;

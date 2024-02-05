@@ -690,7 +690,7 @@ declare namespace APIModels {
     name: string;
     potency: number;
     communication_type: number;
-    base: string;
+    base: string | null;
     control: string;
     monitor: string;
     automation_type: number;

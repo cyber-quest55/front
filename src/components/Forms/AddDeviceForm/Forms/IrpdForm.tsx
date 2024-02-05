@@ -1,5 +1,7 @@
-import { createPivotMonitor } from '@/services/pivot';
+import { queryIrpd } from '@/models/irpd';
+import { createIrpd } from '@/services/irpd';
 import { yupValidator } from '@/utils/adapters/yup';
+import { hpToCv } from '@/utils/data/potency-calc';
 import {
   ProForm,
   ProFormDigit,
@@ -12,47 +14,70 @@ import { useRequest } from 'ahooks';
 import { App, Col, Row } from 'antd';
 import * as yup from 'yup';
 
-const cvHpRatio = 0.7355;
+interface IrpdFormProps {
+  form: any;
+  base: string;
+  setLoading: (loading: boolean) => void;
+  closeModalForm: () => void;
+  queryIrpd: typeof queryIrpd;
+}
 
-const hpToCv = (devicePotencyHP: number, devicePerformance: number) =>
-  ((devicePotencyHP * cvHpRatio * 100) / devicePerformance).toFixed(2);
-
-const MonitorPivotForm: React.FC<any> = (props) => {
-  const createPivotMonitorReq = useRequest(createPivotMonitor, { manual: true });
+const IrpdForm: React.FC<IrpdFormProps> = (props) => {
+  const createIrpdReq = useRequest(createIrpd, { manual: true });
   const intl = useIntl();
   const { message } = App.useApp();
   const params = useParams();
 
-  const schema = yup.object().shape(
-    {
-      name: yup
-        .string()
-        .max(
-          16,
-          intl.formatMessage(
-            {
-              id: 'validations.max',
-            },
-            { value: 16 },
-          ),
-        )
-        .required(
-          intl.formatMessage({
-            id: 'validations.required',
-          }),
+  const schema = yup.object().shape({
+    name: yup
+      .string()
+      .max(
+        20,
+        intl.formatMessage(
+          {
+            id: 'validations.max',
+          },
+          { value: 20 },
         ),
-      latitude: yup.string().required(
+      )
+      .required(
         intl.formatMessage({
           id: 'validations.required',
         }),
       ),
-      longitude: yup.string().required(
-        intl.formatMessage({
-          id: 'validations.required',
-        }),
-      ),
-      brand_model: yup.string().when(['brand_model'], {
-        is: (brandModel: string) => brandModel !== 'other',
+    latitude: yup.number().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+    longitude: yup.number().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+    protocol: yup.string().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+    potency_unit: yup.string().required(
+      intl.formatMessage({
+        id: 'validations.required',
+      }),
+    ),
+    potency: yup
+      .number()
+      .min(
+        1,
+        intl.formatMessage(
+          {
+            id: 'validations.min',
+          },
+          { value: 1 },
+        ),
+      )
+      .when('potency_unit', {
+        is: 'cv',
         then(schema) {
           return schema.required(
             intl.formatMessage({
@@ -61,8 +86,19 @@ const MonitorPivotForm: React.FC<any> = (props) => {
           );
         },
       }),
-      other_brand_model: yup.string().when('brand_model', {
-        is: 'other',
+    performance: yup
+      .number()
+      .min(
+        1,
+        intl.formatMessage(
+          {
+            id: 'validations.min',
+          },
+          { value: 1 },
+        ),
+      )
+      .when('potency_unit', {
+        is: 'cv',
         then(schema) {
           return schema.required(
             intl.formatMessage({
@@ -71,111 +107,62 @@ const MonitorPivotForm: React.FC<any> = (props) => {
           );
         },
       }),
-      monitor: yup
-        .string()
-        .matches(
-          /^[0-9A-F]{16}$/,
-          intl.formatMessage({
-            id: 'validations.invalid',
-          }),
-        )
-        .required(
-          intl.formatMessage({
-            id: 'validations.required',
-          }),
+    converted_potency: yup
+      .number()
+      .min(
+        1,
+        intl.formatMessage(
+          {
+            id: 'validations.min',
+          },
+          { value: 1 },
         ),
-      potency_unit: yup.string().required(
+      )
+      .when('potency_unit', {
+        is: 'cv',
+        then(schema) {
+          return schema.required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          );
+        },
+      }),
+    pump_potency: yup
+      .number()
+      .min(
+        1,
+        intl.formatMessage(
+          {
+            id: 'validations.min',
+          },
+          { value: 1 },
+        ),
+      )
+      .when('potency_unit', {
+        is: 'kw',
+        then(schema) {
+          return schema.required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          );
+        },
+      }),
+    pump: yup
+      .string()
+      .matches(
+        /^[0-9A-F]{16}$/,
+        intl.formatMessage({
+          id: 'validations.invalid',
+        }),
+      )
+      .required(
         intl.formatMessage({
           id: 'validations.required',
         }),
       ),
-      potency: yup
-        .number()
-        .min(
-          1,
-          intl.formatMessage(
-            {
-              id: 'validations.min',
-            },
-            { value: 1 },
-          ),
-        )
-        .when('potency_unit', {
-          is: 'cv',
-          then(schema) {
-            return schema.required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            );
-          },
-        }),
-      performance: yup
-        .number()
-        .min(
-          1,
-          intl.formatMessage(
-            {
-              id: 'validations.min',
-            },
-            { value: 1 },
-          ),
-        )
-        .when('potency_unit', {
-          is: 'cv',
-          then(schema) {
-            return schema.required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            );
-          },
-        }),
-      converted_potency: yup
-        .number()
-        .min(
-          1,
-          intl.formatMessage(
-            {
-              id: 'validations.min',
-            },
-            { value: 1 },
-          ),
-        )
-        .when('potency_unit', {
-          is: 'cv',
-          then(schema) {
-            return schema.required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            );
-          },
-        }),
-      pump_potency: yup
-        .number()
-        .min(
-          1,
-          intl.formatMessage(
-            {
-              id: 'validations.min',
-            },
-            { value: 1 },
-          ),
-        )
-        .when('potency_unit', {
-          is: 'kw',
-          then(schema) {
-            return schema.required(
-              intl.formatMessage({
-                id: 'validations.required',
-              }),
-            );
-          },
-        }),
-    },
-    [['brand_model', 'brand_model']],
-  );
+  });
 
   const yupSync = yupValidator(schema, props.form.getFieldsValue);
 
@@ -186,31 +173,33 @@ const MonitorPivotForm: React.FC<any> = (props) => {
       submitter={false}
       preserve={false}
       form={props.form}
-      name="pivot_monitor_form"
+      name="irpd_form"
       initialValues={{
         potency_unit: 'kw',
       }}
       onFinish={async (values: any) => {
         try {
           props.setLoading(true);
+          const position = `${values.latitude},${values.longitude}`;
           const data = {
             name: values.name,
+            base: props.base,
+            pump: values.pump,
             potency: parseFloat(
               values.pump_potency && values.pump_potency !== 0
                 ? values.pump_potency
                 : values.converted_potency,
             ),
-            monitor: values.monitor,
-            base: props.base,
-            automation_type: 1,
-            brand_model:
-              values.brand_model !== 'other' ? values.brand_model : values.other_brand_model,
-            pump: values.pump !== '' ? values.pump : null,
-            protocol: '5.0',
+            flow: '100',
+            position: position,
+            protocol: Number(values.protocol),
           };
-          await createPivotMonitorReq.runAsync({ farmId: params.id as any }, data);
+          await createIrpdReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
-          window.location.reload();
+          props.queryIrpd({
+            id: parseInt(params.id as string),
+          });
+          props.closeModalForm();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -224,16 +213,16 @@ const MonitorPivotForm: React.FC<any> = (props) => {
           <ProFormText
             name="name"
             label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivotmonitor.name.label',
+              id: 'component.adddevice.modal.form.step2.irpd.name.label',
             })}
             rules={[yupSync]}
           />
         </Col>
         <Col xs={24} sm={12}>
           <ProFormText
-            name="monitor"
+            name="pump"
             label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivotmonitor.monitor.label',
+              id: 'component.adddevice.modal.form.step2.irpd.pump.label',
             })}
             rules={[yupSync]}
             fieldProps={{
@@ -242,48 +231,56 @@ const MonitorPivotForm: React.FC<any> = (props) => {
           />
         </Col>
         <Col xs={24} sm={12}>
-          <ProFormSelect
-            name="brand_model"
-            label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivotmonitor.brand.label',
-            })}
+          <ProFormDigit
             rules={[yupSync]}
-            valueEnum={{
-              bauer: 'Bauer',
-              carborundum: 'Carborundum',
-              fockink: 'Fockink',
-              irrigabras: 'Irrigabras',
-              krebs: 'Krebs',
-              lindsay: 'Lindsay',
-              reinke: 'Reinke',
-              valley: 'Valley',
-              other: 'Outro',
+            name="latitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.latitude.label',
+            })}
+            min={-999}
+            max={999}
+            fieldProps={{
+              controls: false,
+              type: 'number',
+              precision: 6,
             }}
           />
         </Col>
-        <ProForm.Item noStyle shouldUpdate>
-          {(form) => {
-            return form.getFieldValue('brand_model') === 'other' ? (
-              <>
-                <Col xs={24} sm={12}>
-                  <ProFormText
-                    rules={[yupSync]}
-                    name="other_brand_model"
-                    label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivotmonitor.otherbrand.label',
-                    })}
-                  />
-                </Col>
-              </>
-            ) : null;
-          }}
-        </ProForm.Item>
+        <Col xs={24} sm={12}>
+          <ProFormDigit
+            rules={[yupSync]}
+            name="longitude"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.longitude.label',
+            })}
+            min={-999}
+            max={999}
+            fieldProps={{
+              controls: false,
+              type: 'number',
+              precision: 6,
+            }}
+          />
+        </Col>
+        <Col xs={24} sm={12}>
+          <ProFormSelect
+            rules={[yupSync]}
+            valueEnum={{
+              '5.0': '5.0',
+              '5.1': '5.1',
+            }}
+            name="protocol"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.version.label',
+            })}
+          />
+        </Col>
         <Col xs={24} sm={24}>
           <ProFormRadio.Group
             name="potency_unit"
             layout="horizontal"
             label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.pivotmonitor.potencyunit.label',
+              id: 'component.adddevice.modal.form.step2.irpd.potencyunit.label',
             })}
             rules={[yupSync]}
             options={[
@@ -306,7 +303,7 @@ const MonitorPivotForm: React.FC<any> = (props) => {
                   <ProFormDigit
                     name="potency"
                     label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivotmonitor.potency.label',
+                      id: 'component.adddevice.modal.form.step2.irpd.potency.label',
                     })}
                     rules={[yupSync]}
                     min={1}
@@ -330,7 +327,7 @@ const MonitorPivotForm: React.FC<any> = (props) => {
                   <ProFormDigit
                     name="performance"
                     label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivotmonitor.performance.label',
+                      id: 'component.adddevice.modal.form.step2.irpd.performance.label',
                     })}
                     rules={[yupSync]}
                     min={1}
@@ -354,7 +351,7 @@ const MonitorPivotForm: React.FC<any> = (props) => {
                   <ProFormDigit
                     name="converted_potency"
                     label={intl.formatMessage({
-                      id: 'component.adddevice.modal.form.step2.pivotmonitor.convertedpotency.label',
+                      id: 'component.adddevice.modal.form.step2.irpd.convertedpotency.label',
                     })}
                     rules={[yupSync]}
                     min={1}
@@ -371,7 +368,7 @@ const MonitorPivotForm: React.FC<any> = (props) => {
                 <ProFormDigit
                   name="pump_potency"
                   label={intl.formatMessage({
-                    id: 'component.adddevice.modal.form.step2.pivotmonitor.pumppotency.label',
+                    id: 'component.adddevice.modal.form.step2.irpd.pumppotency.label',
                   })}
                   rules={[yupSync]}
                   min={1}
@@ -390,4 +387,4 @@ const MonitorPivotForm: React.FC<any> = (props) => {
   );
 };
 
-export default MonitorPivotForm;
+export default IrpdForm;

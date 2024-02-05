@@ -1,3 +1,4 @@
+import { queryPivotInformation } from '@/models/pivot-information';
 import { createLinearPivotMonitor } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
 import { ProForm, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
@@ -6,7 +7,15 @@ import { useRequest } from 'ahooks';
 import { App, Col, Row } from 'antd';
 import * as yup from 'yup';
 
-const LinearPivotMonitorForm: React.FC<any> = (props) => {
+interface LinearPivotMonitorFormProps {
+  form: any;
+  base: string;
+  setLoading: (loading: boolean) => void;
+  closeModalForm: () => void;
+  queryPivotInformation: typeof queryPivotInformation;
+}
+
+const LinearPivotMonitorForm: React.FC<LinearPivotMonitorFormProps> = (props) => {
   const createLinearPivotMonitorReq = useRequest(createLinearPivotMonitor, { manual: true });
   const intl = useIntl();
   const { message } = App.useApp();
@@ -142,7 +151,11 @@ const LinearPivotMonitorForm: React.FC<any> = (props) => {
           };
           await createLinearPivotMonitorReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
-          window.location.reload();
+          props.queryPivotInformation({
+            id: parseInt(params.id as string),
+            params: {},
+          });
+          props.closeModalForm();
         } catch (err) {
           console.error(err);
           message.error('Fail');

@@ -1,18 +1,39 @@
 import { useScreenHook } from '@/hooks/screen';
 import { useStepHook } from '@/hooks/step';
+import { queryIrpd } from '@/models/irpd';
+import { queryMeterSystem } from '@/models/meter-sysem';
+import { queryPivotInformation } from '@/models/pivot-information';
+import { queryRepeater } from '@/models/repeaters';
 import { PlusCircleFilled } from '@ant-design/icons';
 import { CheckCard, ModalForm, ProForm } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { Avatar, Button, Col, Form, Row, Steps } from 'antd';
 import React from 'react';
-import IrpdForm from './IrpdForm';
-import LinearPivotMonitorForm from './LinearPivotMonitorForm';
-import MeterSystemForm from './MeterSystemForm';
-import PivotForm from './PivotForm';
-import MonitorPivotForm from './PivotMonitor';
-import RepeaterForm from './RepeaterForm';
+import IrpdForm from './Forms/IrpdForm';
+import LinearPivotMonitorForm from './Forms/LinearPivotMonitorForm';
+import MeterSystemForm from './Forms/MeterSystemForm';
+import PivotForm from './Forms/PivotForm';
+import PivotMonitorForm from './Forms/PivotMonitor';
+import RepeaterForm from './Forms/RepeaterForm';
 
-const AddDeviceForm: React.FC<any> = (props) => {
+interface AddDeviceFormComponentProps {
+  queryPivotInformation: typeof queryPivotInformation;
+  queryMeterSystem: typeof queryMeterSystem;
+  queryIrpd: typeof queryIrpd;
+  queryRepeater: typeof queryRepeater;
+  base: string;
+}
+
+enum Equipment {
+  Pivot = 1, // start by 1
+  PivotMonitor,
+  LinearPivotMonitor,
+  Pump,
+  Repeater,
+  MeterSystem,
+}
+
+const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) => {
   const [form] = Form.useForm<{
     device: number;
     version: string;
@@ -28,8 +49,12 @@ const AddDeviceForm: React.FC<any> = (props) => {
   const [meterSystemForm] = Form.useForm<any>();
   const [repeaterForm] = Form.useForm<any>();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [showModalForm, setShowModalForm] = React.useState<boolean>(false);
   const intl = useIntl();
   const { xs } = useScreenHook();
+
+  const openModalForm = () => setShowModalForm(true);
+  const closeModalForm = () => setShowModalForm(false);
 
   return (
     <ModalForm<{
@@ -46,6 +71,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
           type: 'primary',
           ghost: step === 0 ? true : false,
         },
+
         searchConfig: {
           resetText: intl.formatMessage({
             id: 'component.adddevice.modal.form.cancel',
@@ -61,12 +87,13 @@ const AddDeviceForm: React.FC<any> = (props) => {
         },
       }}
       trigger={
-        <Button size="large" type="primary" icon={<PlusCircleFilled />}>
+        <Button size="large" type="primary" icon={<PlusCircleFilled />} onClick={openModalForm}>
           {intl.formatMessage({
             id: 'component.adddevice.modal.trigger',
           })}
         </Button>
       }
+      open={showModalForm}
       loading={loading}
       form={form}
       autoFocusFirstInput
@@ -75,23 +102,26 @@ const AddDeviceForm: React.FC<any> = (props) => {
       onFinish={async (v: any) => {
         if (step === 0 && v.device) {
           setStep(1);
-        } else if (step !== 0 && form.getFieldValue('device') === 1) {
+        } else if (step !== 0 && form.getFieldValue('device') === Equipment.Pivot) {
           pivotForm.submit();
-        } else if (step !== 0 && form.getFieldValue('device') === 2) {
+        } else if (step !== 0 && form.getFieldValue('device') === Equipment.PivotMonitor) {
           pivotMonitorForm.submit();
-        } else if (step !== 0 && form.getFieldValue('device') === 3) {
+        } else if (step !== 0 && form.getFieldValue('device') === Equipment.LinearPivotMonitor) {
           linearPivotMonitorForm.submit();
-        } else if (step !== 0 && form.getFieldValue('device') === 4) {
+        } else if (step !== 0 && form.getFieldValue('device') === Equipment.Pump) {
           irpdForm.submit();
-        } else if (step !== 0 && form.getFieldValue('device') === 5) {
+        } else if (step !== 0 && form.getFieldValue('device') === Equipment.Repeater) {
           repeaterForm.submit();
-        } else if (step !== 0 && form.getFieldValue('device') === 6) {
+        } else if (step !== 0 && form.getFieldValue('device') === Equipment.MeterSystem) {
           meterSystemForm.submit();
         }
       }}
       modalProps={{
         destroyOnClose: true,
         centered: true,
+        onCancel: () => {
+          setShowModalForm(false);
+        },
       }}
     >
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -117,7 +147,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
       </div>
       {step === 0 ? (
         <Form.Item name="device">
-          <CheckCard.Group style={{ width: '100%', padding: 0 }} value="group" defaultValue="a">
+          <CheckCard.Group style={{ width: '100%', padding: 0 }} value="group">
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12}>
                 <CheckCard
@@ -134,7 +164,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
                     />
                   }
                   description="lorem impsum dorem mackial oggyir mistake dore"
-                  value={1}
+                  value={Equipment.Pivot}
                 />
               </Col>
               <Col xs={24} sm={12}>
@@ -151,7 +181,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
                     />
                   }
                   description="lorem impsum dorem mackial oggyir mistake dore"
-                  value={2}
+                  value={Equipment.PivotMonitor}
                 />
               </Col>
               <Col xs={24} sm={12}>
@@ -168,7 +198,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
                     />
                   }
                   description="lorem impsum dorem mackial oggyir mistake dore"
-                  value={3}
+                  value={Equipment.LinearPivotMonitor}
                 />
               </Col>
               <Col xs={24} sm={12}>
@@ -185,7 +215,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
                     />
                   }
                   description="lorem impsum dorem mackial oggyir mistake dore"
-                  value={4}
+                  value={Equipment.Pump}
                 />
               </Col>
               <Col xs={24} sm={12}>
@@ -202,7 +232,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
                     />
                   }
                   description="lorem impsum dorem mackial oggyir mistake dore"
-                  value={5}
+                  value={Equipment.Repeater}
                 />
               </Col>
               <Col xs={24} sm={12}>
@@ -219,7 +249,7 @@ const AddDeviceForm: React.FC<any> = (props) => {
                     />
                   }
                   description="lorem impsum dorem mackial oggyir mistake dore"
-                  value={6}
+                  value={Equipment.MeterSystem}
                 />
               </Col>
             </Row>
@@ -228,22 +258,54 @@ const AddDeviceForm: React.FC<any> = (props) => {
       ) : (
         <ProForm.Item noStyle shouldUpdate>
           {(form) => {
-            return form.getFieldValue('device') === 1 ? (
-              <PivotForm form={pivotForm} base={props.base} setLoading={setLoading} />
-            ) : form.getFieldValue('device') === 2 ? (
-              <MonitorPivotForm form={pivotMonitorForm} base={props.base} setLoading={setLoading} />
-            ) : form.getFieldValue('device') === 3 ? (
+            return form.getFieldValue('device') === Equipment.Pivot ? (
+              <PivotForm
+                form={pivotForm}
+                base={props.base}
+                setLoading={setLoading}
+                closeModalForm={closeModalForm}
+                queryPivotInformation={props.queryPivotInformation}
+              />
+            ) : form.getFieldValue('device') === Equipment.PivotMonitor ? (
+              <PivotMonitorForm
+                form={pivotMonitorForm}
+                base={props.base}
+                setLoading={setLoading}
+                closeModalForm={closeModalForm}
+                queryPivotInformation={props.queryPivotInformation}
+              />
+            ) : form.getFieldValue('device') === Equipment.LinearPivotMonitor ? (
               <LinearPivotMonitorForm
                 form={linearPivotMonitorForm}
                 base={props.base}
                 setLoading={setLoading}
+                closeModalForm={closeModalForm}
+                queryPivotInformation={props.queryPivotInformation}
               />
-            ) : form.getFieldValue('device') === 4 ? (
-              <IrpdForm form={irpdForm} base={props.base} setLoading={setLoading} />
-            ) : form.getFieldValue('device') === 5 ? (
-              <RepeaterForm form={repeaterForm} base={props.base} setLoading={setLoading} />
-            ) : form.getFieldValue('device') === 6 ? (
-              <MeterSystemForm form={meterSystemForm} base={props.base} setLoading={setLoading} />
+            ) : form.getFieldValue('device') === Equipment.Pump ? (
+              <IrpdForm
+                form={irpdForm}
+                base={props.base}
+                setLoading={setLoading}
+                closeModalForm={closeModalForm}
+                queryIrpd={props.queryIrpd}
+              />
+            ) : form.getFieldValue('device') === Equipment.Repeater ? (
+              <RepeaterForm
+                form={repeaterForm}
+                base={props.base}
+                setLoading={setLoading}
+                closeModalForm={closeModalForm}
+                queryRepeater={props.queryRepeater}
+              />
+            ) : form.getFieldValue('device') === Equipment.MeterSystem ? (
+              <MeterSystemForm
+                form={meterSystemForm}
+                base={props.base}
+                setLoading={setLoading}
+                closeModalForm={closeModalForm}
+                queryMeterSystem={props.queryMeterSystem}
+              />
             ) : null;
           }}
         </ProForm.Item>
@@ -252,4 +314,4 @@ const AddDeviceForm: React.FC<any> = (props) => {
   );
 };
 
-export default AddDeviceForm;
+export default AddDeviceFormComponent;

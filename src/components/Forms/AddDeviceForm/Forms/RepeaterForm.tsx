@@ -1,3 +1,4 @@
+import { queryRepeater } from '@/models/repeaters';
 import { createRepeater } from '@/services/repeaters';
 import { yupValidator } from '@/utils/adapters/yup';
 import { ProForm, ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
@@ -6,7 +7,15 @@ import { useRequest } from 'ahooks';
 import { App, Col, Row } from 'antd';
 import * as yup from 'yup';
 
-const RepeaterForm: React.FC<any> = (props) => {
+interface RepeaterFormProps {
+  form: any;
+  base: string;
+  setLoading: (loading: boolean) => void;
+  closeModalForm: () => void;
+  queryRepeater: typeof queryRepeater;
+}
+
+const RepeaterForm: React.FC<RepeaterFormProps> = (props) => {
   const createRepeaterReq = useRequest(createRepeater, { manual: true });
   const intl = useIntl();
   const { message } = App.useApp();
@@ -81,7 +90,8 @@ const RepeaterForm: React.FC<any> = (props) => {
           };
           await createRepeaterReq.runAsync({ farmId: params.id as any }, data);
           message.success('Equipamento Criado com Sucesso');
-          window.location.reload();
+          props.queryRepeater({ id: parseInt(params.id as string) });
+          props.closeModalForm();
         } catch (err) {
           console.error(err);
           message.error('Fail');
@@ -92,9 +102,13 @@ const RepeaterForm: React.FC<any> = (props) => {
     >
       <Row gutter={[12, 12]}>
         <Col xs={24} sm={8}>
-          <ProFormText name="name" label={intl.formatMessage({
+          <ProFormText
+            name="name"
+            label={intl.formatMessage({
               id: 'component.adddevice.modal.form.step2.repeater.name.label',
-            })} rules={[yupSync]} />
+            })}
+            rules={[yupSync]}
+          />
         </Col>
 
         <Col xs={24} sm={8}>
@@ -117,19 +131,19 @@ const RepeaterForm: React.FC<any> = (props) => {
               id: 'component.adddevice.modal.form.step2.repeater.energytype.label',
             })}
             options={[
-                {
-                  value: 'Solar',
-                  label: intl.formatMessage({
-                    id: 'component.adddevice.modal.form.step2.repeater.energytype.solar',
-                  }),
-                },
-                {
-                  value: 'Bivolt',
-                  label: intl.formatMessage({
-                    id: 'component.adddevice.modal.form.step2.repeater.energytype.bivolt',
-                  }),
-                },
-              ]}
+              {
+                value: 'Solar',
+                label: intl.formatMessage({
+                  id: 'component.adddevice.modal.form.step2.repeater.energytype.solar',
+                }),
+              },
+              {
+                value: 'Bivolt',
+                label: intl.formatMessage({
+                  id: 'component.adddevice.modal.form.step2.repeater.energytype.bivolt',
+                }),
+              },
+            ]}
           />
         </Col>
         <Col xs={24} sm={12}>
