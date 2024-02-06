@@ -36,12 +36,11 @@ export async function getMeterSystemWaterLevel(
   props: API.GetMeterSystemWaterLevelParams,
   options?: { [key: string]: any },
 ) {
-  return request<{
-    data: API.GetMeterSystemWaterLevelResponse;
-  }>(
-    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/lake-level/?date_start=2023-7-16&date_end=2023-8-16`,
+  return request<API.GetMeterSystemWaterLevelResponse>(
+    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/lake-level/`,
     {
       method: 'GET',
+      params: options,
     },
   );
 }
@@ -56,6 +55,7 @@ export async function getMeterSystemTable(
     `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/water-level-history/`,
     {
       method: 'GET',
+      params: options,
     },
   );
 }
@@ -83,19 +83,13 @@ export async function postMeterSystemConfig(
   );
 }
 
-export async function patchMeter(
-  props: API.PatchMeterParams,
-  options: APIModels.PatchMeter,
-) {
+export async function patchMeter(props: API.PatchMeterParams, options: APIModels.PatchMeter) {
   return request<{
     data: API.PatchMeterResponse;
-  }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/`,
-    {
-      method: 'PATCH',
-      data: options,
-    },
-  );
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
 }
 
 export async function patchMeterSystem(
@@ -104,13 +98,10 @@ export async function patchMeterSystem(
 ) {
   return request<{
     data: API.PatchMeterSystemResponse;
-  }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/`,
-    {
-      method: 'PATCH',
-      data: options,
-    },
-  );
+  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
 }
 
 export async function getEditMeterDeviceIManageTable(
@@ -127,35 +118,41 @@ export async function getEditMeterDeviceIManageTable(
 
 export async function patchChangeIManageRadio(
   props: {
-    farmId: number,
-    meterSystemId: number,
-    meterId: number,
-    newMeterId: number,
+    farmId: number;
+    meterSystemId: number;
+    meterId: number;
+    newMeterId: number;
   },
   options?: { radio_id: string },
 ) {
   return request<{
     data: { radio_id: string };
-  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/swap/${props.newMeterId}/`, {
-    method: 'PATCH',
-    data: options,
-  });
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/swap/${props.newMeterId}/`,
+    {
+      method: 'PATCH',
+      data: options,
+    },
+  );
 }
 
 export async function patchChangeIManageManualRadio(
   props: {
-    farmId: number,
-    meterSystemId: number,
-    meterId: number,
+    farmId: number;
+    meterSystemId: number;
+    meterId: number;
   },
   options?: { radio_id: string },
 ) {
   return request<{
     data: { radio_id: string };
-  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/edit_radio/`, {
-    method: 'POST',
-    data: options,
-  });
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/edit_radio/`,
+    {
+      method: 'POST',
+      data: options,
+    },
+  );
 }
 
 export async function getEditMeterHistory(
@@ -172,12 +169,15 @@ export async function getEditMeterHistory(
 
 export async function favoriteMeterConfig(
   props: API.FavoriteMeterConfigParams,
-  options?: {  [key: string]: any },
+  options?: { [key: string]: any },
 ) {
-
   return request<{
     data: API.FavoriteMeterConfigResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`, {
-    method: 'PATCH',
-   data: options});
+  }>(
+    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`,
+    {
+      method: 'PATCH',
+      data: options,
+    },
+  );
 }

@@ -7,6 +7,7 @@ import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-c
 import { Button, Col, Pagination, PaginationProps, Row, Space } from 'antd';
 import { useEffect } from 'react';
 import { connect } from 'umi';
+import { useIntl } from '@umijs/max';
 
 type Props = {
   irpdEvents: GetIrpdEventsModelProps;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const IrpdActivityEventTable: React.FC<Props> = (props) => {
+  const intl = useIntl()
   const { pageSize, currentPage, range, setPageSize, setCurrentPage, setRange } = useTableHook(
     props.irpdEvents.total,
   );
@@ -35,7 +37,7 @@ const IrpdActivityEventTable: React.FC<Props> = (props) => {
     const { startDate, endDate } = range;
     props.queryIrpdEvents({
       farmId: props.selectedDevice.farmId,
-      irpdId: props.selectedDevice.deviceId,
+      irpdId: props.selectedDevice.deviceId as any,
       params: { currentPage, pageSize, startDate, endDate },
     });
   };
@@ -83,7 +85,7 @@ const IrpdActivityEventTable: React.FC<Props> = (props) => {
               <ProFormDateRangePicker
                 disabled={props.irpdEvents.loading}
                 name="startdate"
-                label="Periodo"
+                label={intl.formatMessage({id: 'component.pivot.tab.history.rangepicker.label'})}
                 allowClear
                 fieldProps={{
                   onChange: onDateChange,

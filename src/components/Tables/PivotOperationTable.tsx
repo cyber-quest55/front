@@ -3,6 +3,7 @@ import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { getPivotListGpsStream, getPivotListOperation } from '@/services/pivot';
 import { getPivotDirection } from '@/utils/formater/get-pivot-direction';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
+import { rangePresets } from '@/utils/presets/RangePicker';
 
 import { DownloadOutlined } from '@ant-design/icons';
 import {
@@ -45,8 +46,8 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                 label={intl.formatMessage({
                   id: 'component.pivot.tab.history.rangepicker.label',
                 })}
-                allowClear
                 fieldProps={{
+                  presets: rangePresets,
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
                       setDates(v);
@@ -69,7 +70,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
             </Space>
           ),
         }}
-        request={async (p, sort, filter): Promise<any> => {
+        request={async (p): Promise<any> => {
           const result: API.GetPivotHistoryOperationResponse = (await reqGetData.runAsync(
             {
               pivotId: props.selectedDevice.deviceId as any,

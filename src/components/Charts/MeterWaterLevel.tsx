@@ -1,12 +1,14 @@
 import { useScreenHook } from '@/hooks/screen';
-import {
-  GetMeterSystemWaterLevelModelProps,
-  queryMeterSystemWaterLevel,
-} from '@/models/meter-water-level';
+import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
+
 import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { getMeterSystemWaterLevel } from '@/services/metersystem';
+import { rangePresets } from '@/utils/presets/RangePicker';
 import { Mix } from '@ant-design/charts';
 import { LightFilter, ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useIntl } from '@umijs/max';
+import { useRequest } from 'ahooks';
 import { Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -14,12 +16,30 @@ import { connect } from 'umi';
 
 type Props = {
   selectedDevice: SelectedDeviceModelProps;
-  meterSystemWaterLevel: GetMeterSystemWaterLevelModelProps;
-  queryMeterSystemWaterLevel: typeof queryMeterSystemWaterLevel;
+  meterSystemById: GetMeterSystemByIdModelProps;
 };
 
 const MeterWaterLevelChart: React.FC<Props> = (props) => {
+  const intl = useIntl();
   const { md } = useScreenHook();
+  const [dates, setDates] = useState<any>([dayjs().subtract(1, 'month'), dayjs()]);
+  const getReq = useRequest(getMeterSystemWaterLevel, { manual: true });
+  const meter = props.meterSystemById.unformated;
+
+  const maxValue =
+    meter.imeter_set?.length > 0
+      ? meter?.imeter_set[0]?.latest_config?.content?.imanage_sensors[0]?.max_value
+      : 1;
+
+  const minValue =
+    meter.imeter_set?.length > 0
+      ? meter?.imeter_set[0]?.latest_config?.content?.imanage_sensors[0]?.min_value
+      : 1;
+
+  const minLimit =
+    meter.imeter_set?.length > 0 ? meter?.imeter_set[0]?.latest_config?.min_limit : undefined;
+  const maxLimit =
+    meter.imeter_set?.length > 0 ? meter?.imeter_set[0]?.latest_config?.max_limit : undefined;
 
   const className = useEmotionCss(({ token }) => {
     return {
@@ -35,54 +55,54 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       },
     };
   });
-  const [range, setRange] = useState({
-    startDate: dayjs(),
-    endDate: dayjs(),
-  });
 
-  const onDateChange = (value: any) => {
-    setRange({
-      startDate: value[0],
-      endDate: value[1],
-    });
-  };
-
-  const update = () => {
-    const { startDate, endDate } = range;
-
-    props.queryMeterSystemWaterLevel({
-      farmId: props.selectedDevice.farmId,
-      meterId: props.selectedDevice.deviceId,
-      otherId: props.selectedDevice.otherProps.imeterSetId,
-
-      params: { startDate, endDate },
-    });
+  const update = async () => {
+    await getReq.runAsync(
+      {
+        farmId: props.selectedDevice.farmId,
+        meterId: props.selectedDevice.deviceId as any,
+        otherId: props.selectedDevice.otherProps.imeterSetId,
+        params: {},
+      },
+      {
+        date_start: dates[0].toISOString(),
+        date_end: dates[1].toISOString(),
+      },
+    );
   };
 
   useEffect(() => {
     update();
-  }, [range]);
+  }, [dates, props.selectedDevice]);
+ 
 
   return (
     <StatisticCard
       className={className}
-      title="Gráfico de Nível"
+      title={intl.formatMessage({ id: 'component.meter.report.chart' })}
       extra={
         <LightFilter style={{ width: md ? 360 : 275 }}>
           <ProFormDateRangePicker
             name="startdate"
-            label={<strong>Periodo</strong>}
-            allowClear
+            label={intl.formatMessage({
+              id: 'component.pivot.tab.history.rangepicker.label',
+            })}
+            disabled={getReq.loading}
             fieldProps={{
-              onChange: onDateChange,
+              presets: rangePresets,
+              onChange: (v) => {
+                if (v && v[0] && v[1]) {
+                  setDates(v);
+                }
+              },
 
-              value: [range.startDate, range.endDate],
+              value: dates,
             }}
           />
         </LightFilter>
       }
       chart={
-        <Spin spinning={props.meterSystemWaterLevel.loading}>
+        <Spin spinning={getReq.loading}>
           <Mix
             appendPadding={0}
             tooltip={{
@@ -90,76 +110,93 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
             }}
             syncViewPadding={true}
             plots={[
-              {
-                type: 'line',
-                options: {
-                  data: props.meterSystemWaterLevel.loaded
-                    ? props.meterSystemWaterLevel.result.map((item: any) => ({
-                        ...item,
-                        value: 380 / 100,
-                      }))
-                    : [],
-                  xField: 'from',
-                  yField: 'value',
-                  yAxis: {
-                    max: 400 / 100,
-                    label: {
-                      formatter: (item: string) => `${item} m`,
-                    },
-                  },
+              meter.imeter_set?.length > 0 && maxLimit
+                ? {
+                    type: 'line',
+                    options: {
+                      data: getReq.data
+                        ? getReq?.data?.map((item: any) => ({
+                            ...item,
+                            value:
+                              meter.imeter_set?.length > 0
+                                ? ((maxLimit / 100) * maxValue) / 10
+                                : 0,
+                          }))
+                        : [],
+                      xField: 'from',
+                      yField: 'value',
+                      yAxis: {
+                        max: maxValue/ 10,
+                        label: {
+                          formatter: (item: string) => `${item} m`,
+                        },
+                      },
 
-                  meta: {
-                    value: {
-                      alias: 'Valor Maximo',
+                      meta: {
+                        value: {
+                          alias: intl.formatMessage({
+                            id: 'component.meter.report.chart.label.max',
+                          }),
+                        },
+                      },
+                      color: 'red',
                     },
-                  },
-                  color: 'red',
-                },
-              },
-              {
-                type: 'line',
-                options: {
-                  data: props.meterSystemWaterLevel.loaded
-                    ? props.meterSystemWaterLevel.result.map((item: any) => ({
-                        ...item,
-                        value: 100 / 100,
-                      }))
-                    : [],
-                  xField: 'from',
-                  yField: 'value',
-                  yAxis: {
-                    max: 400 / 100,
-                    label: {
-                      formatter: (item: string) => `${item} m`,
-                    },
-                  },
+                  }
+                : ({} as any),
+              meter.imeter_set?.length > 0 && minLimit
+                ? {
+                    type: 'line',
+                    options: {
+                      data: getReq.data
+                        ? getReq?.data?.map((item: any) => ({
+                            ...item,
+                            value:
+                              meter.imeter_set?.length > 0
+                                ? ((minLimit / 100) * maxValue) / 10 
+                                : 0,
+                          }))
+                        : [],
+                      xField: 'from',
+                      yField: 'value',
+                      yAxis: {
+                        max: maxValue / 10,
+                        label: {
+                          formatter: (item: string) => `${item} m`,
+                        },
+                      },
 
-                  meta: {
-                    value: {
-                      alias: 'Valor Mínimo',
+
+                      meta: {
+                        value: {
+                          alias: intl.formatMessage({
+                            id: 'component.meter.report.chart.label.min',
+                          }),
+                        },
+                      },
+                      color: '#FF6B3B',
                     },
-                  },
-                  color: '#FF6B3B',
-                },
-              },
+                  }
+                : ({} as any),
               {
                 type: 'area',
                 options: {
-                  yAxis: {
+                  yAxis: { 
+                    max: maxValue / 10,
+
                     label: {
                       formatter: (item: string) => `${item} m`,
                     },
                   },
                   // height: 320 as any,
-                  data: props.meterSystemWaterLevel.loaded
-                    ? props.meterSystemWaterLevel.result
-                    : [],
+                  data: getReq.data ? getReq.data.map(item => ({...item, value: item.value / 10})) : [],
                   padding: 'auto',
                   xField: 'from',
                   yField: 'value' as any,
                   meta: {
                     value: {
-                      alias: 'Valor',
+                      alias: intl.formatMessage({
+                        id: 'component.meter.report.chart.label.value',
+                      }),
                     },
                   },
                 },
@@ -172,13 +209,11 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
   );
 };
 
-const mapStateToProps = ({ meterSystemWaterLevel, selectedDevice }: any) => ({
-  meterSystemWaterLevel,
+const mapStateToProps = ({ meterSystemById, selectedDevice }: any) => ({
   selectedDevice,
+  meterSystemById,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  queryMeterSystemWaterLevel: (props: any) => dispatch(queryMeterSystemWaterLevel(props)),
-});
+const mapDispatchToProps = (dispatch: Dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeterWaterLevelChart);

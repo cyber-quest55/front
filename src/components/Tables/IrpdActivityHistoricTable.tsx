@@ -3,6 +3,7 @@ import { GetIrpdHistoryModelProps, queryIrpdHistory } from '@/models/irpd-histor
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { formatDate } from '@/utils/formater/get-formated-date';
+import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   LightFilter,
@@ -10,6 +11,7 @@ import {
   ProFormDateRangePicker,
   ProTable,
 } from '@ant-design/pro-components';
+import { useIntl } from '@umijs/max';
 import { Button, Col, Pagination, PaginationProps, Row, Space, Tag } from 'antd';
 import { useEffect } from 'react';
 import { connect } from 'umi';
@@ -22,6 +24,7 @@ type Props = {
 };
 
 const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
+  const intl = useIntl();
   const { pageSize, currentPage, range, setPageSize, setCurrentPage, setRange } = useTableHook(50);
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (currentPage, pageSize) => {
@@ -55,25 +58,27 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
       <ProTable<any>
         columns={[
           {
-            title: 'Início',
+            title: intl.formatMessage({
+              id: 'component.irpd.report.table.events.col.1',
+            }),
             dataIndex: 'created',
             render: (value, item) => {
               return <>{formatDate(item?.created)}</>;
             },
           },
           {
-            title: 'Origem',
+            title: intl.formatMessage({
+              id: 'component.irpd.report.table.events.col.2',
+            }),
             dataIndex: 'origin',
             render: (value, item) => {
-              return (
-                <>
-                  {item.origin === PumpHistoryOrigin.Command ? 'Comando' : 'Atualização da Central'}
-                </>
-              );
+              return <>{item.origin}</>;
             },
           },
           {
-            title: 'Mensagem',
+            title: intl.formatMessage({
+              id: 'component.irpd.report.table.events.col.3',
+            }),
             dataIndex: 'message',
             render: (value, item) => {
               return <Tag>{item.command}</Tag>;
@@ -125,10 +130,11 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
               <ProFormDateRangePicker
                 disabled={props.irpdHistory.loading}
                 name="startdate"
-                label="Periodo"
+                label={intl.formatMessage({id: 'component.pivot.tab.history.rangepicker.label'})}
                 allowClear
                 fieldProps={{
                   onChange: onDateChange,
+                  presets: rangePresets,
 
                   value: [range.startDate, range.endDate],
                 }}
@@ -137,7 +143,11 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
           ),
           filter: (
             <Space>
-              <Button icon={<DownloadOutlined />}>Exportar</Button>
+              <Button icon={<DownloadOutlined />}>
+                {intl.formatMessage({
+                  id: 'component.export',
+                })}
+              </Button>
             </Space>
           ),
         }}

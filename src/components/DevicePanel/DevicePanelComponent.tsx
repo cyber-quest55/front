@@ -16,7 +16,7 @@ import {
   HistoryOutlined,
   ThunderboltFilled,
 } from '@ant-design/icons';
-import { useEmotionCss } from '@ant-design/use-emotion-css'; 
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Link, useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import {
@@ -34,7 +34,7 @@ import {
   Typography,
 } from 'antd';
 import { MenuProps } from 'rc-menu';
-import { useEffect } from 'react'; 
+import { useEffect } from 'react';
 import { BsFillCloudRainFill } from 'react-icons/bs';
 import { GiPadlock, GiPadlockOpen } from 'react-icons/gi';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
@@ -63,7 +63,7 @@ type Props = {
 
 export const DevicePanelComponent: React.FC<Props> = (props) => {
   const { md } = useScreenHook();
- 
+
   const intl = useIntl();
   const { message } = App.useApp();
   const params = useParams();
@@ -73,12 +73,34 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const stopReq = useRequest(stopPivot, { manual: true });
   const isOnReq = useRequest(getDeviceIsOnline, { manual: true });
 
+  const meter: API.GetMeterSystemByIdResponse =
+    props.type === DeviceType.Meter ? props.device.unformated : null;
   const isDisabled = !isOnReq.data?.is_online || mtncGetReq.data?.maintenance;
- 
-  // const navigate = useNavigate(); 
- 
+
+  const maxValue =
+    meter?.imeter_set?.length > 0
+      ? meter?.imeter_set[0]?.latest_config?.content?.imanage_sensors[0]?.max_value
+      : 1;
+
+  const minValue =
+    meter?.imeter_set?.length > 0
+      ? meter?.imeter_set[0]?.latest_config?.content?.imanage_sensors[0]?.min_value
+      : 1;
+
+  const minLimit =
+    meter?.imeter_set?.length > 0 ? meter?.imeter_set[0]?.latest_config?.min_limit : undefined;
+  const maxLimit =
+    meter?.imeter_set?.length > 0 ? meter?.imeter_set[0]?.latest_config?.max_limit : undefined;
+
+  const meterVolume =
+    meter?.imeter_set?.length > 0
+      ? meter?.imeter_set[0]?.latest_periodic_stream?.content?.imanage_sensor_measure_value[0]
+          ?.value
+      : undefined;
 
   const { options, device, type, onChangeDevice } = props;
+
+  console.log(maxValue, maxLimit, meterVolume);
 
   const classNameSelect = useEmotionCss(({ token }) => {
     return {
@@ -201,7 +223,10 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                 <div>
                   {device?.unformated?.controllerstream_panel?.content?.operation_time?.total_hour}{' '}
                   h{' '}
-                  {device?.unformated?.controllerstream_panel?.content?.operation_time?.total_minute}{' '}
+                  {
+                    device?.unformated?.controllerstream_panel?.content?.operation_time
+                      ?.total_minute
+                  }{' '}
                   min
                 </div>
               </Space>
@@ -213,35 +238,15 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Meter: {
         return (
           <Space direction="vertical" size="middle">
-            <Space size="middle">
-              <Space>
-                <Tooltip title="Voltagem">
-                  <ThunderboltFilled />
-                </Tooltip>
-
-                <div>220 V</div>
-              </Space>
-              <Space>
-                <Tooltip title="Barras">
-                  <HistoryOutlined />
-                </Tooltip>
-                <div>1.2 bar</div>
-              </Space>
-            </Space>
-            <Space size="middle">
-              <Space>
-                <Tooltip title="Chuva hoje">
-                  <BsFillCloudRainFill />
-                </Tooltip>
-                <div>10 mm </div>
-              </Space>
-              <Space>
-                <Tooltip title="Horímetro">
-                  <ClockCircleOutlined />
-                </Tooltip>
-
-                <div>262h 33min</div>
-              </Space>
+            <Space direction="vertical" size="middle">
+              <Typography.Text type="warning">
+                {intl.formatMessage({ id: 'component.meter.report.chart.label.min' })}:{' '}
+                {minLimit && ((minLimit / 100) * maxValue) / 10}%
+              </Typography.Text>
+              <Typography.Text type="danger">
+                {intl.formatMessage({ id: 'component.meter.report.chart.label.max' })}:{' '}
+                {maxLimit && ((maxLimit / 100) * maxValue) / 10}%
+              </Typography.Text>
             </Space>
           </Space>
         );
@@ -295,7 +300,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     },
   ];
 
-  // To load maintain mode
+  // To lo((minLimit / 100) * maxValue) / 10 ad maintain mode
   useEffect(() => {
     if (device.id && type === DeviceType.Pivot && !mtncGetReq.loading) {
       mtncGetReq.runAsync(
@@ -383,7 +388,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                     })}?`
               }
             >
-              <Button icon={mtncGetReq.data?.maintenance ? <GiPadlock /> : <GiPadlockOpen/>} />
+              <Button icon={mtncGetReq.data?.maintenance ? <GiPadlock /> : <GiPadlockOpen />} />
             </Popconfirm>
             <CropSegmentsModalContainer />
             <Button icon={<CloudFilled />} />
@@ -406,17 +411,16 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Meter: {
         return (
           <Space>
- 
             <Link
               to={`/farms/${params.id}/metersystem/${device.id}/meter/${device.imeterSetId}/edit`}
             >
-                <Button icon={<EditFilled />}>
-              {intl.formatMessage({
-                id: 'component.pivot.operationalpanel.button.edit',
-              })}
-            </Button>
+              <Button icon={<EditFilled />}>
+                {intl.formatMessage({
+                  id: 'component.pivot.operationalpanel.button.edit',
+                })}
+              </Button>
             </Link>
- 
+
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
               {intl.formatMessage({
                 id: 'component.pivot.operationalpanel.button.close',
@@ -429,7 +433,6 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space>
- 
             {device.protocol === 5 ? (
               <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
                 <Button icon={<EditFilled />}>
@@ -440,14 +443,13 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
               </Link>
             ) : (
               <Link to={`/farms/${params.id}/irpd/${device.id}/editv4`}>
-                 <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-                    {intl.formatMessage({
-                      id: 'component.pivot.operationalpanel.button.close',
-                    })}
-                  </Button>
+                <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
+                  {intl.formatMessage({
+                    id: 'component.pivot.operationalpanel.button.close',
+                  })}
+                </Button>
               </Link>
             )}
-           
           </Space>
         );
       }
@@ -461,13 +463,48 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       }
 
       case DeviceType.Meter: {
-        return <Tag color={'#115186'}>{'25.0% (0.25m)'}</Tag>;
+        return (
+          <Tag color={'#115186'}>
+            {meterVolume
+              ? `${((meterVolume / maxValue) * 100).toFixed(1)}% (${meterVolume / 100} m)`
+              : ''}
+          </Tag>
+        );
       }
 
       case DeviceType.Pump: {
         return <Tag color={device.deviceColor}>{device.statusText}</Tag>;
       }
     }
+  };
+
+  const RenderPivotAlert = () => {
+    if (type === DeviceType.Pivot)
+      return isOnReq.data?.is_online ? (
+        mtncGetReq.data?.maintenance ? (
+          <Row style={{ width: 259 }} align={'middle'}>
+            <Col style={{ width: '100%' }}>
+              <Alert
+                message={intl.formatMessage({ id: 'component.pivot.alert.maintenance' })}
+                type="warning"
+                showIcon
+              />
+            </Col>
+          </Row>
+        ) : null
+      ) : (
+        <Row style={{ width: 259 }} align={'middle'}>
+          <Col style={{ width: '100%' }}>
+            <Alert
+              message={intl.formatMessage({ id: 'component.pivot.alert.without' })}
+              type="warning"
+              showIcon
+            />
+          </Col>
+        </Row>
+      );
+
+    return <></>;
   };
 
   return (
@@ -501,29 +538,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
             </Text>
           </Col>
         </Row>
-        {isOnReq.data?.is_online ? (
-          mtncGetReq.data?.maintenance ? (
-            <Row style={{ width: 259 }} align={'middle'}>
-              <Col style={{ width: '100%' }}>
-                <Alert
-                  message={intl.formatMessage({ id: 'component.pivot.alert.maintenance' })}
-                  type="warning"
-                  showIcon
-                />
-              </Col>
-            </Row>
-          ) : null
-        ) : (
-          <Row style={{ width: 259 }} align={'middle'}>
-            <Col style={{ width: '100%' }}>
-              <Alert
-                message={intl.formatMessage({ id: 'component.pivot.alert.without' })}
-                type="warning"
-                showIcon
-              />
-            </Col>
-          </Row>
-        )}
+        <RenderPivotAlert />
       </Row>
 
       <Row gutter={[12, 16]} justify="space-between">
