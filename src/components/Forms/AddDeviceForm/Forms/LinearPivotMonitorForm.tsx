@@ -1,3 +1,4 @@
+import { queryPivot } from '@/models/pivot';
 import { queryPivotInformation } from '@/models/pivot-information';
 import { createLinearPivotMonitor } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
@@ -13,6 +14,7 @@ interface LinearPivotMonitorFormProps {
   setLoading: (loading: boolean) => void;
   closeModalForm: () => void;
   queryPivotInformation: typeof queryPivotInformation;
+  queryPivot: typeof queryPivot;
 }
 
 const LinearPivotMonitorForm: React.FC<LinearPivotMonitorFormProps> = (props) => {
@@ -134,6 +136,10 @@ const LinearPivotMonitorForm: React.FC<LinearPivotMonitorFormProps> = (props) =>
       preserve={false}
       form={props.form}
       name="linear_pivot_monitor_form"
+      initialValues={{
+        potency_unit: 'cv',
+        brand_model: 'bauer'
+      }}
       onFinish={async (values: any) => {
         try {
           props.setLoading(true);
@@ -155,6 +161,9 @@ const LinearPivotMonitorForm: React.FC<LinearPivotMonitorFormProps> = (props) =>
             id: parseInt(params.id as string),
             params: {},
           });
+          props.queryPivot({
+            id: parseInt(params.id as string),
+          })
           props.closeModalForm();
         } catch (err) {
           console.error(err);

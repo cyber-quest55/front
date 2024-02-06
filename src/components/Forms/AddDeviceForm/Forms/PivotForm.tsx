@@ -1,3 +1,4 @@
+import { queryPivot } from '@/models/pivot';
 import { queryPivotInformation } from '@/models/pivot-information';
 import { createPivot } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
@@ -22,6 +23,7 @@ interface PivotFormProps {
   setLoading: (loading: boolean) => void;
   closeModalForm: () => void;
   queryPivotInformation: typeof queryPivotInformation;
+  queryPivot: typeof queryPivot;
 }
 
 const PivotForm: React.FC<PivotFormProps> = (props) => {
@@ -256,7 +258,9 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
       form={props.form}
       name="pivot_form"
       initialValues={{
-        potency_unit: 'kw',
+        potency_unit: 'cv',
+        panel_type: '1',
+        brand_model: 'bauer',
         communication_type: props.base ? '0' : '1',
       }}
       onFinish={async (values: any) => {
@@ -287,6 +291,9 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
             id: parseInt(params.id as string),
             params: {},
           });
+          props.queryPivot({
+            id: parseInt(params.id as string),
+          })
           props.closeModalForm();
         } catch (err) {
           console.error(err);
@@ -382,9 +389,6 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
         </Col>
         <ProForm.Item noStyle shouldUpdate>
           {() => {
-            {
-              console.log(props.form.getFieldValue('communication_type'));
-            }
             return props.form.getFieldValue('communication_type') === '0' ? (
               <>
                 <Col xs={24} sm={12}>

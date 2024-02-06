@@ -20,6 +20,7 @@ interface IrpdFormProps {
   setLoading: (loading: boolean) => void;
   closeModalForm: () => void;
   queryIrpd: typeof queryIrpd;
+  location: string;
 }
 
 const IrpdForm: React.FC<IrpdFormProps> = (props) => {
@@ -175,7 +176,10 @@ const IrpdForm: React.FC<IrpdFormProps> = (props) => {
       form={props.form}
       name="irpd_form"
       initialValues={{
-        potency_unit: 'kw',
+        potency_unit: 'cv',
+        protocol: '5.1',
+        latitude: props.location?.split(',', 2)[0] ?? '',
+        longitude: props.location?.split(',', 2)[1] ?? '',
       }}
       onFinish={async (values: any) => {
         try {

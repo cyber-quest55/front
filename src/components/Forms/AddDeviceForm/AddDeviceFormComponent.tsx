@@ -15,13 +15,16 @@ import MeterSystemForm from './Forms/MeterSystemForm';
 import PivotForm from './Forms/PivotForm';
 import PivotMonitorForm from './Forms/PivotMonitor';
 import RepeaterForm from './Forms/RepeaterForm';
+import { queryPivot } from '@/models/pivot';
 
 interface AddDeviceFormComponentProps {
   queryPivotInformation: typeof queryPivotInformation;
+  queryPivot: typeof queryPivot;
   queryMeterSystem: typeof queryMeterSystem;
   queryIrpd: typeof queryIrpd;
   queryRepeater: typeof queryRepeater;
   base: string;
+  location: string;
 }
 
 enum Equipment {
@@ -265,6 +268,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                 setLoading={setLoading}
                 closeModalForm={closeModalForm}
                 queryPivotInformation={props.queryPivotInformation}
+                queryPivot={props.queryPivot}
               />
             ) : form.getFieldValue('device') === Equipment.PivotMonitor ? (
               <PivotMonitorForm
@@ -273,6 +277,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                 setLoading={setLoading}
                 closeModalForm={closeModalForm}
                 queryPivotInformation={props.queryPivotInformation}
+                queryPivot={props.queryPivot}
               />
             ) : form.getFieldValue('device') === Equipment.LinearPivotMonitor ? (
               <LinearPivotMonitorForm
@@ -281,6 +286,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                 setLoading={setLoading}
                 closeModalForm={closeModalForm}
                 queryPivotInformation={props.queryPivotInformation}
+                queryPivot={props.queryPivot}
               />
             ) : form.getFieldValue('device') === Equipment.Pump ? (
               <IrpdForm
@@ -289,6 +295,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                 setLoading={setLoading}
                 closeModalForm={closeModalForm}
                 queryIrpd={props.queryIrpd}
+                location={props.location}
               />
             ) : form.getFieldValue('device') === Equipment.Repeater ? (
               <RepeaterForm
@@ -297,6 +304,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                 setLoading={setLoading}
                 closeModalForm={closeModalForm}
                 queryRepeater={props.queryRepeater}
+                location={props.location}
               />
             ) : form.getFieldValue('device') === Equipment.MeterSystem ? (
               <MeterSystemForm
@@ -305,6 +313,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                 setLoading={setLoading}
                 closeModalForm={closeModalForm}
                 queryMeterSystem={props.queryMeterSystem}
+                location={props.location}
               />
             ) : null;
           }}

@@ -20,6 +20,7 @@ interface MeterSystemFormProps {
   setLoading: (loading: boolean) => void;
   closeModalForm: () => void;
   queryMeterSystem: typeof queryMeterSystem;
+  location: string;
 }
 
 const MeterSystemForm: React.FC<MeterSystemFormProps> = (props) => {
@@ -99,6 +100,10 @@ const MeterSystemForm: React.FC<MeterSystemFormProps> = (props) => {
       preserve={false}
       form={props.form}
       name="meter_system_form"
+      initialValues={{
+        latitude: props.location?.split(',', 2)[0] ?? '',
+        longitude: props.location?.split(',', 2)[1] ?? '',
+      }}
       onFinish={async (values: any) => {
         try {
           props.setLoading(true);

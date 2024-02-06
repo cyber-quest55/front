@@ -13,6 +13,7 @@ interface RepeaterFormProps {
   setLoading: (loading: boolean) => void;
   closeModalForm: () => void;
   queryRepeater: typeof queryRepeater;
+  location: string;
 }
 
 const RepeaterForm: React.FC<RepeaterFormProps> = (props) => {
@@ -77,6 +78,11 @@ const RepeaterForm: React.FC<RepeaterFormProps> = (props) => {
       preserve={false}
       form={props.form}
       name="repeater_form"
+      initialValues={{
+        energy_type: 'Solar',
+        latitude: props.location?.split(',', 2)[0] ?? '',
+        longitude: props.location?.split(',', 2)[1] ?? '',
+      }}
       onFinish={async (values: any) => {
         try {
           props.setLoading(true);

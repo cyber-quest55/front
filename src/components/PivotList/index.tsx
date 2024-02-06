@@ -35,9 +35,9 @@ import React, { useEffect } from 'react';
 import { BsCloudRainFill } from 'react-icons/bs';
 import { Marker, StaticGoogleMap } from 'react-static-google-map';
 import { connect } from 'umi';
-import AddDeviceFormComponent from '../Forms/AddDeviceForm/AddDeviceFormComponent';
 import CreateFarmFormContainer from '../Forms/CreateFarm/CreateFarmContainer';
 import WithConnection from '../WithConnection';
+import AddDeviceFormContainer from '../Forms/AddDeviceForm/AddDeviceFormContainer';
 
 type Props = {
   pivot: GetPivotModelProps;
@@ -402,7 +402,7 @@ const PivotList: React.FC<Props> = (props) => {
       </div>
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>
-          <AddDeviceFormComponent base={(props.selectedFarm as any)?.base?.radio_id} />
+          <AddDeviceFormContainer base={(props.selectedFarm as any)?.base?.radio_id} />
         </Col>
       </Row>
     </div>
