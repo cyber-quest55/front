@@ -8,7 +8,7 @@ export type RepeaterProps = {
   id: number | string;
   centerLat: number;
   centerLng: number;
-  pivotColor?: string;
+  deviceColor?: string;
   lineColor?: string;
   name: string;
   updated: string;
@@ -19,6 +19,10 @@ const RepeaterDevice: React.FC<RepeaterProps> = (props) => {
   /** Props */
   const { centerLat, centerLng } = props;
   const [infoWindowVisible, setInfoWindowVisible] = useState(false);
+
+  if (!centerLat || !centerLng  ) {
+    return <></>;
+  }
 
   return (
     <>

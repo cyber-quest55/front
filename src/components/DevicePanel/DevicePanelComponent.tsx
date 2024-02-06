@@ -1,7 +1,12 @@
 import { useScreenHook } from '@/hooks/screen';
 import { setDeviceClose } from '@/models/selected-device';
+import {
+  getDeviceIsOnline,
+  getPivotMaintnanceMode,
+  patchPivotMaintnanceMode,
+  stopPivot,
+} from '@/services/pivot';
 import { DeviceType } from '@/utils/enum/device-type';
-import { PivotStatusColor } from '@/utils/enum/pivot-status';
 import {
   CaretDownOutlined,
   ClockCircleOutlined,
@@ -11,12 +16,33 @@ import {
   HistoryOutlined,
   ThunderboltFilled,
 } from '@ant-design/icons';
-import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Link, useParams } from '@umijs/max';
-import { Button, Col, Row, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { useEmotionCss } from '@ant-design/use-emotion-css'; 
+import { Link, useIntl, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import {
+  Alert,
+  App,
+  Button,
+  Col,
+  Dropdown,
+  Popconfirm,
+  Row,
+  Select,
+  Space,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
+import { MenuProps } from 'rc-menu';
+import { useEffect } from 'react'; 
 import { BsFillCloudRainFill } from 'react-icons/bs';
-import { GiPadlockOpen, GiSolidLeaf } from 'react-icons/gi';
+import { GiPadlock, GiPadlockOpen } from 'react-icons/gi';
 import { TbBrandFlightradar24 } from 'react-icons/tb';
+import StartPivotAngleContainer from '../Forms/StartPivotAngle/StartPivotAngleContainer';
+import StartPivotScheduleContainer from '../Forms/StartPivotSchedule/StartPivotScheduleContainer';
+import StartPivotSegmentContainer from '../Forms/StartPivotSegment/StartPivotSegmentContainer';
+import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
+import CropSegmentsModalContainer from '../Modals/Crop/CropContainer';
 
 const { Text } = Typography;
 
@@ -37,12 +63,24 @@ type Props = {
 
 export const DevicePanelComponent: React.FC<Props> = (props) => {
   const { md } = useScreenHook();
-  // const navigate = useNavigate();
+ 
+  const intl = useIntl();
+  const { message } = App.useApp();
   const params = useParams();
+
+  const mtncReq = useRequest(patchPivotMaintnanceMode, { manual: true });
+  const mtncGetReq = useRequest(getPivotMaintnanceMode, { manual: true });
+  const stopReq = useRequest(stopPivot, { manual: true });
+  const isOnReq = useRequest(getDeviceIsOnline, { manual: true });
+
+  const isDisabled = !isOnReq.data?.is_online || mtncGetReq.data?.maintenance;
+ 
+  // const navigate = useNavigate(); 
+ 
 
   const { options, device, type, onChangeDevice } = props;
 
-  const classNameSelect = useEmotionCss(() => {
+  const classNameSelect = useEmotionCss(({ token }) => {
     return {
       '.ant-select-selection-item': {
         fontWeight: 700,
@@ -52,7 +90,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
         padding: '0 !important',
       },
       '.ant-select-arrow': {
-        color: 'black',
+        color: token.colorTextBase,
         fontSize: 20,
       },
     };
@@ -60,6 +98,66 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
 
   const destroyOnClick = () => {
     props.setDeviceClose();
+  };
+
+  const onMaintenanceModeToggle = async () => {
+    try {
+      if (mtncGetReq.data) {
+        await mtncReq.runAsync(
+          {
+            farmId: params.id as any,
+            pivotId: device.id as any,
+          },
+          {
+            maintenance: !mtncGetReq.data?.maintenance,
+          },
+        );
+
+        await mtncGetReq.refreshAsync();
+
+        message.success(
+          intl.formatMessage({
+            id: 'component.message.success',
+          }),
+        );
+      }
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'component.message.error',
+        }),
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const handleStopPivot = async () => {
+    try {
+      await stopReq.runAsync(
+        {
+          farmId: params.id as any,
+          pivotId: device.id as any,
+        },
+        {
+          maintenance: !mtncGetReq.data?.maintenance,
+        },
+      );
+
+      message.success(
+        intl.formatMessage({
+          id: 'component.message.success',
+        }),
+      );
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'component.message.error',
+        }),
+      );
+      return false;
+    }
+    return true;
   };
 
   const extra = (type: DeviceType) => {
@@ -73,7 +171,13 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                   <ThunderboltFilled />
                 </Tooltip>
 
-                <div>220 V</div>
+                <div>
+                  {
+                    device?.unformated?.controllerstream_panel?.content?.voltage_measure
+                      ?.voltage_measure
+                  }{' '}
+                  V
+                </div>
               </Space>
               <Space>
                 <Tooltip title="Barras">
@@ -87,14 +191,19 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                 <Tooltip title="Chuva hoje">
                   <BsFillCloudRainFill />
                 </Tooltip>
-                <div>10 mm </div>
+                <div>- </div>
               </Space>
               <Space>
                 <Tooltip title="Horímetro">
                   <ClockCircleOutlined />
                 </Tooltip>
 
-                <div>262h 33min</div>
+                <div>
+                  {device?.unformated?.controllerstream_panel?.content?.operation_time?.total_hour}{' '}
+                  h{' '}
+                  {device?.unformated?.controllerstream_panel?.content?.operation_time?.total_minute}{' '}
+                  min
+                </div>
               </Space>
             </Space>
           </Space>
@@ -167,16 +276,68 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     }
   };
 
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: <StartPivotSimpleFormContainer />,
+    },
+    {
+      key: '2',
+      label: <StartPivotAngleContainer />,
+    },
+    {
+      key: '3',
+      label: <StartPivotSegmentContainer />,
+    },
+    {
+      key: '4',
+      label: <StartPivotScheduleContainer />,
+    },
+  ];
+
+  // To load maintain mode
+  useEffect(() => {
+    if (device.id && type === DeviceType.Pivot && !mtncGetReq.loading) {
+      mtncGetReq.runAsync(
+        {
+          farmId: params.id as any,
+          pivotId: device.id as any,
+        },
+        {},
+      );
+      isOnReq.runAsync({ deviceId: props.device.base_radio_id }, {});
+    }
+  }, [device]);
+
   const deviceActions = (type: DeviceType) => {
     switch (type) {
       case DeviceType.Pivot: {
         return (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-            <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-              Start Pivot
-            </Button>
-            <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-              Stop Pivot
+            <Dropdown
+              disabled={isDisabled}
+              trigger={['click']}
+              menu={{ items }}
+              placement="top"
+              arrow
+            >
+              <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
+                {intl.formatMessage({
+                  id: 'component.pivot.operationalpanel.button.start',
+                })}
+              </Button>
+            </Dropdown>
+            <Button
+              disabled={isDisabled}
+              loading={stopReq.loading}
+              onClick={handleStopPivot}
+              type="default"
+              danger
+              style={{ width: md ? '200px' : '100%' }}
+            >
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.stop',
+              })}{' '}
             </Button>
           </Space>
         );
@@ -190,10 +351,14 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
         return (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-              Ligar Bomba
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.start',
+              })}
             </Button>
             <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-              Parar Bomba
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.stop',
+              })}
             </Button>
           </Space>
         );
@@ -206,12 +371,33 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pivot: {
         return (
           <Space>
-            <Button icon={<GiPadlockOpen />} />
-            <Button icon={<GiSolidLeaf />} />
+            <Popconfirm
+              onConfirm={onMaintenanceModeToggle}
+              title={
+                mtncGetReq.data?.maintenance
+                  ? `${intl.formatMessage({
+                      id: 'component.pivot.operationalpanel.button.tooltip.maintain.2',
+                    })}?`
+                  : `${intl.formatMessage({
+                      id: 'component.pivot.operationalpanel.button.tooltip.maintain',
+                    })}?`
+              }
+            >
+              <Button icon={mtncGetReq.data?.maintenance ? <GiPadlock /> : <GiPadlockOpen/>} />
+            </Popconfirm>
+            <CropSegmentsModalContainer />
             <Button icon={<CloudFilled />} />
-            <Button icon={<EditFilled />}>Edit</Button>
+            <Link to={`/farms/${params.id}/pivot/${device.id}/edit`}>
+              <Button icon={<EditFilled />}>
+                {intl.formatMessage({
+                  id: 'component.pivot.operationalpanel.button.edit',
+                })}
+              </Button>
+            </Link>
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-              Close
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.close',
+              })}
             </Button>
           </Space>
         );
@@ -220,13 +406,21 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Meter: {
         return (
           <Space>
+ 
             <Link
               to={`/farms/${params.id}/metersystem/${device.id}/meter/${device.imeterSetId}/edit`}
             >
-              <Button icon={<EditFilled />}>Edit</Button>
+                <Button icon={<EditFilled />}>
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.edit',
+              })}
+            </Button>
             </Link>
+ 
             <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-              Close
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.close',
+              })}
             </Button>
           </Space>
         );
@@ -237,16 +431,22 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
           <Space>
             {device.protocol === 5 || device.protocol === 5.1 ? (
               <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
-                <Button icon={<EditFilled />}>Edit</Button>
+                <Button icon={<EditFilled />}>
+                  {intl.formatMessage({
+                    id: 'component.pivot.operationalpanel.button.edit',
+                  })}
+                </Button>
               </Link>
             ) : (
               <Link to={`/farms/${params.id}/irpd/${device.id}/editv4`}>
-                <Button icon={<EditFilled />}>Edit</Button>
+                 <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
+                    {intl.formatMessage({
+                      id: 'component.pivot.operationalpanel.button.close',
+                    })}
+                  </Button>
               </Link>
             )}
-            <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
-              Close
-            </Button>
+           
           </Space>
         );
       }
@@ -256,7 +456,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const status = (type: DeviceType) => {
     switch (type) {
       case DeviceType.Pivot: {
-        return <Tag color={PivotStatusColor.off}>{'LIGADA APÓS QUEDA DE ENERGIA'}</Tag>;
+        return <Tag color={device.deviceColor}>{device.statusText}</Tag>;
       }
 
       case DeviceType.Meter: {
@@ -264,7 +464,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       }
 
       case DeviceType.Pump: {
-        return <Tag color={'#115186'}>{'LIGADA APÓS QUEDA DE ENERGIA'}</Tag>;
+        return <Tag color={device.deviceColor}>{device.statusText}</Tag>;
       }
     }
   };
@@ -275,29 +475,56 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
         <Col>{status(type)}</Col>
         <Col>{actions(type)}</Col>
       </Row>
-      <Row style={{ maxWidth: 250 }}>
-        <Col style={{ width: '100%' }}>
-          <Select
-            className={classNameSelect}
-            suffixIcon={<CaretDownOutlined />}
-            bordered={false}
-            showSearch
-            value={device?.name?.toString()}
-            size="large"
-            style={{ width: '100%' }}
-            filterOption={(input, option) =>
-              (option?.label ?? '')?.toLowerCase().includes(input.toLowerCase())
-            }
-            onChange={onChangeDevice}
-            options={options}
-          />
-        </Col>
-        <Col>
-          <Text type="secondary" style={{ fontSize: 11 }}>
-            Last communication: 19 May 10:15
-          </Text>
-        </Col>
+      <Row justify="space-between">
+        <Row style={{ maxWidth: 250 }}>
+          <Col style={{ width: '100%' }}>
+            <Select
+              className={classNameSelect}
+              suffixIcon={<CaretDownOutlined className="" />}
+              bordered={false}
+              showSearch
+              value={device?.name?.toString()}
+              size="large"
+              style={{ width: '100%' }}
+              filterOption={(input, option) =>
+                (option?.label ?? '')?.toLowerCase().includes(input.toLowerCase())
+              }
+              onChange={onChangeDevice}
+              options={options}
+            />
+          </Col>
+
+          <Col>
+            <Text type="secondary" style={{ fontSize: 11 }}>
+              {intl.formatMessage({ id: 'component.lastcomunication' }, { value: device.updated })}
+            </Text>
+          </Col>
+        </Row>
+        {isOnReq.data?.is_online ? (
+          mtncGetReq.data?.maintenance ? (
+            <Row style={{ width: 259 }} align={'middle'}>
+              <Col style={{ width: '100%' }}>
+                <Alert
+                  message={intl.formatMessage({ id: 'component.pivot.alert.maintenance' })}
+                  type="warning"
+                  showIcon
+                />
+              </Col>
+            </Row>
+          ) : null
+        ) : (
+          <Row style={{ width: 259 }} align={'middle'}>
+            <Col style={{ width: '100%' }}>
+              <Alert
+                message={intl.formatMessage({ id: 'component.pivot.alert.without' })}
+                type="warning"
+                showIcon
+              />
+            </Col>
+          </Row>
+        )}
       </Row>
+
       <Row gutter={[12, 16]} justify="space-between">
         <Col style={{ width: md ? '195px' : '100%' }}>{extra(type)}</Col>
         <Col style={{ width: md ? '235px' : '100%' }}>{deviceActions(type)}</Col>

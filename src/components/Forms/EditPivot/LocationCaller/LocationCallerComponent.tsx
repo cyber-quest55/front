@@ -11,23 +11,23 @@ import LocationFormContainer from '../../Location/LocationContainer';
 
 const EditPivotLocationCallerComponent: React.FunctionComponent<any> = (props) => {
   const pivot = props.pivot;
-  const positions = props.pivot.controllerconfig.content.pivot_positions;
+  const positions = props?.pivot?.controllerconfig?.content?.pivot_positions;
   const postReq = useRequest(postPivotConfig, { manual: true });
   const params = useParams();
   const { message } = App.useApp();
   const intl = useIntl();
 
   const [first, setFirst] = React.useState({
-    lat: positions.latitude_center,
-    lng: positions.longitude_center,
+    lat: positions?.latitude_center,
+    lng: positions?.longitude_center,
   });
 
   const [second, setSecond] = React.useState({
-    lat: positions.latitude_reference,
-    lng: positions.longitude_reference,
+    lat: positions?.latitude_reference,
+    lng: positions?.longitude_reference,
   });
 
-  const [hasNorth, setHasNorth] = React.useState(positions.north_reference);
+  const [hasNorth, setHasNorth] = React.useState(positions?.north_reference);
 
   const onFinish = async () => {
     try {
@@ -102,10 +102,10 @@ const EditPivotLocationCallerComponent: React.FunctionComponent<any> = (props) =
         </Typography.Text>
       </div>
       <LocationFormContainer
-        lat={positions.latitude_center}
-        lng={positions.longitude_center}
+        lat={positions?.latitude_center}
+        lng={positions?.longitude_center}
         hasNorthReference
-        northValue={positions.north_reference}
+        northValue={positions?.north_reference}
         onChangeNorth={(e: any) => setHasNorth(e.target.checked)}
         locations={[
           {

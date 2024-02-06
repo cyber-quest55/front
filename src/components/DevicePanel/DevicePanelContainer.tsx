@@ -2,6 +2,7 @@ import { useScreenHook } from '@/hooks/screen';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotModelProps } from '@/models/pivot';
+import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 import {
   SelectedDeviceModelProps,
   setDeviceClose,
@@ -20,6 +21,7 @@ type Props = {
   type: DeviceType;
   irpd: GetIrpdModelProps;
   pivot: GetPivotModelProps;
+  pivotById: GetPivotByIdModelProps;
   meterSystem: GetMeterSystemModelProps;
   selectedDevice: SelectedDeviceModelProps;
   setSelectedDevice: typeof setSelectedDevice;
@@ -32,16 +34,29 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   const [device, setDevice] = useState<any>({});
   const [options, setOptions] = useState<Array<{ value: number; label: string }>>([]);
 
-  const { irpd, pivot, meterSystem, type, selectedDevice, setSelectedDevice, setDeviceClose } =
-    props;
+  const {
+    irpd,
+    pivot,
+    pivotById,
+    meterSystem,
+    type,
+    selectedDevice,
+    setSelectedDevice,
+    setDeviceClose,
+  } = props;
 
   const loading = pivot.loading || irpd.loading || meterSystem.loading;
 
   useEffect(() => {
+    console.log(pivotById);
     switch (type) {
       case DeviceType.Pivot: {
-        const device = pivot.result.find((item) => item.id === selectedDevice.deviceId);
-        setDevice(device);
+        const device = pivotById.result;
+        setDevice({
+          ...device,
+          base_radio_id: pivotById.unformated.base_radio_id,
+          unformated: pivotById.unformated,
+        });
         break;
       }
       case DeviceType.Meter: {
@@ -55,7 +70,7 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
         break;
       }
     }
-  }, [selectedDevice.deviceId]);
+  }, [selectedDevice.deviceId, pivotById]);
 
   useEffect(() => {
     switch (type) {
@@ -129,8 +144,6 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
     }
   };
 
-  console.log(loading)
-
   return (
     <>
       {loading ? (
@@ -155,9 +168,10 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   );
 };
 
-const mapStateToProps = ({ pivot, selectedDevice, meterSystem, irpd }: any) => ({
+const mapStateToProps = ({ pivot, pivotById, selectedDevice, meterSystem, irpd }: any) => ({
   irpd,
   pivot,
+  pivotById,
   meterSystem,
   selectedDevice,
 });

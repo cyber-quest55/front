@@ -108,16 +108,16 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
         submitter={false}
         name="HourForm"
         onInit={(value, fm) => {
-          const minut1 = pivot.controllerconfig.content.pause_time.end_pause_time_hour_1;
-          const minut2 = pivot.controllerconfig.content.pause_time.end_pause_time_minute_1;
-          const minut3 = pivot.controllerconfig.content.pause_time.start_pause_time_hour_1;
-          const minut4 = pivot.controllerconfig.content.pause_time.start_pause_time_minute_1;
-          const minut5 = pivot.controllerconfig.content.pause_time.end_pause_time_hour_2;
-          const minut6 = pivot.controllerconfig.content.pause_time.end_pause_time_minute_2;
-          const minut7 = pivot.controllerconfig.content.pause_time.start_pause_time_hour_2;
-          const minut8 = pivot.controllerconfig.content.pause_time.start_pause_time_minute_2;
+          const minut1 = pivot?.controllerconfig?.content?.pause_time?.end_pause_time_hour_1 | 0;
+          const minut2 = pivot?.controllerconfig?.content?.pause_time?.end_pause_time_minute_1 | 0;
+          const minut3 = pivot?.controllerconfig?.content?.pause_time?.start_pause_time_hour_1 | 0;
+          const minut4 = pivot?.controllerconfig?.content?.pause_time?.start_pause_time_minute_1 | 0;
+          const minut5 = pivot?.controllerconfig?.content?.pause_time?.end_pause_time_hour_2 | 0;
+          const minut6 = pivot?.controllerconfig?.content?.pause_time?.end_pause_time_minute_2 | 0;
+          const minut7 = pivot?.controllerconfig?.content?.pause_time?.start_pause_time_hour_2 | 0;
+          const minut8 = pivot?.controllerconfig?.content?.pause_time?.start_pause_time_minute_2 | 0;
 
-           const startDate1 = dayjs().hour(minut3).minute(minut4);
+          const startDate1 = dayjs().hour(minut3).minute(minut4);
           const endDate1 = dayjs().hour(minut1).minute(minut2);
 
           const startDate2 = dayjs().hour(minut7).minute(minut8);
@@ -160,17 +160,17 @@ const EditPivotRushHourComponent: React.FunctionComponent<any> = (props) => {
               ...v2.controllerconfig,
               content: {
                 ...pivot.controllerconfig.content,
-                ...v2.controllerconfig.content,
+                ...v2?.controllerconfig?.content,
                 pause_time: {
-                  ...v2.controllerconfig.content.pause_time,
+                  ...v2?.controllerconfig?.content.pause_time,
                   start_pause_time_hour_1: parseInt(date1[0]),
-                  start_pause_time_minute_1:   parseInt(date1[1]),
-                  end_pause_time_hour_1:  parseInt(date2[0]),
-                  end_pause_time_minute_1:  parseInt(date2[1]),
-                  start_pause_time_hour_2:  parseInt(date3[0]),
-                  start_pause_time_minute_2:  parseInt(date3[1]),
-                  end_pause_time_hour_2:  parseInt(date4[0]),
-                  end_pause_time_minute_2:  parseInt(date4[1]),
+                  start_pause_time_minute_1: parseInt(date1[1]),
+                  end_pause_time_hour_1: parseInt(date2[0]),
+                  end_pause_time_minute_1: parseInt(date2[1]),
+                  start_pause_time_hour_2: parseInt(date3[0]),
+                  start_pause_time_minute_2: parseInt(date3[1]),
+                  end_pause_time_hour_2: parseInt(date4[0]),
+                  end_pause_time_minute_2: parseInt(date4[1]),
                 },
                 pause_time_command: {
                   pause_time_command: v2.firstHour === true ? 1 : 0,

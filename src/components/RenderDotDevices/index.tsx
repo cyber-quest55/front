@@ -70,7 +70,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 key={item.id}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
-                pivotColor="#FF0000"
+                deviceColor="#FF0000"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}
@@ -84,7 +84,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 key={item.id}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
-                pivotColor="#FF0000"
+                deviceColor="#FF0000"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}
@@ -98,7 +98,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 key={item.id}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
-                pivotColor="#FF0000"
+                deviceColor="#FF0000"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}
@@ -112,7 +112,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 key={item.id}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
-                pivotColor="yellow"
+                deviceColor="yellow"
                 name={item.name}
                 updated={item.updated}
               />
@@ -125,7 +125,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 key={item.id}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
-                pivotColor="blue"
+                deviceColor="blue"
                 name={item.name}
                 updated={item.updated}
               />

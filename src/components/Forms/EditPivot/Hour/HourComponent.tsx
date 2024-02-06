@@ -74,12 +74,12 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
         rowProps={{ gutter: [8, 8] }}
         grid
         onInit={(v2, form) => {
-          const day = v2.controllerconfig.content?.clock?.day || 1;
-          const hour = v2.controllerconfig.content?.clock?.hour || 1;
-          const year = v2.controllerconfig.content?.clock?.year || 1;
-          const month = v2.controllerconfig.content?.clock?.month || 1;
-          const minute = v2.controllerconfig.content?.clock?.minute || 1;
-          const second = v2.controllerconfig.content?.clock?.second || 1;
+          const day = v2?.controllerconfig?.content?.clock?.day || 1;
+          const hour = v2?.controllerconfig?.content?.clock?.hour || 1;
+          const year = v2?.controllerconfig?.content?.clock?.year || 1;
+          const month = v2?.controllerconfig?.content?.clock?.month || 1;
+          const minute = v2?.controllerconfig?.content?.clock?.minute || 1;
+          const second = v2?.controllerconfig?.content?.clock?.second || 1;
           const date = dayjs()
             .year(year + 2000)
             .month(month - 1)
@@ -110,7 +110,7 @@ const EditPivotHourComponent: React.FunctionComponent<any> = (props) => {
               ...v2.controllerconfig,
               content: {
                 ...pivot.controllerconfig.content,
-                ...v2.controllerconfig.content,
+                ...v2?.controllerconfig?.content,
                 clock: {
                   day: date.get('D'),
                   hour: date.get('h'),
