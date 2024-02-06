@@ -13,7 +13,15 @@ declare namespace API {
     farmId: string;
     pivotId: string;
   };
+  
 
   type GetWeatherStationResponse = APIModels.WeatherStationDavis | APIModels.WeatherStationPlugField;
+
+  type GetWeatherForecastParams = {
+    farmId: string;
+    pivotId: string;
+  };
+
+  type GetWeatherForecastResponse = APIModels.WeatherForecast[];
 
 }

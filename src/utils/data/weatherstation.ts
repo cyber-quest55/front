@@ -1,9 +1,22 @@
+import moment from 'moment';
 import { IntlShape } from 'react-intl';
 
 export const isNotNull = (value: string | number | undefined) =>
   value !== null && value !== undefined;
 
 export const toOneDecimalPlace = (temperature: number | undefined) => temperature?.toFixed(1);
+
+export const dateTimestampToString = (time: number) => {
+  return moment(time).format("DD/MM/YYYY");
+};
+
+export const dateTimestampToHourString = (time: number) => {
+  return moment(time).format("dddd HH") + "h";
+};
+
+export const dayNameFromTimestamp = (time: number) => {
+  return moment(time).format("ddd");
+};
 
 export const windDirectionStringByAngle = (deg: number | undefined, intl: IntlShape) => {
   if (deg === undefined) return '-';
