@@ -6,6 +6,7 @@ import WeatherForecastPanel from './WeatherForecastPanel';
 import WeatherStationCards from './WeatherStationCards';
 import { useEffect } from 'react';
 import { useParams } from '@umijs/max';
+import WeatherDetailsTabs from './WeatherDetailsTabs';
 
 const WeatherStation: React.FC<any> = (props) => {
 
@@ -34,6 +35,7 @@ const WeatherStation: React.FC<any> = (props) => {
               loading={props.weatherStation.weatherForecast.loading}
               queryWeatherForecast={props.queryWeatherForecast}
             />
+            <WeatherDetailsTabs weatherForecast={props.weatherStation.weatherForecast.result} />
           </ProCard>
         </Col>
       </Row>

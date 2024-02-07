@@ -7,15 +7,15 @@ export const isNotNull = (value: string | number | undefined) =>
 export const toOneDecimalPlace = (temperature: number | undefined) => temperature?.toFixed(1);
 
 export const dateTimestampToString = (time: number) => {
-  return moment(time).format("DD/MM/YYYY");
+  return moment.unix(time).format("DD/MM/YYYY");
 };
 
 export const dateTimestampToHourString = (time: number) => {
-  return moment(time).format("dddd HH") + "h";
+  return moment.unix(time).format("dddd HH") + "h";
 };
 
 export const dayNameFromTimestamp = (time: number) => {
-  return moment(time).format("ddd");
+  return moment.unix(time).format("ddd");
 };
 
 export const windDirectionStringByAngle = (deg: number | undefined, intl: IntlShape) => {
