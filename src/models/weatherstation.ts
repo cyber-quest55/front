@@ -1,4 +1,4 @@
-import { getWeatherForecast, getWeatherStation } from '@/services/weatherstation';
+import { getWeatherForecast, getWeatherStation, getWeatherStationCharts } from '@/services/weatherstation';
 import { AxiosError } from 'axios';
 
 export interface GetWeatherStationModelProps {
@@ -9,6 +9,12 @@ export interface GetWeatherStationModelProps {
     error: any;
   };
   weatherForecast: {
+    result: any;
+    loaded: boolean;
+    loading: boolean;
+    error: any;
+  };
+  weatherStationCharts: {
     result: any;
     loaded: boolean;
     loading: boolean;
@@ -30,6 +36,13 @@ export const queryWeatherForecast = (payload: API.GetWeatherForecastParams) => {
   };
 };
 
+export const queryWeatherStationCharts = (payload: API.GetWeatherStationChartsParams) => {
+  return {
+    type: 'weatherStation/queryWeatherStationCharts',
+    payload: payload,
+  };
+};
+
 export default {
   namespace: 'weatherStation',
 
@@ -41,6 +54,12 @@ export default {
       error: {},
     },
     weatherForecast: {
+      result: null,
+      loaded: false,
+      loading: true,
+      error: {},
+    },
+    weatherStationCharts: {
       result: null,
       loaded: false,
       loading: true,
@@ -71,6 +90,18 @@ export default {
         yield put({ type: 'queryWeatherForecastSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryWeatherForecastError', payload: error });
+      }
+    },
+    *queryWeatherStationCharts(
+      { payload }: { payload: API.GetWeatherStationChartsParams },
+      { call, put }: { call: any; put: any },
+    ) {
+      yield put({ type: 'queryWeatherStationChartsStart' });
+      try {
+        const response: API.GetWeatherStationChartsResponse = yield call(getWeatherStationCharts, payload);
+        yield put({ type: 'queryWeatherStationChartsSuccess', payload: response });
+      } catch (error: any) {
+        yield put({ type: 'queryWeatherStationChartsError', payload: error });
       }
     },
   },
@@ -143,6 +174,44 @@ export default {
       return {
         ...state,
         weatherForecast: {
+          loading: false,
+          loaded: true,
+          result: payload,
+          error: {},
+        },
+      };
+    },
+
+    queryWeatherStationChartsError(
+      state: GetWeatherStationModelProps,
+      { payload }: { payload: AxiosError },
+    ) {
+      return {
+        ...state,
+        weatherStationCharts: {
+          ...state.weatherStationCharts,
+          result: null,
+          loading: false,
+          error: payload.response?.data,
+        },
+      };
+    },
+    queryWeatherStationChartsStart(state: GetWeatherStationModelProps) {
+      return {
+        ...state,
+        weatherStationCharts: {
+          ...state.weatherStationCharts,
+          loading: true,
+        },
+      };
+    },
+    queryWeatherStationChartsSuccess(
+      state: GetWeatherStationModelProps,
+      { payload }: { payload: API.GetWeatherStationChartsResponse },
+    ) {
+      return {
+        ...state,
+        weatherStationCharts: {
           loading: false,
           loaded: true,
           result: payload,

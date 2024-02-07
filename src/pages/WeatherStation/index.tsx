@@ -1,22 +1,23 @@
-import { queryWeatherForecast, queryWeatherStation } from '@/models/weatherstation';
+import {
+  queryWeatherForecast,
+  queryWeatherStation,
+  queryWeatherStationCharts,
+} from '@/models/weatherstation';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
+import { useParams } from '@umijs/max';
 import { Col, Row } from 'antd';
 import { connect } from 'dva';
+import { useEffect } from 'react';
+import WeatherDetailsTabs from './WeatherDetailsTabs';
 import WeatherForecastPanel from './WeatherForecastPanel';
 import WeatherStationCards from './WeatherStationCards';
-import { useEffect } from 'react';
-import { useParams } from '@umijs/max';
-import WeatherDetailsTabs from './WeatherDetailsTabs';
 
 const WeatherStation: React.FC<any> = (props) => {
-
   const params = useParams();
 
   useEffect(() => {
     props.queryWeatherForecast({ farmId: params.farmId as any, pivotId: params.pivotId as any });
-  }, [])
-
-  console.log(props.weatherStation.weatherForecast)
+  }, []);
 
   return (
     <PageContainer>
@@ -35,7 +36,12 @@ const WeatherStation: React.FC<any> = (props) => {
               loading={props.weatherStation.weatherForecast.loading}
               queryWeatherForecast={props.queryWeatherForecast}
             />
-            <WeatherDetailsTabs weatherForecast={props.weatherStation.weatherForecast.result} />
+            <WeatherDetailsTabs
+              weatherForecast={props.weatherStation.weatherForecast.result}
+              weatherStationCharts={props.weatherStation.weatherStationCharts.result}
+              loading={props.weatherStation.weatherStationCharts.loading}
+              queryWeatherStationCharts={props.queryWeatherStationCharts}
+            />
           </ProCard>
         </Col>
       </Row>
@@ -50,6 +56,7 @@ const mapStateToProps = ({ weatherStation }: any) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryWeatherStation: (props: any) => dispatch(queryWeatherStation(props)),
   queryWeatherForecast: (props: any) => dispatch(queryWeatherForecast(props)),
+  queryWeatherStationCharts: (props: any) => dispatch(queryWeatherStationCharts(props)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WeatherStation);

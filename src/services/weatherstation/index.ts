@@ -25,3 +25,11 @@ export async function getWeatherForecast(props: API.GetWeatherForecastParams) {
     method: 'GET',
   });
 }
+
+export async function getWeatherStationCharts(props: API.GetWeatherStationChartsParams) {
+  return request<{
+    data: API.GetWeatherStationChartsResponse;
+  }>(`/farms/${props.farmId}/pivots/${props.pivotId}/weatherstation/charts/?period=${props.period}`, {
+    method: 'GET',
+  });
+}

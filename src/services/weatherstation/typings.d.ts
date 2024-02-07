@@ -24,4 +24,12 @@ declare namespace API {
 
   type GetWeatherForecastResponse = APIModels.WeatherForecast[];
 
+  type GetWeatherStationChartsParams = {
+    farmId: string;
+    pivotId: string;
+    period: string;
+  };
+
+  type GetWeatherStationChartsResponse = APIModels.WeatherStationCharts;
+
 }

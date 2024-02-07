@@ -26,7 +26,6 @@ const ForecastDetailedTable: React.FC<any> = (props) => {
       title: <>{'DATE'}</>,
       render: (_, { dt }) => (
         <>
-          {console.log(dt)}
           {dateTimestampToString(dt)}
         </>
       ),
