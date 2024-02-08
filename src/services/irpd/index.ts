@@ -5,7 +5,7 @@ import { request } from '@umijs/max';
 export async function getIrpds(props: API.GetIrpdParams, options?: { [key: string]: any }) {
   return request<{
     data: API.GetIrpdResponse;
-  }>(`/farms/${props.id}/irpds`, {
+  }>(`/v3/farms/${props.id}/irpds`, {
     method: 'GET',
   });
 }
@@ -13,7 +13,7 @@ export async function getIrpds(props: API.GetIrpdParams, options?: { [key: strin
 export async function getIrpdById(props: API.GetIrpdByIdParams, options?: { [key: string]: any }) {
   return request<{
     data: API.GetIrpdByIdResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/`, {
     method: 'GET',
   });
 }
@@ -24,7 +24,7 @@ export async function getIrpdHistory(
 ) {
   return request<{
     data: API.GetIrpdHistoryResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/history`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/history`, {
     method: 'GET',
     params: options,
   });
@@ -34,25 +34,24 @@ export async function getIrpdWaterConsumption(
   props: API.GetIrpdWaterConsumptionParams,
   options?: { [key: string]: any },
 ) {
-  return request<{
-    data: API.GetIrpdWaterConsumptionResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/water-consumption/${props.waterId}/`, {
-    method: 'GET',
-    params: options,
-  });
+  return request<API.GetIrpdWaterConsumptionResponse>(
+    `/v4/farms/${props.farmId}/irpds/${props.irpdId}/water_consumption`,
+    {
+      method: 'GET',
+      params: options,
+    },
+  );
 }
 
 export async function getIrpdEvents(
   props: API.GetIrpdEventsParams,
   options?: { [key: string]: any },
 ) {
-  console.log("options", options)
   return request<{
     data: API.GetIrpdEventsResponse;
-  }>(`/reports/irpds/${props.irpdId}/irpd-list/`, {
+  }>(`/v3/reports/irpds/${props.irpdId}/irpd-list/`, {
     method: 'GET',
-    params: options
-
+    params: options,
   });
 }
 
@@ -62,8 +61,7 @@ export async function postIrpdConfig(
 ) {
   return request<{
     data: API.PostIrpdConfigResponse;
-
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
     method: 'POST',
     data: options,
   });
@@ -75,8 +73,7 @@ export async function postIrpdConfigV4(
 ) {
   return request<{
     data: API.PostIrpdConfigV4Response;
-
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/config/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/config/`, {
     method: 'POST',
     data: options,
   });
@@ -85,7 +82,7 @@ export async function postIrpdConfigV4(
 export async function getEditIrpdDeviceTable(props: API.GetIrpdDevicesParams) {
   return request<{
     data: API.GetIrpdDevicesResponse;
-  }>(`/farms/${props.farmId}/irpds/devices`, {
+  }>(`/v3/farms/${props.farmId}/irpds/devices`, {
     method: 'GET',
   });
 }
@@ -93,7 +90,7 @@ export async function getEditIrpdDeviceTable(props: API.GetIrpdDevicesParams) {
 export async function patchChangeIrpdRadio(props: API.PatchChangeIrpdRadioParams) {
   return request<{
     data: API.PatchChangeIrpdRadioResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/swap/${props.irpdToSwapId}/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/swap/${props.irpdToSwapId}/`, {
     method: 'PATCH',
   });
 }
@@ -104,19 +101,16 @@ export async function postChangeIrpdManualRadio(
 ) {
   return request<{
     data: API.PostChangeIrpdManualRadioResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/edit_radio/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/edit_radio/`, {
     method: 'POST',
     data: options,
   });
 }
 
-export async function patchIrpd(
-  props: API.PatchIrpdParams,
-  options?: APIModels.IrpdPayload,
-) {
+export async function patchIrpd(props: API.PatchIrpdParams, options?: APIModels.IrpdPayload) {
   return request<{
     data: API.PatchIrpdResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/`, {
     method: 'PATCH',
     data: options,
   });
@@ -128,7 +122,7 @@ export async function getEditIrpdHistory(
 ) {
   return request<{
     data: API.GetIrpdHistoryResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/configv5/`, {
     method: 'GET',
     params: options,
   });
@@ -136,12 +130,12 @@ export async function getEditIrpdHistory(
 
 export async function favoriteIrpdConfig(
   props: API.FavoriteIrpdConfigParams,
-  options?: {  [key: string]: any },
+  options?: { [key: string]: any },
 ) {
-
   return request<{
     data: API.FavoriteIrpdConfigResponse;
-  }>(`/farms/${props.farmId}/irpds/${props.irpdId}/configv5/${props.configId}/`, {
+  }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/configv5/${props.configId}/`, {
     method: 'PATCH',
-   data: options});
+    data: options,
+  });
 }

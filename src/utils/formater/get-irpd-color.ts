@@ -3,16 +3,16 @@ import { colors } from '../enum/status-color';
 export function getIrpdColor(status: number): string {
   switch (status) {
     case 1: {
-      return colors.fifth;
+      return colors.second;
     }
     case 2: {
-      return colors.fifth;
+      return colors.second;
     }
     case 3: {
-      return colors.fifth;
+      return colors.second;
     }
     case 4: {
-      return colors.fifth;
+      return colors.second;
     }
     case 5: {
       return colors.fifth;

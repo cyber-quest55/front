@@ -6,19 +6,19 @@ import { request } from '@umijs/max';
 export async function getFarms(options?: API.GetFarmsParams) {
   return request<{
     data: API.GetFarmResponse;
-  }>('/farms', {
+  }>('/v3/farms', {
     method: 'GET',
   });
 }
 
-/** GET /farms/${farmId}/central_panel/status/ */
+/** GET /v3/farms/${farmId}/central_panel/status/ */
 export async function getFarmConnection(
   props: API.GetFarmConnectionParams,
   options?: { [key: string]: any },
 ) {
   return request<{
     data: API.GetFarmConnectionResponse;
-  }>(`/farms/${props.id}/central_panel/status`, {
+  }>(`/v3/farms/${props.id}/central_panel/status`, {
     method: 'GET',
   });
 }
@@ -29,7 +29,7 @@ export async function createFarm(
 ) {
   return request<{
     data: API.GetFarmConnectionResponse;
-  }>(`/farms`, {
+  }>(`/v3/farms`, {
     method: 'POST',
     data: body
   });
