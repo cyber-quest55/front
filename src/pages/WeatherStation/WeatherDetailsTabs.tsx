@@ -1,28 +1,34 @@
 import { ProCard } from '@ant-design/pro-components';
+import { useIntl } from '@umijs/max';
 import { useState } from 'react';
+import DeltaTTable from './DeltaTTable';
 import ForecastDetailedTable from './ForecastDetailedTable';
 import WeatherStationCharts from './WeatherStationCharts';
-import DeltaTTable from './DeltaTTable';
 
 const WeatherDetailsTabs = (props: any) => {
   const [tab, setTab] = useState('tab1');
-  console.log(props)
+  const intl = useIntl();
 
   return (
     <ProCard
       bodyStyle={{ padding: '0' }}
+      ghost
       tabs={{
         tabPosition: 'top',
         activeKey: tab,
         defaultActiveKey: 'tab1',
         items: [
           {
-            label: `WEATHER_FORECAST_DETAILED`,
+            label: intl.formatMessage({
+              id: 'component.weatherstation.weatherforecast.tab.title',
+            }),
             key: 'tab1',
             children: <ForecastDetailedTable weatherForecast={props.weatherForecast} />,
           },
           {
-            label: `CHARTS`,
+            label: intl.formatMessage({
+              id: 'component.weatherstation.charts.tab.title',
+            }),
             key: 'tab2',
             children: (
               <WeatherStationCharts
@@ -33,7 +39,9 @@ const WeatherDetailsTabs = (props: any) => {
             ),
           },
           {
-            label: `DELTA_T_TABLE`,
+            label: intl.formatMessage({
+              id: 'component.weatherstation.deltat.tab.title',
+            }),
             key: 'tab3',
             children: <DeltaTTable weatherStation={props.weatherStation} />,
           },

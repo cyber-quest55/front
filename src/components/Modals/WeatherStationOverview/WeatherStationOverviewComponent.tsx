@@ -3,15 +3,15 @@ import { useIntl, useNavigate, useParams } from '@umijs/max';
 import { Button, Modal, Row, Skeleton } from 'antd';
 import React, { useEffect } from 'react';
 
-import HumidityIcon from '@/icons/weatherstation/humidity-icon.svg';
-import RainIcon from '@/icons/weatherstation/rain-icon.svg';
-import TemperatureIcon from '@/icons/weatherstation/temperature-icon.svg';
-import WindIcon from '@/icons/weatherstation/wind-icon.svg';
+import { TbTemperature } from 'react-icons/tb';
+import { LuCloudRain } from 'react-icons/lu';
+import { FiWind } from 'react-icons/fi';
+import { MdOutlineWaterDrop } from "react-icons/md";
 import { FIVE_MIN_TIMEOUT, isNotNull, toOneDecimalPlace, windDirectionStringByAngle } from '@/utils/data/weatherstation';
 import WindDirectionRotatedIcon from '@/pages/WeatherStation/WindDirectionRotatedIcon';
 
 interface WeatherInfoProps {
-  icon?: string;
+  icon?: JSX.Element;
   iconComponent?: JSX.Element;
   title: string;
   info: number | string | undefined;
@@ -30,7 +30,7 @@ const WeatherInfo = ({ icon, iconComponent, title, info, infoUnit, loading }: We
       }}
     >
       <div>
-        {iconComponent ? iconComponent : <img src={icon} />}
+        {iconComponent ? iconComponent : icon}
         <div style={{ fontSize: 16, maxWidth: 85, padding: '5px 0 10px 0' }}>{title}</div>
       </div>
       <p style={{ fontSize: 24, fontWeight: 600, marginTop: 'auto' }}>
@@ -68,7 +68,7 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
     <Row justify="space-between">
       <WeatherInfo
         loading={props.loading}
-        icon={TemperatureIcon}
+        icon={<TbTemperature size={25} />}
         title={intl.formatMessage({
           id: 'component.pivot.weatherstation.modal.temperature',
         })}
@@ -77,7 +77,7 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
       />
       <WeatherInfo
         loading={props.loading}
-        icon={HumidityIcon}
+        icon={<MdOutlineWaterDrop size={25} />}
         title={intl.formatMessage({
           id: 'component.pivot.weatherstation.modal.moisture',
         })}
@@ -86,7 +86,7 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
       />
       <WeatherInfo
         loading={props.loading}
-        icon={WindIcon}
+        icon={<FiWind size={25} />}
         title={intl.formatMessage({
           id: 'component.pivot.weatherstation.modal.wind',
         })}
@@ -105,7 +105,7 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
       />
       <WeatherInfo
         loading={props.loading}
-        icon={RainIcon}
+        icon={<LuCloudRain size={25} />}
         title={intl.formatMessage({
           id: 'component.pivot.weatherstation.modal.rain',
         })}
@@ -136,7 +136,7 @@ const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) =>
 
   return (
     <>
-      <Button icon={<CloudFilled />} onClick={showModal} />
+      <Button icon={<CloudFilled />} onClick={showModal}  />
 
       <Modal
         destroyOnClose
@@ -144,6 +144,7 @@ const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) =>
           id: 'component.pivot.weatherstation.modal.title',
         })}
         open={isModalOpen}
+        centered
         onCancel={handleCancel}
         width={600}
         footer={[

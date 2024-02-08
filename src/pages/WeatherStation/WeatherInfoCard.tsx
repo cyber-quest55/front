@@ -70,7 +70,7 @@ const WeatherInfoCard = ({
   return (
     <ProCard>
       {!loading ? (
-        <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center' }}>
           {icon}
           <div style={{ fontSize: 20, fontWeight: 400 }}>{title}</div>
         </div>

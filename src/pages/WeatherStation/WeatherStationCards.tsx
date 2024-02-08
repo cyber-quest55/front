@@ -43,7 +43,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
             id: 'component.weatherstation.card.temperature.title',
           })}
           loading={false}
-          icon={<TbTemperature />}
+          icon={<TbTemperature size={25} />}
           renderInfo={
             <>
               <WeatherInfo
@@ -137,7 +137,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
           title={intl.formatMessage({
             id: 'component.weatherstation.card.temperature.title',
           })}
-          icon={<TbTemperature />}
+          icon={<TbTemperature size={25} />}
           renderInfo={
             <>
               <WeatherInfo
@@ -188,7 +188,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
           title={intl.formatMessage({
             id: 'component.weatherstation.card.wind.title',
           })}
-          icon={<FiWind />}
+          icon={<FiWind size={25} />}
           renderInfo={
             <>
               <WeatherInfo
@@ -235,7 +235,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
           title={intl.formatMessage({
             id: 'component.weatherstation.card.wind.title',
           })}
-          icon={<FiWind />}
+          icon={<FiWind size={25} />}
           renderInfo={
             <>
               <WeatherInfo
@@ -285,7 +285,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
           title={intl.formatMessage({
             id: 'component.weatherstation.card.luminosity.title',
           })}
-          icon={<MdOutlineWbSunny />}
+          icon={<MdOutlineWbSunny size={25} />}
           renderInfo={
             <>
               <WeatherInfo
@@ -330,7 +330,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
           title={intl.formatMessage({
             id: 'component.weatherstation.card.luminosity.title',
           })}
-          icon={<MdOutlineWbSunny />}
+          icon={<MdOutlineWbSunny size={25} />}
           renderInfo={
             <>
               <WeatherInfo
@@ -368,7 +368,6 @@ const WeatherStationCards: React.FC<any> = (props) => {
         isOffline={!loading && isWeatherStationOffline}
         loading={loading}
         lastCommunication={weatherStation?.lastCommunication}
-        onClose={() => {}}
       />
       {renderTemperatureCard()}
       {renderWindCard()}
@@ -378,7 +377,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
         title={intl.formatMessage({
           id: 'component.weatherstation.card.rain.title',
         })}
-        icon={<LuCloudRain />}
+        icon={<LuCloudRain size={25} />}
         renderInfo={
           <>
             <WeatherInfo

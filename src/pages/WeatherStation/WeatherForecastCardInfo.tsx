@@ -2,14 +2,13 @@ import React from "react";
 
 interface WeatherForecastCardInfoProps {
   children: JSX.Element;
-  icon: string;
+  icon: JSX.Element;
   iconStyle?: React.CSSProperties;
 }
 
 const WeatherForecastCardInfo = ({
   children,
   icon,
-  iconStyle,
 }: WeatherForecastCardInfoProps) => {
   return (
     <div
@@ -22,7 +21,7 @@ const WeatherForecastCardInfo = ({
     >
       <div>{children}</div>
       <div>
-        <img src={icon} style={iconStyle} />
+        {icon}
       </div>
     </div>
   );

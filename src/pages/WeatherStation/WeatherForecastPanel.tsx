@@ -1,21 +1,21 @@
-import CloudIcon from '@/icons/weatherstation/cloud-icon.svg';
-import RainIcon from '@/icons/weatherstation/rain-icon.svg';
 import { queryWeatherForecast } from '@/models/weatherstation';
 import {
   dateTimestampToString,
   dayNameFromTimestamp,
   toOneDecimalPlace,
 } from '@/utils/data/weatherstation';
+import { useIntl } from '@umijs/max';
 import { Skeleton } from 'antd';
+import { LuCloud, LuCloudRain } from 'react-icons/lu';
 import WeatherForecastCard from './WeatherForecastCard';
 
 const WeatherIcons = {
-  Thunderstorm: CloudIcon,
-  Drizzle: CloudIcon,
-  Rain: RainIcon,
-  Snow: CloudIcon,
-  Clear: CloudIcon,
-  Clouds: CloudIcon,
+  Thunderstorm: <LuCloud size={25} />,
+  Drizzle: <LuCloud size={25} />,
+  Rain: <LuCloudRain size={25} />,
+  Snow: <LuCloud size={25} />,
+  Clear: <LuCloud size={25} />,
+  Clouds: <LuCloud size={25} />,
 };
 
 const LoadingForecastCards = () => {
@@ -40,9 +40,15 @@ interface WeatherForecastPanelProps {
 }
 
 const WeatherForecastPanel: React.FC<WeatherForecastPanelProps> = (props) => {
+  const intl = useIntl();
+
   return (
-    <div>
-      <div style={{ fontSize: 24, fontWeight: 500, marginBottom: 15 }}>{'WEATHER_FORECAST'}</div>
+    <div style={{ marginBottom: 35 }}>
+      <div style={{ fontSize: 24, fontWeight: 500, marginBottom: 15 }}>
+        {intl.formatMessage({
+          id: 'component.weatherstation.weatherforecast.title',
+        })}
+      </div>
       <div style={{ position: 'relative', height: 170 }}>
         <div
           style={{
@@ -64,7 +70,7 @@ const WeatherForecastPanel: React.FC<WeatherForecastPanelProps> = (props) => {
                     name: dayNameFromTimestamp(dayWeather.dt),
                     date: dateTimestampToString(dayWeather.dt),
                   }}
-                  icon={WeatherIcons[dayWeather?.weather] ?? CloudIcon}
+                  icon={WeatherIcons[dayWeather?.weather] ?? <LuCloud size={25} />}
                   temperature={{
                     min: toOneDecimalPlace(dayWeather?.temperature?.min) ?? '-',
                     max: toOneDecimalPlace(dayWeather?.temperature?.max) ?? '-',

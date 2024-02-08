@@ -1,16 +1,17 @@
 import React from "react";
-import TemperatureIcon from "@/icons/weatherstation/temperature-icon.svg";
 import TempreatureUpIcon from "@/icons/weatherstation/temperature-up-icon.svg";
 import TempreatureDownIcon from "@/icons/weatherstation/temperature-down-icon.svg";
-import RainIcon from "@/icons/weatherstation/rain-icon.svg";
 import WeatherForecastCardInfo from "./WeatherForecastCardInfo";
+import { LuCloudRain } from 'react-icons/lu';
+import { TbTemperature } from 'react-icons/tb';
+import { ProCard } from "@ant-design/pro-components";
 
 interface WeatherForecastCardProps {
   day: { name: string; date: string };
   temperature: { min: number | string; max: number | string };
   rain: { millimeters: string | undefined; percentage: number };
   isToday?: boolean;
-  icon: string;
+  icon: JSX.Element;
 }
 
 const WeatherForecastCard = ({
@@ -21,7 +22,11 @@ const WeatherForecastCard = ({
   icon,
 }: WeatherForecastCardProps) => {
   return (
-    <div
+    <ProCard
+      bordered
+      bodyStyle={{
+        padding: 0
+      }}
       style={{
         borderRadius: 8,
         minWidth: 152,
@@ -36,27 +41,27 @@ const WeatherForecastCard = ({
         </div>
       </WeatherForecastCardInfo>
       <WeatherForecastCardInfo
-        icon={TemperatureIcon}
+        icon={<TbTemperature size={25} />}
         iconStyle={{ marginRight: 6 }}
       >
         <div>
-          <div style={{ fontSize: 14, display: "flex", gap: 5 }}>
-            <img src={TempreatureUpIcon} />
+          <div style={{ fontSize: 14, display: "flex", gap: 5, alignItems: 'center' }}>
+            <img src={TempreatureUpIcon} width={12} height={12} />
             <div>{temperature.max} °C</div>
           </div>
-          <div style={{ fontSize: 14, display: "flex", gap: 5 }}>
-            <img src={TempreatureDownIcon} />
+          <div style={{ fontSize: 14, display: "flex", gap: 5, alignItems: 'center' }}>
+            <img src={TempreatureDownIcon} width={12} height={12} />
             <div>{temperature.min} °C</div>
           </div>
         </div>
       </WeatherForecastCardInfo>
-      <WeatherForecastCardInfo icon={RainIcon}>
+      <WeatherForecastCardInfo icon={<LuCloudRain size={25} />}>
         <div style={{ fontSize: 14, fontWeight: 400 }}>
           <div>{rain.millimeters}mm</div>
           <div>{rain.percentage}%</div>
         </div>
       </WeatherForecastCardInfo>
-    </div>
+    </ProCard>
   );
 };
 
