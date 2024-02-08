@@ -76,19 +76,6 @@ export default {
             type: 'irpdHistory/queryIrpdHistory',
             payload: { farmId, irpdId: deviceId, params: { current: 0, pageSize: 15 } },
           });
-
-          yield put({
-            type: 'irpdEvents/queryIrpdEvents',
-            payload: { farmId, irpdId: deviceId, params: {} },
-          });
-
-          yield put(queryIrpdWater({
-            farmId,
-            irpdId: deviceId,
-            waterId: otherProps?.waterId,
-            params: otherProps?.params,
-          }));
-
           break;
         }
         case DeviceType.Meter: {

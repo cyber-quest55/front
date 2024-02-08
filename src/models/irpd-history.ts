@@ -35,14 +35,13 @@ export default {
       { payload }: { payload: API.GetIrpdHistoryParams },
       { call, put }: { call: any; put: any },
     ) {
-      const { farmId, irpdId, params } = payload;
+      const { farmId, irpdId,   } = payload;
       yield put({ type: 'queryIrpdHistoryStart' });
       try {
         const response: API.GetIrpdHistoryResponse = yield call(
           getIrpdHistory,
           { farmId, irpdId },
-          params,
-        );
+         );
         yield put({ type: 'queryIrpdHistorySuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdHistoryError', payload: error });

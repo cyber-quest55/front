@@ -23,8 +23,9 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { md } = useScreenHook();
   const [dates, setDates] = useState<any>([dayjs().subtract(1, 'month'), dayjs()]);
+
   const getReq = useRequest(getMeterSystemWaterLevel, { manual: true });
-  const meter = props.meterSystemById.unformated;
+   const meter = props.meterSystemById.unformated;
 
   const maxValue =
     meter.imeter_set?.length > 0

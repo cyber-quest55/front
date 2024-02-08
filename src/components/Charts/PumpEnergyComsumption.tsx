@@ -1,20 +1,22 @@
-import { GetIrpdWaterModelProps } from '@/models/irpd-water-consumption';
-import { rangePresets } from '@/utils/presets/RangePicker';
+import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { getIrpdWaterConsumption } from '@/services/irpd';
+import { getWaterConsumptionType } from '@/utils/formater/get-water-consumption-type';
 import { Column, G2 } from '@ant-design/charts';
 import {
   LightFilter,
-  ProFormDateRangePicker,
+  ProFormDatePicker,
   ProFormSegmented,
   StatisticCard,
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
+import { useRequest } from 'ahooks';
 import { Spin } from 'antd';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { connect } from 'dva';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = {
-  irpdWaterConsumption: GetIrpdWaterModelProps;
+  selectedDevice: SelectedDeviceModelProps;
   dispatch: any;
 };
 
@@ -167,7 +169,11 @@ const waterConsumption2 = {
 
 const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
   const intl = useIntl();
-  const [dates, setDates] = useState<any>([dayjs().subtract(1, 'month'), dayjs()]);
+
+  const [dates, setDates] = useState<any>(dayjs());
+  const [precision, setPrecision] = useState<any>('month');
+
+  const getReq = useRequest(getIrpdWaterConsumption, { manual: true });
 
   G2.registerInteraction('element-link', {
     start: [
@@ -184,26 +190,71 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
     ],
   });
 
+  useEffect(() => {
+    const format = 'YYYY-MM-DD'
+    const start_date = dates.startOf(precision).format(format)
+    const end_date = dates.endOf(precision).format(format)
+
+    getReq.run(
+      { farmId: props.selectedDevice.farmId, irpdId: props.selectedDevice.deviceId },
+      {
+        start_date,
+        end_date,
+        precision,
+      },
+    );
+  }, [precision, dates]);
+
+
+  const getFormatedDate = (date1: Dayjs, date2: Dayjs) => {
+
+    if(precision === 'month'){
+      return date1.format('DD/MM')
+    }
+  }
+
+  const formatDatsource = (data: Array<APIModels.IrpdWaterConsumption> | undefined) => {
+    if( !data ){ 
+      return []
+    }
+    const values = data.map((item) => {
+      const bDate = dayjs(item.from)
+      const eDate = dayjs(item.to)
+
+
+      const formatedType = getWaterConsumptionType(item.type);
+
+      return {
+        type: item.type,
+        formatedType,
+        period: getFormatedDate(bDate, eDate),
+        value: item.value,
+      };
+    });
+     
+    return values
+  };
+
   return (
     <StatisticCard
       ghost
       chart={
-        <Spin spinning={props.irpdWaterConsumption.loading}>
+        <Spin spinning={getReq.loading}>
           <Column
             height={359}
-            color={({ type }) => {
-              if (type === 'Horas em pico') {
+            color={({ formatedType }) => {
+              if (formatedType === intl.formatMessage({ id: 'component.irpd.report.chart.label.1' })) {
                 return '#ff4d4f';
-              } else if (type === 'Horas em fora de pico') {
+              } else if (formatedType === intl.formatMessage({ id: 'component.irpd.report.chart.label.2' })) {
                 return '#4169E1';
               }
               return '#40E0D0';
             }}
-            data={waterConsuption}
+            data={formatDatsource(getReq.data?.data)}
             padding="auto"
-            xField="year"
+            xField="period"
             yField="value"
-            seriesField="type"
+            seriesField="formatedType"
             isPercent={true}
             isStack={true}
             tooltip={false}
@@ -237,13 +288,13 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
       colSpan={{ xs: 24 }}
       title={
         <LightFilter layout="inline">
-          <ProFormDateRangePicker
+          <ProFormDatePicker
             label={intl.formatMessage({
               id: 'component.pivot.tab.history.rangepicker.label',
             })}
-            name="startdate"
             fieldProps={{
-              presets: rangePresets,
+              picker: precision,
+              onChange: (date) => setDates(date),
               allowClear: false,
               value: dates,
             }}
@@ -251,27 +302,31 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
         </LightFilter>
       }
       extra={
-        <LightFilter >
+        <LightFilter>
           <ProFormSegmented
-            name={['controllerconfig', 'content', 'autoreversion_configurations', 'mode']}
+            fieldProps={{
+              value: precision,
+              onChange: (item) => setPrecision(item),
+            }}
             request={async () => [
               {
                 label: intl.formatMessage({
                   id: 'component.irpd.report.chart.datetype.opt.1',
                 }),
-                value: 1,
+                value: 'year',
+              },
+            
+              {
+                label: intl.formatMessage({
+                  id: 'component.irpd.report.chart.datetype.opt.3',
+                }),
+                value: 'month',
               },
               {
                 label: intl.formatMessage({
                   id: 'component.irpd.report.chart.datetype.opt.2',
                 }),
-                value: 2,
-              },
-              {
-                label: intl.formatMessage({
-                  id: 'component.irpd.report.chart.datetype.opt.3',
-                }),
-                value: 3,
+                value: 'week',
               },
             ]}
           />
@@ -281,8 +336,8 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
   );
 };
 
-const mapStateToProps = ({ irpdWaterConsumption }: any) => ({
-  irpdWaterConsumption,
+const mapStateToProps = ({ selectedDevice }: any) => ({
+  selectedDevice,
 });
 
 const mapDispatchToProps = () => ({});

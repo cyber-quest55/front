@@ -390,10 +390,11 @@ declare namespace APIModels {
   };
 
   type IrpdWaterConsumption = {
-    year: string;
-    type: string;
+    from: string;
+    to: string;
     value: number;
-  };
+    type: number;
+  }
 
   type IrpdEventsResponse = {
     count: number;

@@ -43,6 +43,7 @@ import StartPivotScheduleContainer from '../Forms/StartPivotSchedule/StartPivotS
 import StartPivotSegmentContainer from '../Forms/StartPivotSegment/StartPivotSegmentContainer';
 import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
 import CropSegmentsModalContainer from '../Modals/Crop/CropContainer';
+import StartPumpScheduleContainer from '../Forms/StartPumpSchedule/StartPumpScheduleContainer';
 
 const { Text } = Typography;
 
@@ -75,7 +76,12 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
 
   const meter: API.GetMeterSystemByIdResponse =
     props.type === DeviceType.Meter ? props.device.unformated : null;
+
+  // For pivot
   const isDisabled = !isOnReq.data?.is_online || mtncGetReq.data?.maintenance;
+
+  // For IRPD
+  const isDisabledIrpd = !isOnReq.data?.is_online;
 
   const maxValue =
     meter?.imeter_set?.length > 0
@@ -258,23 +264,11 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
             <Space size="middle">
               <Space>
                 <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                <div>1.2 bar</div>
+                <div>- bar</div>
               </Space>
-              <Space>
-                <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                <div>250V</div>
-              </Space>
+              
             </Space>
-            <Space size="middle">
-              <Space>
-                <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                <div>1.2 bar</div>
-              </Space>
-              <Space>
-                <TbBrandFlightradar24 style={{ fontSize: 20 }} />
-                <div>250V</div>
-              </Space>
-            </Space>
+          
           </Space>
         );
       }
@@ -300,6 +294,31 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     },
   ];
 
+  const itemsIrpd: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <Popconfirm
+          placement="bottom"
+          title={intl.formatMessage({
+            id: 'component.popconfirm.oktext',
+          })}
+          onConfirm={handleStopPivot}
+        >
+          <Typography.Link style={{ width: '100%' }}>
+            {intl.formatMessage({
+              id: 'component.pivot.operationalpanel.button.start.opt.1',
+            })}
+          </Typography.Link>
+        </Popconfirm>
+      ),
+    },
+    {
+      key: '2',
+      label: <StartPumpScheduleContainer />,
+    },
+  ];
+
   // To lo((minLimit / 100) * maxValue) / 10 ad maintain mode
   useEffect(() => {
     if (device.id && type === DeviceType.Pivot && !mtncGetReq.loading) {
@@ -310,6 +329,10 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
         },
         {},
       );
+      isOnReq.runAsync({ deviceId: props.device.base_radio_id }, {});
+    }
+
+    if (DeviceType.Pump) {
       isOnReq.runAsync({ deviceId: props.device.base_radio_id }, {});
     }
   }, [device]);
@@ -355,16 +378,39 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-            <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
-              {intl.formatMessage({
-                id: 'component.pivot.operationalpanel.button.start',
+            <Dropdown
+              disabled={isDisabledIrpd}
+              trigger={['click']}
+              menu={{ items: itemsIrpd }}
+              placement="top"
+              arrow
+            >
+              <Button type="primary" style={{ width: md ? '200px' : '100%' }}>
+                {intl.formatMessage({
+                  id: 'component.irpd.operationalpanel.button.start',
+                })}
+              </Button>
+            </Dropdown>
+            <Popconfirm
+              disabled={isDisabledIrpd}
+              placement="bottom"
+              title={intl.formatMessage({
+                id: 'component.popconfirm.oktext',
               })}
-            </Button>
-            <Button type="default" danger style={{ width: md ? '200px' : '100%' }}>
-              {intl.formatMessage({
-                id: 'component.pivot.operationalpanel.button.stop',
-              })}
-            </Button>
+              onConfirm={handleStopPivot}
+            >
+              <Button
+                disabled={isDisabledIrpd}
+                loading={stopReq.loading}
+                type="default"
+                danger
+                style={{ width: md ? '200px' : '100%' }}
+              >
+                {intl.formatMessage({
+                  id: 'component.irpd.operationalpanel.button.stop',
+                })}
+              </Button>
+            </Popconfirm>
           </Space>
         );
       }
@@ -433,15 +479,14 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space>
-            {device.protocol === 5 ? (
-              <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
+               <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
                 <Button icon={<EditFilled />}>
                   {intl.formatMessage({
                     id: 'component.pivot.operationalpanel.button.edit',
                   })}
                 </Button>
               </Link>
-            ) : (
+          
               <Link to={`/farms/${params.id}/irpd/${device.id}/editv4`}>
                 <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
                   {intl.formatMessage({
@@ -449,7 +494,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                   })}
                 </Button>
               </Link>
-            )}
+          
           </Space>
         );
       }
@@ -507,6 +552,25 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     return <></>;
   };
 
+  const RenderIRPDAlert = () => {
+    if (type === DeviceType.Pump)
+      return isOnReq.data?.is_online ? (
+        <></>
+      ) : (
+        <Row style={{ width: 259 }} align={'middle'}>
+          <Col style={{ width: '100%' }}>
+            <Alert
+              message={intl.formatMessage({ id: 'component.irpd.alert.without' })}
+              type="warning"
+              showIcon
+            />
+          </Col>
+        </Row>
+      );
+
+    return <></>;
+  };
+
   return (
     <Space direction="vertical" style={{ width: '100%' }} size="large">
       <Row justify="space-between" align="middle" gutter={[12, 12]}>
@@ -539,6 +603,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
           </Col>
         </Row>
         <RenderPivotAlert />
+        <RenderIRPDAlert />
       </Row>
 
       <Row gutter={[12, 16]} justify="space-between">

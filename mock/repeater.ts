@@ -10,7 +10,7 @@ const waitTime = (time: number = 100) => {
 };
 
 export default {
-  'GET /farms/:farmId/repeaters': async (req: Request, res: Response) => {
+  'GET/v3/farms/:farmId/repeaters': async (req: Request, res: Response) => {
     await waitTime(2000);
     res.status(200).send(GetRepeaterResponse);
   },

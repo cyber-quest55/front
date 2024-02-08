@@ -8,7 +8,7 @@ export async function getMeterSystem(
 ) {
   return request<{
     data: API.GetMeterSystemResponse;
-  }>(`/farms/${props.id}/metersystems`, {
+  }>(`/v3/farms/${props.id}/metersystems`, {
     method: 'GET',
   });
 }
@@ -16,7 +16,7 @@ export async function getMeterSystem(
 export async function getMeterSystemById(props: API.GetMeterSystemByIdParams) {
   return request<{
     data: API.GetMeterSystemByIdResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterId}/`, {
+  }>(`/v3/farms/${props.farmId}/metersystems/${props.meterId}/`, {
     method: 'GET',
   });
 }
@@ -27,7 +27,7 @@ export async function getMeterSystemHistory(
 ) {
   return request<{
     data: API.GetMeterSystemHistoryResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterId}/history`, {
+  }>(`/v3/farms/${props.farmId}/metersystems/${props.meterId}/history`, {
     method: 'GET',
   });
 }
@@ -37,7 +37,7 @@ export async function getMeterSystemWaterLevel(
   options?: { [key: string]: any },
 ) {
   return request<API.GetMeterSystemWaterLevelResponse>(
-    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/lake-level/`,
+    `/v3/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/lake-level/`,
     {
       method: 'GET',
       params: options,
@@ -52,7 +52,7 @@ export async function getMeterSystemTable(
   return request<{
     data: API.GetMeterSystemTableResponse;
   }>(
-    `/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/water-level-history/`,
+    `/v3/farms/${props.farmId}/metersystems/${props.meterId}/meter/${props.otherId}/water-level-history/`,
     {
       method: 'GET',
       params: options,
@@ -75,7 +75,7 @@ export async function postMeterSystemConfig(
   return request<{
     data: API.PostMeterSystemConfigResponse;
   }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/standard/`,
+    `/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/standard/`,
     {
       method: 'POST',
       data: options,
@@ -86,7 +86,7 @@ export async function postMeterSystemConfig(
 export async function patchMeter(props: API.PatchMeterParams, options: APIModels.PatchMeter) {
   return request<{
     data: API.PatchMeterResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/`, {
+  }>(`/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/`, {
     method: 'PATCH',
     data: options,
   });
@@ -98,7 +98,7 @@ export async function patchMeterSystem(
 ) {
   return request<{
     data: API.PatchMeterSystemResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/`, {
+  }>(`/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/`, {
     method: 'PATCH',
     data: options,
   });
@@ -110,7 +110,7 @@ export async function getEditMeterDeviceIManageTable(
 ) {
   return request<{
     data: API.GetMeterDevicesResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/devices`, {
+  }>(`/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/devices`, {
     method: 'GET',
     params: options,
   });
@@ -128,7 +128,7 @@ export async function patchChangeIManageRadio(
   return request<{
     data: { radio_id: string };
   }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/swap/${props.newMeterId}/`,
+    `/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/swap/${props.newMeterId}/`,
     {
       method: 'PATCH',
       data: options,
@@ -147,7 +147,7 @@ export async function patchChangeIManageManualRadio(
   return request<{
     data: { radio_id: string };
   }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/edit_radio/`,
+    `/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/edit_radio/`,
     {
       method: 'POST',
       data: options,
@@ -161,7 +161,7 @@ export async function getEditMeterHistory(
 ) {
   return request<{
     data: API.GetMeterHistoryResponse;
-  }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/`, {
+  }>(`/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/`, {
     method: 'GET',
     params: options,
   });
@@ -174,7 +174,7 @@ export async function favoriteMeterConfig(
   return request<{
     data: API.FavoriteMeterConfigResponse;
   }>(
-    `/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`,
+    `/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`,
     {
       method: 'PATCH',
       data: options,
