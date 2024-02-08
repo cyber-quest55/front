@@ -1,11 +1,12 @@
 import {
-    FIVE_MIN_TIMEOUT,
+  FIVE_MIN_TIMEOUT,
   isNotNull,
   toOneDecimalPlace,
   windDirectionStringByAngle,
 } from '@/utils/data/weatherstation';
 import { useIntl, useParams } from '@umijs/max';
 import { Flex } from 'antd';
+import { useEffect } from 'react';
 import { FiWind } from 'react-icons/fi';
 import { LuCloudRain } from 'react-icons/lu';
 import { MdOutlineWbSunny } from 'react-icons/md';
@@ -14,11 +15,10 @@ import WeatherInfo from './WeatherInfo';
 import WeatherInfoCard from './WeatherInfoCard';
 import WeatherNameCard from './WeatherStationNameCard';
 import WindDirectionRotatedIcon from './WindDirectionRotatedIcon';
-import { useEffect } from 'react';
 
 const WeatherStationCards: React.FC<any> = (props) => {
   const intl = useIntl();
-  const {weatherStation, loading} = props;
+  const { weatherStation, loading } = props;
   const isWeatherStationOffline = false;
   const params = useParams();
 
@@ -28,7 +28,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
 
   useEffect(() => {
     const requestInterval = setInterval(() => {
-        props.queryWeatherStation({ farmId: params.farmId, pivotId: params.pivotId });
+      props.queryWeatherStation({ farmId: params.farmId, pivotId: params.pivotId });
     }, FIVE_MIN_TIMEOUT);
     return () => {
       clearInterval(requestInterval);

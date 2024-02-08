@@ -39,6 +39,7 @@ const WeatherStation: React.FC<any> = (props) => {
             <WeatherDetailsTabs
               weatherForecast={props.weatherStation.weatherForecast.result}
               weatherStationCharts={props.weatherStation.weatherStationCharts.result}
+              weatherStation={props.weatherStation.weatherStation.result}
               loading={props.weatherStation.weatherStationCharts.loading}
               queryWeatherStationCharts={props.queryWeatherStationCharts}
             />

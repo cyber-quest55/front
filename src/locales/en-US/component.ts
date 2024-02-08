@@ -561,6 +561,7 @@ export default {
   'component.pivot.weatherstation.modal.submit': 'Go to station',
   'component.weatherstation.winddirection.north': 'NORTH',
   'component.weatherstation.winddirection.northeast': 'NORTH EAST',
+  'component.weatherstation.winddirection.northwest': 'NORTH WEST',
   'component.weatherstation.winddirection.east': 'EAST',
   'component.weatherstation.winddirection.southeast': 'SOUTH EAST',
   'component.weatherstation.winddirection.south': 'SOUTH',
