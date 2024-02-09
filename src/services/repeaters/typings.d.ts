@@ -47,4 +47,8 @@ declare namespace API {
     radio_id: string;
   };
 
+  type CreateRepeaterParams = {
+    farmId: number
+  }
+
 }

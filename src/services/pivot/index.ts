@@ -192,6 +192,29 @@ export async function patchPivotGlobalConfig(props: API.GetEditPivotHistoryParam
   });
 }
 
+export async function createPivot(
+  props: API.CreatePivotParams,
+  options: APIModels.CreatePivotPayload,
+) {
+  return request<{ 
+    data: APIModels.PivotByIdInformation;
+  }>(`/farms/${props.farmId}/pivots/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function createPivotMonitor(
+  props: API.CreatePivotMonitorParams,
+  options: APIModels.CreatePivotMonitorPayload,
+) {
+  return request<{
+    data: null;
+  }>(`/farms/${props.farmId}/pivots/`, {
+    method: 'POST',
+    data: options,
+  });
+}
 /**  /farms/${farmID}/pivots/${pivotID}/device/${deviceID}/action/ */
 export async function postSimpleIrrigation(
   props: { farmId: number; pivotId: number; deviceId: number },
@@ -205,6 +228,17 @@ export async function postSimpleIrrigation(
   });
 }
 
+export async function createLinearPivotMonitor(
+  props: API.CreateLinearPivotMonitorParams,
+  options: APIModels.CreateLinearPivotMonitorPayload,
+) {
+  return request<{
+    data: null;
+  }>(`/farms/${props.farmId}/pivots/`, {
+    method: 'POST',
+    data: options,
+  });
+}
 /**  /farms/${farmID}/pivots/${pivotID}/device/${deviceID}/action/ */
 export async function getEstimatedTime(props: {}, options: API.GetEstimatedTimeParams) {
   return request<API.GetEstimatedTimeResponse>(`/estimated-time/`, {

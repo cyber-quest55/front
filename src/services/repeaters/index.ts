@@ -58,3 +58,15 @@ export async function postChangeRepeaterManualRadio(
     data: options,
   });
 }
+
+export async function createRepeater(
+  props: API.CreateRepeaterParams,
+  options: APIModels.CreateRepeaterPayload,
+) {
+  return request<{
+    data: null;
+  }>(`/farms/${props.farmId}/repeaters/`, {
+    method: 'POST',
+    data: options,
+  });
+}

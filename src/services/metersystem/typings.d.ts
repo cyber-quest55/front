@@ -13,7 +13,7 @@ declare namespace API {
     meterId: number;
   };
 
-  type GetMeterSystemByIdResponse = APIModels.MeterSystemById
+  type GetMeterSystemByIdResponse = APIModels.MeterSystemById;
 
   type GetMeterSystemHistoryParams = {
     farmId: number;
@@ -22,7 +22,7 @@ declare namespace API {
     otherId: number;
   };
 
-  type GetMeterSystemHistoryResponse = APIModels.MeterSystemHistory
+  type GetMeterSystemHistoryResponse = APIModels.MeterSystemHistory;
 
   type GetMeterSystemWaterLevelParams = {
     farmId: number;
@@ -40,8 +40,7 @@ declare namespace API {
     params: any;
   };
 
-  type GetMeterSystemTableResponse = APIModels.MeterSystemTable
-
+  type GetMeterSystemTableResponse = APIModels.MeterSystemTable;
 
   type PostMeterSystemConfigParams = {
     farmId: number;
@@ -66,16 +65,16 @@ declare namespace API {
   };
 
   type GetMeterDevicesResponse = Array<{
+    id: number;
+    name: string;
+    imeter_device: {
       id: number;
-      name: string;
-      imeter_device: {
-        id: number;
-        created: string;
-        updated: string;
-        radio_id: string;
-        taken: null | string;
-      };
-  }>
+      created: string;
+      updated: string;
+      radio_id: string;
+      taken: null | string;
+    };
+  }>;
 
   type GetEditMeterHistoryParams = {
     farmId: number;
@@ -88,8 +87,8 @@ declare namespace API {
     current_page: number;
     next: string;
     previous: any;
-    results: Array<APIModels.MeterHistory>
-  }
+    results: Array<APIModels.MeterHistory>;
+  };
 
   type FavoriteMeterConfigParams = {
     configId: number;
@@ -103,9 +102,12 @@ declare namespace API {
   type PatchMeterSystemResponse = APIModels.MeterSystemById;
 
   type GetMeterSystemSensorsResponse = APIModels.MeterSystemSensor[];
-  
+
   type PostMeterSystemConfigResponse = APIModels.MeterConfig;
 
   type PatchMeterResponse = APIModels.Meter;
 
+  type CreateMeterSystemParams = {
+    farmId: number;
+  };
 }

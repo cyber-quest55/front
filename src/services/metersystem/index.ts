@@ -181,3 +181,15 @@ export async function favoriteMeterConfig(
     method: 'PATCH',
    data: options});
 }
+
+export async function createMeterSystem(
+  props: API.CreateMeterSystemParams,
+  options: APIModels.CreateMeterSystemPayload,
+) {
+  return request<{
+    data: null;
+  }>(`/farms/${props.farmId}/metersystems/`, {
+    method: 'POST',
+    data: options,
+  });
+}

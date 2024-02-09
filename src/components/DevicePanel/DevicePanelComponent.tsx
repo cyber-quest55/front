@@ -429,8 +429,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space>
- 
-            {device.protocol === 5 ? (
+            {device.protocol === 5 || device.protocol === 5.1 ? (
               <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
                 <Button icon={<EditFilled />}>
                   {intl.formatMessage({

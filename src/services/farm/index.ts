@@ -11,6 +11,12 @@ export async function getFarms(options?: API.GetFarmsParams) {
   });
 }
 
+export async function getFarmById(props: API.GetFarmFullParams) {
+  return request<API.GetFarmFullResponse>(`/farms/${props.id}/`, {
+    method: 'GET',
+  });
+}
+
 /** GET /farms/${farmId}/central_panel/status/ */
 export async function getFarmConnection(
   props: API.GetFarmConnectionParams,

@@ -51,4 +51,12 @@ declare namespace APIModels {
       taken: any;
     };
   };
+
+  type CreateRepeaterPayload = {
+    name: string;
+    base: string;
+    position: string;
+    repeater: string;
+    energy_type: string;
+  };
 }

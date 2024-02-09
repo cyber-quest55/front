@@ -145,3 +145,15 @@ export async function favoriteIrpdConfig(
     method: 'PATCH',
    data: options});
 }
+
+export async function createIrpd(
+  props: API.CreateIrpdParams,
+  options: APIModels.CreateIrpdPayload,
+) {
+  return request<{
+    data: null;
+  }>(`/farms/${props.farmId}/irpds/`, {
+    method: 'POST',
+    data: options,
+  });
+}
