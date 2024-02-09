@@ -16,7 +16,7 @@ const WeatherForecastCardInfo = ({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: 10,
+        padding: '6px 10px',
       }}
     >
       <div>{children}</div>

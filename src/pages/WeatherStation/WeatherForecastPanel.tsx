@@ -6,29 +6,31 @@ import {
 } from '@/utils/data/weatherstation';
 import { useIntl } from '@umijs/max';
 import { Skeleton } from 'antd';
-import { LuCloud, LuCloudRain } from 'react-icons/lu';
+import { LuCloud, LuCloudRain, LuCloudDrizzle, LuSnowflake, LuCircle } from 'react-icons/lu';
+import { MdOutlineThunderstorm } from "react-icons/md";
+
 import WeatherForecastCard from './WeatherForecastCard';
 
 const WeatherIcons = {
-  Thunderstorm: <LuCloud size={25} />,
-  Drizzle: <LuCloud size={25} />,
+  Thunderstorm: <MdOutlineThunderstorm size={25} />,
+  Drizzle: <LuCloudDrizzle size={25} />,
   Rain: <LuCloudRain size={25} />,
-  Snow: <LuCloud size={25} />,
-  Clear: <LuCloud size={25} />,
+  Snow: <LuSnowflake size={25} />,
+  Clear: <LuCircle size={25} />,
   Clouds: <LuCloud size={25} />,
 };
 
 const LoadingForecastCards = () => {
   return (
     <>
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
     </>
   );
 };
@@ -44,12 +46,12 @@ const WeatherForecastPanel: React.FC<WeatherForecastPanelProps> = (props) => {
 
   return (
     <div style={{ marginBottom: 35 }}>
-      <div style={{ fontSize: 24, fontWeight: 500, marginBottom: 15 }}>
+      <div style={{ fontSize: 24, fontWeight: 500,  }}>
         {intl.formatMessage({
           id: 'component.weatherstation.weatherforecast.title',
         })}
       </div>
-      <div style={{ position: 'relative', height: 170 }}>
+      <div style={{ position: 'relative', height: 170,  }}>
         <div
           style={{
             display: 'flex',
@@ -59,6 +61,7 @@ const WeatherForecastPanel: React.FC<WeatherForecastPanelProps> = (props) => {
             position: 'absolute',
             top: 0,
             right: 0,
+            padding: '15px 0'
           }}
         >
           {!props.loading ? (

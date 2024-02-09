@@ -1,10 +1,9 @@
-import React from "react";
-import TempreatureUpIcon from "@/icons/weatherstation/temperature-up-icon.svg";
-import TempreatureDownIcon from "@/icons/weatherstation/temperature-down-icon.svg";
-import WeatherForecastCardInfo from "./WeatherForecastCardInfo";
+import TempreatureDownIcon from '@/icons/weatherstation/temperature-down-icon.svg';
+import TempreatureUpIcon from '@/icons/weatherstation/temperature-up-icon.svg';
+import { ProCard } from '@ant-design/pro-components';
 import { LuCloudRain } from 'react-icons/lu';
 import { TbTemperature } from 'react-icons/tb';
-import { ProCard } from "@ant-design/pro-components";
+import WeatherForecastCardInfo from './WeatherForecastCardInfo';
 
 interface WeatherForecastCardProps {
   day: { name: string; date: string };
@@ -21,35 +20,31 @@ const WeatherForecastCard = ({
   isToday,
   icon,
 }: WeatherForecastCardProps) => {
+  const isTodayStyle = isToday ? { border: `1px solid #03a05e`, backgroundColor: '#11221c' } : {};
   return (
     <ProCard
       bordered
       bodyStyle={{
-        padding: 0
+        padding: 0,
       }}
       style={{
-        borderRadius: 8,
         minWidth: 152,
-        // border: `1px solid ${isToday ? "#143616" : "#2F3D45"}`,
-        // backgroundColor: isToday ? "#F5FCF5" : "",
+        ...isTodayStyle,
       }}
     >
       <WeatherForecastCardInfo icon={icon}>
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 14, fontWeight: 400 }}>{day.name}</div>
-          <div style={{ color: "#828A8F", fontSize: 10 }}>{day.date}</div>
+          <div style={{ fontSize: 10 }}>{day.date}</div>
         </div>
       </WeatherForecastCardInfo>
-      <WeatherForecastCardInfo
-        icon={<TbTemperature size={25} />}
-        iconStyle={{ marginRight: 6 }}
-      >
+      <WeatherForecastCardInfo icon={<TbTemperature size={25} />} iconStyle={{ marginRight: 6 }}>
         <div>
-          <div style={{ fontSize: 14, display: "flex", gap: 5, alignItems: 'center' }}>
+          <div style={{ fontSize: 14, display: 'flex', gap: 5, alignItems: 'center' }}>
             <img src={TempreatureUpIcon} width={12} height={12} />
             <div>{temperature.max} °C</div>
           </div>
-          <div style={{ fontSize: 14, display: "flex", gap: 5, alignItems: 'center' }}>
+          <div style={{ fontSize: 14, display: 'flex', gap: 5, alignItems: 'center' }}>
             <img src={TempreatureDownIcon} width={12} height={12} />
             <div>{temperature.min} °C</div>
           </div>

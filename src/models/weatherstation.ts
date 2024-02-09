@@ -1,7 +1,15 @@
-import { getWeatherForecast, getWeatherStation, getWeatherStationCharts } from '@/services/weatherstation';
+import {
+  getWeatherForecast,
+  getWeatherStation,
+  getWeatherStationCharts,
+} from '@/services/weatherstation';
 import { AxiosError } from 'axios';
+import moment from 'moment';
+
+const isWeatherStationOffline = (payload: API.GetWeatherStationResponse) => moment().diff(moment(payload.lastCommunication), 'hours') > 1;
 
 export interface GetWeatherStationModelProps {
+  isWeatherStationOffline: boolean;
   weatherStation: {
     result: any;
     loaded: boolean;
@@ -47,6 +55,7 @@ export default {
   namespace: 'weatherStation',
 
   state: {
+    isWeatherStationOffline: false,
     weatherStation: {
       result: null,
       loaded: false,
@@ -98,7 +107,10 @@ export default {
     ) {
       yield put({ type: 'queryWeatherStationChartsStart' });
       try {
-        const response: API.GetWeatherStationChartsResponse = yield call(getWeatherStationCharts, payload);
+        const response: API.GetWeatherStationChartsResponse = yield call(
+          getWeatherStationCharts,
+          payload,
+        );
         yield put({ type: 'queryWeatherStationChartsSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryWeatherStationChartsError', payload: error });
@@ -136,6 +148,7 @@ export default {
     ) {
       return {
         ...state,
+        isWeatherStationOffline: isWeatherStationOffline(payload),
         weatherStation: {
           loading: false,
           loaded: true,

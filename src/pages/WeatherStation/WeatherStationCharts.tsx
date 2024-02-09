@@ -4,17 +4,17 @@ import { useEffect, useState } from 'react';
 import WeatherStationDualAxesChart from './WeatherStationDualAxesChart';
 import WeatherStationLinearChart from './WeatherStationLinearChart';
 
-function transformData(data: any, categories: string[]): any {
+function transformData(data: any, categories: any): any {
   if (!data) return [];
   const result: any = [];
 
-  categories.forEach((category) => {
-    const values = data[category];
+  categories.forEach((category: any) => {
+    const values = data[category.type];
     const labels = data.labels; // Labels are the same for all categories
 
     values.forEach((value: any, index: any) => {
       result.push({
-        category,
+        category: category.name,
         value,
         labels: labels[index],
       });
@@ -24,18 +24,18 @@ function transformData(data: any, categories: string[]): any {
   return result;
 }
 
-function transformDataDual(data: any, categories: string[]): any {
+function transformDataDual(data: any, categories: any): any {
   if (!data) return [];
   const result: any = [];
 
-  const values1 = data[categories[0]];
-  const values2 = data[categories[1]];
+  const values1 = data[categories[0].type];
+  const values2 = data[categories[1].type];
   const labels = data.labels; // Labels are the same for all categories
 
   for (let i = 0; i < labels.length; i++) {
     result.push({
-      [categories[0]]: values1[i],
-      [categories[1]]: values2[i],
+      [categories[0].name]: values1[i],
+      [categories[1].name]: values2[i],
       labels: labels[i],
     });
   }
@@ -69,7 +69,7 @@ const WeatherStationCharts = (props: any) => {
 
   return (
     <>
-      <Radio.Group onChange={onChange} value={period}>
+      <Radio.Group onChange={onChange} value={period} style={{ padding: '15px 0' }}>
         <Radio value={'today'}>
           {intl.formatMessage({
             id: 'component.weatherstation.charts.tab.radio.today.input',
@@ -96,7 +96,11 @@ const WeatherStationCharts = (props: any) => {
         title={intl.formatMessage({
           id: 'component.weatherstation.charts.tab.chart.temperature.title',
         })}
-        data={transformData(props.weatherStationCharts, ['temperature', 'deltaT', 'dewPoint'])}
+        data={transformData(props.weatherStationCharts, [
+          { type: 'temperature', name: 'Temperature' },
+          { type: 'deltaT', name: 'Delta T' },
+          { type: 'dewPoint', name: 'Dew Point' },
+        ])}
         unit="°C"
         labelDateFormat={DateFormatByPeriod[period]}
       />
@@ -105,8 +109,11 @@ const WeatherStationCharts = (props: any) => {
         title={intl.formatMessage({
           id: 'component.weatherstation.charts.tab.chart.rain.title',
         })}
-        data={transformDataDual(props.weatherStationCharts, ['rain', 'accumulatedRain'])}
-        categories={['rain', 'accumulatedRain']}
+        data={transformDataDual(props.weatherStationCharts, [
+          { type: 'rain', name: 'Rain' },
+          { type: 'accumulatedRain', name: 'Accumulated Rain' },
+        ])}
+        categories={['Rain', 'Accumulated Rain']}
         unit={['mm', 'mm']}
         labelDateFormat={DateFormatByPeriod[period]}
         yLabels={['Rain(mm)', 'Accumulated Rain(mm)']}
@@ -116,7 +123,7 @@ const WeatherStationCharts = (props: any) => {
         title={intl.formatMessage({
           id: 'component.weatherstation.charts.tab.chart.humidity.title',
         })}
-        data={transformData(props.weatherStationCharts, ['humidity'])}
+        data={transformData(props.weatherStationCharts, [{ type: 'humidity', name: 'Humidity' }])}
         unit="%"
         labelDateFormat={DateFormatByPeriod[period]}
       />
@@ -125,7 +132,10 @@ const WeatherStationCharts = (props: any) => {
         title={intl.formatMessage({
           id: 'component.weatherstation.charts.tab.chart.wind.title',
         })}
-        data={transformData(props.weatherStationCharts, ['wind', 'gustOfWind'])}
+        data={transformData(props.weatherStationCharts, [
+          { type: 'wind', name: 'Wind' },
+          { type: 'gustOfWind', name: 'Gust of Wind' },
+        ])}
         unit="km/h"
         labelDateFormat={DateFormatByPeriod[period]}
       />
@@ -134,8 +144,11 @@ const WeatherStationCharts = (props: any) => {
         title={intl.formatMessage({
           id: 'component.weatherstation.charts.tab.chart.luminosity.title',
         })}
-        data={transformDataDual(props.weatherStationCharts, ['luminosity', 'uv'])}
-        categories={['luminosity', 'uv']}
+        data={transformDataDual(props.weatherStationCharts, [
+          { type: 'luminosity', name: 'Luminosity' },
+          { type: 'uv', name: 'UV' },
+        ])}
+        categories={['Luminosity', 'UV']}
         unit={['lux', 'uv']}
         labelDateFormat={DateFormatByPeriod[period]}
         yLabels={['lux', 'uv']}
@@ -145,7 +158,7 @@ const WeatherStationCharts = (props: any) => {
         title={intl.formatMessage({
           id: 'component.weatherstation.charts.tab.chart.pressure.title',
         })}
-        data={transformData(props.weatherStationCharts, ['pressure'])}
+        data={transformData(props.weatherStationCharts, [{ type: 'pressure', name: 'Pressure' }])}
         unit="hPa"
         labelDateFormat={DateFormatByPeriod[period]}
         min={1000}

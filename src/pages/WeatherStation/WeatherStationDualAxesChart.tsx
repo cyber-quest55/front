@@ -1,12 +1,20 @@
 import { DualAxes } from '@ant-design/charts';
 import moment from 'moment';
 
-const WeatherStationDualAxesChart = ({ title, data, unit, categories, loading, labelDateFormat="HH:mm", yLabels }: any) => {
+const WeatherStationDualAxesChart = ({
+  title,
+  data,
+  unit,
+  categories,
+  loading,
+  labelDateFormat = 'HH:mm',
+  yLabels,
+}: any) => {
   return (
     <>
-      <div>{title}</div>
+      <div style={{ fontSize: 16, fontWeight: 'bold', margin: '15px 0' }}>{title}</div>{' '}
       <DualAxes
-      loading={loading}
+        loading={loading}
         tooltip={{
           customContent: (title, items) => {
             return (
@@ -48,23 +56,22 @@ const WeatherStationDualAxesChart = ({ title, data, unit, categories, loading, l
             );
           },
         }}
-        
         data={[data, data]}
         xField="labels"
         height={320}
         yField={categories}
         xAxis={{
           label: {
-            formatter: (v) => moment(Number(v)).format(labelDateFormat)
-          }
+            formatter: (v) => moment(Number(v)).format(labelDateFormat),
+          },
         }}
         yAxis={{
           [categories[0]]: {
-            title: {text: yLabels[0]}
+            title: { text: yLabels[0] },
           },
           [categories[1]]: {
-            title: {text: yLabels[1]}
-          }
+            title: { text: yLabels[1] },
+          },
         }}
         legend={{
           layout: 'horizontal',

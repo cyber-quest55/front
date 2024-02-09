@@ -3,6 +3,7 @@ import { useIntl } from '@umijs/max';
 import { Skeleton } from 'antd';
 import { useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
+import { TbRulerOff } from 'react-icons/tb';
 
 const ShowMoreInfoButton = ({ showMore, onClick }: { showMore: boolean; onClick: any }) => {
   const intl = useIntl();
@@ -14,8 +15,7 @@ const ShowMoreInfoButton = ({ showMore, onClick }: { showMore: boolean; onClick:
         display: 'flex',
         fontSize: 12,
         color: '#808080',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
         cursor: 'pointer',
       }}
     >
@@ -24,14 +24,14 @@ const ShowMoreInfoButton = ({ showMore, onClick }: { showMore: boolean; onClick:
           {intl.formatMessage({
             id: 'component.weatherstation.card.viewmore',
           })}{' '}
-          <BsChevronDown style={{ width: 20 }} />
+          <BsChevronDown style={{ width: 20, marginTop: -10 }} />
         </>
       ) : (
         <>
           {intl.formatMessage({
             id: 'component.weatherstation.card.viewless',
           })}{' '}
-          <BsChevronUp style={{ width: 20 }} />
+          <BsChevronUp style={{ width: 20, marginTop: -10 }} />
         </>
       )}
     </div>
@@ -48,9 +48,9 @@ interface WeatherInfoCardProps {
 
 const LoadingInfoSkeleton = () => (
   <>
-    <Skeleton style={{ width: 60, height: 60 }} />
-    <Skeleton style={{ width: 60, height: 60 }} />
-    <Skeleton style={{ width: 60, height: 60 }} />
+    <Skeleton paragraph={{ rows: 2 }} />
+    <Skeleton paragraph={{ rows: 2 }} />
+    <Skeleton paragraph={{ rows: 2 }} />
   </>
 );
 
@@ -75,10 +75,10 @@ const WeatherInfoCard = ({
           <div style={{ fontSize: 20, fontWeight: 400 }}>{title}</div>
         </div>
       ) : (
-        <Skeleton style={{ width: 120, height: 40 }} />
+        <Skeleton paragraph={{ rows: 0 }} />
       )}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
           {!loading ? renderInfo : <LoadingInfoSkeleton />}
         </div>
         <div

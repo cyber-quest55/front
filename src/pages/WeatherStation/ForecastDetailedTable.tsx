@@ -1,6 +1,6 @@
 import TempreatureDownIcon from '@/icons/weatherstation/temperature-down-icon.svg';
 import TempreatureUpIcon from '@/icons/weatherstation/temperature-up-icon.svg';
-import { dateTimestampToString, toOneDecimalPlace } from '@/utils/data/weatherstation';
+import { dateTimestampToHourString, dateTimestampToString, isNotNull, toOneDecimalPlace } from '@/utils/data/weatherstation';
 import { useIntl } from '@umijs/max';
 import { Table, TableColumnsType } from 'antd';
 import React from 'react';
@@ -23,7 +23,7 @@ const ForecastDetailedTable: React.FC<any> = (props) => {
         children:
           weatherForecast.hours.length > 0
             ? weatherForecast.hours.map((hour: any, index2: number) => {
-                return { ...hour, key: `${index1}${index2}` };
+                return { ...hour, key: `children${index1}${index2}` };
               })
             : null,
       };
@@ -34,20 +34,23 @@ const ForecastDetailedTable: React.FC<any> = (props) => {
       key: 'dt',
       dataIndex: 'dt',
       title: (
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10, textAlign: 'center', minWidth: 100 }}>
           <FiCalendar size={25} />
           {intl.formatMessage({
             id: 'component.weatherstation.weatherforecast.tab.table.date.column',
           })}
         </div>
       ),
-      render: (_, { dt }) => <>{dateTimestampToString(dt)}</>,
+      render: (a, record) => {
+          if(String(record.key).includes('children')) return <div style={{ textAlign: 'center' }}>{dateTimestampToHourString(record.dt)}</div>;
+          return <div style={{ textAlign: 'center' }}>{dateTimestampToString(record.dt)}</div>;
+      },
     },
     {
       key: 'Temperature',
       dataIndex: 'Temperature',
       title: (
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10, textAlign: 'center', minWidth: 100 }}>
           <TbTemperature size={25} />
           {intl.formatMessage({
             id: 'component.weatherstation.weatherforecast.tab.table.temperature.column',
@@ -55,7 +58,7 @@ const ForecastDetailedTable: React.FC<any> = (props) => {
         </div>
       ),
       render: (_, { temperature }) => (
-        <div>
+        <div style={{ textAlign: 'center' }}>
           <div>
             <img src={TempreatureDownIcon} /> {toOneDecimalPlace(temperature.min)} °C /{' '}
             <img src={TempreatureUpIcon} /> {toOneDecimalPlace(temperature.max)} °C
@@ -67,53 +70,53 @@ const ForecastDetailedTable: React.FC<any> = (props) => {
       key: 'humidity',
       dataIndex: 'humidity',
       title: (
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10, textAlign: 'center', minWidth: 50 }}>
           <MdOutlineWaterDrop size={25} />
           {intl.formatMessage({
             id: 'component.weatherstation.weatherforecast.tab.table.humidity.column',
           })}
         </div>
       ),
-      render: (_, { humidity }) => <div>{humidity} %</div>,
+      render: (_, { humidity }) => <div style={{ textAlign: 'center' }}>{humidity} %</div>,
     },
     {
       key: 'wind',
       dataIndex: 'wind',
       title: (
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10, textAlign: 'center', minWidth: 50 }}>
           <FiWind size={25} />
           {intl.formatMessage({
             id: 'component.weatherstation.weatherforecast.tab.table.wind.column',
           })}
         </div>
       ),
-      render: (_, { wind }) => <div>{wind} km/h</div>,
+      render: (_, { wind }) => <div style={{ textAlign: 'center' }}>{wind} km/h</div>,
     },
     {
       key: 'rain',
       dataIndex: 'rain',
       title: (
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10, textAlign: 'center', minWidth: 50 }}>
           <LuCloudRain size={25} />
           {intl.formatMessage({
             id: 'component.weatherstation.weatherforecast.tab.table.rain.column',
           })}
         </div>
       ),
-      render: (_, { rain }) => <div>{toOneDecimalPlace(rain)} mm</div>,
+      render: (_, { rain }) => <div style={{ textAlign: 'center' }}>{toOneDecimalPlace(rain)} mm</div>,
     },
     {
       key: 'feather',
       dataIndex: 'feather',
       title: (
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 10, textAlign: 'center', minWidth: 50 }}>
           <LuFeather size={25} />
           {intl.formatMessage({
             id: 'component.weatherstation.weatherforecast.tab.table.dewpoint.column',
           })}
         </div>
       ),
-      render: (_, { dewPoint }) => <div>{toOneDecimalPlace(dewPoint)} °C</div>,
+      render: (_, { dewPoint }) => isNotNull(dewPoint) ? <div style={{ textAlign: 'center' }}>{toOneDecimalPlace(dewPoint)} °C</div> : null,
     },
   ];
 
@@ -124,6 +127,7 @@ const ForecastDetailedTable: React.FC<any> = (props) => {
       dataSource={weatherForecastFormatted}
       pagination={false}
       indentSize={0}
+      loading={props.loading}
     />
   );
 };

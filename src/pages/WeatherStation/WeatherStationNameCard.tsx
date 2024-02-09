@@ -4,6 +4,7 @@ import { Badge, Skeleton } from 'antd';
 import moment from 'moment';
 
 const WeatherNameCard = ({ name, isOffline = false, lastCommunication, loading = false }: any) => {
+
   const intl = useIntl();
 
   const lastCommunicationDate = () => {
@@ -37,8 +38,8 @@ const WeatherNameCard = ({ name, isOffline = false, lastCommunication, loading =
           <Skeleton style={{ width: 120, height: 40 }} />
         )}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div>{isOffline ? <Badge color="red" /> : null}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', }}>
+        <div>{isOffline ? <Badge status="error" text="OFFLINE" /> : null}</div>
         {!loading ? (
           lastCommunication ? (
             <div style={{ color: '#808080', fontSize: 12, textAlign: 'right' }}>

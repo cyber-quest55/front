@@ -19,7 +19,6 @@ import WindDirectionRotatedIcon from './WindDirectionRotatedIcon';
 const WeatherStationCards: React.FC<any> = (props) => {
   const intl = useIntl();
   const { weatherStation, loading } = props;
-  const isWeatherStationOffline = false;
   const params = useParams();
 
   useEffect(() => {
@@ -100,17 +99,17 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   isNotNull(weatherStation?.temperature?.deltaT?.current) &&
                   isNotNull(weatherStation?.temperature?.deltaT?.min) &&
                   isNotNull(weatherStation?.temperature?.deltaT?.max) ? (
-                    <span>
-                      <span>
+                    <div>
+                      <div>
                         {toOneDecimalPlace(weatherStation?.temperature?.deltaT?.current) ?? '-'}
                         ºC{' '}
-                      </span>
-                      <span style={{ fontSize: 12, fontWeight: 'normal' }}>
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 'normal' }}>
                         {toOneDecimalPlace(weatherStation?.temperature?.deltaT?.min) ?? '-'}
                         ºC - {toOneDecimalPlace(weatherStation?.temperature?.deltaT?.max) ?? '-'}
                         ºC
-                      </span>
-                    </span>
+                      </div>
+                    </div>
                   ) : (
                     '-'
                   )
@@ -365,7 +364,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
     <Flex gap="middle" vertical>
       <WeatherNameCard
         name={weatherStation?.stationName}
-        isOffline={!loading && isWeatherStationOffline}
+        isOffline={!loading && props.isWeatherStationOffline}
         loading={loading}
         lastCommunication={weatherStation?.lastCommunication}
       />

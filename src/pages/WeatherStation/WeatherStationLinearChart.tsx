@@ -10,7 +10,7 @@ const WeatherStationLinearChart = ({
 }: any) => {
   return (
     <>
-      <div>{title}</div>
+      <div style={{ fontSize: 16, fontWeight: "bold", margin: '15px 0' }}>{title}</div>
       <Line
         loading={loading}
         tooltip={{

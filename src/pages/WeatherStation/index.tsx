@@ -22,14 +22,15 @@ const WeatherStation: React.FC<any> = (props) => {
   return (
     <PageContainer>
       <Row gutter={[14, 14]}>
-        <Col md={6}>
+        <Col md={6} sm={24}>
           <WeatherStationCards
             weatherStation={props.weatherStation.weatherStation.result}
+            isWeatherStationOffline={props.weatherStation.isWeatherStationOffline}
             loading={props.weatherStation.weatherStation.loading}
             queryWeatherStation={props.queryWeatherStation}
           />
         </Col>
-        <Col md={18}>
+        <Col md={18} sm={24}>
           <ProCard>
             <WeatherForecastPanel
               weatherForecast={props.weatherStation.weatherForecast.result}
