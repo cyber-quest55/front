@@ -1,4 +1,5 @@
 import { Line } from '@ant-design/charts';
+import { Skeleton } from 'antd';
 import moment from 'moment';
 const WeatherStationLinearChart = ({
   title,
@@ -8,11 +9,10 @@ const WeatherStationLinearChart = ({
   loading,
   labelDateFormat = 'HH:mm',
 }: any) => {
-  return (
+  return !loading ? (
     <>
-      <div style={{ fontSize: 16, fontWeight: "bold", margin: '15px 0' }}>{title}</div>
+      <div style={{ fontSize: 16, fontWeight: 'bold', margin: '15px 0' }}>{title}</div>
       <Line
-        loading={loading}
         tooltip={{
           customContent: (title, items) => {
             return (
@@ -61,7 +61,7 @@ const WeatherStationLinearChart = ({
         seriesField="category"
         xAxis={{
           label: {
-            formatter: (v) => moment(Number(v)).format(labelDateFormat)
+            formatter: (v) => moment(Number(v)).format(labelDateFormat),
           },
         }}
         yAxis={{
@@ -73,6 +73,8 @@ const WeatherStationLinearChart = ({
         }}
       />
     </>
+  ) : (
+    <Skeleton.Button active={true} block={true} style={{ height: 250, margin: '15px 0' }} />
   );
 };
 

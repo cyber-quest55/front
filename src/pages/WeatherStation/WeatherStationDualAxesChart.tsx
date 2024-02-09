@@ -1,4 +1,5 @@
 import { DualAxes } from '@ant-design/charts';
+import { Skeleton } from 'antd';
 import moment from 'moment';
 
 const WeatherStationDualAxesChart = ({
@@ -10,11 +11,10 @@ const WeatherStationDualAxesChart = ({
   labelDateFormat = 'HH:mm',
   yLabels,
 }: any) => {
-  return (
+  return !loading ? (
     <>
       <div style={{ fontSize: 16, fontWeight: 'bold', margin: '15px 0' }}>{title}</div>{' '}
       <DualAxes
-        loading={loading}
         tooltip={{
           customContent: (title, items) => {
             return (
@@ -79,7 +79,7 @@ const WeatherStationDualAxesChart = ({
         }}
       />
     </>
-  );
+  ) : <Skeleton.Button active={true} block={true} style={{ height: 250, margin: '15px 0' }} />;
 };
 
 export default WeatherStationDualAxesChart;

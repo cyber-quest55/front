@@ -59,9 +59,13 @@ const ForecastDetailedTable: React.FC<any> = (props) => {
       ),
       render: (_, { temperature }) => (
         <div style={{ textAlign: 'center' }}>
-          <div>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap:'wrap', gap: 2 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <img src={TempreatureDownIcon} /> {toOneDecimalPlace(temperature.min)} °C /{' '}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <img src={TempreatureUpIcon} /> {toOneDecimalPlace(temperature.max)} °C
+            </div>
           </div>
         </div>
       ),

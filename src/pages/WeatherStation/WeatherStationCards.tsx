@@ -41,7 +41,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
           title={intl.formatMessage({
             id: 'component.weatherstation.card.temperature.title',
           })}
-          loading={false}
+          loading={loading}
           icon={<TbTemperature size={25} />}
           renderInfo={
             <>
@@ -132,7 +132,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
     } else {
       return (
         <WeatherInfoCard
-          loading={false}
+          loading={loading}
           title={intl.formatMessage({
             id: 'component.weatherstation.card.temperature.title',
           })}
@@ -183,7 +183,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
     if (weatherStation?.brand === 'Plugfield') {
       return (
         <WeatherInfoCard
-          loading={false}
+          loading={loading}
           title={intl.formatMessage({
             id: 'component.weatherstation.card.wind.title',
           })}
@@ -230,7 +230,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
     } else {
       return (
         <WeatherInfoCard
-          loading={false}
+          loading={loading}
           title={intl.formatMessage({
             id: 'component.weatherstation.card.wind.title',
           })}
@@ -280,7 +280,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
     if (weatherStation?.brand === 'Plugfield') {
       return (
         <WeatherInfoCard
-          loading={false}
+          loading={loading}
           title={intl.formatMessage({
             id: 'component.weatherstation.card.luminosity.title',
           })}
@@ -325,7 +325,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
     } else {
       return (
         <WeatherInfoCard
-          loading={false}
+          loading={loading}
           title={intl.formatMessage({
             id: 'component.weatherstation.card.luminosity.title',
           })}
@@ -372,7 +372,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
       {renderWindCard()}
 
       <WeatherInfoCard
-        loading={false}
+        loading={loading}
         title={intl.formatMessage({
           id: 'component.weatherstation.card.rain.title',
         })}

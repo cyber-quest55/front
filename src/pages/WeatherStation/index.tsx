@@ -22,7 +22,7 @@ const WeatherStation: React.FC<any> = (props) => {
   return (
     <PageContainer>
       <Row gutter={[14, 14]}>
-        <Col md={6} sm={24}>
+        <Col xl={7} xs={24}>
           <WeatherStationCards
             weatherStation={props.weatherStation.weatherStation.result}
             isWeatherStationOffline={props.weatherStation.isWeatherStationOffline}
@@ -30,7 +30,7 @@ const WeatherStation: React.FC<any> = (props) => {
             queryWeatherStation={props.queryWeatherStation}
           />
         </Col>
-        <Col md={18} sm={24}>
+        <Col xl={17} xs={24}>
           <ProCard>
             <WeatherForecastPanel
               weatherForecast={props.weatherStation.weatherForecast.result}
@@ -41,7 +41,8 @@ const WeatherStation: React.FC<any> = (props) => {
               weatherForecast={props.weatherStation.weatherForecast.result}
               weatherStationCharts={props.weatherStation.weatherStationCharts.result}
               weatherStation={props.weatherStation.weatherStation.result}
-              loading={props.weatherStation.weatherStationCharts.loading}
+              chartLoading={props.weatherStation.weatherStationCharts.loading}
+              forecastLoading={props.weatherStation.weatherForecast.loading}
               queryWeatherStationCharts={props.queryWeatherStationCharts}
             />
           </ProCard>

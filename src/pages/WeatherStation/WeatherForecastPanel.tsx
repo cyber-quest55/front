@@ -23,14 +23,14 @@ const WeatherIcons = {
 const LoadingForecastCards = () => {
   return (
     <>
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
-      <Skeleton.Button style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
+      <Skeleton.Button active={true} style={{ minWidth: 152, transform: 'none', height: 154 }} />
     </>
   );
 };

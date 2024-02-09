@@ -28,7 +28,7 @@ const WeatherInfo = ({
       >
         {title}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 600 }}>{info ?? "-"}</div>
+      <div style={{ fontSize: infoSize, fontWeight: 600 }}>{info ?? "-"}</div>
       <div style={{ fontSize: 12 }}>{info ? subInfo : ""}</div>
     </div>
   );

@@ -3,7 +3,6 @@ import { useIntl } from '@umijs/max';
 import { Skeleton } from 'antd';
 import { useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
-import { TbRulerOff } from 'react-icons/tb';
 
 const ShowMoreInfoButton = ({ showMore, onClick }: { showMore: boolean; onClick: any }) => {
   const intl = useIntl();
@@ -24,14 +23,17 @@ const ShowMoreInfoButton = ({ showMore, onClick }: { showMore: boolean; onClick:
           {intl.formatMessage({
             id: 'component.weatherstation.card.viewmore',
           })}{' '}
-          <BsChevronDown style={{ width: 20, marginTop: -10 }} />
+          <div style={{ position: 'relative', top: 2 }}>
+          <BsChevronDown style={{ width: 20 }} />
+        </div>
         </>
       ) : (
         <>
           {intl.formatMessage({
             id: 'component.weatherstation.card.viewless',
-          })}{' '}
-          <BsChevronUp style={{ width: 20, marginTop: -10 }} />
+          })}{' '}<div style={{ position: 'relative', top: 2 }}>
+          <BsChevronUp style={{ width: 20 }} />
+          </div>
         </>
       )}
     </div>
@@ -48,9 +50,9 @@ interface WeatherInfoCardProps {
 
 const LoadingInfoSkeleton = () => (
   <>
-    <Skeleton paragraph={{ rows: 2 }} />
-    <Skeleton paragraph={{ rows: 2 }} />
-    <Skeleton paragraph={{ rows: 2 }} />
+    <Skeleton active={true} paragraph={{ rows: 2 }} />
+    <Skeleton active={true} paragraph={{ rows: 2 }} />
+    <Skeleton active={true} paragraph={{ rows: 2 }} />
   </>
 );
 
@@ -75,7 +77,7 @@ const WeatherInfoCard = ({
           <div style={{ fontSize: 20, fontWeight: 400 }}>{title}</div>
         </div>
       ) : (
-        <Skeleton paragraph={{ rows: 0 }} />
+        <Skeleton active={true} paragraph={{ rows: 0 }} />
       )}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>

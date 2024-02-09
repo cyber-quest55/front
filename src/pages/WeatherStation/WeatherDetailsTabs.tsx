@@ -35,7 +35,7 @@ const WeatherDetailsTabs = (props: any) => {
         <WeatherStationCharts
           queryWeatherStationCharts={props.queryWeatherStationCharts}
           weatherStationCharts={props.weatherStationCharts}
-          loading={props.loading}
+          loading={props.chartLoading}
         />
       ),
     },
@@ -52,7 +52,7 @@ const WeatherDetailsTabs = (props: any) => {
         id: 'component.weatherstation.weatherforecast.tab.title',
       }),
       key: 'tab1',
-      children: <ForecastDetailedTable weatherForecast={props.weatherForecast} />,
+      children: <ForecastDetailedTable loading={props.forecastLoading} weatherForecast={props.weatherForecast} />,
     },
     
     {

@@ -35,7 +35,7 @@ const WeatherNameCard = ({ name, isOffline = false, lastCommunication, loading =
             {name}
           </div>
         ) : (
-          <Skeleton style={{ width: 120, height: 40 }} />
+          <Skeleton.Button active={true} block={true} size="small" />
         )}
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', }}>
@@ -51,7 +51,7 @@ const WeatherNameCard = ({ name, isOffline = false, lastCommunication, loading =
             </div>
           ) : null
         ) : (
-          <Skeleton style={{ width: 120, height: 40 }} />
+          <Skeleton.Button block={true} size="small" />
         )}
       </div>
     </ProCard>

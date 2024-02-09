@@ -43,7 +43,6 @@ export default [
     ],
   },
 
-
   {
     path: '/farms/',
     name: 'Control',
@@ -83,7 +82,7 @@ export default [
     name: 'Password Recovery Callback',
     path: '/recovery/:token',
     layout: false,
-    component: './User/PasswordReset'
+    component: './User/PasswordReset',
   },
   {
     path: 'devices/farms/:id/',
@@ -100,13 +99,9 @@ export default [
   },
   {
     path: 'farms/:farmId/pivot/:pivotId/weatherstation',
-    name: 'Weatherstation',
+    name: 'Weather Station',
     hideInMenu: true,
-    layout: {
-      hideMenu: true,
-      hideNav: true,
-      hideFooter: false,
-    },        component: './WeatherStation/index.tsx',
+    component: './WeatherStation/index.tsx',
   },
   {
     path: 'farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',

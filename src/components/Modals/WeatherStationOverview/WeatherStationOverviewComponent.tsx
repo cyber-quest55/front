@@ -19,27 +19,32 @@ interface WeatherInfoProps {
   loading?: boolean;
 }
 
-const WeatherInfo = ({ icon, iconComponent, title, info, infoUnit, loading }: WeatherInfoProps) =>
-  !loading ? (
+const WeatherInfo = ({ icon, iconComponent, title, info, infoUnit, loading }: WeatherInfoProps) => {
+  
+  return !loading ? (
     <div
       style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
+        justifyContent: 'space-between'
       }}
     >
       <div>
         {iconComponent ? iconComponent : icon}
-        <div style={{ fontSize: 16, maxWidth: 85, padding: '5px 0 10px 0' }}>{title}</div>
+        <div style={{ fontSize: 16, maxWidth: 90, padding: '5px 0 10px 0' }}>{title}</div>
       </div>
-      <p style={{ fontSize: 24, fontWeight: 600, marginTop: 'auto' }}>
+      <div style={{ fontSize: 24, fontWeight: 600 }}>
         {info ?? '-'} {isNotNull(info) ? infoUnit : ''}
-      </p>
+      </div>
     </div>
   ) : (
-    <Skeleton style={{ transform: 'none', height: 130, width: 85 }} />
+    <div style={{height: 130, minWidth: 85}}>
+    <Skeleton.Button active={true} block={true} style={{height: 130, minWidth: 85}} />
+    </div>
   );
+}
 
 const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
   const params = useParams();
@@ -65,7 +70,7 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
   }, []);
 
   return (
-    <Row justify="space-between">
+    <Row justify="space-between" style={{ padding: '15px 0' }}>
       <WeatherInfo
         loading={props.loading}
         icon={<TbTemperature size={25} />}

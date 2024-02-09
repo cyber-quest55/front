@@ -1,3 +1,4 @@
+import { useScreenHook } from '@/hooks/screen';
 import { toOneDecimalPlace } from '@/utils/data/weatherstation';
 import { useIntl } from '@umijs/max';
 import { useEffect, useRef } from 'react';
@@ -8,6 +9,7 @@ const DeltaTChartPinImage = require('@/icons/weatherstation/deltat-pin-icon.png'
 const DeltaTTable = (props: any) => {
   const pinRef = useRef<any>(null);
   const intl = useIntl();
+  const {lg, xs, md} = useScreenHook();
 
   useEffect(() => {
     if (pinRef.current && props.weatherStation?.temperature) {
@@ -42,8 +44,8 @@ const DeltaTTable = (props: any) => {
           padding: '0 10px 25px 0',
           background: '#fff',
           borderRadius: 8,
+          transform: lg ? '' : md? `translate(0%, -10%) scale(${0.65})` : `translate(0%, -20%) scale(${xs ? 0.45 : 0.55})` 
         }}
-        className="deltat-container"
       >
         <span style={{ position: 'absolute', marginTop: 6, marginLeft: 85 }}>
           {intl.formatMessage({
