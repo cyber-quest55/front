@@ -631,6 +631,7 @@ export default {
   'component.adddevice.modal.form.step1.pump.title': 'Remote Pump Activation',
   'component.adddevice.modal.form.step1.repeater.title': 'Repeater',
   'component.adddevice.modal.form.step1.metersystem.title': 'Meter System',
+  'component.adddevice.modal.form.step1.weatherstation.title': 'Weather Station',
   'component.adddevice.modal.form.step2.pivot.name.label': 'Equipment Name',
   'component.adddevice.modal.form.step2.pivot.brand.label': 'Manufacturer',
   'component.adddevice.modal.form.step2.pivot.otherbrand.label': 'Other Manufacturer',
@@ -679,10 +680,18 @@ export default {
   'component.adddevice.modal.form.step2.repeater.longitude.label': 'Longitude',  
   'component.adddevice.modal.form.step2.repeater.energytype.solar': 'Solar',  
   'component.adddevice.modal.form.step2.repeater.energytype.bivolt': 'Bivolt',  
-  'component.adddevice.modal.form.step2.metersystem.name.label': 'Equipment Name',  
+  'component.adddevice.modal.form.step2.metersystem.name.label': 'Weather Station Name',  
   'component.adddevice.modal.form.step2.metersystem.imeter.label': 'IMeter Radio',  
   'component.adddevice.modal.form.step2.metersystem.sensor.label': 'Sensor',  
   'component.adddevice.modal.form.step2.metersystem.latitude.label': 'Latitude',  
   'component.adddevice.modal.form.step2.metersystem.longitude.label': 'Longitude',  
-
+  'component.adddevice.modal.form.step2.weatherstation.manufacturer.label': 'Manufacturer',
+  'component.adddevice.modal.form.step2.weatherstation.name.label': 'Equipment Name',
+  'component.adddevice.modal.form.step2.weatherstation.accesskey.label': 'Access Key',
+  'component.adddevice.modal.form.step2.weatherstation.email.label': 'Plugfield Email',
+  'component.adddevice.modal.form.step2.weatherstation.password.label': 'Plugfield Password',
+  'component.adddevice.modal.form.step2.weatherstation.apikey.label': 'API Key',
+  'component.adddevice.modal.form.step2.weatherstation.apisecret.label': 'API Secret',
+  'component.adddevice.modal.form.step2.weatherstation.identification.label': 'Weather Station ID',
+  
 };

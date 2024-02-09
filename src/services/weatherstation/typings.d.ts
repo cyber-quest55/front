@@ -32,4 +32,11 @@ declare namespace API {
 
   type GetWeatherStationChartsResponse = APIModels.WeatherStationCharts;
 
+  type CreateWeatherStationParams = {
+    farmId: string;
+  };
+
+  type CreateWeatherStationResponse = APIModels.CreateWeatherStationDavisPayload | APIModels.CreateWeatherStationPlugfieldPayload;
+
+
 }

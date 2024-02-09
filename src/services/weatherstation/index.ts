@@ -33,3 +33,17 @@ export async function getWeatherStationCharts(props: API.GetWeatherStationCharts
     method: 'GET',
   });
 }
+
+
+
+export async function createWeatherStation(
+  props: API.CreateWeatherStationParams,
+  options: API.CreateWeatherStationResponse,
+) {
+  return request<{
+    data: null;
+  }>(`/farms/${props.farmId}/weatherstations/`, {
+    method: 'POST',
+    data: options,
+  });
+}

@@ -102,4 +102,20 @@ declare namespace APIModels {
       luminosity: number;
     };
   }
+
+  type CreateWeatherStationPlugfieldPayload = {
+    manufacturer: string;
+    name: string;
+    accessKey: string;
+    username: string;
+    password: string;
+  }
+
+  type CreateWeatherStationDavisPayload = {
+    manufacturer: string;
+    name: string;
+    apiKey: string;
+    apiSecret: string;
+    identification: string;
+  }
 }
