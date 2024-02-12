@@ -565,6 +565,7 @@ export default {
   'component.adddevice.modal.form.step2.pivot.pump.label': 'Pump Cable Radio (Spoti)',
   'component.adddevice.modal.form.step2.pivot.gateway.label': 'Gateway Number',
   'component.adddevice.modal.form.step2.pivot.pluviometer.label': 'Pluviometer',
+  'component.adddevice.modal.form.step2.pivot.pluviometer.checkbox.haspluviometer': 'Has Pluviometer',
   'component.adddevice.modal.form.step2.pivot.potencyunit.label': 'Potency Unit',
   'component.adddevice.modal.form.step2.pivot.potency.label': 'Potency',
   'component.adddevice.modal.form.step2.pivot.performance.label': 'Performance',
