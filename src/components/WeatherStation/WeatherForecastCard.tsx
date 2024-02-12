@@ -4,6 +4,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { LuCloudRain } from 'react-icons/lu';
 import { TbTemperature } from 'react-icons/tb';
 import WeatherForecastCardInfo from './WeatherForecastCardInfo';
+import { useModel } from '@umijs/max';
 
 interface WeatherForecastCardProps {
   day: { name: string; date: string };
@@ -20,7 +21,10 @@ const WeatherForecastCard = ({
   isToday,
   icon,
 }: WeatherForecastCardProps) => {
-  const isTodayStyle = isToday ? { border: `1px solid #03a05e`, backgroundColor: '#11221c' } : {};
+  const { initialState } = useModel('@@initialState');
+
+  const isDark = initialState?.settings?.navTheme === 'realDark'
+  const isTodayStyle = isToday ? { border: `1px solid ${isDark ? "#03a05e" : '#11221c'}`, backgroundColor: isDark ? "#11221c" : '#e1faeb' } : {};
   return (
     <ProCard
       bordered
