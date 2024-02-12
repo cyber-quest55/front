@@ -1,6 +1,5 @@
 import { ProCard } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
-import { Skeleton } from 'antd';
 import { useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 
@@ -45,23 +44,13 @@ interface WeatherInfoCardProps {
   icon: JSX.Element;
   renderInfo: JSX.Element;
   showMoreInfo?: JSX.Element | null;
-  loading?: boolean;
 }
-
-const LoadingInfoSkeleton = () => (
-  <>
-    <Skeleton active={true} paragraph={{ rows: 2 }} />
-    <Skeleton active={true} paragraph={{ rows: 2 }} />
-    <Skeleton active={true} paragraph={{ rows: 2 }} />
-  </>
-);
 
 const WeatherInfoCard = ({
   title,
   icon,
   renderInfo,
   showMoreInfo = null,
-  loading = false,
 }: WeatherInfoCardProps) => {
   const [showMore, setShowMore] = useState(false);
 
@@ -71,17 +60,13 @@ const WeatherInfoCard = ({
 
   return (
     <ProCard>
-      {!loading ? (
         <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center' }}>
           {icon}
           <div style={{ fontSize: 20, fontWeight: 400 }}>{title}</div>
         </div>
-      ) : (
-        <Skeleton active={true} paragraph={{ rows: 0 }} />
-      )}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          {!loading ? renderInfo : <LoadingInfoSkeleton />}
+          {renderInfo}
         </div>
         <div
           style={{

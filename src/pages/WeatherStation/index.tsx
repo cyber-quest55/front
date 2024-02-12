@@ -1,18 +1,19 @@
-import {
-  queryWeatherForecast,
-  queryWeatherStation,
-  queryWeatherStationCharts,
-} from '@/models/weatherstation';
+import WeatherDetailsTabsContainer from '@/components/WeatherStation/WeatherDetailsTabs/WeatherDetailsTabsContainer';
+import WeatherForecastPanelContainer from '@/components/WeatherStation/WeatherForecastPanel/WeatherForecastPanelContainer';
+import WeatherStationCardsContainer from '@/components/WeatherStation/WeatherStationCards/WeatherStationCardsContainer';
+import { GetWeatherStationModelProps, queryWeatherForecast } from '@/models/weatherstation';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
 import { Col, Row } from 'antd';
 import { connect } from 'dva';
 import { useEffect } from 'react';
-import WeatherDetailsTabs from './WeatherDetailsTabs';
-import WeatherForecastPanel from './WeatherForecastPanel';
-import WeatherStationCards from './WeatherStationCards';
 
-const WeatherStation: React.FC<any> = (props) => {
+interface WeatherStationProps {
+  queryWeatherForecast: typeof queryWeatherForecast;
+  weatherStation: GetWeatherStationModelProps;
+}
+
+const WeatherStation: React.FC<WeatherStationProps> = (props) => {
   const params = useParams();
   const intl = useIntl();
 
@@ -31,28 +32,12 @@ const WeatherStation: React.FC<any> = (props) => {
       ) : (
         <Row gutter={[14, 14]}>
           <Col xl={7} xs={24}>
-            <WeatherStationCards
-              weatherStation={props.weatherStation.weatherStation.result}
-              isWeatherStationOffline={props.weatherStation.isWeatherStationOffline}
-              loading={props.weatherStation.weatherStation.loading}
-              queryWeatherStation={props.queryWeatherStation}
-            />
+            <WeatherStationCardsContainer />
           </Col>
           <Col xl={17} xs={24}>
             <ProCard>
-              <WeatherForecastPanel
-                weatherForecast={props.weatherStation.weatherForecast.result}
-                loading={props.weatherStation.weatherForecast.loading}
-                queryWeatherForecast={props.queryWeatherForecast}
-              />
-              <WeatherDetailsTabs
-                weatherForecast={props.weatherStation.weatherForecast.result}
-                weatherStationCharts={props.weatherStation.weatherStationCharts.result}
-                weatherStation={props.weatherStation.weatherStation.result}
-                chartLoading={props.weatherStation.weatherStationCharts.loading}
-                forecastLoading={props.weatherStation.weatherForecast.loading}
-                queryWeatherStationCharts={props.queryWeatherStationCharts}
-              />
+              <WeatherForecastPanelContainer />
+              <WeatherDetailsTabsContainer />
             </ProCard>
           </Col>
         </Row>
@@ -66,9 +51,7 @@ const mapStateToProps = ({ weatherStation }: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  queryWeatherStation: (props: any) => dispatch(queryWeatherStation(props)),
   queryWeatherForecast: (props: any) => dispatch(queryWeatherForecast(props)),
-  queryWeatherStationCharts: (props: any) => dispatch(queryWeatherStationCharts(props)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WeatherStation);

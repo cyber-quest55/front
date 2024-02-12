@@ -1,47 +1,37 @@
 import {
-  FIVE_MIN_TIMEOUT,
   isNotNull,
   toOneDecimalPlace,
   windDirectionStringByAngle,
 } from '@/utils/data/weatherstation';
-import { useIntl, useParams } from '@umijs/max';
+import { useIntl } from '@umijs/max';
 import { Flex } from 'antd';
-import { useEffect } from 'react';
 import { FiWind } from 'react-icons/fi';
 import { LuCloudRain } from 'react-icons/lu';
 import { MdOutlineWbSunny } from 'react-icons/md';
 import { TbTemperature } from 'react-icons/tb';
-import WeatherInfo from './WeatherInfo';
-import WeatherInfoCard from './WeatherInfoCard';
-import WeatherNameCard from './WeatherStationNameCard';
-import WindDirectionRotatedIcon from './WindDirectionRotatedIcon';
+import WeatherInfo from '../WeatherInfo';
+import WeatherInfoCard from '../WeatherInfoCard';
+import WeatherNameCard from '../WeatherStationNameCard';
+import WindDirectionRotatedIcon from '../WindDirectionRotatedIcon';
 
-const WeatherStationCards: React.FC<any> = (props) => {
+interface WeatherStationCardsComponentProps {
+  weatherStation: APIModels.WeatherStationDavis | APIModels.WeatherStationPlugField;
+  isOffline: boolean;
+}
+
+const WeatherStationCardsComponent: React.FC<WeatherStationCardsComponentProps> = (props) => {
   const intl = useIntl();
-  const { weatherStation, loading } = props;
-  const params = useParams();
-
-  useEffect(() => {
-    props.queryWeatherStation({ farmId: params.farmId, pivotId: params.pivotId });
-  }, []);
-
-  useEffect(() => {
-    const requestInterval = setInterval(() => {
-      props.queryWeatherStation({ farmId: params.farmId, pivotId: params.pivotId });
-    }, FIVE_MIN_TIMEOUT);
-    return () => {
-      clearInterval(requestInterval);
-    };
-  }, []);
+  const { weatherStation } = props;
 
   const renderTemperatureCard = () => {
     if (weatherStation?.brand === 'Plugfield') {
+      const weatherStationData = weatherStation as APIModels.WeatherStationPlugField;
       return (
         <WeatherInfoCard
           title={intl.formatMessage({
             id: 'component.weatherstation.card.temperature.title',
           })}
-          loading={loading}
+          
           icon={<TbTemperature size={25} />}
           renderInfo={
             <>
@@ -50,15 +40,15 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.temperature.currenttemperature',
                 })}
                 info={
-                  isNotNull(weatherStation?.temperature?.current)
-                    ? `${toOneDecimalPlace(weatherStation?.temperature?.current)} ºC`
+                  isNotNull(weatherStationData?.temperature?.current)
+                    ? `${toOneDecimalPlace(weatherStationData?.temperature?.current)} ºC`
                     : '-'
                 }
                 subInfo={
-                  isNotNull(weatherStation?.temperature?.min) &&
-                  isNotNull(weatherStation?.temperature?.max)
-                    ? `${toOneDecimalPlace(weatherStation?.temperature?.min)}ºC - ${
-                        weatherStation?.temperature?.max ?? '-'
+                  isNotNull(weatherStationData?.temperature?.min) &&
+                  isNotNull(weatherStationData?.temperature?.max)
+                    ? `${toOneDecimalPlace(weatherStationData?.temperature?.min)}ºC - ${
+                        weatherStationData?.temperature?.max ?? '-'
                       }ºC`
                     : '-'
                 }
@@ -69,8 +59,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.temperature.dewpoint',
                 })}
                 info={
-                  isNotNull(weatherStation?.temperature?.dewPoint)
-                    ? `${toOneDecimalPlace(weatherStation?.temperature?.dewPoint)} ºC`
+                  isNotNull(weatherStationData?.temperature?.dewPoint)
+                    ? `${toOneDecimalPlace(weatherStationData?.temperature?.dewPoint)} ºC`
                     : '-'
                 }
                 breakTitleWords={false}
@@ -81,8 +71,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.temperature.thermalsensation',
                 })}
                 info={
-                  isNotNull(weatherStation?.temperature?.thermalFeel)
-                    ? `${toOneDecimalPlace(weatherStation?.temperature?.thermalFeel)} ºC`
+                  isNotNull(weatherStationData?.temperature?.thermalFeel)
+                    ? `${toOneDecimalPlace(weatherStationData?.temperature?.thermalFeel)} ºC`
                     : '-'
                 }
               />
@@ -96,17 +86,18 @@ const WeatherStationCards: React.FC<any> = (props) => {
                 })}
                 breakTitleWords={false}
                 info={
-                  isNotNull(weatherStation?.temperature?.deltaT?.current) &&
-                  isNotNull(weatherStation?.temperature?.deltaT?.min) &&
-                  isNotNull(weatherStation?.temperature?.deltaT?.max) ? (
+                  isNotNull(weatherStationData?.temperature?.deltaT?.current) &&
+                  isNotNull(weatherStationData?.temperature?.deltaT?.min) &&
+                  isNotNull(weatherStationData?.temperature?.deltaT?.max) ? (
                     <div>
                       <div>
-                        {toOneDecimalPlace(weatherStation?.temperature?.deltaT?.current) ?? '-'}
+                        {toOneDecimalPlace(weatherStationData?.temperature?.deltaT?.current) ?? '-'}
                         ºC{' '}
                       </div>
                       <div style={{ fontSize: 12, fontWeight: 'normal' }}>
-                        {toOneDecimalPlace(weatherStation?.temperature?.deltaT?.min) ?? '-'}
-                        ºC - {toOneDecimalPlace(weatherStation?.temperature?.deltaT?.max) ?? '-'}
+                        {toOneDecimalPlace(weatherStationData?.temperature?.deltaT?.min) ?? '-'}
+                        ºC -{' '}
+                        {toOneDecimalPlace(weatherStationData?.temperature?.deltaT?.max) ?? '-'}
                         ºC
                       </div>
                     </div>
@@ -120,8 +111,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.temperature.moisture',
                 })}
                 info={
-                  isNotNull(weatherStation?.temperature?.humidity)
-                    ? `${weatherStation?.temperature?.humidity} %`
+                  isNotNull(weatherStationData?.temperature?.humidity)
+                    ? `${weatherStationData?.temperature?.humidity} %`
                     : '-'
                 }
               />
@@ -130,9 +121,11 @@ const WeatherStationCards: React.FC<any> = (props) => {
         />
       );
     } else {
+      const weatherStationData = weatherStation as APIModels.WeatherStationDavis;
+
       return (
         <WeatherInfoCard
-          loading={loading}
+          
           title={intl.formatMessage({
             id: 'component.weatherstation.card.temperature.title',
           })}
@@ -144,7 +137,7 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.temperature.currenttemperature',
                 })}
                 info={
-                  isNotNull(weatherStation?.temperature?.current)
+                  isNotNull(weatherStationData?.temperature?.current)
                     ? `${toOneDecimalPlace(weatherStation?.temperature?.current)} ºC`
                     : '-'
                 }
@@ -155,8 +148,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.temperature.dewpoint',
                 })}
                 info={
-                  isNotNull(weatherStation?.temperature?.dewPoint)
-                    ? `${toOneDecimalPlace(weatherStation?.temperature?.dewPoint)} ºC`
+                  isNotNull(weatherStationData?.temperature?.dewPoint)
+                    ? `${toOneDecimalPlace(weatherStationData?.temperature?.dewPoint)} ºC`
                     : '-'
                 }
                 breakTitleWords={false}
@@ -167,8 +160,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.temperature.moisture',
                 })}
                 info={
-                  isNotNull(weatherStation?.temperature?.humidity)
-                    ? `${weatherStation?.temperature?.humidity} %`
+                  isNotNull(weatherStationData?.temperature?.humidity)
+                    ? `${weatherStationData?.temperature?.humidity} %`
                     : '-'
                 }
               />
@@ -181,9 +174,11 @@ const WeatherStationCards: React.FC<any> = (props) => {
 
   const renderWindCard = () => {
     if (weatherStation?.brand === 'Plugfield') {
+      const weatherStationData = weatherStation as APIModels.WeatherStationPlugField;
+
       return (
         <WeatherInfoCard
-          loading={loading}
+          
           title={intl.formatMessage({
             id: 'component.weatherstation.card.wind.title',
           })}
@@ -195,19 +190,19 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.wind.direction',
                 })}
                 info={
-                  isNotNull(weatherStation?.wind?.windDirection)
-                    ? windDirectionStringByAngle(weatherStation?.wind?.windDirection, intl)
+                  isNotNull(weatherStationData?.wind?.windDirection)
+                    ? windDirectionStringByAngle(weatherStationData?.wind?.windDirection, intl)
                     : '-'
                 }
-                subInfo={<WindDirectionRotatedIcon deg={weatherStation?.wind?.windDirection} />}
+                subInfo={<WindDirectionRotatedIcon deg={weatherStationData?.wind?.windDirection} />}
               />
               <WeatherInfo
                 title={intl.formatMessage({
                   id: 'component.weatherstation.card.wind.averagewind',
                 })}
                 info={
-                  isNotNull(weatherStation?.wind?.averageWind)
-                    ? `${weatherStation?.wind?.averageWind} km/h`
+                  isNotNull(weatherStationData?.wind?.averageWind)
+                    ? `${weatherStationData?.wind?.averageWind} km/h`
                     : '-'
                 }
               />
@@ -217,8 +212,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                     id: 'component.weatherstation.card.wind.pressure',
                   })}
                   info={
-                    isNotNull(weatherStation?.wind?.pressure)
-                      ? `${weatherStation?.wind?.pressure} hPa`
+                    isNotNull(weatherStationData?.wind?.pressure)
+                      ? `${weatherStationData?.wind?.pressure} hPa`
                       : '-'
                   }
                 />
@@ -228,9 +223,11 @@ const WeatherStationCards: React.FC<any> = (props) => {
         />
       );
     } else {
+      const weatherStationData = weatherStation as APIModels.WeatherStationDavis;
+
       return (
         <WeatherInfoCard
-          loading={loading}
+          
           title={intl.formatMessage({
             id: 'component.weatherstation.card.wind.title',
           })}
@@ -242,8 +239,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.wind.windnow',
                 })}
                 info={
-                  isNotNull(weatherStation?.wind?.windNow)
-                    ? `${weatherStation?.wind?.windNow} km/h`
+                  isNotNull(weatherStationData?.wind?.windNow)
+                    ? `${weatherStationData?.wind?.windNow} km/h`
                     : '-'
                 }
                 infoSize={20}
@@ -253,19 +250,19 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.wind.direction',
                 })}
                 info={
-                  isNotNull(weatherStation?.wind?.windDirection)
-                    ? windDirectionStringByAngle(weatherStation?.wind?.windDirection, intl)
+                  isNotNull(weatherStationData?.wind?.windDirection)
+                    ? windDirectionStringByAngle(weatherStationData?.wind?.windDirection, intl)
                     : '-'
                 }
-                subInfo={<WindDirectionRotatedIcon deg={weatherStation?.wind?.windDirection} />}
+                subInfo={<WindDirectionRotatedIcon deg={weatherStationData?.wind?.windDirection} />}
               />
               <WeatherInfo
                 title={intl.formatMessage({
                   id: 'component.weatherstation.card.wind.averagewind',
                 })}
                 info={
-                  isNotNull(weatherStation?.wind?.averageWind)
-                    ? `${weatherStation?.wind?.averageWind} km/h`
+                  isNotNull(weatherStationData?.wind?.averageWind)
+                    ? `${weatherStationData?.wind?.averageWind} km/h`
                     : '-'
                 }
               />
@@ -277,10 +274,12 @@ const WeatherStationCards: React.FC<any> = (props) => {
   };
 
   const renderLuminodity = () => {
-    if (weatherStation?.brand === 'Plugfield') {
+    const weatherStationData = weatherStation as APIModels.WeatherStationPlugField;
+
+    if (weatherStationData?.brand === 'Plugfield') {
       return (
         <WeatherInfoCard
-          loading={loading}
+          
           title={intl.formatMessage({
             id: 'component.weatherstation.card.luminosity.title',
           })}
@@ -292,8 +291,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.luminosity.uv',
                 })}
                 info={
-                  isNotNull(weatherStation?.luminosity?.uv)
-                    ? `${weatherStation?.luminosity?.uv}`
+                  isNotNull(weatherStationData?.luminosity?.uv)
+                    ? `${weatherStationData?.luminosity?.uv}`
                     : '-'
                 }
                 infoSize={20}
@@ -303,8 +302,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.luminosity.luminosity',
                 })}
                 info={
-                  isNotNull(weatherStation?.luminosity?.luminosity)
-                    ? `${weatherStation?.luminosity?.luminosity} lux`
+                  isNotNull(weatherStationData?.luminosity?.luminosity)
+                    ? `${weatherStationData?.luminosity?.luminosity} lux`
                     : '-'
                 }
               />
@@ -313,8 +312,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.luminosity.height',
                 })}
                 info={
-                  isNotNull(weatherStation?.luminosity?.altitude)
-                    ? `${toOneDecimalPlace(weatherStation?.luminosity?.altitude)} m`
+                  isNotNull(weatherStationData?.luminosity?.altitude)
+                    ? `${toOneDecimalPlace(weatherStationData?.luminosity?.altitude)} m`
                     : '-'
                 }
               />
@@ -323,9 +322,11 @@ const WeatherStationCards: React.FC<any> = (props) => {
         />
       );
     } else {
+      const weatherStationData = weatherStation as APIModels.WeatherStationDavis;
+
       return (
         <WeatherInfoCard
-          loading={loading}
+          
           title={intl.formatMessage({
             id: 'component.weatherstation.card.luminosity.title',
           })}
@@ -337,8 +338,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.luminosity.uv',
                 })}
                 info={
-                  isNotNull(weatherStation?.luminosity?.uv)
-                    ? `${weatherStation?.luminosity?.uv}`
+                  isNotNull(weatherStationData?.luminosity?.uv)
+                    ? `${weatherStationData?.luminosity?.uv}`
                     : '-'
                 }
                 infoSize={20}
@@ -348,8 +349,8 @@ const WeatherStationCards: React.FC<any> = (props) => {
                   id: 'component.weatherstation.card.luminosity.luminosity',
                 })}
                 info={
-                  isNotNull(weatherStation?.luminosity?.luminosity)
-                    ? `${weatherStation?.luminosity?.luminosity} lux`
+                  isNotNull(weatherStationData?.luminosity?.luminosity)
+                    ? `${weatherStationData?.luminosity?.luminosity} lux`
                     : '-'
                 }
               />
@@ -364,15 +365,14 @@ const WeatherStationCards: React.FC<any> = (props) => {
     <Flex gap="middle" vertical>
       <WeatherNameCard
         name={weatherStation?.stationName}
-        isOffline={!loading && props.isWeatherStationOffline}
-        loading={loading}
+        isOffline={props.isOffline}
         lastCommunication={weatherStation?.lastCommunication}
       />
       {renderTemperatureCard()}
       {renderWindCard()}
 
       <WeatherInfoCard
-        loading={loading}
+        
         title={intl.formatMessage({
           id: 'component.weatherstation.card.rain.title',
         })}
@@ -411,4 +411,4 @@ const WeatherStationCards: React.FC<any> = (props) => {
   );
 };
 
-export default WeatherStationCards;
+export default WeatherStationCardsComponent;

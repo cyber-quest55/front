@@ -1,28 +1,26 @@
 import { useScreenHook } from '@/hooks/screen';
-import { GetWeatherStationSummaryModelProps, queryWeatherStationSummary } from '@/models/weatherstation-summary';
+import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
+import {
+  GetWeatherStationSummaryModelProps,
+  queryWeatherStationSummary,
+} from '@/models/weatherstation-summary';
 import { connect } from 'dva';
 import WeatherStationOverviewComponent from './WeatherStationOverviewComponent';
-import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
+import WeatherStationOverviewSkeleton from './WeatherStationOverviewSkeleton';
 
 interface WeatherStationOverviewContainerProps {
-  weatherStationSummary: GetWeatherStationSummaryModelProps,
-  pivotById: GetPivotByIdModelProps,
-  queryWeatherStationSummary: typeof queryWeatherStationSummary
+  weatherStationSummary: GetWeatherStationSummaryModelProps;
+  pivotById: GetPivotByIdModelProps;
+  queryWeatherStationSummary: typeof queryWeatherStationSummary;
 }
 
-const WeatherStationOverviewContainer: React.FunctionComponent<WeatherStationOverviewContainerProps> = (props) => {
+const WeatherStationOverviewContainer: React.FunctionComponent<
+  WeatherStationOverviewContainerProps
+> = (props) => {
   const { xs } = useScreenHook();
 
-  return (
-    <>
-      {false ? (
-        <WeatherStationOverviewComponent
-          loading={props.weatherStationSummary.loading}
-          weatherStationSummary={props.weatherStationSummary.result}
-          error={props.weatherStationSummary.error}
-          queryWeatherStationSummary={props.queryWeatherStationSummary}
-          pivotId={props.pivotById.result.id}
-        />
+  return false ? (
+        <WeatherStationOverviewSkeleton />
       ) : xs ? (
         <WeatherStationOverviewComponent
           loading={props.weatherStationSummary.loading}
@@ -39,14 +37,12 @@ const WeatherStationOverviewContainer: React.FunctionComponent<WeatherStationOve
           queryWeatherStationSummary={props.queryWeatherStationSummary}
           pivotId={props.pivotById.result.id}
         />
-      )}
-    </>
-  );
+      )
 };
 
 const mapStateToProps = ({ weatherStationSummary, pivotById }: any) => ({
   weatherStationSummary,
-  pivotById
+  pivotById,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

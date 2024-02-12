@@ -1,5 +1,5 @@
 import { queryWeatherStationSummary } from '@/models/weatherstation-summary';
-import WindDirectionRotatedIcon from '@/pages/WeatherStation/WindDirectionRotatedIcon';
+import WindDirectionRotatedIcon from '@/components/WeatherStation/WindDirectionRotatedIcon';
 import {
   FIVE_MIN_TIMEOUT,
   isNotNull,

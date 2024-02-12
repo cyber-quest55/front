@@ -9,7 +9,7 @@ import { Skeleton } from 'antd';
 import { LuCloud, LuCloudRain, LuCloudDrizzle, LuSnowflake, LuCircle } from 'react-icons/lu';
 import { MdOutlineThunderstorm } from "react-icons/md";
 
-import WeatherForecastCard from './WeatherForecastCard';
+import WeatherForecastCard from '../WeatherForecastCard';
 
 const WeatherIcons = {
   Thunderstorm: <MdOutlineThunderstorm size={25} />,
@@ -35,13 +35,13 @@ const LoadingForecastCards = () => {
   );
 };
 
-interface WeatherForecastPanelProps {
+interface WeatherForecastPanelComponentProps {
   weatherForecast: APIModels.WeatherForecast[];
   loading: boolean;
   queryWeatherForecast: typeof queryWeatherForecast;
 }
 
-const WeatherForecastPanel: React.FC<WeatherForecastPanelProps> = (props) => {
+const WeatherForecastPanelComponent: React.FC<WeatherForecastPanelComponentProps> = (props) => {
   const intl = useIntl();
 
   return (
@@ -95,4 +95,4 @@ const WeatherForecastPanel: React.FC<WeatherForecastPanelProps> = (props) => {
   );
 };
 
-export default WeatherForecastPanel;
+export default WeatherForecastPanelComponent;
