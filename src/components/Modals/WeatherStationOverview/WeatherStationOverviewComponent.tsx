@@ -1,14 +1,19 @@
+import { queryWeatherStationSummary } from '@/models/weatherstation-summary';
+import WindDirectionRotatedIcon from '@/pages/WeatherStation/WindDirectionRotatedIcon';
+import {
+  FIVE_MIN_TIMEOUT,
+  isNotNull,
+  toOneDecimalPlace,
+  windDirectionStringByAngle,
+} from '@/utils/data/weatherstation';
 import { CloudFilled } from '@ant-design/icons';
 import { useIntl, useNavigate, useParams } from '@umijs/max';
 import { Button, Modal, Row, Skeleton } from 'antd';
 import React, { useEffect } from 'react';
-
-import { TbTemperature } from 'react-icons/tb';
-import { LuCloudRain } from 'react-icons/lu';
 import { FiWind } from 'react-icons/fi';
-import { MdOutlineWaterDrop } from "react-icons/md";
-import { FIVE_MIN_TIMEOUT, isNotNull, toOneDecimalPlace, windDirectionStringByAngle } from '@/utils/data/weatherstation';
-import WindDirectionRotatedIcon from '@/pages/WeatherStation/WindDirectionRotatedIcon';
+import { LuCloudRain } from 'react-icons/lu';
+import { MdOutlineWaterDrop } from 'react-icons/md';
+import { TbTemperature } from 'react-icons/tb';
 
 interface WeatherInfoProps {
   icon?: JSX.Element;
@@ -20,7 +25,6 @@ interface WeatherInfoProps {
 }
 
 const WeatherInfo = ({ icon, iconComponent, title, info, infoUnit, loading }: WeatherInfoProps) => {
-  
   return !loading ? (
     <div
       style={{
@@ -28,7 +32,7 @@ const WeatherInfo = ({ icon, iconComponent, title, info, infoUnit, loading }: We
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
       }}
     >
       <div>
@@ -40,13 +44,21 @@ const WeatherInfo = ({ icon, iconComponent, title, info, infoUnit, loading }: We
       </div>
     </div>
   ) : (
-    <div style={{height: 130, minWidth: 85}}>
-    <Skeleton.Button active={true} block={true} style={{height: 130, minWidth: 85}} />
+    <div style={{ height: 130, minWidth: 85 }}>
+      <Skeleton.Button active={true} block={true} style={{ height: 130, minWidth: 85 }} />
     </div>
   );
+};
+
+interface WeatherStationOverviewProps {
+  loading: boolean;
+  weatherStationSummary: any;
+  queryWeatherStationSummary: typeof queryWeatherStationSummary;
+  pivotId: number;
+  error: any;
 }
 
-const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
+const WeatherStationOverview: React.FunctionComponent<WeatherStationOverviewProps> = (props) => {
   const params = useParams();
   const intl = useIntl();
 
@@ -69,7 +81,13 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
     };
   }, []);
 
-  return (
+  return props.error?.weatherStationNotFound ? (
+    <div>
+      {intl.formatMessage({
+        id: 'component.pivot.weatherstation.modal.error.notfound',
+      })}
+    </div>
+  ) : (
     <Row justify="space-between" style={{ padding: '15px 0' }}>
       <WeatherInfo
         loading={props.loading}
@@ -121,7 +139,17 @@ const WeatherStationOverview: React.FunctionComponent<any> = (props) => {
   );
 };
 
-const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) => {
+interface WeatherStationOverviewComponentProps {
+  loading: boolean;
+  weatherStationSummary: any;
+  error: any;
+  queryWeatherStationSummary: typeof queryWeatherStationSummary;
+  pivotId: number;
+}
+
+const WeatherStationOverviewComponent: React.FunctionComponent<
+  WeatherStationOverviewComponentProps
+> = (props) => {
   const intl = useIntl();
   const params = useParams();
   const navigate = useNavigate();
@@ -132,7 +160,7 @@ const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) =>
   };
 
   const handleOk = () => {
-    navigate(`/farms/${params.id}/pivot/${props.pivotId}/weatherstation`)
+    navigate(`/farms/${params.id}/pivot/${props.pivotId}/weatherstation`);
   };
 
   const handleCancel = () => {
@@ -141,7 +169,7 @@ const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) =>
 
   return (
     <>
-      <Button icon={<CloudFilled />} onClick={showModal}  />
+      <Button icon={<CloudFilled />} onClick={showModal} />
 
       <Modal
         destroyOnClose
@@ -152,22 +180,35 @@ const WeatherStationOverviewComponent: React.FunctionComponent<any> = (props) =>
         centered
         onCancel={handleCancel}
         width={600}
-        footer={[
-          <div style={{ display: 'flex', justifyContent: 'center' }} key="submit">
-            <Button type="primary" onClick={handleOk}>
-              {intl.formatMessage({
-                id: 'component.pivot.weatherstation.modal.submit',
-              })}{' '}
-              {props.weatherStationSummary?.stationName}
-            </Button>
-          </div>,
-        ]}
+        footer={
+          props.error?.weatherStationNotFound
+            ? null
+            : [
+                props.loading ? (
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ width: 150 }}>
+                      <Skeleton.Button active={true} block={false} />
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', justifyContent: 'center' }} key="submit">
+                    <Button type="primary" onClick={handleOk}>
+                      {intl.formatMessage({
+                        id: 'component.pivot.weatherstation.modal.submit',
+                      })}{' '}
+                      {props.weatherStationSummary?.stationName}
+                    </Button>
+                  </div>
+                ),
+              ]
+        }
       >
         <WeatherStationOverview
           loading={props.loading}
           weatherStationSummary={props.weatherStationSummary}
           queryWeatherStationSummary={props.queryWeatherStationSummary}
           pivotId={props.pivotId}
+          error={props.error}
         />
       </Modal>
     </>

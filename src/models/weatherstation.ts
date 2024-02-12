@@ -123,6 +123,18 @@ export default {
       state: GetWeatherStationModelProps,
       { payload }: { payload: AxiosError },
     ) {
+      const data: any = payload.response?.data
+      if (data.error === 'WEATHER_STATION_NOT_FOUND') {
+        return {
+          ...state,
+          weatherStation: {
+            error: {
+              weatherStationNotFound: true,
+            },
+            loading: false,
+          }
+        };
+      }
       return {
         ...state,
         weatherStation: {
@@ -161,6 +173,19 @@ export default {
       state: GetWeatherStationModelProps,
       { payload }: { payload: AxiosError },
     ) {
+      const data: any = payload.response?.data
+      console.log(payload.response)
+      if (data.error === 'WEATHER_STATION_NOT_FOUND') {
+        return {
+          ...state,
+          weatherStation: {
+            error: {
+              weatherStationNotFound: true,
+            },
+            loading: false,
+          }
+        };
+      }
       return {
         ...state,
         weatherForecast: {

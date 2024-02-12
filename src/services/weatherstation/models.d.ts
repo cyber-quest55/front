@@ -1,12 +1,12 @@
 declare namespace APIModels {
   type WeatherStationResume = {
-    lastCommunication: number;
+    lastCommunication?: number;
     stationName: string;
-    temperature: number;
-    humidity: number;
-    wind: number;
-    windDirection: number;
-    rain: number;
+    temperature?: number;
+    humidity?: number;
+    wind?: number;
+    windDirection?: number;
+    rain?: number;
   }
 
   type WeatherStationCharts = {

@@ -1,9 +1,16 @@
 import { useScreenHook } from '@/hooks/screen';
-import { queryWeatherStationSummary } from '@/models/weatherstation-summary';
+import { GetWeatherStationSummaryModelProps, queryWeatherStationSummary } from '@/models/weatherstation-summary';
 import { connect } from 'dva';
 import WeatherStationOverviewComponent from './WeatherStationOverviewComponent';
+import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 
-const WeatherStationOverviewContainer: React.FunctionComponent<any> = (props) => {
+interface WeatherStationOverviewContainerProps {
+  weatherStationSummary: GetWeatherStationSummaryModelProps,
+  pivotById: GetPivotByIdModelProps,
+  queryWeatherStationSummary: typeof queryWeatherStationSummary
+}
+
+const WeatherStationOverviewContainer: React.FunctionComponent<WeatherStationOverviewContainerProps> = (props) => {
   const { xs } = useScreenHook();
 
   return (
@@ -12,6 +19,7 @@ const WeatherStationOverviewContainer: React.FunctionComponent<any> = (props) =>
         <WeatherStationOverviewComponent
           loading={props.weatherStationSummary.loading}
           weatherStationSummary={props.weatherStationSummary.result}
+          error={props.weatherStationSummary.error}
           queryWeatherStationSummary={props.queryWeatherStationSummary}
           pivotId={props.pivotById.result.id}
         />
@@ -19,6 +27,7 @@ const WeatherStationOverviewContainer: React.FunctionComponent<any> = (props) =>
         <WeatherStationOverviewComponent
           loading={props.weatherStationSummary.loading}
           weatherStationSummary={props.weatherStationSummary.result}
+          error={props.weatherStationSummary.error}
           queryWeatherStationSummary={props.queryWeatherStationSummary}
           pivotId={props.pivotById.result.id}
         />
@@ -26,6 +35,7 @@ const WeatherStationOverviewContainer: React.FunctionComponent<any> = (props) =>
         <WeatherStationOverviewComponent
           loading={props.weatherStationSummary.loading}
           weatherStationSummary={props.weatherStationSummary.result}
+          error={props.weatherStationSummary.error}
           queryWeatherStationSummary={props.queryWeatherStationSummary}
           pivotId={props.pivotById.result.id}
         />

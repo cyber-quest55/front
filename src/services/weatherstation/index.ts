@@ -34,8 +34,6 @@ export async function getWeatherStationCharts(props: API.GetWeatherStationCharts
   });
 }
 
-
-
 export async function createWeatherStation(
   props: API.CreateWeatherStationParams,
   options: API.CreateWeatherStationResponse,

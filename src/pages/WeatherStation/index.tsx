@@ -4,7 +4,7 @@ import {
   queryWeatherStationCharts,
 } from '@/models/weatherstation';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { useParams } from '@umijs/max';
+import { useIntl, useParams } from '@umijs/max';
 import { Col, Row } from 'antd';
 import { connect } from 'dva';
 import { useEffect } from 'react';
@@ -14,6 +14,7 @@ import WeatherStationCards from './WeatherStationCards';
 
 const WeatherStation: React.FC<any> = (props) => {
   const params = useParams();
+  const intl = useIntl();
 
   useEffect(() => {
     props.queryWeatherForecast({ farmId: params.farmId as any, pivotId: params.pivotId as any });
@@ -21,33 +22,41 @@ const WeatherStation: React.FC<any> = (props) => {
 
   return (
     <PageContainer>
-      <Row gutter={[14, 14]}>
-        <Col xl={7} xs={24}>
-          <WeatherStationCards
-            weatherStation={props.weatherStation.weatherStation.result}
-            isWeatherStationOffline={props.weatherStation.isWeatherStationOffline}
-            loading={props.weatherStation.weatherStation.loading}
-            queryWeatherStation={props.queryWeatherStation}
-          />
-        </Col>
-        <Col xl={17} xs={24}>
-          <ProCard>
-            <WeatherForecastPanel
-              weatherForecast={props.weatherStation.weatherForecast.result}
-              loading={props.weatherStation.weatherForecast.loading}
-              queryWeatherForecast={props.queryWeatherForecast}
-            />
-            <WeatherDetailsTabs
-              weatherForecast={props.weatherStation.weatherForecast.result}
-              weatherStationCharts={props.weatherStation.weatherStationCharts.result}
+      {props.weatherStation.weatherStation.error?.weatherStationNotFound ? (
+        <div>
+          {intl.formatMessage({
+            id: 'component.pivot.weatherstation.modal.error.notfound',
+          })}
+        </div>
+      ) : (
+        <Row gutter={[14, 14]}>
+          <Col xl={7} xs={24}>
+            <WeatherStationCards
               weatherStation={props.weatherStation.weatherStation.result}
-              chartLoading={props.weatherStation.weatherStationCharts.loading}
-              forecastLoading={props.weatherStation.weatherForecast.loading}
-              queryWeatherStationCharts={props.queryWeatherStationCharts}
+              isWeatherStationOffline={props.weatherStation.isWeatherStationOffline}
+              loading={props.weatherStation.weatherStation.loading}
+              queryWeatherStation={props.queryWeatherStation}
             />
-          </ProCard>
-        </Col>
-      </Row>
+          </Col>
+          <Col xl={17} xs={24}>
+            <ProCard>
+              <WeatherForecastPanel
+                weatherForecast={props.weatherStation.weatherForecast.result}
+                loading={props.weatherStation.weatherForecast.loading}
+                queryWeatherForecast={props.queryWeatherForecast}
+              />
+              <WeatherDetailsTabs
+                weatherForecast={props.weatherStation.weatherForecast.result}
+                weatherStationCharts={props.weatherStation.weatherStationCharts.result}
+                weatherStation={props.weatherStation.weatherStation.result}
+                chartLoading={props.weatherStation.weatherStationCharts.loading}
+                forecastLoading={props.weatherStation.weatherForecast.loading}
+                queryWeatherStationCharts={props.queryWeatherStationCharts}
+              />
+            </ProCard>
+          </Col>
+        </Row>
+      )}
     </PageContainer>
   );
 };

@@ -559,6 +559,7 @@ export default {
   'component.pivot.weatherstation.modal.winddirection': 'Wind direction',
   'component.pivot.weatherstation.modal.rain': 'Rain today',
   'component.pivot.weatherstation.modal.submit': 'Go to station',
+  'component.pivot.weatherstation.modal.error.notfound': 'No weather station registered on the farm',
   'component.weatherstation.winddirection.north': 'NORTH',
   'component.weatherstation.winddirection.northeast': 'NORTH EAST',
   'component.weatherstation.winddirection.northwest': 'NORTH WEST',

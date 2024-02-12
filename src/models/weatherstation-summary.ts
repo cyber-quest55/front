@@ -8,7 +8,7 @@ export interface GetWeatherStationSummaryModelProps {
   error: any;
 }
 
-export const queryWeatherStationSummary = (payload: API.GetIrpdParams) => {
+export const queryWeatherStationSummary = (payload: API.GetWeatherStationSummaryParams) => {
   return {
     type: 'weatherStationSummary/queryWeatherStationSummary',
     payload: payload,
@@ -22,11 +22,16 @@ export default {
     result: null,
     loaded: false,
     loading: true,
-    error: {},
+    error: {
+      weatherStationNotFound: false,
+    },
   },
 
   effects: {
-    *queryWeatherStationSummary({ payload }: { payload: API.GetWeatherStationSummaryParams }, { call, put }: { call: any; put: any }) {
+    *queryWeatherStationSummary(
+      { payload }: { payload: API.GetWeatherStationSummaryParams },
+      { call, put }: { call: any; put: any },
+    ) {
       yield put({ type: 'queryWeatherStationSummaryStart' });
       try {
         const response: API.GetIrpdResponse = yield call(getWeatherStationSummary, payload);
@@ -38,7 +43,22 @@ export default {
   },
 
   reducers: {
-    queryWeatherStationSummaryError(state: GetWeatherStationSummaryModelProps, { payload }: { payload: AxiosError }) {
+    queryWeatherStationSummaryError(
+      state: GetWeatherStationSummaryModelProps,
+      { payload }: { payload: AxiosError },
+    ) {
+     
+      const data: any = payload.response?.data;
+      if (data.error === 'WEATHER_STATION_NOT_FOUND') {
+        return {
+          ...state,
+          error: {
+            weatherStationNotFound: true,
+          },
+          loading: false,
+        };
+      }
+
       return {
         ...state,
         error: payload.response?.data,
@@ -51,8 +71,11 @@ export default {
         loading: true,
       };
     },
-    queryWeatherStationSummarySuccess(state: GetWeatherStationSummaryModelProps, { payload }: { payload: API.GetWeatherStationSummaryResponse }) {
-
+    queryWeatherStationSummarySuccess(
+      state: GetWeatherStationSummaryModelProps,
+      { payload }: { payload: API.GetWeatherStationSummaryResponse },
+    ) {
+      
       return {
         ...state,
         loading: false,
