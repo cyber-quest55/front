@@ -479,7 +479,9 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       case DeviceType.Pump: {
         return (
           <Space>
-               <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
+            {device.protocol === 5 || device.protocol === 5.1 ? (
+              <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
+
                 <Button icon={<EditFilled />}>
                   {intl.formatMessage({
                     id: 'component.pivot.operationalpanel.button.edit',

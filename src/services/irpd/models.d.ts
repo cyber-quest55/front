@@ -612,4 +612,14 @@ declare namespace APIModels {
     user: any;
     irpd: number;
   };
+
+  type CreateIrpdPayload = {
+    name: string;
+    base: string;
+    pump: string;
+    potency: number;
+    flow: string;
+    position: string;
+    protocol: number;
+  };
 }

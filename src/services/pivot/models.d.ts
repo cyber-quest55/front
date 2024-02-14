@@ -992,6 +992,43 @@ declare namespace APIModels {
     };
   };
 
+  type CreateLinearPivotMonitorPayload = {
+    name: string;
+    monitor: string;
+    base: string;
+    automation_type: number;
+    brand_model: string;
+    protocol: string;
+    flowRate: number;
+    pivotLength: number;
+    pivotSpeed: number;
+  };
+
+  type CreatePivotPayload = {
+    name: string;
+    potency: number;
+    communication_type: number;
+    base: string | null;
+    control: string;
+    monitor: string;
+    automation_type: number;
+    panel_type: number;
+    brand_model: string;
+    pluviometer: boolean;
+    pump: string | null;
+    protocol: string;
+  };
+
+  type CreatePivotMonitorPayload = {
+    name: string;
+    potency: number;
+    monitor: string;
+    base: string;
+    automation_type: number;
+    brand_model: string;
+    pump: string | null;
+    protocol: string;
+  };
   type WaterBySegment = Array<{
     segment: number
     water_blade: number

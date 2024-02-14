@@ -214,13 +214,12 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
     strokeOpacity: 1,
     scale: 2,
   };
-
-
-  const endIrrigationDashedLine = computeOffset(
+ 
+  const endIrrigationDashedLine = centerPositionGMaps && referenceRadius && props.stopAngle ? computeOffset(
     centerPositionGMaps,
     referenceRadius,
     props.stopAngle,
-  );
+  ) : new LatLng(0, 0);
 
   return (
     <>
