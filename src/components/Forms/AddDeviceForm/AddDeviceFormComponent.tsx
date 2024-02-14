@@ -101,7 +101,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
       form={form}
       autoFocusFirstInput
       onOpenChange={() => setStep(0)}
-      submitTimeout={2000}
+      submitTimeout={8000}
       onFinish={async (v: any) => {
         if (step === 0 && v.device) {
           setStep(1);
