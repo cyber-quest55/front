@@ -18,24 +18,23 @@ declare namespace API {
   type GetIrpdHistoryParams = {
     farmId: number;
     irpdId: number;
-    params: any;
-  };
+   };
 
   type GetIrpdHistoryResponse = APIModels.IrpdHistory;
 
   type GetIrpdWaterConsumptionParams = {
     farmId: number;
     irpdId: numbber;
-    waterId: number;
-    params: any;
   };
 
-  type GetIrpdWaterConsumptionResponse = Array<APIModels.IrpdWaterConsumption>;
+  type GetIrpdWaterConsumptionResponse = {
+    message: string;
+    data: Array<APIModels.IrpdWaterConsumption>;
+  };
 
   type GetIrpdEventsParams = {
     farmId: number;
     irpdId: string;
-    params: any;
   };
 
   type GetIrpdEventsResponse = APIModels.IrpdEventsResponse;
@@ -60,13 +59,13 @@ declare namespace API {
 
   type PatchChangeIrpdRadioParams = { farmId: number; irpdId: string; irpdToSwapId: string };
 
-  type PatchChangeIrpdRadioResponse = { radio_id: number; };
+  type PatchChangeIrpdRadioResponse = { radio_id: number };
 
-  type PostChangeIrpdManualRadioParams = { farmId: number; irpdId: string; };
+  type PostChangeIrpdManualRadioParams = { farmId: number; irpdId: string };
 
-  type PostChangeIrpdManualRadioResponse = { radio_id: number; };
+  type PostChangeIrpdManualRadioResponse = { radio_id: number };
 
-  type PatchIrpdParams = { farmId: number; irpdId: string; };
+  type PatchIrpdParams = { farmId: number; irpdId: string };
 
   type PatchIrpdResponse = APIModels.Irpd;
 
@@ -80,8 +79,8 @@ declare namespace API {
     current_page: number;
     next: string;
     previous: any;
-    results: Array<APIModels.IrpdHistory>
-  }
+    results: Array<APIModels.IrpdHistory>;
+  };
 
   type FavoriteIrpdConfigParams = {
     configId: number;
@@ -90,5 +89,9 @@ declare namespace API {
   };
 
   type FavoriteIrpdConfigResponse = APIModels.IrpdSystem;
-
+  
+  type CreateIrpdParams = {
+    farmId: string;
+  };
+ 
 }

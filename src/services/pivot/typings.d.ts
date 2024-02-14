@@ -83,6 +83,18 @@ declare namespace API {
     deviceId: string;
   };
 
+  type CreateLinearPivotMonitorParams = { 
+    farmId: string 
+  };
+
+  type CreatePivotMonitorParams = { 
+    farmId: string 
+  };
+
+  type CreatePivotParams = { 
+    farmId: string 
+  };
+
   type PostSimpleIrrigation =
     | {
         message_subtype: string;

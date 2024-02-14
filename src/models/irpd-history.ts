@@ -1,6 +1,7 @@
 import { getIrpdHistory } from '@/services/irpd';
 import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
+import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
 import { AxiosError } from 'axios';
 
 export interface GetIrpdHistoryModelProps {
@@ -11,7 +12,7 @@ export interface GetIrpdHistoryModelProps {
   total: number;
 }
 
-export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams ) => {
+export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams) => {
   return {
     type: 'irpdHistory/queryIrpdHistory',
     payload: payload,
@@ -34,10 +35,13 @@ export default {
       { payload }: { payload: API.GetIrpdHistoryParams },
       { call, put }: { call: any; put: any },
     ) {
-      const { farmId, irpdId, params } = payload;
+      const { farmId, irpdId,   } = payload;
       yield put({ type: 'queryIrpdHistoryStart' });
       try {
-        const response: API.GetIrpdHistoryResponse = yield call(getIrpdHistory, { farmId, irpdId }, params);
+        const response: API.GetIrpdHistoryResponse = yield call(
+          getIrpdHistory,
+          { farmId, irpdId },
+         );
         yield put({ type: 'queryIrpdHistorySuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryIrpdHistoryError', payload: error });
@@ -74,7 +78,7 @@ export default {
             return {
               ...item.irpd_action_v5,
               key: `row-key-table-${index}`,
-              origin: PumpHistoryOrigin.CentralUpdate,
+              origin: getIrpdOrigin(PumpHistoryOrigin.CentralUpdate),
               command: getIrpdCommand(item.irpd_action_v5?.content?.pump_action?.enable as number),
             };
           }
@@ -82,7 +86,7 @@ export default {
             return {
               ...item.irpd_stream_v5,
               key: `row-key-table-${index}`,
-              origin: PumpHistoryOrigin.Command,
+              origin: getIrpdOrigin(PumpHistoryOrigin.Command),
               command: getIrpdCommand(item.irpd_stream_v5?.content?.pump_action?.enable as number),
             };
           }

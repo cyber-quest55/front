@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { DevicePanelComponent } from './DevicePanelComponent';
 import DevicePanelMobile from './DevicePanelMobile';
 import { DevicePanelSkeleton } from './DevicePanelSkeleton';
+import meterById, { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 
 type Props = {
   type: DeviceType;
@@ -23,6 +24,7 @@ type Props = {
   pivot: GetPivotModelProps;
   pivotById: GetPivotByIdModelProps;
   meterSystem: GetMeterSystemModelProps;
+  meterSystemById: GetMeterSystemByIdModelProps;
   selectedDevice: SelectedDeviceModelProps;
   setSelectedDevice: typeof setSelectedDevice;
   setDeviceClose: typeof setDeviceClose;
@@ -39,6 +41,7 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
     pivot,
     pivotById,
     meterSystem,
+    meterSystemById,
     type,
     selectedDevice,
     setSelectedDevice,
@@ -48,8 +51,7 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   const loading = pivot.loading || irpd.loading || meterSystem.loading;
 
   useEffect(() => {
-    console.log(pivotById);
-    switch (type) {
+     switch (type) {
       case DeviceType.Pivot: {
         const device = pivotById.result;
         setDevice({
@@ -61,7 +63,10 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
       }
       case DeviceType.Meter: {
         const device = meterSystem.result.find((item) => item.id === selectedDevice.deviceId);
-        setDevice(device);
+        setDevice({
+          ...device,
+          unformated: meterSystemById.unformated,
+        });
         break;
       }
       case DeviceType.Pump: {
@@ -70,7 +75,7 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
         break;
       }
     }
-  }, [selectedDevice.deviceId, pivotById]);
+  }, [selectedDevice.deviceId, pivotById, meterSystemById]);
 
   useEffect(() => {
     switch (type) {
@@ -168,11 +173,19 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   );
 };
 
-const mapStateToProps = ({ pivot, pivotById, selectedDevice, meterSystem, irpd }: any) => ({
+const mapStateToProps = ({
+  pivot,
+  pivotById,
+  selectedDevice,
+  meterSystem,
+  irpd,
+  meterSystemById,
+}: any) => ({
   irpd,
   pivot,
   pivotById,
   meterSystem,
+  meterSystemById,
   selectedDevice,
 });
 

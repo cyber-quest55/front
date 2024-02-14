@@ -4,7 +4,7 @@ import { request } from '@umijs/max';
 
 /** Authenticate the user POST /auth/login */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/auth/login', {
+  return request<API.LoginResult>('/v3/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ export async function checkUsername(
   body: API.ValidateUsernameParam,
   options?: { [key: string]: any },
 ) {
-  return request<API.ValidateUsernameResult>('/auth/check_username/', {
+  return request<API.ValidateUsernameResult>('/v3/auth/check_username/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export async function checkUsername(
 
 /** Send email for password recovery auth/reset/ */
 export async function recoveryPassword(body: API.RecoveryPasswordParam) {
-  return request<API.RecoveryPasswordResult>('/auth/reset/', {
+  return request<API.RecoveryPasswordResult>('/v3/auth/reset/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export async function recoveryPassword(body: API.RecoveryPasswordParam) {
 
 /** Send email for password recovery recovery/ */
 export async function resetPassword(token: string, body: API.ResetPasswordParam) {
-  return request<API.ResetPasswordResult>(`/auth/reset/${token}/`, {
+  return request<API.ResetPasswordResult>(`/v3/auth/reset/${token}/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export async function resetPassword(token: string, body: API.ResetPasswordParam)
 
 /** Validate the registration token GET /auth/register */
 export async function validateRegisterToken(options: API.ValidateRegisterTokenParam) {
-  return request<API.ValidateRegisterTokenResult>('/auth/register/', {
+  return request<API.ValidateRegisterTokenResult>('/v3/auth/register/', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export async function validateRegisterToken(options: API.ValidateRegisterTokenPa
 
 /** Register the user POST /auth/register */
 export async function registerUser(body: API.RegisterUserParam, params: { token: string }) {
-  return request<API.RegisterUserResult>('/auth/register/', {
+  return request<API.RegisterUserResult>('/v3/auth/register/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ export async function registerUser(body: API.RegisterUserParam, params: { token:
 
 /** Logout user POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request<Record<string, any>>('/v3/api/login/outLogin', {
     method: 'POST',
     ...(options || {}),
   });
