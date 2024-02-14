@@ -7,10 +7,12 @@ import MeterWaterLevel from '../Charts/MeterWaterLevel';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanelContainer from '../DevicePanel/DevicePanelContainer';
 import MeterActivityEventTable from '../Tables/MeterActivityEventTable';
+import { useIntl } from '@umijs/max';
 
 const MeterReport: React.FC = () => {
   const { md } = useScreenHook();
   const { tab, setTab } = useTabsHook('tab1');
+  const intl = useIntl()
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -62,18 +64,18 @@ const MeterReport: React.FC = () => {
           gutter={[0, 16]}
         >
           <ProCard
-            title="Histórico"
+            title={ intl.formatMessage({id: 'component.meter.report.table.title'})}
             tabs={{
               tabPosition: 'top',
               activeKey: tab,
               items: [
                 {
-                  label: `Medições`,
+                  label: intl.formatMessage({id: 'component.meter.report.table.tab.1'}),
                   key: 'tab1',
                   children: <MeterActivityEventTable />,
                 },
                 {
-                  label: `Relatório`,
+                  label: intl.formatMessage({id: 'component.meter.report.table.tab.2'}),
                   key: 'tab2',
                   disabled: true,
 
