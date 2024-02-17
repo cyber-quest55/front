@@ -20,6 +20,7 @@ export async function getPivotsWithInformations(
     data: API.GetPivotsInformationResponse;
   }>(`/v3/farms/${data.id}/pivots/paginated/`, {
     method: 'GET',
+    params: {page: 4}
   });
 }
 

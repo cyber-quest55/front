@@ -85,8 +85,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           }}
         >
           <ProCard
-             style={{
-               padding: 0,
+            style={{
+              padding: 0,
             }}
           >
             <Field
@@ -104,8 +104,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             ></Field>
           </ProCard>
           <ProCard
-             style={{
-               padding: 0,
+            style={{
+              padding: 0,
             }}
           >
             <Space>
@@ -115,9 +115,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           </ProCard>
 
           <ProCard
-             
             style={{
-               padding: 0,
+              padding: 0,
             }}
           >
             <Space>
@@ -127,8 +126,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           </ProCard>
 
           <ProCard
-             style={{
-               padding: 0,
+            style={{
+              padding: 0,
             }}
           >
             <Space>
@@ -138,13 +137,12 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           </ProCard>
 
           <ProCard
-            
             style={{
-               padding: 0,
+              padding: 0,
             }}
           >
             <Space>
-              <Switch onChange={(e) => setShowRepeaters(e)} defaultChecked size="small"  />
+              <Switch onChange={(e) => setShowRepeaters(e)} defaultChecked size="small" />
               <Typography.Text>Repetidores </Typography.Text>
             </Space>
           </ProCard>
@@ -168,38 +166,41 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
         zoom={zoom}
       >
         {!props.pivotInformation.loading && showPivots
-          ? props.pivotInformation?.result?.map((item) => (
-              <CirclePivot
-                id={item.id}
-                key={item.id}
-                protocol={item.protocol}
-                type={item.type}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                referencedLat={item.referencedLat}
-                referencedLng={item.referencedLng}
-                gpsLat={item.gpsLat}
-                gpsLong={item.gpsLong}
-                deviceColor={item.deviceColor}
-                lineColor="#fff"
-                referenceAngle={item.referenceAngle}
-                irrigationDirection={item.irrigationDirection}
-                stopAngle={item.stopAngle | 360}
-                endAngle={item.endAngle}
-                sectorAngle={item.sectorAngle}
-                lpmGpsStreamLat={item.lpmGpsStreamLat}
-                lpmGpsStreamLng={item.lpmGpsStreamLng}
-                zoom={zoom}
-                hasMarker={true}
-                irrigationStatus={4}
-                dashed={false}
-                name={item.name}
-                updated={item.updated}
-                statusText={item.statusText}
-                onSelect={onSetDevice}
-                infoWindow
-              />
-            ))
+          ? props.pivotInformation?.result?.map((item) => {
+              return (
+                <CirclePivot
+                  id={item.id}
+                  key={item.id}
+                  protocol={item.protocol}
+                  type={item.type}
+                  centerLat={item.centerLat}
+                  centerLng={item.centerLng}
+                  referencedLat={item.referencedLat}
+                  referencedLng={item.referencedLng}
+                  gpsLat={item.gpsLat}
+                  gpsLong={item.gpsLong}
+                  deviceColor={item.deviceColor}
+                  lineColor="#fff"
+                  referenceAngle={item.referenceAngle}
+                  irrigationDirection={item.irrigationDirection}
+                  stopAngle={item.stopAngle | 360}
+                  endAngle={item.endAngle}
+                  sectorAngle={item.sectorAngle}
+                  lpmGpsStreamLat={item.lpmGpsStreamLat}
+                  lpmGpsStreamLng={item.lpmGpsStreamLng}
+                  zoom={zoom}
+                  hasMarker={true}
+                  irrigationStatus={4}
+                  dashed={false}
+                  name={item.name}
+                  updated={item.updated}
+                  statusText={item.statusText}
+                  onSelect={onSetDevice}
+                  mapHistory={item.mapHistory}
+                  infoWindow
+                />
+              );
+            })
           : null}
         {!props.meterSystem.loading && showMetter
           ? props.meterSystem.result?.map((item, index) => (
