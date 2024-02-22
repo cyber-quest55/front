@@ -1,7 +1,15 @@
 // Dependencies
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
+import BillingContainer from '@/components/Forms/EditFarm/Billing/BillingContainer'
+import ContactContainer from '@/components/Forms/EditFarm/Contact/ContactContainer'
 import EditFarmGeneralContainer from '@/components/Forms/EditFarm/General/GeneralContainer'
+import HolidaysContainer from '@/components/Forms/EditFarm/Holidays/HolidaysContainer'
+import LocationCallerContainer from '@/components/Forms/EditFarm/LocationCaller/LocationCallerContainer'
+import PivotReportsContainer from '@/components/Forms/EditFarm/PivotReports/PivotReportsContainer'
+import PowerRangesContainer from '@/components/Forms/EditFarm/PowerRanges/PowerRangesContainer'
+import PumpReportsContainer from '@/components/Forms/EditFarm/PumpReports/PumpReportsContainer'
+import UsersContainer from '@/components/Forms/EditFarm/Users/UsersContainer'
 import { GetFarmByIdModelProps, queryFarmById } from '@/models/farm-by-id';
 import { useScreenHook } from '@/hooks/screen';
 import { useMount } from 'ahooks'
@@ -61,7 +69,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab2',
-              children: <EditFarmGeneralContainer />,
+              children: <LocationCallerContainer />,
             },
             {
               label: (
@@ -72,7 +80,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab3',
-              children: <EditFarmGeneralContainer />,
+              children: <BillingContainer />,
             },
             {
               label: (
@@ -83,7 +91,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab4',
-              children: <EditFarmGeneralContainer />,
+              children: <ContactContainer />,
             },
             {
               label: (
@@ -94,7 +102,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab5',
-              children: <EditFarmGeneralContainer />,
+              children: <PowerRangesContainer />,
             },
             {
               label: (
@@ -105,7 +113,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab6',
-              children: <EditFarmGeneralContainer />,
+              children: <PivotReportsContainer />,
             },
             {
               label: (
@@ -116,7 +124,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab7',
-              children: <EditFarmGeneralContainer />,
+              children: <PumpReportsContainer />,
             },
             {
               label: (
@@ -127,7 +135,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab8',
-              children: <EditFarmGeneralContainer />,
+              children: <HolidaysContainer />,
             },
             {
               label: (
@@ -138,19 +146,11 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                 </div>
               ),
               key: 'tab9',
-              children: <EditFarmGeneralContainer />,
+              children: <UsersContainer />,
             },
           ]
         }}
-      >
-        <p>
-          {
-            intl.formatMessage({
-              id: 'pages.edit.farm.tab.header.title'
-            })
-          } - {params.id}
-        </p>
-      </ProCard>
+      />
 		</PageContainer>
   );
 };
