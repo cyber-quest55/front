@@ -188,5 +188,21 @@ export async function createMeterSystem(
     method: 'POST',
     data: options,
   });
-}
- 
+} 
+
+export async function getMeterExcelReport(
+  props: { deviceId: number, otherId: number },
+  options: {
+    date_start: string;
+    date_end: string; 
+  },
+) {
+  return request<any>(`/v3/reports/metersystems/${props.deviceId}/meter/${props.otherId}/excel/`, {
+    method: 'GET',
+    params: options,
+    headers: {
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Tipo de conteúdo do Excel
+    },
+    responseType: 'blob'
+  });
+} 

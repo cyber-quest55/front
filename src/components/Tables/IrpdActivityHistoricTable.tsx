@@ -16,23 +16,56 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space, Tag } from 'antd';
+import { Button, Space, Tag, App } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
+import { getIrpdExcelReport } from '../../services/irpd';
+import { httpToExcel } from '../../utils/adapters/excel';
 
 type Props = {
   dispatch: any;
   irpdHistory: GetIrpdHistoryModelProps;
   selectedDevice: SelectedDeviceModelProps;
   queryIrpdHistory: typeof queryIrpdHistory;
-};
+ };
 
 const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
   const intl = useIntl();
+  const { message } = App.useApp();
   const ref = useRef<ActionType>();
+
   const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
   const reqData = useRequest(getIrpdHistory, { manual: true });
+  const reqGetExcel = useRequest(getIrpdExcelReport, { manual: true });
+
+  const handleExportReport = async  () => { 
+    try {
+      const response = await reqGetExcel.runAsync({deviceId: props.selectedDevice.deviceId},
+        {
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(), 
+        }
+      )
+      httpToExcel(response, `relatório-irpd-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      message.success({
+        duration: 7,
+        content: intl.formatMessage({
+          id: 'component.pivot.download.report.success',
+        }) 
+      });
+    } catch (error) {
+      message.error(intl.formatMessage({
+        id: 'component.pivot.download.report.fail',
+      }));
+    }
+  }
+
+  const ExportButton = <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
+    {intl.formatMessage({
+      id: 'component.export',
+    })}
+  </Button>
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -170,13 +203,7 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
             </LightFilter>
           ),
           filter: (
-            <Space>
-              <Button icon={<DownloadOutlined />}>
-                {intl.formatMessage({
-                  id: 'component.export',
-                })}
-              </Button>
-            </Space>
+            ExportButton
           ),
         }}
       />

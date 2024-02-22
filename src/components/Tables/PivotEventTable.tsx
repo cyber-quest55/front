@@ -5,6 +5,7 @@ import {
   getPivotEventCentralStatus,
   getPivotEventUpdateStatus,
 } from '@/utils/formater/get-pivot-event-status';
+import { rangePresets } from '@/utils/presets/RangePicker';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
@@ -16,10 +17,12 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space } from 'antd';
+import { Button, Space, App } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
+import { getPivotExcelReport } from '../../services/pivot';
+import { httpToExcel } from '../../utils/adapters/excel';
 
 type Props = {
   pivotHistory: GetPivotHistoryModelProps;
@@ -28,8 +31,37 @@ type Props = {
 
 const PivotEventTable: React.FC<Props> = (props) => {
   const reqGetData = useRequest(getPivotHistory, { manual: true });
-   const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
+  const reqGetExcel = useRequest(getPivotExcelReport, { manual: true });
+
+  const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
+  
   const intl = useIntl();
+  const { message } = App.useApp();
+
+  const handleExportReport = async  () => { 
+    try {
+      const response = await reqGetExcel.runAsync({pivotId: props.selectedDevice.deviceId},
+        {
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
+          kwh_value_p : 1,
+          kwh_value_hfp: 1, 
+          kwh_value_r: 1
+        }
+      )
+      httpToExcel(response, `relatório-pivo-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      message.success({
+        duration: 7,
+        content: intl.formatMessage({
+          id: 'component.pivot.download.report.success',
+        }) 
+      });
+    } catch (error) {
+      message.error(intl.formatMessage({
+        id: 'component.pivot.download.report.fail',
+      }));
+    }
+  }
 
   const ref = useRef<ActionType>();
 
@@ -47,6 +79,8 @@ const PivotEventTable: React.FC<Props> = (props) => {
                 })}
                 
                 fieldProps={{
+                  presets: rangePresets,
+
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
                       setDates(v)
@@ -60,13 +94,11 @@ const PivotEventTable: React.FC<Props> = (props) => {
             </LightFilter>
           ),
           filter: (
-            <Space>
-              <Button icon={<DownloadOutlined />}>
-                {intl.formatMessage({
-                  id: 'component.export',
-                })}
-              </Button>
-            </Space>
+            <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
+              {intl.formatMessage({
+                id: 'component.export',
+              })}
+            </Button>
           ),
         }}
         request={async (p, sort, filter): Promise<any> => {

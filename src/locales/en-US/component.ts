@@ -403,6 +403,8 @@ export default {
   'component.pivot.crop.segment.list.accblade': 'Accumulated Blade: ',
   'component.pivot.alert.without': 'Pivot without internet  ',
   'component.pivot.alert.maintenance': 'Pivot under maintenance  ',
+  'component.pivot.download.report.success': 'Your download will be done in a few seconds',
+  'component.pivot.download.report.fail': 'No data in date range',
 
   'component.edit.meter.general.title': 'General',
   'component.edit.meter.button.save': 'Save',
