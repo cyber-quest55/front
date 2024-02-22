@@ -11,10 +11,12 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space } from 'antd';
+import { Button, Space, App } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
+import { getMeterExcelReport } from '../../services/metersystem';
+import { httpToExcel } from '../../utils/adapters/excel';
 
 type Props = {
   selectedDevice: SelectedDeviceModelProps;
@@ -23,13 +25,47 @@ type Props = {
 const MeterActivityEventTable: React.FC<Props> = (props) => {
   const intl = useIntl();
   const ref = useRef<ActionType>();
+  const { message } = App.useApp();
 
   const reqGetData = useRequest(getMeterSystemTable, { manual: true });
+  const reqGetExcel = useRequest(getMeterExcelReport, { manual: true });
+
   const [dates, setDates] = useState<any>([dayjs().subtract(1, 'month'), dayjs()]);
 
   useEffect(() => {
     ref.current?.reload();
   }, [props.selectedDevice, dates])
+
+  const handleExportReport = async  () => { 
+    try {
+      const response = await reqGetExcel.runAsync({
+        deviceId: props.selectedDevice.deviceId, 
+        otherId: props.selectedDevice?.otherProps?.imeterSetId 
+      },
+        {
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(), 
+        }
+      )
+      httpToExcel(response, `relatório-metersystem-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      message.success({
+        duration: 7,
+        content: intl.formatMessage({
+          id: 'component.pivot.download.report.success',
+        }) 
+      });
+    } catch (error) {
+      message.error(intl.formatMessage({
+        id: 'component.pivot.download.report.fail',
+      }));
+    }
+  }
+
+  const ExportButton = <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
+    {intl.formatMessage({
+      id: 'component.export',
+    })}
+  </Button>
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -134,13 +170,7 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
             </LightFilter>
           ),
           filter: (
-            <Space>
-              <Button icon={<DownloadOutlined />}>
-                {intl.formatMessage({
-                  id: 'component.export',
-                })}
-              </Button>
-            </Space>
+            ExportButton
           ),
         }}
       />

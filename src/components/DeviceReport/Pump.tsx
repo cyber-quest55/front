@@ -8,14 +8,15 @@ import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanelContainer from '../DevicePanel/DevicePanelContainer';
-import { useIntl } from '@umijs/max';
+import { useIntl } from '@umijs/max'; 
 
 const PumpReport: React.FC = () => {
+
   const { md } = useScreenHook();
   const intl = useIntl()
 
   const { tab, setTab } = useTabsHook('tab1');
-
+ 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
       height: '100vh',
@@ -36,6 +37,8 @@ const PumpReport: React.FC = () => {
       },
     };
   });
+
+
 
   return (
     <>
@@ -73,7 +76,7 @@ const PumpReport: React.FC = () => {
                 {
                   label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.1' }),
                   key: 'tab1',
-                  children: <IrpdActivityHistoricTable />,
+                  children: <IrpdActivityHistoricTable  />,
                 },
                 {
                   label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.2' }),

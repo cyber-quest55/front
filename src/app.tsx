@@ -105,7 +105,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     siderMenuType: initialState?.collapsed ? 'sub' : 'group',
 
     logo: Logo,
-    breakpoint: 'xs',
+    breakpoint: 'md',
     avatarProps: {
       style: { color: 'rgba(255,255,255,0.75)', padding: 0 },
       src: <UserOutlined />,

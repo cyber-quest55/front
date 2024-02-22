@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import { DevicePanelComponent } from './DevicePanelComponent';
 import DevicePanelMobile from './DevicePanelMobile';
 import { DevicePanelSkeleton } from './DevicePanelSkeleton';
-import meterById, { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
+import  { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 
 type Props = {
   type: DeviceType;
@@ -154,12 +154,13 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
       {loading ? (
         <DevicePanelSkeleton type={type} />
       ) : xs ? (
-        <DevicePanelMobile
-          options={options}
-          type={type}
-          onChangeDevice={onChangeDevice}
-          device={device}
-        />
+        <DevicePanelComponent
+        options={options}
+        type={type}
+        onChangeDevice={onChangeDevice}
+        device={device}
+        setDeviceClose={setDeviceClose}
+      />
       ) : (
         <DevicePanelComponent
           options={options}
