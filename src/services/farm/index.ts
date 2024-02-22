@@ -12,7 +12,7 @@ export async function getFarms(options?: API.GetFarmsParams) {
 }
 
 export async function getFarmById(props: API.GetFarmFullParams) {
-  return request<API.GetFarmFullResponse>(`/farms/${props.id}/`, {
+  return request<API.GetFarmFullResponse>(`/v3/farms/${props.id}/`, {
     method: 'GET',
   });
 }

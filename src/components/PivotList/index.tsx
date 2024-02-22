@@ -321,7 +321,7 @@ const PivotList: React.FC<Props> = (props) => {
     {
       key: '1',
       label: (
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+        <a target="_blank" rel="noopener noreferrer" href={`/farms/${params.id}/edit`}>
           Editar Fazenda
         </a>
       ),
