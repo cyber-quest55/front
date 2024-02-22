@@ -52,6 +52,94 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
               key: 'tab1',
               children: <EditFarmGeneralContainer />,
             },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.location',
+                  })}
+                </div>
+              ),
+              key: 'tab2',
+              children: <EditFarmGeneralContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.billing',
+                  })}
+                </div>
+              ),
+              key: 'tab3',
+              children: <EditFarmGeneralContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.contact',
+                  })}
+                </div>
+              ),
+              key: 'tab4',
+              children: <EditFarmGeneralContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.powerranges',
+                  })}
+                </div>
+              ),
+              key: 'tab5',
+              children: <EditFarmGeneralContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.pivotreports',
+                  })}
+                </div>
+              ),
+              key: 'tab6',
+              children: <EditFarmGeneralContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.pumpreports',
+                  })}
+                </div>
+              ),
+              key: 'tab7',
+              children: <EditFarmGeneralContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.holidays',
+                  })}
+                </div>
+              ),
+              key: 'tab8',
+              children: <EditFarmGeneralContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.users',
+                  })}
+                </div>
+              ),
+              key: 'tab9',
+              children: <EditFarmGeneralContainer />,
+            },
           ]
         }}
       >
