@@ -45,7 +45,7 @@ export default [
 
 
   {
-    path: '/farms/',
+    path: '/farms',
     name: 'Control',
     icon: 'formOutlined',
     routes: [
@@ -53,29 +53,23 @@ export default [
         path: '/farms/:id',
         name: 'Sua Fazenda',
         component: './Farms/[id].tsx',
-      },
+      }, 
       {
         path: '/farms/:id/edit',
         name: 'Editar fazenda',
         component: './Farms/Edit.tsx'
       },
-      {
-        path: '/farms/create',
-        name: 'Criar Fazenda',
-        component: './Farms/create.tsx',
-      },
     ],
   },
   {
-    path: '/report/',
+    path: 'report/',
     name: 'Relatórios',
     icon: 'pieChartOutlined',
-    component: './Devices',
-    routes: [
+     routes: [
       {
-        path: '/report/farms/:id',
+        path: 'report/farms/:id',
         name: 'Relatório do Negócio',
-        component: './Farms/[id].tsx',
+        component: './Reports/index.tsx',
       },
       {
         path: '/report/farms/create',
@@ -100,7 +94,7 @@ export default [
   {
     path: 'farms/:farmId/pivot/:pivotId/edit',
     name: 'Edit Pivot',
-    isHidden: true,
+    hideInMenu: true,
     component: './Pivot/Edit.tsx',
   },
   {

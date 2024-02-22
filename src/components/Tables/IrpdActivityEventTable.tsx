@@ -1,6 +1,6 @@
 import { GetIrpdEventsModelProps, queryIrpdEvents } from '@/models/irpd-events';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { getIrpdEvents } from '@/services/irpd';
+import { getIrpdEvents, getIrpdExcelReport } from '@/services/irpd';
 import { formatDate } from '@/utils/formater/get-formated-date';
 import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -12,10 +12,12 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space } from 'antd';
+import { Button, App } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
+import { httpToExcel } from '../../utils/adapters/excel';
+import TableSkeleton from '../Skeletons/Table';
 
 type Props = {
   irpdEvents: GetIrpdEventsModelProps;
@@ -26,9 +28,40 @@ type Props = {
 const IrpdActivityEventTable: React.FC<Props> = (props) => {
   const intl = useIntl();
   const ref = useRef<ActionType>();
+  const { message } = App.useApp();
+
   const reqData = useRequest(getIrpdEvents, { manual: true });
+  const reqGetExcel = useRequest(getIrpdExcelReport, { manual: true });
 
   const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
+
+  const handleExportReport = async  () => { 
+    try {
+      const response = await reqGetExcel.runAsync({deviceId: props.selectedDevice.deviceId},
+        {
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(), 
+        }
+      )
+      httpToExcel(response, `relatório-irpd-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      message.success({
+        duration: 7,
+        content: intl.formatMessage({
+          id: 'component.pivot.download.report.success',
+        }) 
+      });
+    } catch (error) {
+      message.error(intl.formatMessage({
+        id: 'component.pivot.download.report.fail',
+      }));
+    }
+  }
+
+  const ExportButton = <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
+    {intl.formatMessage({
+      id: 'component.export',
+    })}
+  </Button>
 
   return (
     <ProTable<any>
@@ -84,13 +117,7 @@ const IrpdActivityEventTable: React.FC<Props> = (props) => {
           </LightFilter>
         ),
         filter: (
-          <Space>
-            <Button icon={<DownloadOutlined />}>
-              {intl.formatMessage({
-                id: 'component.export',
-              })}
-            </Button>
-          </Space>
+          ExportButton
         ),
       }}
       request={async (p): Promise<any> => {

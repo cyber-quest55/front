@@ -350,14 +350,17 @@ const FormPivotSegmentationComponent: React.FunctionComponent<any> = (props) => 
           }}
           mapContainerStyle={containerStyle}
           center={mapCenter}
+          mapTypeId='satellite'
           options={{
             keyboardShortcuts: false,
             rotateControl: false,
-            mapTypeControl: false,
+            mapTypeControl: false, 
             isFractionalZoomEnabled: false,
             scaleControl: false,
             fullscreenControl: false,
             streetViewControl: false,
+            mapTypeId: 'satellite',
+
           }}
           zoom={zoom}
         >
