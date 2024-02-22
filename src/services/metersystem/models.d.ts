@@ -499,14 +499,14 @@ declare namespace APIModels {
   };
 
   type PatchMeterSystem = {
-    name: string,
-  }
+    name: string;
+  };
 
   type PatchMeter = {
-    name: string,
-    position: string,
-    sensor_process_controller_pair: number,
-  }
+    name: string;
+    position: string;
+    sensor_process_controller_pair: number;
+  };
 
   type MeterHistory = {
     id: number;
@@ -608,7 +608,7 @@ declare namespace APIModels {
     device: number;
     equipment: number;
     sensor_process_controller_pair: number;
-  }
+  };
 
   type MeterSystemSensor = {
     id: number;
@@ -849,5 +849,15 @@ declare namespace APIModels {
     };
     remote_control: any[]; // You may define a type for remote_control if needed
   };
-  
+
+  type CreateMeterSystemPayload = {
+    name: string;
+    position: string;
+    imeter_device: string;
+    base: string;
+    local_actuation: boolean;
+    protocol: string;
+    function: string;
+    sensor_id: number;
+  };
 }

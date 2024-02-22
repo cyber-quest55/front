@@ -11,4 +11,9 @@ declare namespace API {
   };
 
   type GetFarmConnectionResponse = APIModels.FarmConnection;
+
+  type GetFarmFullParams = { id: string };
+
+  type GetFarmFullResponse = APIModels.FarmFull;
+  
 }

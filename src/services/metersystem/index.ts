@@ -173,14 +173,22 @@ export async function favoriteMeterConfig(
 ) {
   return request<{
     data: API.FavoriteMeterConfigResponse;
-  }>(
-    `/v3/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`,
-    {
-      method: 'PATCH',
-      data: options,
-    },
-  );
+   }>(`/farms/${props.farmId}/metersystems/${props.meterSystemId}/meter/${props.meterId}/config/${props.configId}/`, {
+    method: 'PATCH',
+   data: options});
 }
+
+export async function createMeterSystem(
+  props: API.CreateMeterSystemParams,
+  options: APIModels.CreateMeterSystemPayload,
+) {
+  return request<{
+    data: null;
+  }>(`/farms/${props.farmId}/metersystems/`, {
+    method: 'POST',
+    data: options,
+  });
+} 
 
 export async function getMeterExcelReport(
   props: { deviceId: number, otherId: number },
@@ -197,4 +205,4 @@ export async function getMeterExcelReport(
     },
     responseType: 'blob'
   });
-}
+} 
