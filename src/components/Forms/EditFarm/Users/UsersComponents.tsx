@@ -26,14 +26,14 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			title={
 				<Typography.Title style={{ margin: 0 }} level={5}>
 					{intl.formatMessage({
-						id: 'component.edit.pivot.general.title',
+						id: 'component.edit.farm.users.title',
 					})}
 				</Typography.Title>
 			}
 			extra={
 				<Button loading={loading} icon={<SaveOutlined />} type="primary">
 					{intl.formatMessage({
-						id: 'component.edit.pivot.button.save',
+						id: 'component.edit.farm.button.save',
 					})}
 				</Button>
 			}

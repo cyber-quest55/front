@@ -672,5 +672,16 @@ export default {
   'component.irpd.scheduleirr.type.opt.2': "Don't stop",
   'component.irpd.scheduleirr.label.opt.1': 'Start in',
   'component.irpd.scheduleirr.label.opt.2': 'Stop in',
+
+  'component.edit.farm.button.save': 'Save',
+  'component.edit.farm.general.title': 'General',
+  'component.edit.farm.location.title': 'Location',
+  'component.edit.farm.billing.title': 'Billing',
+  'component.edit.farm.contact.title': 'Contact',
+  'component.edit.farm.powerranges.title': 'Power Ranges',
+  'component.edit.farm.pivotreports.title': 'Pivot Reports',
+  'component.edit.farm.pumpreports.title': 'Pump Reports',
+  'component.edit.farm.holidays.title': 'Holidays',
+  'component.edit.farm.users.title': 'Users'
  
 };

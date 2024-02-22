@@ -1,5 +1,5 @@
 // Dependencies
-import { ProCard } from '@ant-design/pro-components';
+import { ProCard, ProForm } from '@ant-design/pro-components';
 import { SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max'
@@ -26,14 +26,14 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 			title={
 				<Typography.Title style={{ margin: 0 }} level={5}>
 					{intl.formatMessage({
-						id: 'component.edit.pivot.general.title',
+						id: 'component.edit.farm.general.title',
 					})}
 				</Typography.Title>
 			}
 			extra={
 				<Button loading={loading} icon={<SaveOutlined />} type="primary">
 					{intl.formatMessage({
-						id: 'component.edit.pivot.button.save',
+						id: 'component.edit.farm.button.save',
 					})}
 				</Button>
 			}
@@ -42,7 +42,17 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 		>
 			{
 				farm ? (
-					<p>Address: {farm.address}</p>
+					<>
+						<ProForm
+							validateTrigger="onBlur"
+							layout="vertical"
+							rowProps={{ gutter: [8, 8] }}
+							grid
+							submitter={false}
+						>
+
+						</ProForm>
+					</>
 				) : null
 			}
     </ProCard>
