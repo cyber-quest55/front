@@ -1,4 +1,3 @@
-import AddPivotAlarmForm from '@/components/Forms/AddAlarmForm/Pivot';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Tabs } from 'antd';
@@ -391,7 +390,6 @@ const NoFoundPage: React.FC = () => {
         <AlarmPivotList
           title="Pivôs"
           dataSource={dataSource}
-          form={<AddPivotAlarmForm />}
           size="large"
         />
       ),

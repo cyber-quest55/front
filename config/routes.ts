@@ -129,7 +129,7 @@ export default [
     component: './Irpd/EditV4.tsx',
   },
   {
-    path: '/notifications/',
+    path: 'farms/:farmId/notifications/',
     name: 'Notificações',
     icon: 'bellOutlined',
     component: './Notifications',

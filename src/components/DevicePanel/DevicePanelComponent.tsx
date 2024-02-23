@@ -481,22 +481,26 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
           <Space>
             {device.protocol === 5 || device.protocol === 5.1 ? (
               <Link to={`/farms/${params.id}/irpd/${device.id}/edit`}>
-
                 <Button icon={<EditFilled />}>
                   {intl.formatMessage({
                     id: 'component.pivot.operationalpanel.button.edit',
                   })}
                 </Button>
               </Link>
-          
+            ) : (
               <Link to={`/farms/${params.id}/irpd/${device.id}/editv4`}>
-                <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
+                <Button icon={<EditFilled />}>
                   {intl.formatMessage({
-                    id: 'component.pivot.operationalpanel.button.close',
+                    id: 'component.pivot.operationalpanel.button.edit',
                   })}
                 </Button>
               </Link>
-          
+            )}
+            <Button icon={<CloseCircleFilled />} onClick={destroyOnClick}>
+              {intl.formatMessage({
+                id: 'component.pivot.operationalpanel.button.close',
+              })}
+            </Button>
           </Space>
         );
       }

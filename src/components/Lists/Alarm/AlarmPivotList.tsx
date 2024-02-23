@@ -1,9 +1,14 @@
+import AddPivotAlarmForm from '@/components/Forms/AddAlarmForm/Pivot';
 import { useScreenHook } from '@/hooks/screen';
+import { getPivotNotifications, getPivotNotificationsReasons } from '@/services/notification';
+import { getPivots } from '@/services/pivot';
 import { BellOutlined, DeleteFilled, EditFilled } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
 import { Button, Col, Row, Space, Switch, Tag, Typography } from 'antd';
-import React, { ReactNode, ReactText, useState } from 'react';
+import React, {  ReactText, useEffect, useState } from 'react';
 interface PivotItem {
   id: string;
   name: string;
@@ -18,12 +23,14 @@ interface PivotItem {
 export type AlarmPivotListProps = {
   title: string;
   dataSource: PivotItem[];
-  form: ReactNode;
   size?: 'small' | 'default' | 'large';
 };
 
 const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
   const { lg } = useScreenHook();
+  const getPivotNotificationsReq = useRequest(getPivotNotifications, { manual: true });
+  const getPivotsReq = useRequest(getPivots, { manual: true });
+  const getPivotNotificationsReasonsReq = useRequest(getPivotNotificationsReasons, { manual: true });
 
   const className = useEmotionCss(({ token }) => {
     return {
@@ -62,6 +69,35 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
   });
 
   const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
+  const [notificationsMapped, setNotificationsMapped] = useState<any>([]);
+  const [reasons, setReasons] = useState<any>([]);
+  const [pivots, setPivots] = useState<any>([]);
+  const params = useParams();
+
+  useEffect(() => {
+    Promise.all([
+      getPivotsReq.runAsync({ id: params.farmId as any }),
+      getPivotNotificationsReq.runAsync(),
+      getPivotNotificationsReasonsReq.runAsync({ equipmentType: 0, language: 'en' })
+    ]).then(([pivots, notifications, reasons]) => {
+      let newNotificationMapped = []
+      for(let notification of notifications) {
+        newNotificationMapped.push({
+          ...notification,
+          subTitle: {
+            startDate: notification.start,
+            endDate: notification.end,
+            devices: pivots.filter((pivot: any) => notification.devices.includes(pivot.id)),
+          },
+          reasons: reasons.filter((reason: any) => notification.reasons.includes(reason.id)),
+          criticalReasons: reasons.filter((reason: any) => notification.critical_reasons.includes(reason.id)),
+        })
+      }
+      setReasons(reasons);
+      setPivots(pivots);
+      setNotificationsMapped(newNotificationMapped)
+    });
+  }, []);
 
   return (
     <div className={className}>
@@ -70,19 +106,18 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
         rowKey="id"
         size={props.size}
         headerTitle={props.title}
-        dataSource={props.dataSource}
+        dataSource={notificationsMapped}
         showActions="hover"
         editable={{
           onSave: async () => {
             return true;
           },
         }}
-        toolBarRender={() => {
-          return [props.form];
-        }}
+        toolBarRender={() => [<AddPivotAlarmForm key="form" reasons={reasons} pivots={pivots} />]}
         metas={{
           title: {
-            dataIndex: 'name',
+            dataIndex: ['name'],
+            render: (it) => <Typography.Text>{it}</Typography.Text>,
           },
           avatar: {
             dataIndex: 'image',
@@ -90,13 +125,13 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
             render: () => <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
           },
           description: {
-            dataIndex: 'description',
+            dataIndex: 'reasons',
             render: (dom: any) => {
               return (
                 <Row gutter={[12, 4]} style={{ marginTop: 16 }}>
-                  {dom?.map((it: string, index: number) => (
+                  {dom?.map((it: any, index: number) => (
                     <Col key={`alarm-pivot-monitor-list-tag-${index}`} xs={24} md={12}>
-                      <Typography.Text type="secondary">{it}</Typography.Text>
+                      <Typography.Text type="secondary">{it.label}</Typography.Text>
                     </Col>
                   ))}
                 </Row>
@@ -115,11 +150,11 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
             render: (dom: any) => (
               <Space direction="vertical" size={'middle'} style={{ marginTop: 4 }}>
                 <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
-                  {dom.date}
+                  {dom.startDate === "00:00:00" && dom.endDate === "23:59:59" ? "Dia todo" : `${dom.startDate} > ${dom.endDate}`}
                 </Typography.Text>
                 <Space size={2} style={{ margin: 0 }} wrap>
-                  {dom?.pivotList?.map((it: string, index: number) => (
-                    <Tag key={`alarm-pivot-monitor-list-pivot-${index}`}>{it}</Tag>
+                  {dom?.devices.map((it: any, index: number) => (
+                    <Tag key={`alarm-pivot-monitor-list-pivot-${index}`}>{it.name}</Tag>
                   ))}
                 </Space>
               </Space>
