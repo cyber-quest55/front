@@ -11,6 +11,21 @@ export async function getFarms(options?: API.GetFarmsParams) {
   });
 }
 
+export async function updatedBase(
+  props: {
+    id: string,
+  },
+  body?: {
+    equipment_id: number,
+    radio_id: string
+  },
+)  {
+  return request<{ data: any }>(`/v3/farms/${props.id}/base/`, {
+    method: 'POST',
+    data: body
+  })
+}
+
 export async function getFarmById(props: API.GetFarmFullParams) {
   return request<API.GetFarmFullResponse>(`/v3/farms/${props.id}/`, {
     method: 'GET',
