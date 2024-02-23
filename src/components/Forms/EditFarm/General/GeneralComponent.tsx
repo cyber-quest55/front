@@ -31,7 +31,7 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
 	const ref = useRef();
 	const timezones = Intl.supportedValuesOf('timeZone');
 	const [ form ] = Form.useForm();
-	const [ loading ] = useState(false);
+	const [ loading, setLoading ] = useState(false);
 
 	// Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
@@ -51,6 +51,20 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
       ),
 		billing_date: yup
 			.number()
+			.min(
+				1,
+				intl.formatMessage(
+          { id: 'validations.min' },
+          { value: 1 },
+        ),
+			)
+			.max(
+				30,
+				intl.formatMessage(
+          { id: 'validations.max' },
+          { value: 30 },
+        ),
+			)
 			.required(
 				intl.formatMessage({
 					id: 'validations.required',
@@ -58,6 +72,20 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
 			),
 		water_billing_date: yup
 				.number()
+				.min(
+					1,
+					intl.formatMessage(
+						{ id: 'validations.min' },
+						{ value: 1 },
+					),
+				)
+				.max(
+					31,
+					intl.formatMessage(
+						{ id: 'validations.max' },
+						{ value: 31 },
+					),
+				)
 				.required(
 					intl.formatMessage({
 						id: 'validations.required',
@@ -82,7 +110,12 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
 				</Typography.Title>
 			}
 			extra={
-				<Button loading={loading} icon={<SaveOutlined />} type="primary">
+				<Button
+					loading={loading}
+					icon={<SaveOutlined />}
+					type="primary"
+					onClick={form.submit}
+				>
 					{intl.formatMessage({
 						id: 'component.edit.farm.button.save',
 					})}
@@ -104,6 +137,12 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
             	formRef={ref}
 							grid
 							initialValues={{ ...farm }}
+							onFinish={async (values: any) => {
+								console.log('[submit values]', values);
+								setLoading(true);
+
+								setLoading(false);
+							}}
 						>
 							<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
 								<RadioInputContainer
