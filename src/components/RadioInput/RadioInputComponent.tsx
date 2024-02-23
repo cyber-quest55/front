@@ -4,7 +4,6 @@ import {
   LoadingOutlined,
   QrcodeOutlined,
   SaveOutlined,
-  WarningOutlined
 } from '@ant-design/icons';
 import {
   ActionType,
@@ -18,12 +17,14 @@ import {
 import { Request, useParams, useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import {
+  Alert,
   App,
   Button,
   Badge,
   Breakpoint,
   Col,
   Form,
+  List,
   Modal,
   Space,
   Tooltip,
@@ -47,6 +48,7 @@ type IRadioInputComponentProps = {
   requestChange?: any;
   requestPivots?: any;
   requestIrpds?: any;
+  requestMeterSystem?: any;
   requestBase?: any;
   deviceId: string;
   fieldIndex?: string;
@@ -81,6 +83,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   const reqPost = useRequest(props.requestSwapChange as any, { manual: true });
   const reqManual = useRequest(props.requestChange as any, { manual: true });
   const reqPivots = useRequest(props.requestPivots as any, { manual: true });
+  const reqMeterSystem = useRequest(props.requestMeterSystem as any, { manual: true })
   const reqIrpds = useRequest(props.requestIrpds as any, { manual: true });
   const reqBase = useRequest(props.requestBase as any, { manual: true })
 
@@ -88,13 +91,20 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
 
   const onOpenCentralModal = React.useCallback(async () => {
     // Step 1. Retrieve farm devices from irpq and pivots
-    const [ pivotResults, irpdResults ]: [ any, any] = await Promise.all([
+    const [
+      pivotResults,
+      irpdResults,
+      meterResults
+    ]: [ any, any, any ] = await Promise.all([
       reqPivots.runAsync({
         id: params.id as any,
       }),
       reqIrpds.runAsync({
         id: params.id as any,
       }),
+      reqMeterSystem.runAsync({
+        id: params.id as any,
+      })
     ]);
     setIsCentralOpen(true)
     
@@ -113,7 +123,16 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       label: r.name,
       id: r.id,
     }))
-    setDropdownDevices(prev => [ ...prev, ...pivotsDatasource, ...irpdDatasource ])
+    const meterDatasource = meterResults.map((r: any) => ({
+      label: r.name,
+      id: r.id,
+    }))
+    setDropdownDevices(prev => [
+      ...prev,
+      ...pivotsDatasource,
+      ...irpdDatasource,
+      ...meterDatasource
+    ])
   }, [params, reqIrpds, reqPivots, setIsCentralOpen, setDropdownDevices])
 
   const onSave = async () => {
@@ -340,21 +359,12 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             name={['send_updates']}
             options={dropdownDevices}
           />
-          <ProCard
-            size="small"
-            headerBordered
-            bordered
-            bodyStyle={{ padding: 8, backgroundColor: '#f45347' }}
-          >
-            <Typography.Paragraph style={{ margin: 0, textAlign: 'center' }}>
-              <WarningOutlined />
-            </Typography.Paragraph>
-            <Typography.Paragraph style={{ margin: 0, textAlign: 'center' }}>
-              { intl.formatMessage({
-                id: 'component.radio.warning.message'
-              }) }
-            </Typography.Paragraph>
-          </ProCard>
+          <Alert
+            message={ intl.formatMessage({ id: 'component.radio.warning.message' })}
+            type="warning"
+            style={{ marginBottom: 8 }}
+            showIcon
+          />
           <Button
             icon={<SaveOutlined />}
             type="primary"
@@ -366,21 +376,17 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             })}
           </Button>
         </ProForm>
-        {
-          dropdownDevices.map((obj, i) => i !== 0 ? (
-            <ProCard
-              key={i}
-              size="small"
-              headerBordered
-              bordered
-              bodyStyle={{ padding: 8}}
-            >
-              <Typography.Paragraph style={{ margin: 0 }}>
-                {obj.label}
-              </Typography.Paragraph>
-            </ProCard>
-          ) : null)
-        }
+        <List
+          bordered
+          dataSource={dropdownDevices}
+          renderItem={(item, index) => index !== 0 ? (
+            <List.Item>
+              <Typography.Text>
+                {item.label}
+              </Typography.Text>
+            </List.Item>
+          ) : <></>}
+        />
       </Modal>
       <Modal
         title={`Trocar o rádio do ${deviceType}`}

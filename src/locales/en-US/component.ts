@@ -676,7 +676,7 @@ export default {
   'component.radio.modal.base.title': 'Update base radio',
   'component.radio.modal.base.fields.device.label': 'Send radio update to',
   'component.radio.modal.base.fields.device.placeholder': 'All listed devices',
-  'component.radio.warning.message': 'The clock from the equipements displayed below will be updated to current time.',
+  'component.radio.warning.message': 'The clock from the devices listed below will be updated to current time.',
   'component.radio.status.processing': 'Processing',
   'component.radio.status.default': 'Not received',
   'component.radio.status.success': 'Received',

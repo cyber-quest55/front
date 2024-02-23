@@ -10,6 +10,7 @@ import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import { queryFarmById } from '@/models/farm-by-id';
 import { updatedBase } from '@/services/farm'
 import { getIrpds } from '@/services/irpd';
+import { getMeterSystem } from '@/services/metersystem';
 import { getPivots } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl } from '@umijs/max'
@@ -115,6 +116,7 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
 									device="central"
 									requestPivots={getPivots}
 									requestIrpds={getIrpds}
+									requestMeterSystem={getMeterSystem}
 									requestBase={updatedBase}
 									label={intl.formatMessage({
 										id: 'component.edit.farm.general.centralradio.label',

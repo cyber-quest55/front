@@ -22,6 +22,7 @@ type IRadioInputContainerProps = {
   requestChange?: any;
   requestPivots?: any;
   requestIrpds?: any;
+  requestMeterSystem?: any;
   requestBase?: any;
   deviceId: string;
   name?: string[];
