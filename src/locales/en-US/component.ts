@@ -682,6 +682,10 @@ export default {
   'component.edit.farm.pivotreports.title': 'Pivot Reports',
   'component.edit.farm.pumpreports.title': 'Pump Reports',
   'component.edit.farm.holidays.title': 'Holidays',
-  'component.edit.farm.users.title': 'Users'
- 
+  'component.edit.farm.users.title': 'Users',
+  'component.edit.farm.general.centralradio.label': 'Central radio',
+  'component.edit.farm.general.name.label': 'Name',
+  'component.edit.farm.general.timezone.label': 'Timezone',
+  'component.edit.farm.general.billing_date.label': 'Billing Date',
+  'component.edit.farm.general.water_billing_date.label': 'Water Billing Date'
 };

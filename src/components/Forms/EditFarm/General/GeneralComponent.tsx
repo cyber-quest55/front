@@ -1,24 +1,71 @@
 // Dependencies
-import { ProCard, ProForm } from '@ant-design/pro-components';
+import {
+	ProCard,
+	ProForm,
+	ProFormField,
+	ProFormSelect
+} from '@ant-design/pro-components';
 import { SaveOutlined } from '@ant-design/icons';
+import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import { queryFarmById } from '@/models/farm-by-id';
+import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl } from '@umijs/max'
-import { Button, Typography } from 'antd';
-import { FunctionComponent, ReactElement, useState } from 'react';
+import { Button, Form, Typography, Row } from 'antd';
+import { FunctionComponent, ReactElement, useRef, useState, useCallback } from 'react';
+import * as yup from 'yup';
 
 // Component props
 type Props = {
 	farm?: API.GetFarmFullResponse;
 	queryFarmById: typeof queryFarmById;
-}
+};
 
 // Component
-const EditFarmGeneralComponent: FunctionComponent<Props> = ({
-	farm
-}): ReactElement => {
+const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElement => {
 	// Hooks
-	const intl = useIntl()
+	const intl = useIntl();
+	const ref = useRef();
+	const timezones = Intl.supportedValuesOf('timeZone');
+	const [ form ] = Form.useForm();
 	const [ loading ] = useState(false);
+
+	// Form validation schema
+	const yupSchema = useCallback(() => yup.object().shape({
+		name: yup
+      .string()
+      .max(
+        16,
+        intl.formatMessage(
+          { id: 'validations.max' },
+          { value: 16 },
+        ),
+      )
+      .required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+		billing_date: yup
+			.number()
+			.required(
+				intl.formatMessage({
+					id: 'validations.required',
+				}),
+			),
+		water_billing_date: yup
+				.number()
+				.required(
+					intl.formatMessage({
+						id: 'validations.required',
+					}),
+				),
+		timezone: yup.string().required(
+			intl.formatMessage({
+				id: 'validations.required',
+			}),
+		),
+	}), [intl]);
+	const yupSync = yupValidator(yupSchema(), form.getFieldsValue);
 
 	// Main TSX
   return (
@@ -46,11 +93,67 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 						<ProForm
 							validateTrigger="onBlur"
 							layout="vertical"
+							name="general_form"
 							rowProps={{ gutter: [8, 8] }}
-							grid
 							submitter={false}
+							form={form}
+            	formRef={ref}
+							grid
+							initialValues={{ ...farm }}
 						>
-
+							<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
+								<RadioInputContainer
+									name={['base', 'radio_id']}
+									operable={false}
+									setFieldValue={form.setFieldValue}								
+									status={'processing'}
+									deviceType=""
+									device=""
+									label={intl.formatMessage({
+										id: 'component.edit.farm.general.centralradio.label',
+									})}
+									span={{
+										xs: 24,
+										md: 24,
+									}}
+								/>
+								<ProFormField
+									rules={[yupSync]}
+									name={['name']}
+									label={intl.formatMessage({
+										id: 'component.edit.farm.general.name.label',
+									})}
+									colProps={{ xs: 24, md: 8, xl: 6 }}
+								/>
+								<ProFormField
+									rules={[yupSync]}
+									name={['billing_date']}
+									label={intl.formatMessage({
+										id: 'component.edit.farm.general.billing_date.label',
+									})}
+									colProps={{ xs: 24, md: 8, xl: 6 }}
+								/>
+								<ProFormField
+									rules={[yupSync]}
+									name={['water_billing_date']}
+									label={intl.formatMessage({
+										id: 'component.edit.farm.general.water_billing_date.label',
+									})}
+									colProps={{ xs: 24, md: 8, xl: 6 }}
+								/>
+								<ProFormSelect
+									rules={[yupSync]}
+									name={['timezone']}
+									label={intl.formatMessage({
+										id: 'component.edit.farm.general.timezone.label',
+									})}
+									colProps={{ xs: 24, md: 8, xl: 6 }}
+									options={timezones.map(t => ({
+										label: t,
+										value: t,
+									}))}
+								/>
+							</Row>
 						</ProForm>
 					</>
 				) : null

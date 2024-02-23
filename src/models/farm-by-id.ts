@@ -29,6 +29,7 @@ export default {
       yield put({ type: 'queryFarmByIdStart' });
       try {
         const response: API.GetFarmFullResponse = yield call(getFarmById, payload);
+        console.log('[response]', response)
         yield put({ type: 'queryFarmByIdSuccess', payload: response });
       } catch (error: any) {
         yield put({ type: 'queryFarmByIdError', payload: error });
