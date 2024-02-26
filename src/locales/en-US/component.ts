@@ -724,4 +724,7 @@ export default {
   'component.edit.farm.contact.city.label': 'City',
   'component.edit.farm.contact.state.label': 'State',
   'component.edit.farm.contact.country.label': 'Country',
+  // Holiday tab
+  'component.edit.farm.holiday.desc': 'Add holidays',
+  'component.edit.farm.holiday.label': 'Holiday'
 };
