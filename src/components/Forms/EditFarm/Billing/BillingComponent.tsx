@@ -45,38 +45,56 @@ const EditFarmBillingComponent: FunctionComponent<Props> = ({
 
 	// Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
-		address: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
-		city: yup.string().required(
-			intl.formatMessage({
-				id: 'validations.required',
-			}),
-		),
-		country: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
-		phone: yup.string().matches(
-			/^[^_]+$/,
-			intl.formatMessage({
-				id: 'validations.required',
-			}),
-		),
-		postal_code: yup.string().matches(
-      /^[^_]+$/,
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
-		state: yup.string().required(
-      intl.formatMessage({
-        id: 'validations.required',
-      }),
-    ),
+		billing: yup.object().shape({
+			address: yup.string().required(
+				intl.formatMessage({
+					id: 'validations.required',
+				}),
+			),
+			city: yup.string().required(
+				intl.formatMessage({
+					id: 'validations.required',
+				}),
+			),
+			company_name: yup.string().required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+			country: yup.string().required(
+				intl.formatMessage({
+					id: 'validations.required',
+				}),
+			),
+			document: yup.string().matches(
+        /^[^_]+$/,
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+			email: yup.string().required(
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+			phone: yup.string().matches(
+				/^[^_]+$/,
+				intl.formatMessage({
+					id: 'validations.required',
+				}),
+			),
+			postal_code: yup.string().matches(
+				/^[^_]+$/,
+				intl.formatMessage({
+					id: 'validations.required',
+				}),
+			),
+			state: yup.string().required(
+				intl.formatMessage({
+					id: 'validations.required',
+				}),
+			),
+		}),
 	}), [intl]);
 	const yupSync = yupValidator(yupSchema(), form.getFieldsValue);
 
@@ -132,7 +150,41 @@ const EditFarmBillingComponent: FunctionComponent<Props> = ({
 					{intl.formatMessage({ id: 'component.edit.farm.billing.billingheading.label' })}
 				</Typography.Title>
 				<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
-
+					<CustomInput.Document
+						colProps={{ xs: 24, sm: 24, md: 12 }}
+						formItemProps={{
+							rules: [yupSync],
+							label: intl.formatMessage({ id: 'component.edit.farm.billing.document.label' }),
+							name: ['billing', 'document'],
+						}}
+						country={farm?.country || ''}
+						formRef={ref}
+						selectItemProps={{
+							name: ['billing', 'docType'],
+						}}
+					/>
+					<ProFormField
+            rules={[yupSync]}
+						colProps={{ xs: 24, md: 24, xl: 12 }}
+            label={intl.formatMessage({ id: 'component.edit.farm.billing.companyname.label' })}
+            name={['billing', 'company_name']}
+          />
+					<CustomInput.Cellphone
+            //countryCode={farm?.phone}
+            colProps={{ xs: 24, sm: 24, md: 8 }}
+            formItemProps={{
+            	rules: [yupSync],
+              label: intl.formatMessage({ id: 'component.edit.farm.billing.phone.label' }),
+              name: ['billing', 'phone'],
+            }}
+            country={farm?.country}
+          />
+					<ProFormField
+            rules={[yupSync]}
+						colProps={{ xs: 24, sm: 24, md: 8 }}
+            name={['billing', 'email']}
+            label={intl.formatMessage({ id: 'component.edit.farm.billing.email.label' })}
+          />
 				</Row>
 				<Typography.Title style={{ margin: 0 }} level={5}>
 					{intl.formatMessage({ id: 'component.edit.farm.billing.billingaddress.label' })}
@@ -143,28 +195,28 @@ const EditFarmBillingComponent: FunctionComponent<Props> = ({
 						colProps={{ xs: 24, md: 8, xl: 8 }}
 						formItemProps={{
 							rules: [yupSync],
-							name: ['postal_code'],
+							name: ['billing', 'postal_code'],
 							label: intl.formatMessage({
-								id: 'component.edit.farm.contact.postalcode.label',
+								id: 'component.edit.farm.billing.postalcode.label',
 							})
 						}}
 					/>
 					<ProFormField
             rules={[yupSync]}
-            name={['address']}
-            label={intl.formatMessage({ id: 'component.edit.farm.contact.street.label' })}
+            name={['billing', 'address']}
+            label={intl.formatMessage({ id: 'component.edit.farm.billing.street.label' })}
 						colProps={{ xs: 24, md: 16, xl: 16 }}
           />
 					<ProFormField
             rules={[yupSync]}
-            name={['city']}
-            label={intl.formatMessage({ id: 'component.edit.farm.contact.city.label' })}
+            name={['billing', 'city']}
+            label={intl.formatMessage({ id: 'component.edit.farm.billing.city.label' })}
 						colProps={{ xs: 24, md: 8, xl: 8 }}
           />
 					<ProFormField
             rules={[yupSync]}
-            name={['state']}
-            label={intl.formatMessage({ id: 'component.edit.farm.contact.state.label' })}
+            name={['billing', 'state']}
+            label={intl.formatMessage({ id: 'component.edit.farm.billing.state.label' })}
 						colProps={{ xs: 24, md: 8, xl: 8 }}
           />
 					<ProFormSelect
@@ -179,12 +231,10 @@ const EditFarmBillingComponent: FunctionComponent<Props> = ({
                 };
               });
             }}
-            name={['country']}
-            showSearch
-            label={intl.formatMessage({
-              id: 'component.create.farm.modal.country.label',
-            })}
+            name={['billing', 'country']}
+            label={intl.formatMessage({ id: 'component.edit.farm.billing.country.label' })}
 						colProps={{ xs: 24, md: 8, xl: 8 }}
+            showSearch
           />
 				</Row>
 			</ProForm>
