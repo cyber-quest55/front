@@ -13,7 +13,7 @@ import { getIrpds } from '@/services/irpd';
 import { getMeterSystem } from '@/services/metersystem';
 import { getPivots } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
-import { useIntl } from '@umijs/max'
+import { useIntl } from '@umijs/max';
 import { Button, Form, Typography, Row } from 'antd';
 import { FunctionComponent, ReactElement, useRef, useState, useCallback } from 'react';
 import * as yup from 'yup';
@@ -141,6 +141,15 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
 								console.log('[submit values]', values);
 								setLoading(true);
 
+								// Backend does not support modular update so the entire farm obj must be sent
+								const newObj = { ...farm }
+								newObj.base.radio_id = values.base.radio_id
+								newObj.billing_date = values.billing_date
+								newObj.water_billing_date = values.water_billing_date
+								newObj.timezone = values.timezone
+								newObj.name = values.name
+
+								console.log('submit formatted', newObj)
 								setLoading(false);
 							}}
 						>

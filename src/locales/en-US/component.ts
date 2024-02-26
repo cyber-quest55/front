@@ -682,6 +682,7 @@ export default {
   'component.radio.status.success': 'Received',
   'component.radio.messages.base.success': 'Base radio successfully updated!',
   'component.radio.messages.base.error': 'Fail',
+  // Edit farm tabs
   'component.edit.farm.button.save': 'Save',
   'component.edit.farm.general.title': 'General',
   'component.edit.farm.location.title': 'Location',
@@ -692,9 +693,26 @@ export default {
   'component.edit.farm.pumpreports.title': 'Pump Reports',
   'component.edit.farm.holidays.title': 'Holidays',
   'component.edit.farm.users.title': 'Users',
+  // General tab
   'component.edit.farm.general.centralradio.label': 'Central radio',
   'component.edit.farm.general.name.label': 'Name',
   'component.edit.farm.general.timezone.label': 'Timezone',
   'component.edit.farm.general.billing_date.label': 'Billing Date',
-  'component.edit.farm.general.water_billing_date.label': 'Water Billing Date'
+  'component.edit.farm.general.water_billing_date.label': 'Water Billing Date',
+  // Location tab
+  'component.edit.farm.location.desc':
+    'Pysical location from your farm. Its important to set this to display the correct coordinates on your farm view page.',
+  'component.edit.farm.location.center.label': 'Center',
+  // Billing
+  'component.edit.farm.billing.billing.title': 'This tab contains financial info related to comercial transactions from platform.',
+  'component.edit.farm.billing.billingheading.label': 'Billing info',
+  'component.edit.farm.billing.billingaddress.label': 'Billing address',
+  // Contact tab
+  'component.edit.farm.contact.contact.label': 'Technical contact info',
+  'component.edit.farm.contact.address.label': 'Technical address info',
+  'component.edit.farm.contact.postalcode.label': 'Postal code',
+  'component.edit.farm.contact.street.label': 'Address',
+  'component.edit.farm.contact.city.label': 'City',
+  'component.edit.farm.contact.state.label': 'State',
+  'component.edit.farm.contact.country.label': 'Country',
 };
