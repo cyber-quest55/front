@@ -1,13 +1,16 @@
 // Dependencies
 import { ProCard } from '@ant-design/pro-components';
-import { SaveOutlined } from '@ant-design/icons';
+import { DownloadOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { useScreenHook } from '@/hooks/screen';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max';
 import {
+	Badge,
 	Button,
 	Calendar,
-	Badge,
+	Col,
+	DatePicker,
+	Row,
 	Typography
 } from 'antd';
 import type { Dayjs } from 'dayjs';
@@ -19,31 +22,22 @@ type Props = {
 	queryFarmById: typeof queryFarmById;
 }
 
-const holiday_list = [
-	{ "day": 2, "month": 4 },
-	{ "day": 21, "month": 4 },
-	{ "day": 1, "month": 5 },
-	{ "day": 3, "month": 6 },
-	{ "day": 7, "month": 9 },
-	{ "day": 12, "month": 10 },
-	{ "day": 2, "month": 11 },
-	{ "day": 15, "month": 11 },
-	{ "day": 25, "month": 12 }
-]
-
 // Component
-const EditFarmHolidaysComponent: FunctionComponent<Props> = ({}): ReactElement => {
+const EditFarmHolidaysComponent: FunctionComponent<Props> = ({ farm }): ReactElement => {
 	// Hooks
-	const intl = useIntl()
+	const intl = useIntl();
 	const [ loading ] = useState(false);
+	const [
+		holidayList,
+		//setHolidayList
+	] = useState<{ day: number, month: number }[]>(farm?.holidays_list || [])
 	const { lg, xl, xxl } = useScreenHook();
 
-	const isLargeScreen = lg || xl || xxl
-
+	const isLargeScreen = lg || xl || xxl;
 
 	// Calendar cell renderer
 	const dateCellRenderer = (value: Dayjs) => {
-    const isHoliday = holiday_list.some((holiday) => {
+    const isHoliday = holidayList.some((holiday) => {
       return (
         value.month() === holiday.month - 1 &&
         value.date() === holiday.day
@@ -68,7 +62,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({}): ReactElement =
 
 	// Calendar cell for mobile
 	const calendarFullRenderer = (value: Dayjs) => {
-		const isHoliday = holiday_list.some(
+		const isHoliday = holidayList.some(
 			(holiday) =>
 				value.month() === holiday.month - 1 && value.date() === holiday.day
 		);
@@ -85,6 +79,12 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({}): ReactElement =
 			</div>
 		);
 	}
+
+	const handleDateChange = (date: Dayjs | null) => {
+    if (date) {
+      console.log('Selected Month and Day:', date.format('MMMM Do'));
+    }
+  }
 
 	// Main TSX
   return (
@@ -106,9 +106,39 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({}): ReactElement =
 			ghost
 			gutter={[12, 12]}
 		>
-			<Typography.Paragraph style={{ margin: 0 }}>
+			<Typography.Paragraph>
 				{intl.formatMessage({ id: 'component.edit.farm.holiday.desc' })}
 			</Typography.Paragraph>
+			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
+				<Col xs={24} sm={24} md={8} xl={8}>
+					<DatePicker 
+						picker="date"
+						format="MMMM Do"
+						onChange={handleDateChange}
+						style={{ width: '100%' }}
+					/>
+				</Col>
+				<Col xs={24} sm={24} md={4} xl={4} >
+					<Button
+						type="primary"
+						icon={<PlusOutlined />}
+						style={{ width: '100%' }}
+						onClick={() => {}}
+					>
+						{intl.formatMessage({ id: 'component.edit.farm.holiday.add' })}
+					</Button>
+				</Col>
+				<Col xs={24} sm={24} md={8} xl={8} >
+					<Button
+						type="primary"
+						icon={<DownloadOutlined />}
+						style={{ width: '100%' }}
+						onClick={() => {}}
+					>
+						{intl.formatMessage({ id: 'component.edit.farm.holiday.import' })}
+					</Button>
+				</Col>
+			</Row>
 			{
 				isLargeScreen ? (
 					<Calendar

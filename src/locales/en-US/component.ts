@@ -701,7 +701,7 @@ export default {
   'component.edit.farm.general.water_billing_date.label': 'Water Billing Date',
   // Location tab
   'component.edit.farm.location.desc':
-    'Pysical location from your farm. Its important to set this to display the correct coordinates on your farm view page.',
+    'Physical location from your farm. Its important to set this to display the correct coordinates on your farm view page.',
   'component.edit.farm.location.center.label': 'Center',
   // Billing
   'component.edit.farm.billing.billing.title': 'This tab contains financial info related to comercial transactions from platform.',
@@ -726,5 +726,7 @@ export default {
   'component.edit.farm.contact.country.label': 'Country',
   // Holiday tab
   'component.edit.farm.holiday.desc': 'Add holidays',
-  'component.edit.farm.holiday.label': 'Holiday'
+  'component.edit.farm.holiday.label': 'Holiday',
+  'component.edit.farm.holiday.add': 'Add holiday',
+  'component.edit.farm.holiday.import': 'Import country holidays'
 };
