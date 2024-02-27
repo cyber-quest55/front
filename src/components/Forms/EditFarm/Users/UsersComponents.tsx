@@ -15,6 +15,7 @@ import {
 	Modal,
 	Row,
 	Space,
+	Tabs,
 	Typography 
 } from 'antd';
 import React, {
@@ -38,6 +39,9 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const { xl } = useScreenHook()
 	const [ loading ] = useState(false);
 	const [ isGuidelinesOpen, setIsGuidelinesOpen ] = useState(false);
+
+	// Admin id list
+	const adminIds = farm?.administrators.map(adm => adm.id)
 
 	// Guidelines handlers
 	const showGuidelines = () => {
@@ -75,6 +79,9 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			ghost
 			gutter={[12, 12]}
 		>
+			<Typography.Paragraph>
+				{intl.formatMessage({ id: 'component.edit.farm.users.description' })}
+			</Typography.Paragraph>
 			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
 				<Col xs={24}  md={24} xl={8}>
 					<Button
@@ -140,23 +147,59 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.admin' })}
 				</Typography.Paragraph>
       </Modal>
-			<List
-				itemLayout='horizontal'
-				dataSource={farm?.users}
-				renderItem={(item, index) => (
-					<List.Item
-						key={index}
-						actions={[
-							<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
-						]}
-					>
-						<List.Item.Meta
-							title={`@${item.username}`}
-							description={`${item.first_name} ${item.last_name}`}
+			<Tabs 
+				defaultActiveKey="1"
+				items={[
+					{
+						label: 'Users',
+						key: '1',
+						children: (
+							<List
+								itemLayout='horizontal'
+								dataSource={farm?.users.filter(user => !adminIds?.includes(user.id))}
+								renderItem={(item, index) => (
+									<List.Item
+										key={index}
+										actions={[
+											<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
+										]}
+									>
+										<List.Item.Meta
+											title={`@${item.username}`}
+											description={`${item.first_name} ${item.last_name} (${item.email})`}									
+										/>
+									</List.Item>
+								)}
+							/>
+						
+						)
+					},
+					{
+						label: 'Administrators',
+						key: '2',
+						children: (
+							<List
+								itemLayout='horizontal'
+								dataSource={farm?.users.filter(user => adminIds?.includes(user.id))}
+								renderItem={(item, index) => (
+									<List.Item
+										key={index}
+										actions={[
+											<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
+										]}
+									>
+										<List.Item.Meta
+											title={`@${item.username}`}
+											description={`${item.first_name} ${item.last_name} (${item.email})`}
+										/>
+									</List.Item>
+								)}
 						/>
-					</List.Item>
-				)}
-			/>
+						)
+					}
+				]}
+			
+			/>			
     </ProCard>
   )
 };
