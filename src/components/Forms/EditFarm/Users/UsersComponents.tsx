@@ -13,6 +13,8 @@ import { queryFarmById } from '@/models/farm-by-id';
 import { useScreenHook } from '@/hooks/screen';
 import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl } from '@umijs/max';
+import { findUserByUsernameOrEmail } from '@/services/user';
+import { useRequest } from 'ahooks';
 import { 
 	Button,
 	Col,
@@ -21,7 +23,6 @@ import {
 	Modal,
 	Row,
 	Space,
-	Tabs,
 	Typography 
 } from 'antd';
 import React, {
@@ -52,8 +53,8 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const [ isGuidelinesOpen, setIsGuidelinesOpen ] = useState(false);
 	const [ isAddUserOpen, setIsAddUserOpen ] = useState(false);
 
-	// Admin id list
-	const adminIds = farm?.administrators.map(adm => adm.id)
+	// Requests
+	const reqFindUsers = useRequest(findUserByUsernameOrEmail, { manual: true });
 
 	// Guidelines handlers
 	const showGuidelines = () => {
@@ -69,13 +70,11 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 
 	// Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
-		billing: yup.object().shape({
-			user: yup.string().required(
-				intl.formatMessage({
-					id: 'validations.required',
-				}),
-			),
-		}),
+		user: yup.string().required(
+			intl.formatMessage({
+				id: 'validations.required',
+			}),
+		),
 	}), [intl]);
 	const yupSync = yupValidator(yupSchema(), addUserForm.getFieldsValue);
 
@@ -161,19 +160,27 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					submitter={false}
 					form={addUserForm}
 					formRef={addFormRef}
-					grid
-					initialValues={{ ...farm }}
+					initialValues={{ user: '' }}
 					onFinish={async (values: any) => {
 						console.log('values', values)
 					}}
+					grid
 				>
 					<ProFormSelect
             rules={[yupSync]}
-            request={async () => {
-							console.log('[request]');
+            request={async (val) => {
+							if (val.keyWords) {
+								const resp = await reqFindUsers.runAsync({
+									username_or_email: val.keyWords,
+								})
+								return resp.map(result => ({
+									label: `${result.full_name} (${result.user__email})`,
+									value: result.user__username,
+								}))
+							}
 							return [{
-								label: '',
-								value: '33'
+								label: intl.formatMessage({ id: 'component.edit.farm.users.add.placeholder' }),
+								value: ''
 							}];
             }}
             name={['user']}
@@ -182,7 +189,13 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 						colProps={{ xs: 24 }}
             showSearch
           />
-
+					<Button
+						type="primary"
+						style={{ width: '100%' }}
+						onClick={addUserForm.submit}
+					>
+						{intl.formatMessage({ id: 'component.edit.farm.users.add.invite.action' })}
+					</Button>
 				</ProForm>
 			</Modal>
 			<Typography.Paragraph>
@@ -212,59 +225,23 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					</Button>
 				</Col>
 			</Row>
-			<Tabs 
-				defaultActiveKey="1"
-				items={[
-					{
-						label: 'Users',
-						key: '1',
-						children: (
-							<List
-								itemLayout='horizontal'
-								dataSource={farm?.users.filter(user => !adminIds?.includes(user.id))}
-								renderItem={(item, index) => (
-									<List.Item
-										key={index}
-										actions={[
-											<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
-										]}
-									>
-										<List.Item.Meta
-											title={`@${item.username}`}
-											description={`${item.first_name} ${item.last_name} (${item.email})`}									
-										/>
-									</List.Item>
-								)}
-							/>
-						
-						)
-					},
-					{
-						label: 'Administrators',
-						key: '2',
-						children: (
-							<List
-								itemLayout='horizontal'
-								dataSource={farm?.users.filter(user => adminIds?.includes(user.id))}
-								renderItem={(item, index) => (
-									<List.Item
-										key={index}
-										actions={[
-											<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
-										]}
-									>
-										<List.Item.Meta
-											title={`@${item.username}`}
-											description={`${item.first_name} ${item.last_name} (${item.email})`}
-										/>
-									</List.Item>
-								)}
+			<List
+				itemLayout='horizontal'
+				dataSource={farm?.users}
+				renderItem={(item, index) => (
+					<List.Item
+						key={index}
+						actions={[
+							<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
+						]}
+					>
+						<List.Item.Meta
+							title={`@${item.username}`}
+							description={`${item.first_name} ${item.last_name} (${item.email})`}									
 						/>
-						)
-					}
-				]}
-			
-			/>			
+					</List.Item>
+				)}
+			/>				
     </ProCard>
   )
 };

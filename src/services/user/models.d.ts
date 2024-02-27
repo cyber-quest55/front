@@ -73,6 +73,16 @@ declare namespace APIModels {
     email: string;
   };
 
+  type FindByUsernameOrEmailPayload = {
+    username_or_email: string;
+  };
+
+  type FindAccountData = {
+    user__email: string;
+    user__username: string;
+    full_name: string;
+  };
+
   type PostChangePasswordPayload = {
     current_password: string;
     new_password: string;

@@ -749,5 +749,6 @@ export default {
   'component.edit.farm.users.guidelines.modal.description.admin': 'Finally, as an Administrator, the user will have all Configurator permissions. He will have access to reports, command history, sending new commands, edits of all equipment information, Farm edits and will also be able to add and manage users.',
   'component.edit.farm.users.add.title': 'Add user',
   'component.edit.farm.users.add.label': 'Enter the name, username, or email of the user to be invited.',
-  'component.edit.farm.users.add.placeholder': 'Name, Username or E-mail.'
+  'component.edit.farm.users.add.placeholder': 'Name, Username or E-mail.',
+  'component.edit.farm.users.add.invite.action': 'Invite user'
 };

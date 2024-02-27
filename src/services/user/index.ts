@@ -11,8 +11,11 @@ export async function currentUser(options?: { [key: string]: any }) {
   });
 }
 
-export async function findByUsernameOrEmail(options?: { [key: string]: any }) {
-  return request
+export async function findUserByUsernameOrEmail(options: APIModels.FindByUsernameOrEmailPayload) {
+  return request<API.FindByUsernameOrEmailResponse>('/v3/auth/find/', {
+    method: 'GET',
+    params: options,
+  })
 }
 
 export async function getUserInfo(options?: { [key: string]: any }) {

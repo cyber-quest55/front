@@ -8,6 +8,8 @@ declare namespace API {
     profile: ProfileData;
   };
 
+  type FindByUsernameOrEmailResponse = APIModels.FindAccountData[];
+
   type PostProfileResponse = APIModels.ProfileData;
 
   type PatchUserInfoResponse = Array<string>;
