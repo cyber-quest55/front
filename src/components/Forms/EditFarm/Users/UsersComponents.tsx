@@ -16,6 +16,7 @@ import { useIntl } from '@umijs/max';
 import { findUserByUsernameOrEmail } from '@/services/user';
 import { useRequest } from 'ahooks';
 import { 
+	Tag,
 	Button,
 	Col,
 	Form,
@@ -52,6 +53,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const addFormRef = useRef();
 	const [ isGuidelinesOpen, setIsGuidelinesOpen ] = useState(false);
 	const [ isAddUserOpen, setIsAddUserOpen ] = useState(false);
+	const [ isEditUserOpen, setIsEditUserOpen ] = useState(false);
 
 	// Requests
 	const reqFindUsers = useRequest(findUserByUsernameOrEmail, { manual: true });
@@ -65,8 +67,9 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
     setIsGuidelinesOpen(false);
   };
 
-	// Add user toggle
+	// Add/Edit user toggle
 	const toggleAddUser = () => setIsAddUserOpen(prev => !prev);
+	const toggleEditUser = () => setIsEditUserOpen(prev => !prev);
 
 	// Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
@@ -79,9 +82,13 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const yupSync = yupValidator(yupSchema(), addUserForm.getFieldsValue);
 
 	// List icon text component
-	const IconAction = ({ icon }: { icon: React.FC }) => (
+	const IconAction = ({ icon, onClick = () => {} }: { icon: React.FC, onClick: () => void }) => (
 		<Space>
-			<Button type="link" icon={React.createElement(icon)} />
+			<Button
+				type="link"
+				icon={React.createElement(icon)}
+				onClick={onClick}
+			/>
 		</Space>
 	);
 
@@ -198,6 +205,17 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					</Button>
 				</ProForm>
 			</Modal>
+			<Modal
+				title={intl.formatMessage({ id: 'component.edit.farm.users.edit.title' })}
+				open={isEditUserOpen}
+				onCancel={toggleEditUser}
+				footer={false}
+			>
+				<List.Item.Meta
+					title="@mockedusername"
+					description="mockeduser@yahoo.com"
+				/>
+			</Modal>
 			<Typography.Paragraph>
 				{intl.formatMessage({ id: 'component.edit.farm.users.description' })}
 			</Typography.Paragraph>
@@ -232,11 +250,26 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					<List.Item
 						key={index}
 						actions={[
-							<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
+							<IconAction
+								icon={EditOutlined}
+								key="list-vertical-edit-o"
+								onClick={() => toggleEditUser()}
+							/>,
 						]}
 					>
 						<List.Item.Meta
-							title={`@${item.username}`}
+							title={(
+								<>
+									<Typography.Text style={{ marginRight: 8 }}>
+										{`@${item.username}`}
+									</Typography.Text>
+									{farm?.administrators.some(adm => adm.id === item.id) ? (
+										<Tag color="processing">
+											{intl.formatMessage({ id: 'component.edit.farm.users.list.tag.admin' })}
+										</Tag>	
+									) : null}
+								</>
+							)}
 							description={`${item.first_name} ${item.last_name} (${item.email})`}									
 						/>
 					</List.Item>

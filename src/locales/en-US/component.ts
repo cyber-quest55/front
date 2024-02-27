@@ -750,5 +750,7 @@ export default {
   'component.edit.farm.users.add.title': 'Add user',
   'component.edit.farm.users.add.label': 'Enter the name, username, or email of the user to be invited.',
   'component.edit.farm.users.add.placeholder': 'Name, Username or E-mail.',
-  'component.edit.farm.users.add.invite.action': 'Invite user'
+  'component.edit.farm.users.add.invite.action': 'Invite user',
+  'component.edit.farm.users.list.tag.admin': 'Admin',
+  'component.edit.farm.users.edit.title': 'Update user permissions'
 };
