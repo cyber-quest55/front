@@ -730,5 +730,20 @@ export default {
   'component.edit.farm.holiday.add': 'Add holiday',
   'component.edit.farm.holiday.import': 'Import country holidays',
   'component.edit.farm.holiday.import.brazil': 'Brazil',
-  'component.edit.farm.holiday.import.russia': 'Russia'
+  'component.edit.farm.holiday.import.russia': 'Russia',
+  // Users tabs
+  'component.edit.farm.users.guidelines': 'Guidelines about user permissions',
+  'component.edit.farm.users.add.action': 'Add User',
+  'component.edit.farm.users.guidelines.modal.title': 'About permissions',
+  'component.edit.farm.users.guidelines.modal.description': 'Below you can find the permissions list and a brief description about it:',
+  'component.edit.farm.users.guidelines.modal.title.nopermission': 'No Permission',
+  'component.edit.farm.users.guidelines.modal.title.viewer': 'Viewer',
+  'component.edit.farm.users.guidelines.modal.title.operator': 'Operator',
+  'component.edit.farm.users.guidelines.modal.title.technician': 'Technician',
+  'component.edit.farm.users.guidelines.modal.title.admin': 'Admin',
+  'component.edit.farm.users.guidelines.modal.description.nopermission': 'In this permission, the user will not have access to the selected equipment. This way, it will not appear on the Farm Home Screen.',
+  'component.edit.farm.users.guidelines.modal.description.viewer': 'With this permission, the user has access to the equipment and can view everything from reports to sent commands. However, the user will not be able to send commands to the equipment, make edits to its settings and will not be able to access the Farm edits page.',
+  'component.edit.farm.users.guidelines.modal.description.operator': 'In this permission, the user has the same permissions as the Viewer, in addition, he can send commands to the equipment. However, the user will not be able to make edits to the equipment settings and will not be able to access the Farm edits page.',
+  'component.edit.farm.users.guidelines.modal.description.technician': "In this permission, the user has the same permissions as the Operator, in addition, he or she will be able to edit the equipment's settings. However, they will not be able to access the Finance edits page.",
+  'component.edit.farm.users.guidelines.modal.description.admin': 'Finally, as an Administrator, the user will have all Configurator permissions. He will have access to reports, command history, sending new commands, edits of all equipment information, Farm edits and will also be able to add and manage users.'
 };

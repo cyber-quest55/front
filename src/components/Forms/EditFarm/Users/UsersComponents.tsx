@@ -1,10 +1,27 @@
 // Dependencies
 import { ProCard } from '@ant-design/pro-components';
-import { SaveOutlined } from '@ant-design/icons';
+import {
+	SaveOutlined,
+	EditOutlined,
+	QuestionCircleOutlined
+} from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
-import { useIntl } from '@umijs/max'
-import { Button, Typography } from 'antd';
-import { FunctionComponent, ReactElement, useState } from 'react';
+import { useScreenHook } from '@/hooks/screen';
+import { useIntl } from '@umijs/max';
+import { 
+	Button,
+	Col,
+	List,
+	Modal,
+	Row,
+	Space,
+	Typography 
+} from 'antd';
+import React, {
+	FunctionComponent,
+	ReactElement,
+	useState
+} from 'react';
 
 // Component props
 type Props = {
@@ -17,8 +34,26 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	farm
 }): ReactElement => {
 	// Hooks
-	const intl = useIntl()
+	const intl = useIntl();
+	const { xl } = useScreenHook()
 	const [ loading ] = useState(false);
+	const [ isGuidelinesOpen, setIsGuidelinesOpen ] = useState(false);
+
+	// Guidelines handlers
+	const showGuidelines = () => {
+    setIsGuidelinesOpen(true);
+  };
+
+  const handleGuidelinesOk = () => {
+    setIsGuidelinesOpen(false);
+  };
+
+	// List icon text component
+	const IconAction = ({ icon }: { icon: React.FC }) => (
+		<Space>
+			<Button type="link" icon={React.createElement(icon)} />
+		</Space>
+	);
 
 	// Main TSX
   return (
@@ -40,11 +75,88 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			ghost
 			gutter={[12, 12]}
 		>
-			{
-				farm ? (
-					<p>Address: {farm.address}</p>
-				) : null
-			}
+			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
+				<Col xs={24}  md={24} xl={8}>
+					<Button
+						type="primary"
+						onClick={() => {}}
+						style={{ width: '100%' }}
+					>
+						{intl.formatMessage({ id: 'component.edit.farm.users.add.action' })}
+					</Button>
+				</Col>
+				<Col xs={24}  md={24} xl={16}>
+					<Button 
+						type="link"
+						icon={<QuestionCircleOutlined />}
+						onClick={showGuidelines}
+						style={{
+							textAlign: xl ? 'right' : 'center',
+							width: '100%'
+						}}
+					>
+						{intl.formatMessage({ id: 'component.edit.farm.users.guidelines' })}
+					</Button>
+				</Col>
+			</Row>
+			<Modal
+				title={intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title' })}
+				open={isGuidelinesOpen}
+				onCancel={handleGuidelinesOk}
+				footer={false}
+				closable
+			>
+				<Typography.Paragraph>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description' })}
+				</Typography.Paragraph>
+				<Typography.Title level={5}>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.nopermission' })}
+				</Typography.Title>
+				<Typography.Paragraph>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.nopermission' })}
+				</Typography.Paragraph>
+				<Typography.Title level={5}>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.viewer' })}
+				</Typography.Title>
+				<Typography.Paragraph>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.viewer' })}
+				</Typography.Paragraph>
+				<Typography.Title level={5}>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.operator' })}
+				</Typography.Title>
+				<Typography.Paragraph>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.operator' })}
+				</Typography.Paragraph>
+				<Typography.Title level={5}>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.technician' })}
+				</Typography.Title>
+				<Typography.Paragraph>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.technician' })}
+				</Typography.Paragraph>
+				<Typography.Title level={5}>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.admin' })}
+				</Typography.Title>
+				<Typography.Paragraph>
+					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.admin' })}
+				</Typography.Paragraph>
+      </Modal>
+			<List
+				itemLayout='horizontal'
+				dataSource={farm?.users}
+				renderItem={(item, index) => (
+					<List.Item
+						key={index}
+						actions={[
+							<IconAction icon={EditOutlined} key="list-vertical-edit-o" />
+						]}
+					>
+						<List.Item.Meta
+							title={`@${item.username}`}
+							description={`${item.first_name} ${item.last_name}`}
+						/>
+					</List.Item>
+				)}
+			/>
     </ProCard>
   )
 };
