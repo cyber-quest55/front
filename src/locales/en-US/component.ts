@@ -672,7 +672,7 @@ export default {
   'component.irpd.scheduleirr.type.opt.2': "Don't stop",
   'component.irpd.scheduleirr.label.opt.1': 'Start in',
   'component.irpd.scheduleirr.label.opt.2': 'Stop in',
-
+  // Update base radio
   'component.radio.modal.base.title': 'Update base radio',
   'component.radio.modal.base.fields.device.label': 'Send radio update to',
   'component.radio.modal.base.fields.device.placeholder': 'All listed devices',
@@ -746,5 +746,8 @@ export default {
   'component.edit.farm.users.guidelines.modal.description.viewer': 'With this permission, the user has access to the equipment and can view everything from reports to sent commands. However, the user will not be able to send commands to the equipment, make edits to its settings and will not be able to access the Farm edits page.',
   'component.edit.farm.users.guidelines.modal.description.operator': 'In this permission, the user has the same permissions as the Viewer, in addition, he can send commands to the equipment. However, the user will not be able to make edits to the equipment settings and will not be able to access the Farm edits page.',
   'component.edit.farm.users.guidelines.modal.description.technician': "In this permission, the user has the same permissions as the Operator, in addition, he or she will be able to edit the equipment's settings. However, they will not be able to access the Finance edits page.",
-  'component.edit.farm.users.guidelines.modal.description.admin': 'Finally, as an Administrator, the user will have all Configurator permissions. He will have access to reports, command history, sending new commands, edits of all equipment information, Farm edits and will also be able to add and manage users.'
+  'component.edit.farm.users.guidelines.modal.description.admin': 'Finally, as an Administrator, the user will have all Configurator permissions. He will have access to reports, command history, sending new commands, edits of all equipment information, Farm edits and will also be able to add and manage users.',
+  'component.edit.farm.users.add.title': 'Add user',
+  'component.edit.farm.users.add.label': 'Enter the name, username, or email of the user to be invited.',
+  'component.edit.farm.users.add.placeholder': 'Name, Username or E-mail.'
 };
