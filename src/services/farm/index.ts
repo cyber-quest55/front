@@ -23,11 +23,25 @@ export async function updatedBase(
   return request<{ data: any }>(`/v3/farms/${props.id}/base/`, {
     method: 'POST',
     data: body
-  })
+  });
 }
 
 export async function getFarmById(props: API.GetFarmFullParams) {
   return request<API.GetFarmFullResponse>(`/v3/farms/${props.id}/`, {
+    method: 'GET',
+  });
+}
+
+export async function saveFarmUsers(props: API.SaveFarmUsersParams) {
+  return request<API.SaveFarmUsersResponse>(`/v3/farms/${props.id}/users/`, {
+    method: 'POST',
+    data: props.body,
+  });
+}
+
+
+export async function getFarmUsers(props: API.GetFarmFullParams) {
+  return request<API.GetFarmUsersResponse>(`/v3/farms/${props.id}/users/`, {
     method: 'GET',
   });
 }

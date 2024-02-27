@@ -11,17 +11,19 @@ declare namespace APIModels {
     is_online: boolean;
   }
 
+  type FarmUser = {
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    id: number;
+    profile_id: number;
+    pending: boolean;
+  }
+
   type FarmFull = {
     id: number;
-    users: {
-      username: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      id: number;
-      profile_id: number;
-      pending: boolean;
-    }[];
+    users: FarmUser[];
     is_administrator: boolean;
     administrators: {
       id: number;
