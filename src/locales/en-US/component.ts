@@ -728,5 +728,7 @@ export default {
   'component.edit.farm.holiday.desc': 'Add holidays',
   'component.edit.farm.holiday.label': 'Holiday',
   'component.edit.farm.holiday.add': 'Add holiday',
-  'component.edit.farm.holiday.import': 'Import country holidays'
+  'component.edit.farm.holiday.import': 'Import country holidays',
+  'component.edit.farm.holiday.import.brazil': 'Brazil',
+  'component.edit.farm.holiday.import.russia': 'Russia'
 };

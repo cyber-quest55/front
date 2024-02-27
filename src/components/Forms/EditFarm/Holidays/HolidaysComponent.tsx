@@ -3,13 +3,19 @@ import { ProCard } from '@ant-design/pro-components';
 import { DownloadOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { useScreenHook } from '@/hooks/screen';
 import { queryFarmById } from '@/models/farm-by-id';
+import {
+	BR_NATIONAL_HOLIDAYS,
+	RU_NATIONAL_HOLIDAYS
+} from '@/utils/consts/holidays';
 import { useIntl } from '@umijs/max';
+import type { MenuProps } from 'antd';
 import {
 	Badge,
 	Button,
 	Calendar,
 	Col,
 	DatePicker,
+	Dropdown,
 	Row,
 	Typography
 } from 'antd';
@@ -29,8 +35,9 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({ farm }): ReactEle
 	const [ loading ] = useState(false);
 	const [
 		holidayList,
-		//setHolidayList
-	] = useState<{ day: number, month: number }[]>(farm?.holidays_list || [])
+		setHolidayList
+	] = useState<{ day: number, month: number }[]>(farm?.holidays_list || []);
+	const [ selectedDate, setSelectedDate ] = useState<{ day: number, month: number }>()
 	const { lg, xl, xxl } = useScreenHook();
 
 	const isLargeScreen = lg || xl || xxl;
@@ -82,9 +89,37 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({ farm }): ReactEle
 
 	const handleDateChange = (date: Dayjs | null) => {
     if (date) {
-      console.log('Selected Month and Day:', date.format('MMMM Do'));
+			setSelectedDate({
+				day: Number(date.format('MM')),
+				month: Number(date.format('DD')),
+			})
     }
   }
+
+	const holidayImportOptions: MenuProps['items'] = [
+		{
+			key: '1',
+			label: (
+				<a
+					rel="noopener noreferrer"
+					onClick={() => setHolidayList(prev => [ ...prev, ...BR_NATIONAL_HOLIDAYS ])}
+				>
+					{intl.formatMessage({ id: 'component.edit.farm.holiday.import.brazil' })}
+				</a>
+			),
+		},
+		{
+			key: '2',
+			label: (
+				<a
+					rel="noopener noreferrer"
+					onClick={() => setHolidayList(prev => [ ...prev, ...RU_NATIONAL_HOLIDAYS ])}
+				>
+					{intl.formatMessage({ id: 'component.edit.farm.holiday.import.russia' })}
+				</a>
+			),
+		}
+	]
 
 	// Main TSX
   return (
@@ -110,7 +145,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({ farm }): ReactEle
 				{intl.formatMessage({ id: 'component.edit.farm.holiday.desc' })}
 			</Typography.Paragraph>
 			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
-				<Col xs={24} sm={24} md={8} xl={8}>
+				<Col xs={24}  md={24} xl={8}>
 					<DatePicker 
 						picker="date"
 						format="MMMM Do"
@@ -118,25 +153,30 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({ farm }): ReactEle
 						style={{ width: '100%' }}
 					/>
 				</Col>
-				<Col xs={24} sm={24} md={4} xl={4} >
+				<Col xs={24}  md={24} xl={4} >
 					<Button
 						type="primary"
 						icon={<PlusOutlined />}
 						style={{ width: '100%' }}
-						onClick={() => {}}
+						onClick={() => {
+							if (selectedDate) {
+								setHolidayList(prev => [ ...prev, { ...selectedDate } ]);
+							}
+						}}
 					>
 						{intl.formatMessage({ id: 'component.edit.farm.holiday.add' })}
 					</Button>
 				</Col>
-				<Col xs={24} sm={24} md={8} xl={8} >
-					<Button
-						type="primary"
-						icon={<DownloadOutlined />}
-						style={{ width: '100%' }}
-						onClick={() => {}}
-					>
-						{intl.formatMessage({ id: 'component.edit.farm.holiday.import' })}
-					</Button>
+				<Col xs={24} md={24} xl={8} >
+					<Dropdown menu={{ items: holidayImportOptions }} placement="bottom">
+						<Button
+							type="primary"
+							icon={<DownloadOutlined />}
+							style={{ width: '100%' }}
+						>
+							{intl.formatMessage({ id: 'component.edit.farm.holiday.import' })}
+						</Button>
+					</Dropdown>
 				</Col>
 			</Row>
 			{
