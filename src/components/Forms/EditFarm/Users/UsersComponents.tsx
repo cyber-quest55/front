@@ -2,18 +2,23 @@
 import {
 	ProCard,
 	ProForm,
-	ProFormSelect
+	ProFormSelect,
 } from '@ant-design/pro-components';
 import {
 	EditOutlined,
-	QuestionCircleOutlined
+	QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useScreenHook } from '@/hooks/screen';
 import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl, useParams } from '@umijs/max';
 import { getFarmUsers, saveFarmUsers } from '@/services/farm';
-import { findUserByUsernameOrEmail } from '@/services/user';
+import {
+	deleteUserFromFarm,
+	findUserByUsernameOrEmail,
+	getUserPermissions,
+	getUserRole,
+} from '@/services/user';
 import { useMount, useRequest } from 'ahooks';
 import {
 	App,
@@ -22,6 +27,7 @@ import {
 	Form,
 	List,
 	Modal,
+	Popconfirm,
 	Row,
 	Space,
 	Tag,
@@ -57,36 +63,22 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const [ isGuidelinesOpen, setIsGuidelinesOpen ] = useState(false);
 	const [ isAddUserOpen, setIsAddUserOpen ] = useState(false);
 	const [ isEditUserOpen, setIsEditUserOpen ] = useState(false);
+	const [ currentUser, setCurrentUser ] = useState<APIModels.FarmUser | null>(null);
 
 	// Requests
-	const {
-		data: farmUsersData,
-		run: getFarmUsersRequest,
-		refresh: refreshFarmUsers,
-	} = useRequest(
-		getFarmUsers,
-		{ manual: true },
-	);
-
-	const {
-		runAsync: findUserRequest, 
-		loading: findUserLoading
-	} = useRequest(
-		findUserByUsernameOrEmail,
-		{ manual: true },
-	);
-
-	const {
-		runAsync: saveUserRequest,
-		loading: saveUserLoading
-	} = useRequest(
-		saveFarmUsers,
+	const reqFarmUsers = useRequest(getFarmUsers, { manual: true });
+	const reqFindUsers = useRequest(findUserByUsernameOrEmail, { manual: true });
+	const reqSaveUser = useRequest(saveFarmUsers, { manual: true });
+	const reqPermission = useRequest(getUserPermissions, { manual: true });
+	const reqRole = useRequest(getUserRole, { manual: true });
+	const reqRemoveFarmUser = useRequest(
+		deleteUserFromFarm,
 		{ manual: true },
 	);
 
 	// Effects
 	useMount(() => {
-		getFarmUsersRequest({ id: params.id as string });
+		reqFarmUsers.run({ id: params.id as string });
 	});
 
 	// Guidelines handlers
@@ -194,7 +186,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					initialValues={{ user: '' }}
 					onFinish={async (values) => {
 						try {
-							await saveUserRequest({
+							await reqSaveUser.runAsync({
 								id: params.id as string,
 								body: {
 									administrator: false,
@@ -204,14 +196,14 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 							})
 							addUserForm.resetFields();
 							message.success(intl.formatMessage({
-								id: 'component.edit.farm.users.add.message.success'
+								id: 'component.edit.farm.users.add.message.success',
 							}));
-							refreshFarmUsers();
+							reqFarmUsers.refresh();
 							queryFarmById({ id: parseInt(params.id as string) });
 							toggleAddUser();
 						} catch (err) {
-							message.success(intl.formatMessage({
-								id: 'component.edit.farm.users.general.message.fail'
+							message.error(intl.formatMessage({
+								id: 'component.edit.farm.users.general.message.fail',
 							}));
 						}
 					}}
@@ -221,7 +213,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
             rules={[yupSync]}
             request={async (val) => {
 							if (val.keyWords) {
-								const resp = await findUserRequest({
+								const resp = await reqFindUsers.runAsync({
 									username_or_email: val.keyWords,
 								})
 								return resp.map(result => ({
@@ -244,7 +236,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 						type="primary"
 						style={{ width: '100%' }}
 						onClick={addUserForm.submit}
-						disabled={findUserLoading || saveUserLoading}
+						disabled={reqFindUsers.loading || reqSaveUser.loading}
 					>
 						{intl.formatMessage({ id: 'component.edit.farm.users.add.invite.action' })}
 					</Button>
@@ -257,9 +249,37 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				footer={false}
 			>
 				<List.Item.Meta
-					title="@mockedusername"
-					description="mockeduser@yahoo.com"
+					title={`@${currentUser?.username}`}
+					description={currentUser?.email}
 				/>
+				<Popconfirm
+					title={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm' })}
+					okText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.yes' })}
+					cancelText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.no' })}
+					onConfirm={async () => {
+						try {
+							await reqRemoveFarmUser.runAsync({
+								farmId: params.id as string,
+								id: currentUser!.id,
+							})
+							reqFarmUsers.refresh();
+							queryFarmById({ id: parseInt(params.id as string) });
+							toggleEditUser();
+							setCurrentUser(null);
+							message.success(intl.formatMessage({
+								id: 'component.edit.farm.users.edit.message.delete.success',
+							}))
+						} catch (err) {
+							message.error(intl.formatMessage({
+								id: 'component.edit.farm.users.general.message.fail',
+							}));
+						}
+					}}
+				>
+					<Button danger>
+						{intl.formatMessage({ id: 'component.edit.farm.users.edit.delete.action' })}
+					</Button>
+				</Popconfirm>
 			</Modal>
 			<Typography.Paragraph>
 				{intl.formatMessage({ id: 'component.edit.farm.users.description' })}
@@ -290,7 +310,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			</Row>
 			<List
 				itemLayout='horizontal'
-				dataSource={farmUsersData?.users || []}
+				dataSource={reqFarmUsers.data?.users || []}
 				renderItem={(item, index) => (
 					<List.Item
 						key={index}
@@ -298,7 +318,12 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 							<IconAction
 								icon={EditOutlined}
 								key="list-vertical-edit-o"
-								onClick={() => toggleEditUser()}
+								onClick={() => {
+									setCurrentUser(item);
+									reqPermission.run({ id: item.id, farmId: params.id as string });
+									reqRole.run({ id: item.id, farmId: params.id as string });
+									toggleEditUser();
+								}}
 							/>,
 						]}
 					>

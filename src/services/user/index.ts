@@ -15,7 +15,31 @@ export async function findUserByUsernameOrEmail(options: APIModels.FindByUsernam
   return request<API.FindByUsernameOrEmailResponse>('/v3/auth/find/', {
     method: 'GET',
     params: options,
-  })
+  });
+}
+
+export async function getUserPermissions(options: API.GetUserPermissionsParams) {
+  return request<API.GetUserPermissionsResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/`, {
+      method: 'GET',
+    }
+  );
+}
+
+export async function deleteUserFromFarm(options: API.GetUserPermissionsParams) {
+  return request<API.GetUserPermissionsResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/`, {
+      method: 'DELETE',
+    }
+  );
+}
+
+export async function getUserRole(options: API.GetUserPermissionsParams) {
+  return request<API.GetUserRoleResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/admin`, {
+      method: 'GET',
+    }
+  );
 }
 
 export async function getUserInfo(options?: { [key: string]: any }) {
