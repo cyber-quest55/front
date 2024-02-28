@@ -5,18 +5,18 @@ import {
 	ProFormSelect
 } from '@ant-design/pro-components';
 import {
-	SaveOutlined,
 	EditOutlined,
 	QuestionCircleOutlined
 } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useScreenHook } from '@/hooks/screen';
 import { yupValidator } from '@/utils/adapters/yup';
-import { useIntl } from '@umijs/max';
+import { useIntl, useParams } from '@umijs/max';
+import { getFarmById, getFarmUsers, saveFarmUsers } from '@/services/farm';
 import { findUserByUsernameOrEmail } from '@/services/user';
-import { useRequest } from 'ahooks';
-import { 
-	Tag,
+import { useMount, useRequest } from 'ahooks';
+import {
+	App,
 	Button,
 	Col,
 	Form,
@@ -24,6 +24,7 @@ import {
 	Modal,
 	Row,
 	Space,
+	Tag,
 	Typography 
 } from 'antd';
 import React, {
@@ -42,13 +43,12 @@ type Props = {
 }
 
 // Component
-const EditFarmUsersComponent: FunctionComponent<Props> = ({
-	farm
-}): ReactElement => {
+const EditFarmUsersComponent: FunctionComponent<Props> = (): ReactElement => {
 	// Hooks
 	const intl = useIntl();
+	const params = useParams();
 	const { xl } = useScreenHook();
-	const [ loading ] = useState(false);
+	const { message } = App.useApp();
 	const [ addUserForm ] = Form.useForm();
 	const addFormRef = useRef();
 	const [ isGuidelinesOpen, setIsGuidelinesOpen ] = useState(false);
@@ -56,7 +56,45 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const [ isEditUserOpen, setIsEditUserOpen ] = useState(false);
 
 	// Requests
-	const reqFindUsers = useRequest(findUserByUsernameOrEmail, { manual: true });
+	const {
+		data: farmData,
+		run: getFarmByIdRequest,
+		refresh: refreshFarm,
+	} = useRequest(
+		getFarmById,
+		{ manual: true }
+	)
+
+	const {
+		data: farmUsersData,
+		run: getFarmUsersRequest,
+		refresh: refreshFarmUsers,
+	} = useRequest(
+		getFarmUsers,
+		{ manual: true },
+	);
+
+	const {
+		runAsync: findUserRequest, 
+		loading: findUserLoading
+	} = useRequest(
+		findUserByUsernameOrEmail,
+		{ manual: true },
+	);
+
+	const {
+		runAsync: saveUserRequest,
+		loading: saveUserLoading
+	} = useRequest(
+		saveFarmUsers,
+		{ manual: true },
+	);
+
+	// Effects
+	useMount(() => {
+		getFarmUsersRequest({ id: params.id as string });
+		getFarmByIdRequest({ id: params.id as string   })
+	});
 
 	// Guidelines handlers
 	const showGuidelines = () => {
@@ -102,15 +140,8 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					})}
 				</Typography.Title>
 			}
-			extra={
-				<Button loading={loading} icon={<SaveOutlined />} type="primary">
-					{intl.formatMessage({
-						id: 'component.edit.farm.button.save',
-					})}
-				</Button>
-			}
-			ghost
 			gutter={[12, 12]}
+			ghost
 		>
 			<Modal
 				title={intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title' })}
@@ -168,8 +199,28 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					form={addUserForm}
 					formRef={addFormRef}
 					initialValues={{ user: '' }}
-					onFinish={async (values: any) => {
-						console.log('values', values)
+					onFinish={async (values) => {
+						try {
+							await saveUserRequest({
+								id: params.id as string,
+								body: {
+									administrator: false,
+									username: values.user,
+									username_or_email: values.user
+								}
+							})
+							addUserForm.resetFields();
+							message.success(intl.formatMessage({
+								id: 'component.edit.farm.users.add.message.success'
+							}));
+							refreshFarmUsers();
+							refreshFarm();
+							toggleAddUser();
+						} catch (err) {
+							message.success(intl.formatMessage({
+								id: 'component.edit.farm.users.general.message.fail'
+							}));
+						}
 					}}
 					grid
 				>
@@ -177,7 +228,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
             rules={[yupSync]}
             request={async (val) => {
 							if (val.keyWords) {
-								const resp = await reqFindUsers.runAsync({
+								const resp = await findUserRequest({
 									username_or_email: val.keyWords,
 								})
 								return resp.map(result => ({
@@ -200,6 +251,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 						type="primary"
 						style={{ width: '100%' }}
 						onClick={addUserForm.submit}
+						disabled={findUserLoading || saveUserLoading}
 					>
 						{intl.formatMessage({ id: 'component.edit.farm.users.add.invite.action' })}
 					</Button>
@@ -245,7 +297,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			</Row>
 			<List
 				itemLayout='horizontal'
-				dataSource={farm?.users}
+				dataSource={farmUsersData?.users || []}
 				renderItem={(item, index) => (
 					<List.Item
 						key={index}
@@ -263,7 +315,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 									<Typography.Text style={{ marginRight: 8 }}>
 										{`@${item.username}`}
 									</Typography.Text>
-									{farm?.administrators.some(adm => adm.id === item.id) ? (
+									{farmData?.administrators.some(adm => adm.id === item.id) ? (
 										<Tag color="processing">
 											{intl.formatMessage({ id: 'component.edit.farm.users.list.tag.admin' })}
 										</Tag>	

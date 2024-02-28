@@ -6,7 +6,10 @@ declare namespace API {
 
   type GetFarmResponse = Array<APIModels.Farm>;
 
-  type GetFarmUsersResponse = APIModels.FarmUser[];
+  type GetFarmUsersResponse = {
+    pending: APIModels.FarmUser[],
+    users: APIModels.FarmUser[]
+  };
 
   type SaveFarmUsersResponse = {
     id: number;

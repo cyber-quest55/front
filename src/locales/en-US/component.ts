@@ -752,5 +752,7 @@ export default {
   'component.edit.farm.users.add.placeholder': 'Name, Username or E-mail.',
   'component.edit.farm.users.add.invite.action': 'Invite user',
   'component.edit.farm.users.list.tag.admin': 'Admin',
-  'component.edit.farm.users.edit.title': 'Update user permissions'
+  'component.edit.farm.users.edit.title': 'Update user permissions',
+  'component.edit.farm.users.add.message.success': 'User successfully invited!',
+  'component.edit.farm.users.general.message.fail': 'Fail',
 };
