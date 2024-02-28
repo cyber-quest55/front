@@ -760,5 +760,11 @@ export default {
   'component.edit.farm.users.edit.message.confirm.no': 'No',
   'component.edit.farm.users.edit.delete.action': 'Remove user from Farm',
   'component.edit.farm.users.edit.message.delete.success': 'User was successfully removed from the farm!',
+  'component.edit.farm.users.edit.permissions.message.save.success': 'Permissions successfully saved!',
+  'component.edit.farm.users.edit.permissions.description': 'Manage the user role on given devices:',
+  'component.edit.farm.users.edit.permissions.admin.description': 'This user is set to admin permissions. To update permissions manually turn it into a normal user.',
+  'component.edit.farm.users.edit.permissions.save': 'Save permissions',
+  'component.edit.farm.users.edit.permissions.save.admin': 'Save as Admin',
+  'component.edit.farm.users.permissions.custom': 'Custom',
   
 };

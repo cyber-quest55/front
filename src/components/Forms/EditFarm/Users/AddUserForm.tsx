@@ -31,7 +31,6 @@ const AddUserForm = ({
 	}), [intl]);
 	const yupSync = yupValidator(yupSchema(), addUserForm.getFieldsValue);
 
-
   return (
     <ProForm
 			validateTrigger="onBlur"

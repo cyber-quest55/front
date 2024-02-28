@@ -26,6 +26,16 @@ export async function getUserPermissions(options: API.GetUserPermissionsParams) 
   );
 }
 
+export async function saveUserPermissions(options: API.SaveUserPermissionsParams) {
+  return request<API.GetUserPermissionsResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/`,
+    {
+      method: 'PUT',
+      data: options.body
+    }
+  )
+}
+
 export async function deleteUserFromFarm(options: API.GetUserPermissionsParams) {
   return request<API.GetUserPermissionsResponse>(
     `/v3/farms/${options.farmId}/users/${options.id}/`, {
@@ -36,8 +46,19 @@ export async function deleteUserFromFarm(options: API.GetUserPermissionsParams) 
 
 export async function getUserRole(options: API.GetUserPermissionsParams) {
   return request<API.GetUserRoleResponse>(
-    `/v3/farms/${options.farmId}/users/${options.id}/permissions/admin`, {
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/admin/`, {
       method: 'GET',
+    }
+  );
+}
+
+export async function saveUserRole(options: API.SaveUserRoleParams) {
+  return request<string>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/admin/`, {
+      method: 'PATCH',
+      params: {
+        administrator: options.administrator
+      }
     }
   );
 }

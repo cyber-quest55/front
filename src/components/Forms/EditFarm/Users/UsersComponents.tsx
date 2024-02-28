@@ -11,7 +11,9 @@ import { getFarmUsers, saveFarmUsers } from '@/services/farm';
 import {
 	deleteUserFromFarm,
 	getUserPermissions,
+	saveUserPermissions,
 	getUserRole,
+	saveUserRole,
 } from '@/services/user';
 import { useMount, useRequest } from 'ahooks';
 import {
@@ -65,7 +67,9 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const reqFarmUsers = useRequest(getFarmUsers, { manual: true });
 	const reqSaveUser = useRequest(saveFarmUsers, { manual: true });
 	const reqPermission = useRequest(getUserPermissions, { manual: true });
+	const reqSavePerm = useRequest(saveUserPermissions, { manual: true });
 	const reqRole = useRequest(getUserRole, { manual: true });
+	const reqSaveRole = useRequest(saveUserRole, { manual: true });
 	const reqRemoveFarmUser = useRequest(
 		deleteUserFromFarm,
 		{ manual: true },
@@ -268,8 +272,64 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 						</Row>
 					) : (
 						<EditPermissionsForm 
-							onSubmit={values => console.log('submit', values)}
+							onSubmit={async values => {
+								try {
+									// Equipment permission request
+									await reqSavePerm.runAsync({
+										id: currentUser!.id,
+										farmId: params.id as string,
+										body: values.permissions.map((v: any) => {
+											// This map is necessary cause antd form is removing null values
+											return {
+												equipment: v.equipment || null,
+												id: v.id,
+												irpd: v.irpd || null,
+												level: v.level,
+												pivot: v.pivot || null,
+												user: v.user,
+											}
+										})
+									})
+									// Admin request
+									await reqSaveRole.runAsync({
+										id: currentUser!.id,
+										farmId: params.id as string,
+										administrator: isFarmAdmin,
+									})
+									reqFarmUsers.refresh();
+									queryFarmById({ id: parseInt(params.id as string) });
+									toggleEditUser();
+									message.success(intl.formatMessage({
+										id: 'component.edit.farm.users.edit.permissions.message.save.success',
+									}))
+								} catch (err) {
+									message.error(intl.formatMessage({
+										id: 'component.edit.farm.users.general.message.fail',
+									}));
+								}
+							}}
+							onSubmitAdmin={async () => {
+								try {
+									await reqSaveRole.runAsync({
+										id: currentUser!.id,
+										farmId: params.id as string,
+										administrator: isFarmAdmin,
+									})
+									reqFarmUsers.refresh();
+									queryFarmById({ id: parseInt(params.id as string) });
+									toggleEditUser();
+									message.success(intl.formatMessage({
+										id: 'component.edit.farm.users.edit.permissions.message.save.success',
+									}))
+								} catch (err) {
+									message.error(intl.formatMessage({
+										id: 'component.edit.farm.users.general.message.fail',
+									}));
+								}
+							}}
 							data={reqPermission.data!}
+							isAdmin={isFarmAdmin}
+							loading={false}
 						/>
 					)
 				}

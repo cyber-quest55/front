@@ -9,6 +9,21 @@ declare namespace API {
     id: number;
   };
 
+  type SaveUserRoleParams = GetUserPermissionsParams & {
+    administrator: boolean;
+  };
+
+  type SaveUserPermissionsParams = GetUserPermissionsParams & {
+    body: {
+      equipment?: number;
+      id: number;
+      irpd?: number;
+      level: number;
+      pivot?: number;
+      user: number;
+    }[]
+  };
+
   type CurrentUserResult = {
     profile: ProfileData;
   };
