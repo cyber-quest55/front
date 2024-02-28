@@ -12,7 +12,7 @@ import { queryFarmById } from '@/models/farm-by-id';
 import { useScreenHook } from '@/hooks/screen';
 import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl, useParams } from '@umijs/max';
-import { getFarmById, getFarmUsers, saveFarmUsers } from '@/services/farm';
+import { getFarmUsers, saveFarmUsers } from '@/services/farm';
 import { findUserByUsernameOrEmail } from '@/services/user';
 import { useMount, useRequest } from 'ahooks';
 import {
@@ -43,7 +43,10 @@ type Props = {
 }
 
 // Component
-const EditFarmUsersComponent: FunctionComponent<Props> = (): ReactElement => {
+const EditFarmUsersComponent: FunctionComponent<Props> = ({
+	farm,
+	queryFarmById
+}): ReactElement => {
 	// Hooks
 	const intl = useIntl();
 	const params = useParams();
@@ -56,15 +59,6 @@ const EditFarmUsersComponent: FunctionComponent<Props> = (): ReactElement => {
 	const [ isEditUserOpen, setIsEditUserOpen ] = useState(false);
 
 	// Requests
-	const {
-		data: farmData,
-		run: getFarmByIdRequest,
-		refresh: refreshFarm,
-	} = useRequest(
-		getFarmById,
-		{ manual: true }
-	)
-
 	const {
 		data: farmUsersData,
 		run: getFarmUsersRequest,
@@ -93,7 +87,6 @@ const EditFarmUsersComponent: FunctionComponent<Props> = (): ReactElement => {
 	// Effects
 	useMount(() => {
 		getFarmUsersRequest({ id: params.id as string });
-		getFarmByIdRequest({ id: params.id as string   })
 	});
 
 	// Guidelines handlers
@@ -214,7 +207,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = (): ReactElement => {
 								id: 'component.edit.farm.users.add.message.success'
 							}));
 							refreshFarmUsers();
-							refreshFarm();
+							queryFarmById({ id: parseInt(params.id as string) });
 							toggleAddUser();
 						} catch (err) {
 							message.success(intl.formatMessage({
@@ -315,7 +308,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = (): ReactElement => {
 									<Typography.Text style={{ marginRight: 8 }}>
 										{`@${item.username}`}
 									</Typography.Text>
-									{farmData?.administrators.some(adm => adm.id === item.id) ? (
+									{farm?.administrators.some(adm => adm.id === item.id) ? (
 										<Tag color="processing">
 											{intl.formatMessage({ id: 'component.edit.farm.users.list.tag.admin' })}
 										</Tag>	
