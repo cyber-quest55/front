@@ -363,7 +363,24 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			</Row>
 			<List
 				itemLayout='horizontal'
-				dataSource={reqFarmUsers.data?.users || []}
+				dataSource={reqFarmUsers.data?.users.sort((a, b) => {
+					// Compare based on username in alphabetical order
+					const nameComparison = a.username.localeCompare(b.username);
+				
+					// Check if the user is an administrator in the farm
+					const isAdminA = farm?.administrators.some((adm) => adm.id === a.id);
+					const isAdminB = farm?.administrators.some((adm) => adm.id === b.id);
+
+					// If one is an admin and the other is not, prioritize the admin
+					if (isAdminA && !isAdminB) {
+						return -1;
+					} else if (!isAdminA && isAdminB) {
+						return 1;
+					}
+					
+					// If both are admins or both are not, use the name comparison
+					return nameComparison;
+				}) || []}
 				renderItem={(item, index) => (
 					<List.Item
 						key={index}
