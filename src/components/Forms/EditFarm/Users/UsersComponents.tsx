@@ -1,21 +1,15 @@
 // Dependencies
-import {
-	ProCard,
-	ProForm,
-	ProFormSelect,
-} from '@ant-design/pro-components';
+import { ProCard } from '@ant-design/pro-components';
 import {
 	EditOutlined,
 	QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useScreenHook } from '@/hooks/screen';
-import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl, useParams } from '@umijs/max';
 import { getFarmUsers, saveFarmUsers } from '@/services/farm';
 import {
 	deleteUserFromFarm,
-	findUserByUsernameOrEmail,
 	getUserPermissions,
 	getUserRole,
 } from '@/services/user';
@@ -23,24 +17,26 @@ import { useMount, useRequest } from 'ahooks';
 import {
 	App,
 	Button,
+	Card,
 	Col,
-	Form,
 	List,
 	Modal,
 	Popconfirm,
 	Row,
 	Space,
+	Spin,
+	Switch,
 	Tag,
 	Typography 
 } from 'antd';
 import React, {
 	FunctionComponent,
 	ReactElement,
-	useCallback,
-	useRef,
+	useEffect,
 	useState
 } from 'react';
-import * as yup from 'yup';
+import AddUserForm from './AddUserForm';
+import EditPermissionsForm from './EditPermissionsForm';
 
 // Component props
 type Props = {
@@ -58,16 +54,15 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const params = useParams();
 	const { xl } = useScreenHook();
 	const { message } = App.useApp();
-	const [ addUserForm ] = Form.useForm();
-	const addFormRef = useRef();
+	
 	const [ isGuidelinesOpen, setIsGuidelinesOpen ] = useState(false);
 	const [ isAddUserOpen, setIsAddUserOpen ] = useState(false);
 	const [ isEditUserOpen, setIsEditUserOpen ] = useState(false);
+	const [ isFarmAdmin, setIsFarmAdmin ] = useState(false);
 	const [ currentUser, setCurrentUser ] = useState<APIModels.FarmUser | null>(null);
 
 	// Requests
 	const reqFarmUsers = useRequest(getFarmUsers, { manual: true });
-	const reqFindUsers = useRequest(findUserByUsernameOrEmail, { manual: true });
 	const reqSaveUser = useRequest(saveFarmUsers, { manual: true });
 	const reqPermission = useRequest(getUserPermissions, { manual: true });
 	const reqRole = useRequest(getUserRole, { manual: true });
@@ -80,6 +75,12 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	useMount(() => {
 		reqFarmUsers.run({ id: params.id as string });
 	});
+
+	useEffect(() => {
+		if (reqRole.data) {
+			setIsFarmAdmin(reqRole.data?.is_admin);
+		}
+	}, [reqRole.data]);
 
 	// Guidelines handlers
 	const showGuidelines = () => {
@@ -94,15 +95,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const toggleAddUser = () => setIsAddUserOpen(prev => !prev);
 	const toggleEditUser = () => setIsEditUserOpen(prev => !prev);
 
-	// Form validation schema
-	const yupSchema = useCallback(() => yup.object().shape({
-		user: yup.string().required(
-			intl.formatMessage({
-				id: 'validations.required',
-			}),
-		),
-	}), [intl]);
-	const yupSync = yupValidator(yupSchema(), addUserForm.getFieldsValue);
+	
 
 	// List icon text component
 	const IconAction = ({ icon, onClick = () => {} }: { icon: React.FC, onClick: () => void }) => (
@@ -175,16 +168,8 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				onCancel={toggleAddUser}
 				footer={false}
 			>
-				<ProForm
-					validateTrigger="onBlur"
-					layout="vertical"
-					name="add_user_form"
-					rowProps={{ gutter: [8, 8] }}
-					submitter={false}
-					form={addUserForm}
-					formRef={addFormRef}
-					initialValues={{ user: '' }}
-					onFinish={async (values) => {
+				<AddUserForm 
+					onSubmit={async (values) => {
 						try {
 							await reqSaveUser.runAsync({
 								id: params.id as string,
@@ -194,7 +179,6 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 									username_or_email: values.user
 								}
 							})
-							addUserForm.resetFields();
 							message.success(intl.formatMessage({
 								id: 'component.edit.farm.users.add.message.success',
 							}));
@@ -207,40 +191,8 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 							}));
 						}
 					}}
-					grid
-				>
-					<ProFormSelect
-            rules={[yupSync]}
-            request={async (val) => {
-							if (val.keyWords) {
-								const resp = await reqFindUsers.runAsync({
-									username_or_email: val.keyWords,
-								})
-								return resp.map(result => ({
-									label: `${result.full_name} (${result.user__email})`,
-									value: result.user__username,
-								}))
-							}
-							return [{
-								label: intl.formatMessage({ id: 'component.edit.farm.users.add.placeholder' }),
-								value: ''
-							}];
-            }}
-            name={['user']}
-            label={intl.formatMessage({ id: 'component.edit.farm.users.add.label' })}
-						placeholder={intl.formatMessage({ id: 'component.edit.farm.users.add.placeholder' })}
-						colProps={{ xs: 24 }}
-            showSearch
-          />
-					<Button
-						type="primary"
-						style={{ width: '100%' }}
-						onClick={addUserForm.submit}
-						disabled={reqFindUsers.loading || reqSaveUser.loading}
-					>
-						{intl.formatMessage({ id: 'component.edit.farm.users.add.invite.action' })}
-					</Button>
-				</ProForm>
+					loading={reqSaveUser.loading}
+				/>
 			</Modal>
 			<Modal
 				title={intl.formatMessage({ id: 'component.edit.farm.users.edit.title' })}
@@ -248,38 +200,79 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				onCancel={toggleEditUser}
 				footer={false}
 			>
-				<List.Item.Meta
-					title={`@${currentUser?.username}`}
-					description={currentUser?.email}
-				/>
-				<Popconfirm
-					title={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm' })}
-					okText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.yes' })}
-					cancelText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.no' })}
-					onConfirm={async () => {
-						try {
-							await reqRemoveFarmUser.runAsync({
-								farmId: params.id as string,
-								id: currentUser!.id,
-							})
-							reqFarmUsers.refresh();
-							queryFarmById({ id: parseInt(params.id as string) });
-							toggleEditUser();
-							setCurrentUser(null);
-							message.success(intl.formatMessage({
-								id: 'component.edit.farm.users.edit.message.delete.success',
-							}))
-						} catch (err) {
-							message.error(intl.formatMessage({
-								id: 'component.edit.farm.users.general.message.fail',
-							}));
-						}
-					}}
-				>
-					<Button danger>
-						{intl.formatMessage({ id: 'component.edit.farm.users.edit.delete.action' })}
-					</Button>
-				</Popconfirm>
+				<Card style={{ width: '100%' }}>
+					<Space 
+						direction="vertical"
+						style={{ paddingTop: 8, width: '100%' }}	
+					>
+						<Typography.Title level={5} style={{ margin: 0 }}>
+							@{currentUser?.username}
+						</Typography.Title>
+						<Typography.Text>
+							{currentUser?.first_name} {currentUser?.last_name} ({currentUser?.email})
+						</Typography.Text>
+						{
+							reqRole.loading ? (
+								<Spin style={{ marginTop: 8 }} />
+							) : (
+								<Switch
+									style={{ marginTop: 8 }}
+									checked={isFarmAdmin}
+									checkedChildren="Administrator"
+									unCheckedChildren="User"
+									onChange={setIsFarmAdmin}
+								/>
+							)
+						}					
+						<Popconfirm
+							title={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm' })}
+							okText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.yes' })}
+							cancelText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.no' })}
+							onConfirm={async () => {
+								try {
+									await reqRemoveFarmUser.runAsync({
+										farmId: params.id as string,
+										id: currentUser!.id,
+									})
+									reqFarmUsers.refresh();
+									queryFarmById({ id: parseInt(params.id as string) });
+									toggleEditUser();
+									setCurrentUser(null);
+									message.success(intl.formatMessage({
+										id: 'component.edit.farm.users.edit.message.delete.success',
+									}))
+								} catch (err) {
+									message.error(intl.formatMessage({
+										id: 'component.edit.farm.users.general.message.fail',
+									}));
+								}
+							}}
+						>
+							<Button
+								style={{ width: '100%', marginTop: 16 }}
+								danger
+							>
+								{intl.formatMessage({ id: 'component.edit.farm.users.edit.delete.action' })}
+							</Button>
+						</Popconfirm>
+					</Space>
+				</Card>
+				{
+					reqPermission.loading ? (
+						<Row
+							justify="center"
+							align="middle"
+							style={{ marginTop: 16 }}
+						>
+							<Spin />
+						</Row>
+					) : (
+						<EditPermissionsForm 
+							onSubmit={values => console.log('submit', values)}
+							data={reqPermission.data!}
+						/>
+					)
+				}
 			</Modal>
 			<Typography.Paragraph>
 				{intl.formatMessage({ id: 'component.edit.farm.users.description' })}
@@ -318,7 +311,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 							<IconAction
 								icon={EditOutlined}
 								key="list-vertical-edit-o"
-								onClick={() => {
+								onClick={async () => {
 									setCurrentUser(item);
 									reqPermission.run({ id: item.id, farmId: params.id as string });
 									reqRole.run({ id: item.id, farmId: params.id as string });

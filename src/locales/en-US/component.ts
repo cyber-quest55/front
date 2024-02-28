@@ -758,7 +758,7 @@ export default {
   'component.edit.farm.users.edit.message.confirm': 'Are you sure you want to remove this user?',
   'component.edit.farm.users.edit.message.confirm.yes': 'Yes',
   'component.edit.farm.users.edit.message.confirm.no': 'No',
-  'component.edit.farm.users.edit.delete.action': 'Remove user from farm',
+  'component.edit.farm.users.edit.delete.action': 'Remove user from Farm',
   'component.edit.farm.users.edit.message.delete.success': 'User was successfully removed from the farm!',
   
 };
