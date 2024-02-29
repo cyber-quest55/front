@@ -22,7 +22,6 @@ import {
 	Button,
 	Calendar,
 	Col,
-	DatePicker,
 	Dropdown,
 	Flex,
 	Row,
@@ -55,7 +54,6 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 		setHolidayList
 	] = useState<{ day: number, month: number }[]>(farm?.holidays_list || []);
 	const { message } = App.useApp();
-	const [ selectedDate, setSelectedDate ] = useState<{ day: number, month: number }>()
 	const { lg, xl, xxl } = useScreenHook();
 
 	const isLargeScreen = lg || xl || xxl;
@@ -107,7 +105,30 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			);
 		}
 
-    return null;
+    return (
+			<div className="events">
+				<Flex
+					style={{ marginTop: 8 }}
+					justify="flex-end"
+					align="center"
+					gap="8px"
+					wrap="wrap"
+				>
+					<Button 
+						type="primary"
+						size="small"
+						icon={<PlusOutlined />}
+						onClick={(e) => {
+							e.preventDefault();
+							setHolidayList(prev => [ ...prev, {
+								day: value.date(),
+								month: value.month() + 1,
+							} ]);
+						}}
+					/>
+				</Flex>	
+			</div>
+		);
 	}, [holidayList, intl, isLargeScreen]);
 
 	// Calendar cell for mobile
@@ -136,23 +157,13 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 					}
 				}}
 				style={{
-					backgroundColor: isHoliday ? '#dac422': 'transparent',
-					color: isHoliday ? '#000000': '#ffffff',
+					backgroundColor: isHoliday ? '#1668dc': 'transparent',
 				}}
 			>
 				{value.date()}
 			</div>
 		);
-	}, [holidayList])
-
-	const handleDateChange = (date: Dayjs | null) => {
-    if (date) {
-			setSelectedDate({
-				day: Number(date.format('DD')),
-				month: Number(date.format('MM')),
-			})
-    }
-  }
+	}, [holidayList]);
 
 	const onFinish = async () => {
 		try {
@@ -245,34 +256,6 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 				{intl.formatMessage({ id: 'component.edit.farm.holiday.desc' })}
 			</Typography.Paragraph>
 			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
-				<Col xs={24}  md={24} xl={8}>
-					<DatePicker 
-						picker="date"
-						format="MMMM Do"
-						onChange={handleDateChange}
-						style={{ width: '100%' }}
-					/>
-				</Col>
-				<Col xs={24}  md={24} xl={4} >
-					<Button
-						type="primary"
-						icon={<PlusOutlined />}
-						style={{ width: '100%' }}
-						disabled={reqSaveFarm.loading}
-						onClick={() => {
-							if (selectedDate) {
-								const hasHoliday = holidayList.find(
-									h => (h.day === selectedDate.day && h.month === selectedDate.month)
-								);
-								if (!hasHoliday) {
-									setHolidayList(prev => [ ...prev, { ...selectedDate } ]);
-								}	
-							}
-						}}
-					>
-						{intl.formatMessage({ id: 'component.edit.farm.holiday.add' })}
-					</Button>
-				</Col>
 				<Col xs={24} md={24} xl={8} >
 					<Dropdown menu={{ items: holidayImportOptions }} placement="bottom">
 						<Button
