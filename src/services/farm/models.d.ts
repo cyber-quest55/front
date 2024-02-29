@@ -102,5 +102,10 @@ declare namespace APIModels {
     phone?: string;
     postal_code?: string;
     state?: string;
+    // Holidays tab
+    holidays_list?: {
+      month: number,
+      day: number,
+    }[],
   } 
 }
