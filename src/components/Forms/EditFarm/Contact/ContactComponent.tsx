@@ -9,9 +9,12 @@ import { CustomInput } from '@/components/Input';
 import { SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max';
+import { updateFarm } from '@/services/farm';
 import countries from '@/utils/data/country';
 import { yupValidator } from '@/utils/adapters/yup';
+import { useRequest } from 'ahooks';
 import {
+	App,
 	Button,
 	Form,
 	Row,
@@ -22,7 +25,6 @@ import {
 	ReactElement,
 	useCallback,
 	useRef,
-	useState
 } from 'react';
 import * as yup from 'yup';
 
@@ -34,13 +36,16 @@ type Props = {
 
 // Component
 const EditFarmContactComponent: FunctionComponent<Props> = ({
-	farm
+	farm,
+	queryFarmById
 }): ReactElement => {
 	// Hooks
-	const intl = useIntl()
+	const { message } = App.useApp();
+	const intl = useIntl();
 	const ref = useRef();
 	const [ form ] = Form.useForm()
-	const [ loading, setLoading ] = useState<boolean>(false);
+
+	const reqSaveFarm = useRequest(updateFarm, { manual: true });
 
 	// Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
@@ -90,7 +95,12 @@ const EditFarmContactComponent: FunctionComponent<Props> = ({
 				</Typography.Title>
 			}
 			extra={
-				<Button loading={loading} icon={<SaveOutlined />} type="primary">
+				<Button
+					loading={reqSaveFarm.loading}
+					icon={<SaveOutlined />}
+					type="primary"
+					onClick={form.submit}
+				>
 					{intl.formatMessage({
 						id: 'component.edit.farm.button.save',
 					})}
@@ -99,99 +109,117 @@ const EditFarmContactComponent: FunctionComponent<Props> = ({
 			ghost
 			gutter={[12, 12]}
 		>
-			<ProForm
-				validateTrigger="onBlur"
-				layout="vertical"
-				name="general_form"
-				rowProps={{ gutter: [8, 8] }}
-				submitter={false}
-				form={form}
-       	formRef={ref}
-				grid
-				initialValues={{ ...farm }}
-				onFinish={async (values: any) => {
-					console.log('[submit values]', values);
-					setLoading(true);
-
-					// Backend does not support modular update so the entire farm obj must be sent
-					const newObj = { ...farm }		
-
-					console.log('submit formatted', newObj)
-					setLoading(false);
-				}}
-			>
-				<Typography.Title style={{ margin: 0 }} level={5}>
-					{intl.formatMessage({ id: 'component.edit.farm.contact.contact.label' })}
-				</Typography.Title>
-				<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
-					<CustomInput.Cellphone
-						//countryCode={farm?.phone}
-						country={farm?.country}
-						formItemProps={{
-							rules: [yupSync],
-							name: ['phone'],
-							label: intl.formatMessage({
-								id: 'component.edit.farm.contact.phone.label',
-							})
+			{
+				farm ? (
+					<ProForm
+						validateTrigger="onBlur"
+						layout="vertical"
+						name="general_form"
+						rowProps={{ gutter: [8, 8] }}
+						submitter={false}
+						form={form}
+						formRef={ref}
+						grid
+						initialValues={{ ...farm }}
+						onFinish={async (values: any) => {
+							try {
+								// Backend supports updates from single fields
+								// In that case this will be sending just modified fields
+								const payload = {
+									...values,
+									phone: values.phone.replace(/\D/g, ''),
+									postal_code: values.postal_code.replace(/\D/g, ''),
+								};
+								await reqSaveFarm.runAsync({
+									id: farm.id.toString(),
+									body: payload,
+								});
+								queryFarmById({ id: farm.id });
+								message.success(intl.formatMessage({
+									id: 'component.edit.farm.messages.save.success',
+								}));
+							} catch (err) {
+								message.error(intl.formatMessage({
+									id: 'component.edit.farm.messages.save.error',
+								}));
+							}			
 						}}
-						colProps={{ xs: 24, md: 8, xl: 8 }}
-					/>
-					
-				</Row>
-				<Typography.Title style={{ margin: 0 }} level={5}>
-					{intl.formatMessage({ id: 'component.edit.farm.contact.address.label' })}
-				</Typography.Title>
-				<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
-					<CustomInput.Cep
-						country={farm?.country || ''}
-						colProps={{ xs: 24, md: 8, xl: 8 }}
-						formItemProps={{
-							rules: [yupSync],
-							name: ['postal_code'],
-							label: intl.formatMessage({
-								id: 'component.edit.farm.contact.postalcode.label',
-							})
-						}}
-					/>
-					<ProFormField
-            rules={[yupSync]}
-            name={['address']}
-            label={intl.formatMessage({ id: 'component.edit.farm.contact.street.label' })}
-						colProps={{ xs: 24, md: 16, xl: 16 }}
-          />
-					<ProFormField
-            rules={[yupSync]}
-            name={['city']}
-            label={intl.formatMessage({ id: 'component.edit.farm.contact.city.label' })}
-						colProps={{ xs: 24, md: 8, xl: 8 }}
-          />
-					<ProFormField
-            rules={[yupSync]}
-            name={['state']}
-            label={intl.formatMessage({ id: 'component.edit.farm.contact.state.label' })}
-						colProps={{ xs: 24, md: 8, xl: 8 }}
-          />
-					<ProFormSelect
-            rules={[yupSync]}
-            request={async () => {
-              return countries.map((item) => {
-                const country = item.content.split('_');
-                delete country[0];
-                return {
-                  label: country.join(' '),
-                  value: item.iso,
-                };
-              });
-            }}
-            name={['country']}
-            showSearch
-            label={intl.formatMessage({
-              id: 'component.create.farm.modal.country.label',
-            })}
-						colProps={{ xs: 24, md: 8, xl: 8 }}
-          />
-				</Row>
-			</ProForm>
+					>
+						<Typography.Title style={{ margin: 0 }} level={5}>
+							{intl.formatMessage({ id: 'component.edit.farm.contact.contact.label' })}
+						</Typography.Title>
+						<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
+							<CustomInput.Cellphone
+								//countryCode={farm?.phone}
+								country={farm?.country}
+								formItemProps={{
+									rules: [yupSync],
+									name: ['phone'],
+									label: intl.formatMessage({
+										id: 'component.edit.farm.contact.phone.label',
+									})
+								}}
+								colProps={{ xs: 24, md: 8, xl: 8 }}
+							/>
+							
+						</Row>
+						<Typography.Title style={{ margin: 0 }} level={5}>
+							{intl.formatMessage({ id: 'component.edit.farm.contact.address.label' })}
+						</Typography.Title>
+						<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
+							<CustomInput.Cep
+								country={farm?.country || ''}
+								colProps={{ xs: 24, md: 8, xl: 8 }}
+								formItemProps={{
+									rules: [yupSync],
+									name: ['postal_code'],
+									label: intl.formatMessage({
+										id: 'component.edit.farm.contact.postalcode.label',
+									})
+								}}
+							/>
+							<ProFormField
+								rules={[yupSync]}
+								name={['address']}
+								label={intl.formatMessage({ id: 'component.edit.farm.contact.street.label' })}
+								colProps={{ xs: 24, md: 16, xl: 16 }}
+							/>
+							<ProFormField
+								rules={[yupSync]}
+								name={['city']}
+								label={intl.formatMessage({ id: 'component.edit.farm.contact.city.label' })}
+								colProps={{ xs: 24, md: 8, xl: 8 }}
+							/>
+							<ProFormField
+								rules={[yupSync]}
+								name={['state']}
+								label={intl.formatMessage({ id: 'component.edit.farm.contact.state.label' })}
+								colProps={{ xs: 24, md: 8, xl: 8 }}
+							/>
+							<ProFormSelect
+								rules={[yupSync]}
+								request={async () => {
+									return countries.map((item) => {
+										const country = item.content.split('_');
+										delete country[0];
+										return {
+											label: country.join(' '),
+											value: item.iso,
+										};
+									});
+								}}
+								name={['country']}
+								showSearch
+								label={intl.formatMessage({
+									id: 'component.create.farm.modal.country.label',
+								})}
+								colProps={{ xs: 24, md: 8, xl: 8 }}
+							/>
+						</Row>
+					</ProForm>
+				) : null
+			}
+			
     </ProCard>
   )
 };

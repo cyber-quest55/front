@@ -88,9 +88,17 @@ declare namespace APIModels {
   };
 
   type UpdateFarmPayload = {
+    // General tab
     billing_date?: number;
     name?: string;
     timezone?: string;
     water_billing_date?: number;
+    // Contact tab
+    address?: string;
+    city?: string;
+    country?: string;
+    phone?: string;
+    postal_code?: string;
+    state?: string;
   } 
 }

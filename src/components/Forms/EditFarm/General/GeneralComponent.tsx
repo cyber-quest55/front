@@ -8,7 +8,7 @@ import {
 import { SaveOutlined } from '@ant-design/icons';
 import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import { queryFarmById } from '@/models/farm-by-id';
-import { updateFarm, updatedBase } from '@/services/farm'
+import { updateFarm, updatedBase } from '@/services/farm';
 import { getIrpds } from '@/services/irpd';
 import { getMeterSystem } from '@/services/metersystem';
 import { getPivots } from '@/services/pivot';
