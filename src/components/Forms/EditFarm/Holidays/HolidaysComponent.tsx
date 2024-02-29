@@ -121,7 +121,19 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			<div
 				className="ant-picker-cell-inner ant-picker-calendar-date"
 				onClick={() => {
-					console.log('[has holiday]')
+					const hasHoliday = holidayList.find(
+						h => (h.day === value.date() && h.month - 1 === value.month())
+					);
+					if (hasHoliday) {
+						setHolidayList(prev => prev.filter(
+							h => !(h.day === value.date() && h.month -1 === value.month())
+						))
+					} else {
+						setHolidayList(prev => [ ...prev, {
+							day: value.date(),
+							month: value.month() + 1,
+						} ]);
+					}
 				}}
 				style={{
 					backgroundColor: isHoliday ? '#dac422': 'transparent',
@@ -168,7 +180,15 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			label: (
 				<a
 					rel="noopener noreferrer"
-					onClick={() => setHolidayList(prev => [ ...prev, ...BR_NATIONAL_HOLIDAYS ])}
+					onClick={() => setHolidayList(prev => [
+						...prev,
+						...BR_NATIONAL_HOLIDAYS.filter(
+							holiday => !prev.some(
+								existingHoliday => existingHoliday.day === holiday.day &&
+								existingHoliday.month === holiday.month
+							)
+						)
+					])}
 				>
 					{intl.formatMessage({ id: 'component.edit.farm.holiday.import.brazil' })}
 				</a>
@@ -179,7 +199,15 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			label: (
 				<a
 					rel="noopener noreferrer"
-					onClick={() => setHolidayList(prev => [ ...prev, ...RU_NATIONAL_HOLIDAYS ])}
+					onClick={() => setHolidayList(prev => [
+						...prev,
+						...RU_NATIONAL_HOLIDAYS.filter(
+							holiday => !prev.some(
+								existingHoliday => existingHoliday.day === holiday.day &&
+								existingHoliday.month === holiday.month
+							)
+						)
+					])}
 				>
 					{intl.formatMessage({ id: 'component.edit.farm.holiday.import.russia' })}
 				</a>
@@ -230,6 +258,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 						type="primary"
 						icon={<PlusOutlined />}
 						style={{ width: '100%' }}
+						disabled={reqSaveFarm.loading}
 						onClick={() => {
 							if (selectedDate) {
 								const hasHoliday = holidayList.find(
@@ -261,6 +290,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 					<Calendar
 						fullscreen
 						cellRender={dateCellRenderer}
+						mode="month"
 					/>
 				) : (
 					<Calendar
