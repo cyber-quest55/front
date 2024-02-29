@@ -1,7 +1,7 @@
 import { useScreenHook } from '@/hooks/screen';
-import { postPivotNotification } from '@/services/notification';
+import { updatePivotNotification } from '@/services/notification';
 import { yupValidator } from '@/utils/adapters/yup';
-import { PlusCircleFilled } from '@ant-design/icons';
+import { EditFilled } from '@ant-design/icons';
 import {
   ModalForm,
   ProCard,
@@ -9,7 +9,6 @@ import {
   ProFormCheckbox,
   ProFormDependency,
   ProFormInstance,
-  ProFormRadio,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
@@ -24,18 +23,20 @@ import { useRef, useState } from 'react';
 import { IoAlertCircleOutline } from 'react-icons/io5';
 import * as yup from 'yup';
 
-const AddPivotAlarmForm = (props: any) => {
+const EditPivotAlarmForm = (props: any) => {
   const intl = useIntl();
   const { lg } = useScreenHook();
   const form1Ref = useRef<ProFormInstance<any> | undefined>();
   const form2Ref = useRef<ProFormInstance<any> | undefined>();
   const [visible, setVisible] = useState(false);
-  const postPivotNotificationReq = useRequest(postPivotNotification, { manual: true });
+  const updatePivotNotificationReq = useRequest(updatePivotNotification, { manual: true });
   const { initialState } = useModel('@@initialState');
   const params = useParams();
   const { message } = App.useApp();
 
-  const listOptions = (version: string) => {
+  const version = props.pivots.find((p) => p.id === props.notification.devices[0]).protocol;
+
+  const listOptions = () => {
     const reasonsFilteredByVersion = props.reasons.filter(
       (reason) => reason.protocol === Number(version),
     );
@@ -44,12 +45,14 @@ const AddPivotAlarmForm = (props: any) => {
       return {
         title: reason.label,
         name: ['options', 'reasons', reason.id.toString()],
-        critical: reason.critical ? { name: ['options', 'critical_reasons', reason.id.toString()] } : null,
+        critical: reason.critical
+          ? { name: ['options', 'critical_reasons', reason.id.toString()] }
+          : null,
       };
     });
   };
 
-  const pivotOptions = (version: string) => {
+  const pivotOptions = () => {
     const pivotsFilteredByVersion = props.pivots.filter(
       (pivot) => pivot.automation_type === 0 && pivot.protocol === Number(version),
     );
@@ -80,7 +83,6 @@ const AddPivotAlarmForm = (props: any) => {
             id: 'validations.required',
           }),
         ),
-      version: yup.string(),
       all_day: yup.boolean(),
       start_at: yup.string().when('all_day', {
         is: false,
@@ -113,12 +115,11 @@ const AddPivotAlarmForm = (props: any) => {
         }),
       ),
       // reasons: yup
-      reasons: yup.object().test(
-        'is-jimmy',
-        'error', 
-        (value, testContext) =>
-          Object.values(testContext.parent.reasons).some(v => v === true)
-      )
+      reasons: yup
+        .object()
+        .test('is-jimmy', 'error', (value, testContext) =>
+          Object.values(testContext.parent.reasons).some((v) => v === true),
+        ),
     }),
   });
 
@@ -128,15 +129,14 @@ const AddPivotAlarmForm = (props: any) => {
   return (
     <>
       <Button
+        size={lg ? 'middle' : 'small'}
+        key="1-btn-"
         onClick={() => setVisible(true)}
-        size={lg ? 'large' : 'middle'}
-        type="primary"
-        icon={<PlusCircleFilled />}
-      >
-        Adicionar Alarme
-      </Button>
+        icon={<EditFilled />}
+      />
+
       <ModalForm
-        title="Create Notifications"
+        title="Edit Notifications"
         width={800}
         open={visible}
         modalProps={{
@@ -159,12 +159,16 @@ const AddPivotAlarmForm = (props: any) => {
           onFinish={async (values) => {
             try {
               const data = {
-                critical_reasons: values.options.critical_reasons ? Object.keys(values.options.critical_reasons)
-                  .filter((key) => values.options.critical_reasons[key])
-                  .map((v) => Number(v)) : [],
-                reasons: values.options.reasons ? Object.keys(values.options.reasons)
-                  .filter((key) => values.options.reasons[key])
-                  .map((v) => Number(v)) : [],
+                critical_reasons: values.options.critical_reasons
+                  ? Object.keys(values.options.critical_reasons)
+                      .filter((key) => values.options.critical_reasons[key])
+                      .map((v) => Number(v))
+                  : [],
+                reasons: values.options.reasons
+                  ? Object.keys(values.options.reasons)
+                      .filter((key) => values.options.reasons[key])
+                      .map((v) => Number(v))
+                  : [],
                 devices: values.options.devices,
                 name: values.information.notification_group_name,
                 start: values.information.start_at,
@@ -172,13 +176,17 @@ const AddPivotAlarmForm = (props: any) => {
                 enable: true,
                 farm: Number(params.farmId),
                 user: initialState?.currentUser.id,
+                id: props.notification.id,
               };
-              await postPivotNotificationReq.runAsync(data);
-              message.success('Notificação criada com sucesso');
+              await updatePivotNotificationReq.runAsync(
+                { notificationId: props.notification.id },
+                data,
+              );
+              message.success('Notificação atualizada com sucesso');
               props.refresh();
               setVisible(false);
             } catch (err) {
-              console.log(err)
+              console.log(err);
               message.error('Fail');
             }
           }}
@@ -190,11 +198,12 @@ const AddPivotAlarmForm = (props: any) => {
               formRef={form1Ref}
               initialValues={{
                 information: {
-                  notification_group_name: '',
-                  all_day: true,
-                  start_at: moment().startOf('day'),
-                  end_at: moment().endOf('day'),
-                  version: 5,
+                  notification_group_name: props.notification.name,
+                  all_day:
+                    props.notification.start === '00:00:00' &&
+                    props.notification.end === '23:59:59',
+                  start_at: props.notification.start,
+                  end_at: props.notification.end,
                 },
               }}
               grid
@@ -207,22 +216,6 @@ const AddPivotAlarmForm = (props: any) => {
                   name={['information', 'notification_group_name']}
                   label="Nome do grupo de notificações"
                 />
-                <ProFormRadio.Group
-                  name={['information', 'version']}
-                  layout="horizontal"
-                  label={'Versão'}
-                  rules={[yupSync1]}
-                  options={[
-                    {
-                      label: 'G1',
-                      value: 4.1,
-                    },
-                    {
-                      label: 'G2',
-                      value: 5,
-                    },
-                  ]}
-                />
                 <ProFormDependency name={['information']} colon style={{ width: '100%' }}>
                   {({ information }) => {
                     return (
@@ -230,17 +223,16 @@ const AddPivotAlarmForm = (props: any) => {
                         <ProFormTimePicker
                           rules={[yupSync1]}
                           allowClear={false}
-                          colProps={{ xs: 12, md: 5 }}
+                          colProps={{ xs: 12, md: 6 }}
                           name={['information', 'start_at']}
                           dataFormat="HH:mm"
                           label="Horário de início"
                           disabled={information.all_day}
                         />
-
                         <ProFormTimePicker
                           rules={[yupSync1]}
                           allowClear={false}
-                          colProps={{ xs: 12, md: 5 }}
+                          colProps={{ xs: 12, md: 6 }}
                           name={['information', 'end_at']}
                           dataFormat="HH:mm"
                           label="Horário de fim"
@@ -271,11 +263,23 @@ const AddPivotAlarmForm = (props: any) => {
               formRef={form2Ref}
               onInit={(values, form) => {
                 const reasonsObj: any = {};
+                const criticalReasonsObj: any = {};
                 for (let reason of props.reasons) {
                   reasonsObj[reason.id.toString()] = false;
                 }
-                form2Ref.current?.setFieldsValue({ options: { reasons: reasonsObj, critical_reasons: {} } });
-
+                for (let reason of props.notification.reasons) {
+                  reasonsObj[reason.id.toString()] = true;
+                }
+                for (let criticalReason of props.notification.critical_reasons) {
+                  criticalReasonsObj[criticalReason.toString()] = true;
+                }
+                form2Ref.current?.setFieldsValue({
+                  options: {
+                    reasons: reasonsObj,
+                    critical_reasons: criticalReasonsObj,
+                    devices: props.notification.devices,
+                  },
+                });
               }}
             >
               <Space direction="vertical" style={{ width: '100%' }} size="small">
@@ -286,9 +290,7 @@ const AddPivotAlarmForm = (props: any) => {
                         rules={[yupSync2]}
                         label="Pivôs"
                         name={['options', 'devices']}
-                        options={pivotOptions(
-                          form1Ref.current?.getFieldValue(['information', 'version']),
-                        )}
+                        options={pivotOptions()}
                         fieldProps={{
                           mode: 'multiple',
                         }}
@@ -300,81 +302,77 @@ const AddPivotAlarmForm = (props: any) => {
                   {(form) => {
                     return (
                       <>
-                      <ProCard
-                        gutter={[0, 8]}
-                        ghost
-                        wrap
-                        style={{
-                          maxHeight: 450,
-                          overflowY: 'auto',
-                          overflowX: 'hidden',
-                          paddingRight: 4,
-                        }}
-                      >
-                        
-                        {listOptions(
-                          form1Ref.current?.getFieldValue(['information', 'version']),
-                        ).map((item) => (
-                          <ProCard
-                            collapsible={item.critical}
-                            title={item.title}
-                            bodyStyle={{ margin: 0, paddingBlock: item.critical ? 16 : '0 16px' }}
-                            extra={
-                              <Row justify="space-between" align={'middle'}>
-                                <Col>
-                                  <ProFormSwitch
-                                    fieldProps={{
-                                      onChange: (checked) => {
-                                        if (item.critical && !checked) {
-                                          form.setFieldValue(item.critical.name, false);
-                                        }
-                                      },
-                                    }}
-                                    noStyle
-                                    rules={[yupSync2]}
-                                    name={item.name}
-                                    style={{ margin: 0 }}
-                                  />
-                                </Col>
-                              </Row>
-                            }
-                            bordered
-                            key={`list-${item.name}`}
-                          >
-                            {item.critical ? (
-                              <>
-                                <Divider style={{ padding: 0, margin: '0 0 16px 0' }} />
+                        <ProCard
+                          gutter={[0, 8]}
+                          ghost
+                          wrap
+                          style={{
+                            maxHeight: 450,
+                            overflowY: 'auto',
+                            overflowX: 'hidden',
+                            paddingRight: 4,
+                          }}
+                        >
+                          {listOptions().map((item) => (
+                            <ProCard
+                              collapsible={item.critical}
+                              title={item.title}
+                              bodyStyle={{ margin: 0, paddingBlock: item.critical ? 16 : '0 16px' }}
+                              extra={
                                 <Row justify="space-between" align={'middle'}>
                                   <Col>
-                                    <Row align={'middle'}>
-                                      <Tooltip title="Critical alerts play different and louder sounds than conventional notifications. These notifications are disruptive and should be used when immediate action is required, for example in the event of unexpected downtime.">
-                                        <IoAlertCircleOutline color="#DA1D29" size={20} />
-                                      </Tooltip>
-                                      <div style={{ paddingLeft: 8 }}>
-                                        Do you want to enable critical alerts?
-                                      </div>
-                                    </Row>
-                                  </Col>
-                                  <Col>
                                     <ProFormSwitch
-                                      noStyle
                                       fieldProps={{
-                                        onChange: () => {
-                                          form.setFieldValue(item.name, true);
+                                        onChange: (checked) => {
+                                          if (item.critical && !checked) {
+                                            form.setFieldValue(item.critical.name, false);
+                                          }
                                         },
                                       }}
-                                      name={item.critical.name}
+                                      noStyle
+                                      rules={[yupSync2]}
+                                      name={item.name}
                                       style={{ margin: 0 }}
                                     />
                                   </Col>
                                 </Row>
-                              </>
-                            ) : null}
-                          </ProCard>
-                        ))}
-
-                      </ProCard>
-                {form2Ref.current?.getFieldsError()[1]?.errors?.length > 0 ? 'Erro' : ''}
+                              }
+                              bordered
+                              key={`list-${item.name}`}
+                            >
+                              {item.critical ? (
+                                <>
+                                  <Divider style={{ padding: 0, margin: '0 0 16px 0' }} />
+                                  <Row justify="space-between" align={'middle'}>
+                                    <Col>
+                                      <Row align={'middle'}>
+                                        <Tooltip title="Critical alerts play different and louder sounds than conventional notifications. These notifications are disruptive and should be used when immediate action is required, for example in the event of unexpected downtime.">
+                                          <IoAlertCircleOutline color="#DA1D29" size={20} />
+                                        </Tooltip>
+                                        <div style={{ paddingLeft: 8 }}>
+                                          Do you want to enable critical alerts?
+                                        </div>
+                                      </Row>
+                                    </Col>
+                                    <Col>
+                                      <ProFormSwitch
+                                        noStyle
+                                        fieldProps={{
+                                          onChange: () => {
+                                            form.setFieldValue(item.name, true);
+                                          },
+                                        }}
+                                        name={item.critical.name}
+                                        style={{ margin: 0 }}
+                                      />
+                                    </Col>
+                                  </Row>
+                                </>
+                              ) : null}
+                            </ProCard>
+                          ))}
+                        </ProCard>
+                        {form2Ref.current?.getFieldsError()[1]?.errors?.length > 0 ? 'Erro' : ''}
                       </>
                     );
                   }}
@@ -388,4 +386,4 @@ const AddPivotAlarmForm = (props: any) => {
   );
 };
 
-export default AddPivotAlarmForm;
+export default EditPivotAlarmForm;

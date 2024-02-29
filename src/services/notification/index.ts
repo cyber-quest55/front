@@ -28,3 +28,38 @@ export async function postPivotNotification(
     data: options,
   });
 }
+
+export async function updatePivotNotification(
+  props: { notificationId: number },
+  options?: APIModels.Notification,
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/pivots/${props.notificationId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function deletePivotNotification(
+  props: { notificationId: number },
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+
+  }>(`/v4/notifications/pivots/${props.notificationId}/`, {
+    method: 'DELETE',
+  });
+}
+
+export async function enablePivotNotification(
+  props: { notificationId: number },
+  options: { enable: boolean } 
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/pivots/${props.notificationId}/`, {
+    method: 'PATCH',
+    data: options
+  });
+}
