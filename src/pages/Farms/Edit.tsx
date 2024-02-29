@@ -97,22 +97,11 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
               label: (
                 <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
-                    id: 'pages.edit.farm.tab.options.powerranges',
-                  })}
-                </div>
-              ),
-              key: 'tab5',
-              children: <PowerRangesContainer />,
-            },
-            {
-              label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
-                  {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.pivotreports',
                   })}
                 </div>
               ),
-              key: 'tab6',
+              key: 'tab5',
               children: <PivotReportsContainer />,
             },
             {
@@ -123,8 +112,19 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
                   })}
                 </div>
               ),
-              key: 'tab7',
+              key: 'tab6',
               children: <PumpReportsContainer />,
+            },
+            {
+              label: (
+                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                  {intl.formatMessage({
+                    id: 'pages.edit.farm.tab.options.powerranges',
+                  })}
+                </div>
+              ),
+              key: 'tab7',
+              children: <PowerRangesContainer />,
             },
             {
               label: (
