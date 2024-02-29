@@ -93,6 +93,8 @@ declare namespace APIModels {
     name?: string;
     timezone?: string;
     water_billing_date?: number;
+    // Location tab
+    location?: string;
     // Contact tab
     address?: string;
     city?: string;

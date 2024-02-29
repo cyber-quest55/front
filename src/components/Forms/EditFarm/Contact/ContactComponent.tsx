@@ -121,6 +121,7 @@ const EditFarmContactComponent: FunctionComponent<Props> = ({
 						formRef={ref}
 						grid
 						initialValues={{ ...farm }}
+						disabled={reqSaveFarm.loading}
 						onFinish={async (values: any) => {
 							try {
 								// Backend supports updates from single fields
@@ -142,7 +143,7 @@ const EditFarmContactComponent: FunctionComponent<Props> = ({
 								message.error(intl.formatMessage({
 									id: 'component.edit.farm.messages.save.error',
 								}));
-							}			
+							}
 						}}
 					>
 						<Typography.Title style={{ margin: 0 }} level={5}>

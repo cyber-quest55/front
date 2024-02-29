@@ -3,7 +3,9 @@ import { ProCard } from '@ant-design/pro-components';
 import { SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max';
-import { Button, Typography } from 'antd';
+import { updateFarm } from '@/services/farm';
+import { useRequest } from 'ahooks';
+import { App, Button, Typography } from 'antd';
 import { FunctionComponent, ReactElement, useState } from 'react';
 import MarkerGreen from '../../../../../public/images/devices/marker-green.svg';
 import LocationFormContainer from '../../Location/LocationContainer';
@@ -16,19 +18,41 @@ type Props = {
 
 // Component
 const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
-	farm
+	farm,
+	queryFarmById,
 }): ReactElement => {
 	// Hooks
-	const intl = useIntl()
+	const intl = useIntl();
 	const [ loading ] = useState(false);
+	const { message } = App.useApp();
 	const [ farmPosition, setFarmPosition ] = useState({
 		lat: Number(farm?.location.split(',')[0]),
 		lng: Number(farm?.location.split(',')[1])
-	})
+	});
+
+	const reqSaveFarm = useRequest(updateFarm, { manual: true });
 
 	// Actions
 	const onFinish = async () => {
-		console.log('set farm data', farm, farmPosition)
+		try {
+			// Backend supports updates from single fields
+			// In that case this will be sending just modified fields
+			const payload = {
+				location: `${farmPosition.lat},${farmPosition.lng}`,
+			};
+			await reqSaveFarm.runAsync({
+				id: farm!.id.toString(),
+				body: payload,
+			});
+			queryFarmById({ id: farm!.id });
+			message.success(intl.formatMessage({
+				id: 'component.edit.farm.messages.save.success',
+			}));
+		} catch (err) {
+			message.error(intl.formatMessage({
+				id: 'component.edit.farm.messages.save.error',
+			}));
+		}
 	}
 
 	// Main TSX
@@ -47,6 +71,7 @@ const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
 					icon={<SaveOutlined />}
 					type="primary"
 					onClick={onFinish}
+					disabled={reqSaveFarm.loading}
 				>
 					{intl.formatMessage({
 						id: 'component.edit.farm.button.save',
@@ -56,29 +81,35 @@ const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
 			ghost
 			gutter={[12, 12]}
 		>
-			<div style={{ marginBottom: 20 }}>
-        <Typography.Text>
-          {intl.formatMessage({
-            id: 'component.edit.farm.location.desc',
-          })}
-        </Typography.Text>
-      </div>
-			<LocationFormContainer
-        lat={farmPosition.lat}
-        lng={farmPosition.lng}
-        northValue={false}
-        locations={[
-          {
-            color: 'green',
-            value: { lat: farmPosition.lat, lng: farmPosition.lng },
-            name: intl.formatMessage({
-              id: 'component.edit.farm.location.center.label',
-            }),
-            onChange: (v: any) => setFarmPosition(v),
-            marker: MarkerGreen,
-          },
-        ]}
-      />
+			{
+				farm ? (
+					<>
+						<div style={{ marginBottom: 20 }}>
+							<Typography.Text>
+								{intl.formatMessage({
+									id: 'component.edit.farm.location.desc',
+								})}
+							</Typography.Text>
+						</div>
+						<LocationFormContainer
+							lat={farmPosition.lat}
+							lng={farmPosition.lng}
+							northValue={false}
+							locations={[
+								{
+									color: 'green',
+									value: { lat: farmPosition.lat, lng: farmPosition.lng },
+									name: intl.formatMessage({
+										id: 'component.edit.farm.location.center.label',
+									}),
+									onChange: (v: any) => setFarmPosition(v),
+									marker: MarkerGreen,
+								},
+							]}
+						/>
+					</>
+				) : null
+			}
     </ProCard>
   )
 };

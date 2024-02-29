@@ -149,7 +149,7 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
             	formRef={ref}
 							grid
 							initialValues={{ ...farm }}
-							loading={reqSaveFarm.loading}
+							disabled={reqSaveFarm.loading}
 							onFinish={async (values: any) => {
 								try {
 									// Backend supports updates from single fields
