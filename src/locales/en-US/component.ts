@@ -688,7 +688,7 @@ export default {
   'component.edit.farm.location.title': 'Location',
   'component.edit.farm.billing.title': 'Billing',
   'component.edit.farm.contact.title': 'Contact',
-  'component.edit.farm.powerranges.title': 'Power Ranges',
+  'component.edit.farm.powerranges.title': 'Energy Bands',
   'component.edit.farm.pivotreports.title': 'Pivot Reports',
   'component.edit.farm.pumpreports.title': 'Pump Reports',
   'component.edit.farm.holidays.title': 'Holidays',
@@ -744,7 +744,9 @@ export default {
   'component.edit.farm.pumpreports.calc.reports.description': 'Press the button below to recalculate pump reports.',
   'component.edit.farm.pumpreports.calc.reports.action.recalculate': 'Recalculate',
   // Power ranges tab
-  'component.edit.farm.powerranges': '',
+  'component.edit.farm.powerranges.description': 'Energy Bands are used for cost calculation in reports.',
+  'component.edit.farm.powerranges.add.action': 'Add energy bands',
+  'component.edit.farm.powerranges.modal.title': 'Add power band data',
   // Holiday tab
   'component.edit.farm.holiday.desc': 'Add holidays',
   'component.edit.farm.holiday.label': 'Holiday',

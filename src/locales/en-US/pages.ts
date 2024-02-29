@@ -60,7 +60,7 @@ export default {
   'pages.edit.farm.tab.options.location': 'Location',
   'pages.edit.farm.tab.options.billing': 'Billing',
   'pages.edit.farm.tab.options.contact': 'Contact',
-  'pages.edit.farm.tab.options.powerranges': 'Power Ranges',
+  'pages.edit.farm.tab.options.powerranges': 'Energy Bands',
   'pages.edit.farm.tab.options.pivotreports': 'Pivot Reports',
   'pages.edit.farm.tab.options.pumpreports': 'Pump Reports',
   'pages.edit.farm.tab.options.holidays': 'Holidays',

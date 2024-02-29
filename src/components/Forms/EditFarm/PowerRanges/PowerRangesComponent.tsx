@@ -1,10 +1,17 @@
 // Dependencies
-import { ProCard } from '@ant-design/pro-components';
-import { SaveOutlined } from '@ant-design/icons';
+import { 
+	ProCard,
+} from '@ant-design/pro-components';
+import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max'
 import { Button, Typography } from 'antd';
-import { FunctionComponent, ReactElement, useState } from 'react';
+import {
+	FunctionComponent,
+	ReactElement,
+	useState,
+} from 'react';
+import SavePowerRange from './SavePowerRange';
 
 // Component props
 type Props = {
@@ -17,8 +24,11 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	farm
 }): ReactElement => {
 	// Hooks
-	const intl = useIntl()
+	const intl = useIntl();
 	const [ loading ] = useState(false);
+	const [isAddBandOpen, setIsBandOpen] = useState<boolean>(false);
+
+	const toggleBandOpen = () => setIsBandOpen(prev => !prev);
 
 	// Main TSX
   return (
@@ -42,8 +52,26 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 		>
 			{
 				farm ? (
-					<p>Address: {farm.address}</p>
-				) : null
+					<>
+						<SavePowerRange 
+							open={isAddBandOpen}
+							onCancel={toggleBandOpen}
+							power_ranges={farm.power_ranges}
+						/>
+						<Typography.Paragraph>
+							{intl.formatMessage({
+								id: 'component.edit.farm.powerranges.description',
+							})}
+						</Typography.Paragraph>
+						<Button 
+							type="primary"
+							icon={<PlusOutlined/>}
+							onClick={toggleBandOpen}
+						>
+							{ intl.formatMessage({ id: 'component.edit.farm.powerranges.add.action' }) }
+						</Button>
+					</>
+				) : null	
 			}
     </ProCard>
   )

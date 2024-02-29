@@ -87,6 +87,12 @@ declare namespace APIModels {
     sms_users: any[];
   };
 
+  type PowerRange = {
+    end: string;
+    type: number;
+    start: string;
+  };
+
   type UpdateFarmPayload = {
     // General tab
     billing_date?: number;
@@ -102,10 +108,14 @@ declare namespace APIModels {
     phone?: string;
     postal_code?: string;
     state?: string;
+    // Power ranges tab
+    power_ranges?: {
+      [index: number]: PowerRange[];
+    };
     // Holidays tab
     holidays_list?: {
-      month: number,
-      day: number,
+      month: number;
+      day: number;
     }[],
   } 
 }
