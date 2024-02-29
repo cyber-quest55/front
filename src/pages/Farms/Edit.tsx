@@ -139,7 +139,13 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div 
+                  style={{
+                    minWidth: xs? '' : 135,
+                    textAlign: 'left',
+                    paddingBottom: 16
+                  }}
+                >
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.users',
                   })}

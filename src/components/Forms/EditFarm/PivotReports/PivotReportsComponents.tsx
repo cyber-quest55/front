@@ -3,7 +3,12 @@ import { ProCard } from '@ant-design/pro-components';
 import { SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max'
-import { Button, Typography } from 'antd';
+import { 
+	Alert,
+	Card,
+	Button,
+	Typography
+} from 'antd';
 import { FunctionComponent, ReactElement, useState } from 'react';
 
 // Component props
@@ -14,7 +19,7 @@ type Props = {
 
 // Component
 const EditFarmPivotReportsComponent: FunctionComponent<Props> = ({
-	farm
+	farm,
 }): ReactElement => {
 	// Hooks
 	const intl = useIntl()
@@ -40,11 +45,42 @@ const EditFarmPivotReportsComponent: FunctionComponent<Props> = ({
 			ghost
 			gutter={[12, 12]}
 		>
-			{
-				farm ? (
-					<p>Address: {farm.address}</p>
-				) : null
-			}
+			{ farm ? (
+				<>
+					<Card style={{ marginBottom: 16 }}>
+						<Typography.Title level={5}>
+							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.label' })}
+						</Typography.Title>
+						<Typography.Paragraph>
+							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.description' })}
+						</Typography.Paragraph>
+						<Alert
+							message={intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.alreadyenabled' })}
+							type="warning"
+							style={{ marginBottom: 16 }}
+							showIcon
+						/>
+						<Button
+							type="primary"
+						>
+							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.action.enable' })}
+						</Button>
+					</Card>
+					<Card>
+						<Typography.Title level={5}>
+							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.calc.reports.label' })}
+						</Typography.Title>
+						<Typography.Paragraph>
+							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.calc.reports.description' })}
+						</Typography.Paragraph>
+						<Button
+							type="primary"
+						>
+							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.calc.reports.action.recalculate' })}
+						</Button>
+					</Card>
+				</>
+			) : null }
     </ProCard>
   )
 };

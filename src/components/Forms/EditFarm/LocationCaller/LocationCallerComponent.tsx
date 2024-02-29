@@ -100,7 +100,7 @@ const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
 									color: 'green',
 									value: { lat: farmPosition.lat, lng: farmPosition.lng },
 									name: intl.formatMessage({
-										id: 'component.edit.farm.location.center.label',
+										id: 'component.edit.farm.location.label',
 									}),
 									onChange: (v: any) => setFarmPosition(v),
 									marker: MarkerGreen,

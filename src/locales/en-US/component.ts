@@ -702,6 +702,7 @@ export default {
   'component.edit.farm.general.billing_date.label': 'Billing Date',
   'component.edit.farm.general.water_billing_date.label': 'Water Billing Date',
   // Location tab
+  'component.edit.farm.location.label': 'Farm location',
   'component.edit.farm.location.desc':
     'Physical location from your farm. Its important to set this to display the correct coordinates on your farm view page.',
   'component.edit.farm.location.center.label': 'Center',
@@ -726,6 +727,24 @@ export default {
   'component.edit.farm.contact.city.label': 'City',
   'component.edit.farm.contact.state.label': 'State',
   'component.edit.farm.contact.country.label': 'Country',
+  // Pivot Reports tab
+  'component.edit.farm.pivotreports.enable.reports.label': 'Enable Reports',
+  'component.edit.farm.pivotreports.enable.reports.description': 'Press the button below to enable pivot reports.',
+  'component.edit.farm.pivotreports.enable.reports.alreadyenabled': 'Your reports is already enabled',
+  'component.edit.farm.pivotreports.enable.reports.action.enable': 'Enable',
+  'component.edit.farm.pivotreports.calc.reports.label': 'Recalculate Reports',
+  'component.edit.farm.pivotreports.calc.reports.description': 'Press the button below to recalculate pivot reports.',
+  'component.edit.farm.pivotreports.calc.reports.action.recalculate': 'Recalculate',
+  // Pump Reports tab
+  'component.edit.farm.pumpreports.enable.reports.label': 'Enable Reports',
+  'component.edit.farm.pumpreports.enable.reports.description': 'Press the button below to enable pump reports.',
+  'component.edit.farm.pumpreports.enable.reports.alreadyenabled': 'Your reports is already enabled',
+  'component.edit.farm.pumpreports.enable.reports.action.enable': 'Enable',
+  'component.edit.farm.pumpreports.calc.reports.label': 'Recalculate Reports',
+  'component.edit.farm.pumpreports.calc.reports.description': 'Press the button below to recalculate pump reports.',
+  'component.edit.farm.pumpreports.calc.reports.action.recalculate': 'Recalculate',
+  // Power ranges tab
+  'component.edit.farm.powerranges': '',
   // Holiday tab
   'component.edit.farm.holiday.desc': 'Add holidays',
   'component.edit.farm.holiday.label': 'Holiday',

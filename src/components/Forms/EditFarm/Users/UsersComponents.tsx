@@ -362,6 +362,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				</Col>
 			</Row>
 			<List
+				loading={reqFarmUsers.loading}
 				itemLayout='horizontal'
 				dataSource={reqFarmUsers.data?.users.sort((a, b) => {
 					// Compare based on username in alphabetical order
