@@ -32,7 +32,7 @@ const EditFarmLocationCallerContainer: FunctionComponent<Props> = (props): React
 const mapStateToProps = ({ farmById }: any) => ({ farmById });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  queryFarBmyId: (props: any) => dispatch(queryFarmById(props)),
+  queryFarmById: (props: any) => dispatch(queryFarmById(props)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditFarmLocationCallerContainer);

@@ -32,7 +32,7 @@ const EditFarmPivotReportsContainer: FunctionComponent<Props> = (props): ReactEl
 const mapStateToProps = ({ farmById }: any) => ({ farmById });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  queryFarBmyId: (props: any) => dispatch(queryFarmById(props)),
+  queryFarmById: (props: any) => dispatch(queryFarmById(props)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditFarmPivotReportsContainer);

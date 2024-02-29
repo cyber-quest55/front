@@ -24,6 +24,11 @@ declare namespace API {
 
   type GetFarmFullParams = { id: string };
 
+  type UpdateFarmParams = {
+    id: string;
+    body: APIModels.UpdateFarmPayload
+  }
+
   type SaveFarmUsersParams = {
     id: string,
     body: {

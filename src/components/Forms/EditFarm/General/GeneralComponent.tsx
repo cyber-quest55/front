@@ -8,14 +8,21 @@ import {
 import { SaveOutlined } from '@ant-design/icons';
 import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import { queryFarmById } from '@/models/farm-by-id';
-import { updatedBase } from '@/services/farm'
+import { updateFarm, updatedBase } from '@/services/farm'
 import { getIrpds } from '@/services/irpd';
 import { getMeterSystem } from '@/services/metersystem';
 import { getPivots } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl } from '@umijs/max';
-import { Button, Form, Typography, Row } from 'antd';
-import { FunctionComponent, ReactElement, useRef, useState, useCallback } from 'react';
+import { useRequest } from 'ahooks';
+import {
+	App,
+	Button,
+	Form,
+	Typography,
+	Row
+} from 'antd';
+import { FunctionComponent, ReactElement, useRef, useCallback } from 'react';
 import * as yup from 'yup';
 
 // Component props
@@ -25,20 +32,25 @@ type Props = {
 };
 
 // Component
-const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElement => {
+const EditFarmGeneralComponent: FunctionComponent<Props> = ({
+	farm,
+	queryFarmById
+}): ReactElement => {
 	// Hooks
 	const intl = useIntl();
 	const ref = useRef();
 	const timezones = Intl.supportedValuesOf('timeZone');
+	const { message } = App.useApp();
 	const [ form ] = Form.useForm();
-	const [ loading, setLoading ] = useState(false);
+
+	const reqSaveFarm = useRequest(updateFarm, { manual: true });
 
 	// Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
 		name: yup
       .string()
       .max(
-        16,
+        32,
         intl.formatMessage(
           { id: 'validations.max' },
           { value: 16 },
@@ -111,7 +123,7 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
 			}
 			extra={
 				<Button
-					loading={loading}
+					loading={reqSaveFarm.loading}
 					icon={<SaveOutlined />}
 					type="primary"
 					onClick={form.submit}
@@ -137,20 +149,25 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({	farm }): ReactElem
             	formRef={ref}
 							grid
 							initialValues={{ ...farm }}
+							loading={reqSaveFarm.loading}
 							onFinish={async (values: any) => {
-								console.log('[submit values]', values);
-								setLoading(true);
-
-								// Backend does not support modular update so the entire farm obj must be sent
-								const newObj = { ...farm }
-								newObj.base.radio_id = values.base.radio_id
-								newObj.billing_date = values.billing_date
-								newObj.water_billing_date = values.water_billing_date
-								newObj.timezone = values.timezone
-								newObj.name = values.name
-
-								console.log('submit formatted', newObj)
-								setLoading(false);
+								try {
+									// Backend supports updates from single fields
+									// In that case this will be sending just modified fields
+									const payload = { ...values };
+									await reqSaveFarm.runAsync({
+										id: farm.id.toString(),
+										body: payload,
+									});
+									queryFarmById({ id: farm.id });
+									message.success(intl.formatMessage({
+										id: 'component.edit.farm.messages.save.success',
+									}));
+								} catch (err) {
+									message.error(intl.formatMessage({
+										id: 'component.edit.farm.messages.save.error',
+									}));
+								}							
 							}}
 						>
 							<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>

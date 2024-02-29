@@ -26,6 +26,13 @@ export async function updatedBase(
   });
 }
 
+export async function updateFarm(options: API.UpdateFarmParams) {
+  return request<API.GetFarmFullResponse>(`/v3/farms/${options.id}/`, {
+    method: 'PATCH',
+    data: options.body,
+  });
+}
+
 export async function getFarmById(props: API.GetFarmFullParams) {
   return request<API.GetFarmFullResponse>(`/v3/farms/${props.id}/`, {
     method: 'GET',

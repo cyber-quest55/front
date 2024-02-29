@@ -86,5 +86,11 @@ declare namespace APIModels {
     write_users: number[];
     sms_users: any[];
   };
-  
+
+  type UpdateFarmPayload = {
+    billing_date?: number;
+    name?: string;
+    timezone?: string;
+    water_billing_date?: number;
+  } 
 }
