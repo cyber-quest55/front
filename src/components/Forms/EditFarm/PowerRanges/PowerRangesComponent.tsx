@@ -76,7 +76,8 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	}, [farm]);
 
 	useEffect(() => {
-		setAvailableDays(getAvailableDayIndices(energyBands, daysOfWeekTranslations()));
+		const available = getAvailableDayIndices(energyBands);
+		setAvailableDays(available);
 	}, [energyBands]);
 	
 	// Main TSX
@@ -110,7 +111,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 							daysOfWeekTranslations={daysOfWeekTranslations()}
 							energyProfiles={powerProfile()}
 							onSubmit={async (values) => {
-								console.log('[submit here]', values);
+								setEnergyBands(prev => [ ...prev, values ]);
 							}}
 						/>
 						<Typography.Paragraph>
@@ -155,7 +156,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 													key={`dat-${i}`}
 													color="warning"
 												>
-													{day}
+													{day.label}
 												</Tag>
 											))
 										}

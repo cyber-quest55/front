@@ -11,39 +11,38 @@ const defaultDayTranslations = [
 ]
 
 export type GroupedConfig = {
-    daysOfWeek: string[];
+    daysOfWeek: DayOfWeek[];
     timeRanges: APIModels.PowerRange[];
 };
 
-function getDayIndex(
-	day: string,
-	translations: string[] = defaultDayTranslations
-): number {
-	const daysOfWeek = translations;
-	return daysOfWeek.indexOf(day);
-}
+type DayOfWeek = {
+	label: string;
+	value: number;
+};
+
 
 function getAvailableDayIndices(
-	groupedConfigs: GroupedConfig[],
-	translations: string[] = defaultDayTranslations
+  groupedConfigs: GroupedConfig[],
 ): number[] {
-	const allDayIndicesSet: Set<number> = new Set([0, 1, 2, 3, 4, 5, 6]);
+  const allDayIndicesSet: Set<number> = new Set([0, 1, 2, 3, 4, 5, 6]);
 
-	groupedConfigs.forEach((group) => {
-			group.daysOfWeek.forEach((day) => {
-					const dayIndex = getDayIndex(day, translations);
-					allDayIndicesSet.delete(dayIndex);
-			});
-	});
+  groupedConfigs.forEach((group) => {
+    group.daysOfWeek.forEach((day) => {
+      allDayIndicesSet.delete(day.value);
+    });
+  });
 
-	return Array.from(allDayIndicesSet);
+  return Array.from(allDayIndicesSet);
 }
 
 function getDayOfWeek(
 	key: number,
 	translations: string[] = defaultDayTranslations
-): string {
-	const daysOfWeek = translations;
+): DayOfWeek {
+	const daysOfWeek = translations.map((t, i) => ({
+		label: t,
+		value: i,
+	}));
 	return daysOfWeek[key];
 }
 

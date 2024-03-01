@@ -66,6 +66,18 @@ const SavePowerRange = ({
     type: number;
   }[]>([]);
 
+  // Days of week dict
+  const getDayLabel = useCallback(() => ({
+    0: intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.monday' }),
+    1: intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.tuesday' }),
+    2: intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.wednesday' }),
+    3: intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.thursday' }),
+    4: intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.friday' }),
+    5: intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.saturday' }),
+    6: intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.sunday' }),
+  }), [intl])
+
+
   // Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
     days: yup.array().min(1, intl.formatMessage({
@@ -126,10 +138,21 @@ const SavePowerRange = ({
         setRanges([]);
         onCancel();
       }}
-      onOk={() => onSubmit({
-        days: form.getFieldValue('days'),
-        timeRanges: ranges,
-      })}
+      onOk={() =>  {
+        const daysValue = form.getFieldValue('days');
+        const daysDict = getDayLabel();
+        const formattedDays = daysValue?.map((d: number) => ({
+          label: daysDict[d],
+          value: d
+        }));
+        onSubmit({
+          daysOfWeek: formattedDays,
+          timeRanges: ranges,
+        });
+        form.setFieldValue('start', '00:00:00');
+        setRanges([]);
+        onCancel();
+      } }
       width={1080}
     >
       <ProCard bordered>
