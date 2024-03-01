@@ -1,6 +1,7 @@
 // Dependencies
 import { 	ProCard } from '@ant-design/pro-components';
 import {
+	EditOutlined,
 	DeleteOutlined,
 	PlusOutlined,
 	SaveOutlined,
@@ -17,6 +18,7 @@ import {
 	Button,
 	Flex,
 	List,
+	Space,
 	Table,
 	Typography,
 	Tag,
@@ -47,6 +49,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	const [ isAddBandOpen, setIsBandOpen ] = useState<boolean>(false);
 	const [ energyBands, setEnergyBands ] = useState<GroupedConfig[]>([]);
 	const [ availableDays, setAvailableDays ] = useState<number[]>([]);
+	const [ currentConfig, setCurrentConfig ] = useState<GroupedConfig | null>(null);
 
 	// Translation for power range list
 	const powerProfile = useCallback(() => ({
@@ -106,12 +109,17 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 						<SavePowerRange 
 							open={isAddBandOpen}
 							onCancel={toggleBandOpen}
-							power_ranges={farm.power_ranges}
+							powerRange={currentConfig}
+							setPowerRange={setCurrentConfig}
 							availableDaysOfWeek={availableDays}
 							daysOfWeekTranslations={daysOfWeekTranslations()}
 							energyProfiles={powerProfile()}
 							onSubmit={async (values) => {
-								setEnergyBands(prev => [ ...prev, values ]);
+								if (!values.isEditing) {
+									setEnergyBands(prev => [ ...prev, values.data ]);
+								} else {
+
+								}
 							}}
 						/>
 						<Typography.Paragraph>
@@ -122,7 +130,10 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 						<Button 
 							type="primary"
 							icon={<PlusOutlined/>}
-							onClick={toggleBandOpen}
+							onClick={() => {
+								setCurrentConfig(null);
+								toggleBandOpen();
+							}}
 							style={{ marginBottom: 16 }}
 							disabled={!availableDays.length}
 						>
@@ -134,27 +145,40 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 								<ProCard
 									key={index}
 									style={{ marginBottom: 16 }}
-									extra={<>
-										<Button
-											danger
-											size="small"
-											icon={<DeleteOutlined/>}
-											onClick={() => {
-												const newArray = energyBands.filter((eb, i) => i !== index);
-												setEnergyBands(newArray);
-											}}
-										/>
-									</>}
+									extra={
+										<Space>
+											<Button
+												size="small"
+												icon={<EditOutlined/>}
+												onClick={() => {
+													setCurrentConfig(item);
+													toggleBandOpen();
+												}}
+											/>
+											<Button
+												danger
+												size="small"
+												icon={<DeleteOutlined/>}
+												onClick={() => {
+													const newArray = energyBands.filter((eb, i) => i !== index);
+													setEnergyBands(newArray);
+												}}
+											/>
+										</Space>
+									}
 									bordered
 								>
 									<Flex
 										style={{ marginBottom: 16 }}
+										wrap="wrap"
+										gap={8}
 									>
 										{
 											item.daysOfWeek.map((day, i) => (
 												<Tag
 													key={`dat-${i}`}
 													color="warning"
+													style={{ margin: 0 }}
 												>
 													{day.label}
 												</Tag>

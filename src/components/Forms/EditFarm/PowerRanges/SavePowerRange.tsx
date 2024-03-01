@@ -13,6 +13,7 @@ import {
 import { useIntl } from '@umijs/max';
 import { yupValidator } from '@/utils/adapters/yup';
 import { getTimeDifference } from '@/utils/formater/get-time-duration';
+import { type GroupedConfig } from '@/utils/formater/get-power-ranges';
 import {
   Button,
   Col,
@@ -29,6 +30,7 @@ import {
   createElement,
   ReactElement,
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 import * as yup from 'yup';
@@ -38,14 +40,13 @@ type Props = {
   open?: boolean,
   onCancel?: () => void,
   onSubmit?: (values: any) => void,
+  setPowerRange: (val: any) => void,
   energyProfiles: {
     [index: number]: string;
   },
   availableDaysOfWeek: number[],
   daysOfWeekTranslations: string[],
-  power_ranges?: {
-    [index: number]: APIModels.PowerRange[];
-  }
+  powerRange: GroupedConfig | null
 }
 
 // Component
@@ -53,6 +54,8 @@ const SavePowerRange = ({
   open = false,
   onCancel = () => {},
   onSubmit = () => {},
+  powerRange,
+  setPowerRange,
   energyProfiles,
   availableDaysOfWeek,
   daysOfWeekTranslations,
@@ -81,6 +84,8 @@ const SavePowerRange = ({
   // Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
     days: yup.array().min(1, intl.formatMessage({
+      id: 'validations.required',
+    })).required(intl.formatMessage({
       id: 'validations.required',
     })),
     end: yup.string().required(intl.formatMessage({
@@ -128,6 +133,24 @@ const SavePowerRange = ({
 		</Space>
 	);
 
+  // Verify if is editing or adding a new line of settings
+  useEffect(() => {
+    if (powerRange) {
+      const daysValue = powerRange.daysOfWeek.map(d => d.value);
+      const rangeValues = powerRange.timeRanges;
+      const lastTime = rangeValues[rangeValues.length - 1].end;
+      const lastDayJs = dayjs(lastTime, 'HH:mm:ss');
+      const startValue = lastTime === '23:59:59'
+        ? lastTime
+        : lastDayJs.add(1, 'second');
+      form.setFieldValue('days', daysValue);
+      form.setFieldValue('start', startValue);
+      setRanges(rangeValues);
+    } else {
+      form.setFieldValue('days', []);
+    }
+  }, [powerRange]);
+
   // TSX
   return (
     <Modal
@@ -137,6 +160,7 @@ const SavePowerRange = ({
         form.setFieldValue('start', '00:00:00');
         setRanges([]);
         onCancel();
+        setPowerRange(null);
       }}
       onOk={() =>  {
         const daysValue = form.getFieldValue('days');
@@ -146,11 +170,15 @@ const SavePowerRange = ({
           value: d
         }));
         onSubmit({
-          daysOfWeek: formattedDays,
-          timeRanges: ranges,
+          isEditing: powerRange !== null,
+          data: {
+            daysOfWeek: formattedDays,
+            timeRanges: ranges,
+          }
         });
         form.setFieldValue('start', '00:00:00');
         setRanges([]);
+        setPowerRange(null);
         onCancel();
       } }
       width={1080}
