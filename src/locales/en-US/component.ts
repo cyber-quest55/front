@@ -747,6 +747,12 @@ export default {
   'component.edit.farm.powerranges.description': 'Energy Bands are used for cost calculation in reports.',
   'component.edit.farm.powerranges.add.action': 'Add energy bands',
   'component.edit.farm.powerranges.modal.title': 'Add power band data',
+  'component.edit.farm.powerranges.table.column.interval.title': 'Interval',
+  'component.edit.farm.powerranges.table.column.duration.title': 'Duration',
+  'component.edit.farm.powerranges.table.column.type.title': 'Type',
+  'component.edit.farm.powerranges.profile.peak': 'Peak',
+  'component.edit.farm.powerranges.profile.outofpeak': 'Out of Peak',
+  'component.edit.farm.powerranges.profile.reduced': 'Reduced',
   // Holiday tab
   'component.edit.farm.holiday.desc': 'Add holidays',
   'component.edit.farm.holiday.label': 'Holiday',

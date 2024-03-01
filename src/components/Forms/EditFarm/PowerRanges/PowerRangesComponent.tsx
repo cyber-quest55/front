@@ -4,12 +4,16 @@ import {
 } from '@ant-design/pro-components';
 import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
-import { useIntl } from '@umijs/max'
+import { useIntl } from '@umijs/max';
+import { getTimeDifference } from '@/utils/formater/get-time-duration';
+import { getPowerRanges } from '@/utils/formater/get-power-ranges';
 import {
 	Button,
-	Divider,
+	Flex,
 	List,
-	Typography
+	Table,
+	Typography,
+	Tag,
 } from 'antd';
 import {
 	FunctionComponent,
@@ -18,50 +22,6 @@ import {
 } from 'react';
 import SavePowerRange from './SavePowerRange';
 
-type InputObject = { [key: string]: APIModels.PowerRange[] };
-
-type GroupedConfig = {
-    daysOfWeek: string[];
-    timeRanges: APIModels.PowerRange[];
-};
-
-function getDayOfWeek(key: number): string {
-	const daysOfWeek = [
-		'Monday',
-		'Tuesday',
-		'Wednesday',
-		'Thursday',
-		'Friday',
-		'Saturday',
-		'Sunday'
-	];
-	return daysOfWeek[key];
-}
-
-function groupEqualKeys(inputObject: InputObject): GroupedConfig[] {
-	const groupedConfigs: GroupedConfig[] = [];
-	const groupsMap = new Map<string, GroupedConfig>();
-
-	Object.keys(inputObject).forEach((key) => {
-			const timeRanges = inputObject[key];
-
-			const serializedTimeRanges = JSON.stringify(timeRanges);
-
-			if (groupsMap.has(serializedTimeRanges)) {
-					const existingGroup = groupsMap.get(serializedTimeRanges)!;
-					existingGroup.daysOfWeek.push(getDayOfWeek(Number(key)));
-			} else {
-					const newGroup: GroupedConfig = {
-							daysOfWeek: [getDayOfWeek(Number(key))],
-							timeRanges: timeRanges,
-					};
-					groupsMap.set(serializedTimeRanges, newGroup);
-			}
-	});
-
-	groupedConfigs.push(...groupsMap.values());
-	return groupedConfigs;
-}
 
 // Component props
 type Props = {
@@ -80,9 +40,14 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 
 	const toggleBandOpen = () => setIsBandOpen(prev => !prev);
 
-	const listDataSource = groupEqualKeys(farm!.power_ranges);
-	console.log('[here with values]', farm?.power_ranges, listDataSource);
+	const listDataSource = getPowerRanges(farm!.power_ranges);
 
+	const PowerProfile = {
+		0: intl.formatMessage({ id: 'component.edit.farm.powerranges.profile.peak' }),
+		1: intl.formatMessage({ id: 'component.edit.farm.powerranges.profile.outofpeak' }),
+		2: intl.formatMessage({ id: 'component.edit.farm.powerranges.profile.reduced' }),
+	}
+	
 	// Main TSX
   return (
     <ProCard
@@ -120,12 +85,74 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 							type="primary"
 							icon={<PlusOutlined/>}
 							onClick={toggleBandOpen}
+							style={{ marginBottom: 16 }}
 						>
 							{ intl.formatMessage({ id: 'component.edit.farm.powerranges.add.action' }) }
 						</Button>
-						<Divider />
 						<List 
-						
+							dataSource={listDataSource}
+							renderItem={(item, index) => (
+								<ProCard
+									key={index}
+									style={{ marginBottom: 16 }}
+									bordered
+								>
+									<Flex
+										style={{ marginBottom: 16 }}
+									>
+										{
+											item.daysOfWeek.map((d, i) => (
+												<Tag
+													key={`dat-${i}`}
+													color="warning"
+												>
+													{d}
+												</Tag>
+											))
+										}
+									</Flex>
+									<Table
+										dataSource={item.timeRanges}
+										pagination={false}
+										columns={[
+											{
+												title: intl.formatMessage({
+													id: 'component.edit.farm.powerranges.table.column.interval.title'
+												}),
+												dataIndex: 'interval',
+												render: (text, record) => (
+													<Typography.Text>
+														{record.start} - {record.end}
+													</Typography.Text>
+												)
+											},
+											{
+												title: intl.formatMessage({
+													id: 'component.edit.farm.powerranges.table.column.duration.title'
+												}),
+												dataIndex: 'duration',
+												render: (text, record) => (
+													<Typography.Text>
+														{getTimeDifference(record.end, record.start)}
+													</Typography.Text>
+												)
+											},
+											{
+												title: intl.formatMessage({
+													id: 'component.edit.farm.powerranges.table.column.type.title'
+												}),
+												dataIndex: 'type',
+												render: (text) => (
+													<Tag color='purple'>
+														{PowerProfile[text]}
+													</Tag>
+												)
+
+											}
+										]}
+									/>
+								</ProCard>
+							)}
 						/>
 					</>
 				) : null	
