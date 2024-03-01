@@ -171,6 +171,7 @@ const SavePowerRange = ({
         }));
         onSubmit({
           isEditing: powerRange !== null,
+          original: powerRange,
           data: {
             daysOfWeek: formattedDays,
             timeRanges: ranges,

@@ -118,7 +118,16 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 								if (!values.isEditing) {
 									setEnergyBands(prev => [ ...prev, values.data ]);
 								} else {
-
+									setEnergyBands(prev => prev.map(
+										eb =>
+											(
+												eb.daysOfWeek === values.original.daysOfWeek &&
+												eb.timeRanges === values.original.timeRanges
+											)
+												? values.data
+												: eb
+										)
+									)
 								}
 							}}
 						/>
