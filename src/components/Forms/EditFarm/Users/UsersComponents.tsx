@@ -100,8 +100,6 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 	const toggleAddUser = () => setIsAddUserOpen(prev => !prev);
 	const toggleEditUser = () => setIsEditUserOpen(prev => !prev);
 
-	
-
 	// List icon text component
 	const IconAction = ({ icon, onClick = () => {} }: { icon: React.FC, onClick: () => void }) => (
 		<Space>

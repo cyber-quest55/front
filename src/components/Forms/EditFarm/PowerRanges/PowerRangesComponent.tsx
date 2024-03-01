@@ -1,7 +1,5 @@
 // Dependencies
-import { 
-	ProCard,
-} from '@ant-design/pro-components';
+import { 	ProCard } from '@ant-design/pro-components';
 import {
 	DeleteOutlined,
 	PlusOutlined,
@@ -47,8 +45,8 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	const intl = useIntl();
 	const [ loading ] = useState(false);
 	const [ isAddBandOpen, setIsBandOpen ] = useState<boolean>(false);
-	const [ energyBands, setEnergyBands ] = useState<GroupedConfig[]>([])
-	const [ availableDays, setAvailableDays ] = useState<number[]>([])
+	const [ energyBands, setEnergyBands ] = useState<GroupedConfig[]>([]);
+	const [ availableDays, setAvailableDays ] = useState<number[]>([]);
 
 	// Translation for power range list
 	const powerProfile = useCallback(() => ({
@@ -109,6 +107,11 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 							onCancel={toggleBandOpen}
 							power_ranges={farm.power_ranges}
 							availableDaysOfWeek={availableDays}
+							daysOfWeekTranslations={daysOfWeekTranslations()}
+							energyProfiles={powerProfile()}
+							onSubmit={async (values) => {
+								console.log('[submit here]', values);
+							}}
 						/>
 						<Typography.Paragraph>
 							{intl.formatMessage({
@@ -120,6 +123,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 							icon={<PlusOutlined/>}
 							onClick={toggleBandOpen}
 							style={{ marginBottom: 16 }}
+							disabled={!availableDays.length}
 						>
 							{ intl.formatMessage({ id: 'component.edit.farm.powerranges.add.action' }) }
 						</Button>
@@ -146,12 +150,12 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 										style={{ marginBottom: 16 }}
 									>
 										{
-											item.daysOfWeek.map((d, i) => (
+											item.daysOfWeek.map((day, i) => (
 												<Tag
 													key={`dat-${i}`}
 													color="warning"
 												>
-													{d}
+													{day}
 												</Tag>
 											))
 										}

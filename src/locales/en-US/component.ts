@@ -760,6 +760,11 @@ export default {
   'component.edit.farm.powerranges.daysofweek.friday': 'Friday',
   'component.edit.farm.powerranges.daysofweek.saturday': 'Saturday',
   'component.edit.farm.powerranges.daysofweek.sunday': 'Sunday',
+  'component.edit.farm.powerranges.form.days.label': 'Valid for days',
+  'component.edit.farm.powerranges.form.start.label': 'Start time',
+  'component.edit.farm.powerranges.form.end.label': 'End time',
+  'component.edit.farm.powerranges.form.type.label': 'Type',
+  'component.edit.farm.powerranges.form.duration.label': 'Duration of {value} hour(s)',
   // Holiday tab
   'component.edit.farm.holiday.desc': 'Add holidays',
   'component.edit.farm.holiday.label': 'Holiday',
