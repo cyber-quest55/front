@@ -17,12 +17,13 @@ type Props = {
 const SavePowerRange = ({
   open = false,
   onCancel = () => {},
+  availableDaysOfWeek,
   power_ranges
 }: Props): ReactElement => {
   // Hooks
   const intl = useIntl();
  
-  console.log('power_ranges', power_ranges);
+  console.log('power_ranges', power_ranges, availableDaysOfWeek);
 
   // TSX
   return (

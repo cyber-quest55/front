@@ -2,11 +2,19 @@
 import { 
 	ProCard,
 } from '@ant-design/pro-components';
-import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
+import {
+	DeleteOutlined,
+	PlusOutlined,
+	SaveOutlined,
+} from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max';
 import { getTimeDifference } from '@/utils/formater/get-time-duration';
-import { getPowerRanges, type GroupedConfig } from '@/utils/formater/get-power-ranges';
+import {
+	getAvailableDayIndices,
+	getPowerRanges,
+	type GroupedConfig
+} from '@/utils/formater/get-power-ranges';
 import {
 	Button,
 	Flex,
@@ -40,6 +48,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	const [ loading ] = useState(false);
 	const [ isAddBandOpen, setIsBandOpen ] = useState<boolean>(false);
 	const [ energyBands, setEnergyBands ] = useState<GroupedConfig[]>([])
+	const [ availableDays, setAvailableDays ] = useState<number[]>([])
 
 	// Translation for power range list
 	const powerProfile = useCallback(() => ({
@@ -67,6 +76,10 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 			setEnergyBands(getPowerRanges(farm.power_ranges, daysOfWeekTranslations()));	
 		}
 	}, [farm]);
+
+	useEffect(() => {
+		setAvailableDays(getAvailableDayIndices(energyBands, daysOfWeekTranslations()));
+	}, [energyBands]);
 	
 	// Main TSX
   return (
@@ -95,7 +108,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 							open={isAddBandOpen}
 							onCancel={toggleBandOpen}
 							power_ranges={farm.power_ranges}
-							availableDaysOfWeek={[]}
+							availableDaysOfWeek={availableDays}
 						/>
 						<Typography.Paragraph>
 							{intl.formatMessage({
@@ -116,6 +129,17 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 								<ProCard
 									key={index}
 									style={{ marginBottom: 16 }}
+									extra={<>
+										<Button
+											danger
+											size="small"
+											icon={<DeleteOutlined/>}
+											onClick={() => {
+												const newArray = energyBands.filter((eb, i) => i !== index);
+												setEnergyBands(newArray);
+											}}
+										/>
+									</>}
 									bordered
 								>
 									<Flex
