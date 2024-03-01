@@ -10,7 +10,7 @@ const defaultDayTranslations = [
 	'Sunday'
 ]
 
-type GroupedConfig = {
+export type GroupedConfig = {
     daysOfWeek: string[];
     timeRanges: APIModels.PowerRange[];
 };
@@ -31,7 +31,7 @@ function getPowerRanges(inputObject: InputObject, translations: string[] = defau
 
 			if (groupsMap.has(serializedTimeRanges)) {
 					const existingGroup = groupsMap.get(serializedTimeRanges)!;
-					existingGroup.daysOfWeek.push(getDayOfWeek(Number(key),translations));
+					existingGroup.daysOfWeek.push(getDayOfWeek(Number(key), translations));
 			} else {
 					const newGroup: GroupedConfig = {
 							daysOfWeek: [getDayOfWeek(Number(key), translations)],

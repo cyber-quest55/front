@@ -7,6 +7,7 @@ import { ReactElement } from 'react';
 type Props = {
   open?: boolean,
   onCancel?: () => void,
+  availableDaysOfWeek: number[],
   power_ranges?: {
     [index: number]: APIModels.PowerRange[];
   }

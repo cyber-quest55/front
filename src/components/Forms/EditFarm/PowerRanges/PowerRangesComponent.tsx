@@ -6,7 +6,7 @@ import { PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useIntl } from '@umijs/max';
 import { getTimeDifference } from '@/utils/formater/get-time-duration';
-import { getPowerRanges } from '@/utils/formater/get-power-ranges';
+import { getPowerRanges, type GroupedConfig } from '@/utils/formater/get-power-ranges';
 import {
 	Button,
 	Flex,
@@ -19,6 +19,7 @@ import {
 	FunctionComponent,
 	ReactElement,
 	useCallback,
+	useEffect,
 	useState,
 } from 'react';
 import SavePowerRange from './SavePowerRange';
@@ -37,9 +38,8 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	// Hooks
 	const intl = useIntl();
 	const [ loading ] = useState(false);
-	const [isAddBandOpen, setIsBandOpen] = useState<boolean>(false);
-
-	const toggleBandOpen = () => setIsBandOpen(prev => !prev);
+	const [ isAddBandOpen, setIsBandOpen ] = useState<boolean>(false);
+	const [ energyBands, setEnergyBands ] = useState<GroupedConfig[]>([])
 
 	// Translation for power range list
 	const powerProfile = useCallback(() => ({
@@ -58,8 +58,15 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.sunday' }),
 	], [intl]);
 
-	// Grouping power ranges by day of weeks
-	const listDataSource = getPowerRanges(farm!.power_ranges, daysOfWeekTranslations());
+	// Actions
+	const toggleBandOpen = () => setIsBandOpen(prev => !prev);
+
+	// Grouping power ranges by days of week
+	useEffect(() => {
+		if (farm) {
+			setEnergyBands(getPowerRanges(farm.power_ranges, daysOfWeekTranslations()));	
+		}
+	}, [farm]);
 	
 	// Main TSX
   return (
@@ -88,6 +95,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 							open={isAddBandOpen}
 							onCancel={toggleBandOpen}
 							power_ranges={farm.power_ranges}
+							availableDaysOfWeek={[]}
 						/>
 						<Typography.Paragraph>
 							{intl.formatMessage({
@@ -103,7 +111,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 							{ intl.formatMessage({ id: 'component.edit.farm.powerranges.add.action' }) }
 						</Button>
 						<List 
-							dataSource={listDataSource}
+							dataSource={energyBands}
 							renderItem={(item, index) => (
 								<ProCard
 									key={index}
