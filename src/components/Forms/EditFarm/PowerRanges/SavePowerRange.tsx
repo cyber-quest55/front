@@ -220,37 +220,78 @@ const SavePowerRange = ({
                   {
                     label: daysOfWeekTranslations[0],
                     value: 0,
-                    disabled: !availableDaysOfWeek.includes(0),
+                    disabled: (
+                      !availableDaysOfWeek.includes(0) &&
+                      (
+                        powerRange && !powerRange.daysOfWeek.some(pr => pr.value === 0) ||
+                        powerRange === null
+                      )
+                    ) || false,
                   },
                   {
                     label: daysOfWeekTranslations[1],
                     value: 1,
-                    disabled: !availableDaysOfWeek.includes(1),
+                    disabled: (
+                      !availableDaysOfWeek.includes(1) &&
+                      (
+                        powerRange && !powerRange.daysOfWeek.some(pr => pr.value === 1) ||
+                        powerRange === null
+                      )
+                    ) || false,
                   },
                   {
                     label: daysOfWeekTranslations[2],
                     value: 2,
-                    disabled: !availableDaysOfWeek.includes(2),
+                    disabled: (
+                      !availableDaysOfWeek.includes(2) &&
+                      (
+                        powerRange && !powerRange.daysOfWeek.some(pr => pr.value === 2) ||
+                        powerRange === null
+                      )
+                    ) || false,
                   },
                   {
                     label: daysOfWeekTranslations[3],
                     value: 3,
-                    disabled: !availableDaysOfWeek.includes(3),
+                    disabled: (
+                      !availableDaysOfWeek.includes(3) &&
+                      (
+                        powerRange && !powerRange.daysOfWeek.some(pr => pr.value === 3) ||
+                        powerRange === null
+                      )
+                    ) || false,
                   },
                   {
                     label: daysOfWeekTranslations[4],
                     value: 4,
-                    disabled: !availableDaysOfWeek.includes(4),
+                    disabled: (
+                      !availableDaysOfWeek.includes(4) &&
+                      (
+                        powerRange && !powerRange.daysOfWeek.some(pr => pr.value === 4) ||
+                        powerRange === null
+                      )
+                    ) || false,
                   },
                   {
                     label: daysOfWeekTranslations[5],
                     value: 5,
-                    disabled: !availableDaysOfWeek.includes(5),
+                    disabled: (
+                      !availableDaysOfWeek.includes(5) &&
+                      (
+                        powerRange && !powerRange.daysOfWeek.some(pr => pr.value === 5) || 
+                        powerRange === null)
+                    ) || false,
                   },
                   {
                     label: daysOfWeekTranslations[6],
                     value: 6,
-                    disabled: !availableDaysOfWeek.includes(6),
+                    disabled: (
+                      !availableDaysOfWeek.includes(6) &&
+                      (
+                        (powerRange && !powerRange.daysOfWeek.some(pr => pr.value === 6)) || 
+                        powerRange === null
+                      )
+                    ) || false,
                   },
                 ]}
               />
