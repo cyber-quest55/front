@@ -24,6 +24,7 @@ import {
   Tag,
   Typography,
 } from 'antd';
+import dayjs from 'dayjs';
 import {
   createElement,
   ReactElement,
@@ -59,7 +60,11 @@ const SavePowerRange = ({
   // Hooks
   const intl = useIntl();
   const [ form ] = Form.useForm();
-  const [ ranges, setRanges ] = useState<any[]>([]);
+  const [ ranges, setRanges ] = useState<{
+    start: string;
+    end: string;
+    type: number;
+  }[]>([]);
 
   // Form validation schema
 	const yupSchema = useCallback(() => yup.object().shape({
@@ -75,11 +80,35 @@ const SavePowerRange = ({
 	}), [intl]);
 	const yupSync = yupValidator(yupSchema(), form.getFieldsValue);
 
+  // Validate end date
+  const validateEnd = (rule, value, callback) => {
+    const startValue = form.getFieldValue('start');
+    if (value && startValue) {
+      const startDayJs = dayjs(startValue, 'HH:mm:ss');
+      const endDayJs = dayjs(value, 'HH:mm:ss');
+      if (endDayJs.isBefore(startDayJs)) {
+        callback(new Error(intl.formatMessage({
+          id: 'component.edit.farm.powerranges.end.field.error',
+        })));
+      }
+    }
+    callback();
+  };
+
   // List icon text component
-	const IconAction = ({ icon, onClick = () => {} }: { icon: React.FC, onClick: () => void }) => (
+	const IconAction = ({ 
+    icon,
+    onClick = () => {},
+    disabled = false
+  }: {
+    icon: React.FC,
+    onClick: () => void,
+    disabled: boolean,
+  }) => (
 		<Space>
 			<Button
         danger
+        disabled={disabled}
 				type="link"
 				icon={createElement(icon)}
 				onClick={onClick}
@@ -92,8 +121,15 @@ const SavePowerRange = ({
     <Modal
       title={intl.formatMessage({ id: 'component.edit.farm.powerranges.modal.title' })}
       open={open}
-      onCancel={onCancel}
-      onOk={() => onSubmit({})}
+      onCancel={() => {
+        form.setFieldValue('start', '00:00:00');
+        setRanges([]);
+        onCancel();
+      }}
+      onOk={() => onSubmit({
+        days: form.getFieldValue('days'),
+        timeRanges: ranges,
+      })}
       width={1080}
     >
       <ProCard bordered>
@@ -104,12 +140,22 @@ const SavePowerRange = ({
             start: '00:00:00'
           }}
           onFinish={async (values) => {
-            console.log('[inner submit values]', values);
-            setRanges(prev => [ ...prev, {
-              start: values.start,
-              end: values.end,
-              type: values.type,
-            }]);
+            if (values.start !== values.end) {
+              // Increment date
+              const startDayJs = dayjs(values.end, 'HH:mm:ss');
+              if (values.end !== '23:59:59') {
+                form.setFieldValue('start', startDayJs.add(1, 'second'));
+              } else {
+                form.setFieldValue('start', '23:59:59');
+              }
+              
+              // Update ranges
+              setRanges(prev => [ ...prev, {
+                start: values.start,
+                end: values.end,
+                type: values.type,
+              }]);
+            }
           }}
         >
           <Row style={{ width: '100%' }} gutter={[12, 12]}>
@@ -160,6 +206,7 @@ const SavePowerRange = ({
             </Col>
             <Col xs={24} md={8} xl={8}>   
               <ProFormTimePicker
+                fieldProps={{ style: { width: '100%' } }}
                 name={["start"]}
                 label={intl.formatMessage({
                   id: 'component.edit.farm.powerranges.form.start.label',
@@ -169,8 +216,12 @@ const SavePowerRange = ({
             </Col>
             <Col xs={24} md={8} xl={8}>   
               <ProFormTimePicker
+                fieldProps={{ style: { width: '100%' } }}
                 name={["end"]}
-                rules={[yupSync]}
+                rules={[
+                  yupSync,
+                  { validator: validateEnd },
+                ]}
                 label={intl.formatMessage({
                   id: 'component.edit.farm.powerranges.form.end.label',
                 })}
@@ -226,8 +277,16 @@ const SavePowerRange = ({
             actions={[
 							<IconAction
 								icon={DeleteOutlined}
+                disabled={index !== ranges.length - 1}
 								key="list-vertical-delete-o"
 								onClick={() => {
+                  const prev = index !== 0 ? ranges[index - 1] : null
+                  if (!prev) {
+                    form.setFieldValue('start', '00:00:00');
+                  } else {
+                    const startDayJs = dayjs(prev.end, 'HH:mm:ss');
+                    form.setFieldValue('start', startDayJs.add(1, 'second'));
+                  }
                   const filtered = ranges.filter((r, i) => i !== index);
                   setRanges(filtered);
 								}}
