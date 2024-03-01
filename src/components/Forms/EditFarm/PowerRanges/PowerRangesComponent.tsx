@@ -14,7 +14,10 @@ import {
 	getPowerRanges,
 	type GroupedConfig
 } from '@/utils/formater/get-power-ranges';
+import { updateFarm } from '@/services/farm'
+import { useRequest } from 'ahooks';
 import {
+	App,
 	Button,
 	Flex,
 	List,
@@ -45,11 +48,15 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 }): ReactElement => {
 	// Hooks
 	const intl = useIntl();
+	const { message } = App.useApp();
 	const [ loading ] = useState(false);
 	const [ isAddBandOpen, setIsBandOpen ] = useState<boolean>(false);
 	const [ energyBands, setEnergyBands ] = useState<GroupedConfig[]>([]);
 	const [ availableDays, setAvailableDays ] = useState<number[]>([]);
 	const [ currentConfig, setCurrentConfig ] = useState<GroupedConfig | null>(null);
+
+	// Request to save farm
+	const reqSaveFarm = useRequest(updateFarm, { manual: true });
 
 	// Translation for power range list
 	const powerProfile = useCallback(() => ({
@@ -70,6 +77,21 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 
 	// Actions
 	const toggleBandOpen = () => setIsBandOpen(prev => !prev);
+
+	const onSubmitRanges = async () => {
+		try {
+
+		
+			message.success(intl.formatMessage({
+				id: 'component.edit.farm.messages.save.success',
+			}));
+		} catch (err) {
+			message.error(intl.formatMessage({
+				id: 'component.edit.farm.messages.save.error',
+			}));
+		}
+	}
+
 
 	// Grouping power ranges by days of week
 	useEffect(() => {
@@ -94,7 +116,13 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 				</Typography.Title>
 			}
 			extra={
-				<Button loading={loading} icon={<SaveOutlined />} type="primary">
+				<Button
+					loading={loading}
+					icon={<SaveOutlined />}
+					onClick={onSubmitRanges}
+					disabled={reqSaveFarm.loading}
+					type="primary"
+				>
 					{intl.formatMessage({
 						id: 'component.edit.farm.button.save',
 					})}
@@ -144,7 +172,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 								toggleBandOpen();
 							}}
 							style={{ marginBottom: 16 }}
-							disabled={!availableDays.length}
+							disabled={!availableDays.length || reqSaveFarm.loading}
 						>
 							{ intl.formatMessage({ id: 'component.edit.farm.powerranges.add.action' }) }
 						</Button>
@@ -159,6 +187,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 											<Button
 												size="small"
 												icon={<EditOutlined/>}
+												disabled={reqSaveFarm.loading}
 												onClick={() => {
 													setCurrentConfig(item);
 													toggleBandOpen();
@@ -167,6 +196,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 											<Button
 												danger
 												size="small"
+												disabled={reqSaveFarm.loading}
 												icon={<DeleteOutlined/>}
 												onClick={() => {
 													const newArray = energyBands.filter((eb, i) => i !== index);
