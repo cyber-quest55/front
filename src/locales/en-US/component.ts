@@ -753,6 +753,13 @@ export default {
   'component.edit.farm.powerranges.profile.peak': 'Peak',
   'component.edit.farm.powerranges.profile.outofpeak': 'Out of Peak',
   'component.edit.farm.powerranges.profile.reduced': 'Reduced',
+  'component.edit.farm.powerranges.daysofweek.monday': 'Monday',
+  'component.edit.farm.powerranges.daysofweek.tuesday': 'Tuesday',
+  'component.edit.farm.powerranges.daysofweek.wednesday': 'Wednesday',
+  'component.edit.farm.powerranges.daysofweek.thursday': 'Thursday',
+  'component.edit.farm.powerranges.daysofweek.friday': 'Friday',
+  'component.edit.farm.powerranges.daysofweek.saturday': 'Saturday',
+  'component.edit.farm.powerranges.daysofweek.sunday': 'Sunday',
   // Holiday tab
   'component.edit.farm.holiday.desc': 'Add holidays',
   'component.edit.farm.holiday.label': 'Holiday',

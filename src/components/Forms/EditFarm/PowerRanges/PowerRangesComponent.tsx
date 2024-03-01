@@ -18,6 +18,7 @@ import {
 import {
 	FunctionComponent,
 	ReactElement,
+	useCallback,
 	useState,
 } from 'react';
 import SavePowerRange from './SavePowerRange';
@@ -40,13 +41,25 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 
 	const toggleBandOpen = () => setIsBandOpen(prev => !prev);
 
-	const listDataSource = getPowerRanges(farm!.power_ranges);
-
-	const PowerProfile = {
+	// Translation for power range list
+	const powerProfile = useCallback(() => ({
 		0: intl.formatMessage({ id: 'component.edit.farm.powerranges.profile.peak' }),
 		1: intl.formatMessage({ id: 'component.edit.farm.powerranges.profile.outofpeak' }),
 		2: intl.formatMessage({ id: 'component.edit.farm.powerranges.profile.reduced' }),
-	}
+	}), [intl]);
+
+	const daysOfWeekTranslations = useCallback(() => [
+		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.monday' }),
+		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.tuesday' }),
+		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.wednesday' }),
+		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.thursday' }),
+		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.friday' }),
+		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.saturday' }),
+		intl.formatMessage({ id: 'component.edit.farm.powerranges.daysofweek.sunday' }),
+	], [intl]);
+
+	// Grouping power ranges by day of weeks
+	const listDataSource = getPowerRanges(farm!.power_ranges, daysOfWeekTranslations());
 	
 	// Main TSX
   return (
@@ -144,7 +157,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 												dataIndex: 'type',
 												render: (text) => (
 													<Tag color='purple'>
-														{PowerProfile[text]}
+														{powerProfile()[text]}
 													</Tag>
 												)
 
