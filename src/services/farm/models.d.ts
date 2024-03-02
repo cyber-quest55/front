@@ -93,6 +93,10 @@ declare namespace APIModels {
     start: string;
   };
 
+  type PowerRanges = {
+    [index: number]: PowerRange[];
+  };
+
   type UpdateFarmPayload = {
     // General tab
     billing_date?: number;

@@ -81,6 +81,34 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	const onSubmitRanges = async () => {
 		try {
 
+			// Get configs by day of week
+			const mondayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 0));
+			const tuesdayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 1));
+			const wednesdayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 2));
+			const thursdayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 3));
+			const fridayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 4));
+			const saturdayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 5));
+			const sundayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 6));
+
+			// Unify payload
+			const payload = {
+				power_ranges: {
+					0: mondayConfig?.timeRanges,
+					1: tuesdayConfig?.timeRanges,
+					2: wednesdayConfig?.timeRanges,
+					3: thursdayConfig?.timeRanges,
+					4: fridayConfig?.timeRanges,
+					5: saturdayConfig?.timeRanges,
+					6: sundayConfig?.timeRanges,
+				} as APIModels.PowerRanges,
+			};
+
+			// Saving farm power ranges
+			await reqSaveFarm.runAsync({
+				id: farm!.id.toString(),
+				body: payload,
+			});
+			queryFarmById({ id: farm!.id });
 		
 			message.success(intl.formatMessage({
 				id: 'component.edit.farm.messages.save.success',
