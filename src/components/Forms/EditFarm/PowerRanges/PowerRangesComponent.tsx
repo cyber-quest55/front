@@ -35,7 +35,6 @@ import {
 } from 'react';
 import SavePowerRange from './SavePowerRange';
 
-
 // Component props
 type Props = {
 	farm?: API.GetFarmFullResponse;
@@ -90,6 +89,24 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 			const fridayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 4));
 			const saturdayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 5));
 			const sundayConfig = energyBands.find(eb => eb.daysOfWeek.some(dw => dw.value === 6));
+
+			// Has missing days
+			const isMissingDays = (
+				!mondayConfig ||
+				!tuesdayConfig ||
+				!wednesdayConfig ||
+				!thursdayConfig ||
+				!fridayConfig ||
+				!saturdayConfig ||
+				!sundayConfig
+			);
+			if (isMissingDays) {
+				return message.warning(
+					intl.formatMessage({
+						id: 'component.edit.farm.powerranges.messages.missingdays',
+					})
+				);
+			}
 
 			// Unify payload
 			const payload = {

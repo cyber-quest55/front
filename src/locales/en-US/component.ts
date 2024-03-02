@@ -766,6 +766,7 @@ export default {
   'component.edit.farm.powerranges.form.type.label': 'Type',
   'component.edit.farm.powerranges.form.duration.label': 'Duration of {value} hour(s)',
   'component.edit.farm.powerranges.end.field.error': 'End time must be greater than start time!',
+  'component.edit.farm.powerranges.messages.missingdays': 'There are days missing from the power ranges. Fill in every day of the week.',
   // Holiday tab
   'component.edit.farm.holiday.desc': 'Add holidays',
   'component.edit.farm.holiday.label': 'Holiday',
