@@ -44,7 +44,8 @@ type Props = {
 
 // Component
 const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
-	farm
+	farm,
+	queryFarmById,
 }): ReactElement => {
 	// Hooks
 	const intl = useIntl();
