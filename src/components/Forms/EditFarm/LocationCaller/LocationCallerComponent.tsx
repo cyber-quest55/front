@@ -23,7 +23,6 @@ const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
 }): ReactElement => {
 	// Hooks
 	const intl = useIntl();
-	const [ loading ] = useState(false);
 	const { message } = App.useApp();
 	const [ farmPosition, setFarmPosition ] = useState({
 		lat: Number(farm?.location.split(',')[0]),
@@ -67,7 +66,7 @@ const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
 			}
 			extra={
 				<Button
-					loading={loading}
+					loading={reqSaveFarm.loading}
 					icon={<SaveOutlined />}
 					type="primary"
 					onClick={onFinish}

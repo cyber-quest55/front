@@ -127,6 +127,7 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 					icon={<SaveOutlined />}
 					type="primary"
 					onClick={form.submit}
+					disabled={reqSaveFarm.loading}
 				>
 					{intl.formatMessage({
 						id: 'component.edit.farm.button.save',

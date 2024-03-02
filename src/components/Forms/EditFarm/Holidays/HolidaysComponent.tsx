@@ -27,6 +27,7 @@ import {
 	Row,
 	Typography
 } from 'antd';
+import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import {
 	FunctionComponent,
@@ -48,11 +49,12 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 }): ReactElement => {
 	// Hooks
 	const intl = useIntl();
-	const [ loading ] = useState(false);
 	const [
 		holidayList,
 		setHolidayList
 	] = useState<{ day: number, month: number }[]>(farm?.holidays_list || []);
+	const [value, setValue] = useState(() => dayjs());
+	const [ selectedValue, setSelectedValue ] = useState(() => dayjs());
 	const { message } = App.useApp();
 	const { lg, xl, xxl } = useScreenHook();
 
@@ -105,30 +107,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			);
 		}
 
-    return (
-			<div className="events">
-				<Flex
-					style={{ marginTop: 8 }}
-					justify="flex-end"
-					align="center"
-					gap="8px"
-					wrap="wrap"
-				>
-					<Button 
-						type="primary"
-						size="small"
-						icon={<PlusOutlined />}
-						onClick={(e) => {
-							e.preventDefault();
-							setHolidayList(prev => [ ...prev, {
-								day: value.date(),
-								month: value.month() + 1,
-							} ]);
-						}}
-					/>
-				</Flex>	
-			</div>
-		);
+    return null;
 	}, [holidayList, intl, isLargeScreen]);
 
 	// Calendar cell for mobile
@@ -164,6 +143,17 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			</div>
 		);
 	}, [holidayList]);
+
+
+	// Actions
+	const onSelect = (newValue: Dayjs) => {
+    setValue(newValue);
+    setSelectedValue(newValue);
+  };
+
+  const onPanelChange = (newValue: Dayjs) => {
+    setValue(newValue);
+  };
 
 	const onFinish = async () => {
 		try {
@@ -238,7 +228,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			}
 			extra={
 				<Button
-					loading={loading}
+					loading={reqSaveFarm.loading}
 					icon={<SaveOutlined />}
 					type="primary"
 					disabled={reqSaveFarm.loading}
@@ -256,6 +246,31 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 				{intl.formatMessage({ id: 'component.edit.farm.holiday.desc' })}
 			</Typography.Paragraph>
 			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
+				<Col xs={24} md={24} xl={6}>
+					<Button
+						type="primary"
+						style={{ width: '100%' }}
+						disabled={reqSaveFarm.loading}
+						icon={<PlusOutlined/>}
+						onClick={() => {
+							if (selectedValue) {
+								const hasHoliday = holidayList.find(h => h.day === selectedValue.date() && h.month === selectedValue.month() + 1);
+								if (!hasHoliday) {
+									setHolidayList(prev => [ ...prev, {
+										day: selectedValue.date(),
+										month: selectedValue.month() + 1,
+									}]);
+								} else {
+									message.warning(intl.formatMessage({
+										id: 'component.edit.farm.holiday.messages.holidaypresent',
+									}))
+								}
+							}
+						}}
+					>
+						{intl.formatMessage({ id: 'component.edit.farm.holiday.add' })}
+					</Button>
+				</Col>
 				<Col xs={24} md={24} xl={8} >
 					<Dropdown menu={{ items: holidayImportOptions }} placement="bottom">
 						<Button
@@ -273,6 +288,9 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 					<Calendar
 						fullscreen
 						cellRender={dateCellRenderer}
+						value={value}
+						onSelect={onSelect}
+						onPanelChange={onPanelChange}
 						mode="month"
 					/>
 				) : (

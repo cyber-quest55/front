@@ -97,6 +97,7 @@ const EditFarmContactComponent: FunctionComponent<Props> = ({
 			extra={
 				<Button
 					loading={reqSaveFarm.loading}
+					disabled={reqSaveFarm.loading}
 					icon={<SaveOutlined />}
 					type="primary"
 					onClick={form.submit}
