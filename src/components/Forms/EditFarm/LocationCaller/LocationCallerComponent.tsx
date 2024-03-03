@@ -93,6 +93,7 @@ const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
 						<LocationFormContainer
 							lat={farmPosition.lat}
 							lng={farmPosition.lng}
+							autoUpdateCenter
 							northValue={false}
 							locations={[
 								{

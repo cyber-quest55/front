@@ -11,14 +11,17 @@ import PowerRangesContainer from '@/components/Forms/EditFarm/PowerRanges/PowerR
 import PumpReportsContainer from '@/components/Forms/EditFarm/PumpReports/PumpReportsContainer'
 import UsersContainer from '@/components/Forms/EditFarm/Users/UsersContainer'
 import { GetFarmByIdModelProps, queryFarmById } from '@/models/farm-by-id';
+import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { useScreenHook } from '@/hooks/screen';
+import { history } from '@umijs/max';
 import { useMount } from 'ahooks'
 import { connect } from 'dva';
-import { FunctionComponent, ReactElement, useState } from 'react';
+import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 
 // Component props
 type Props = {
   farm: GetFarmByIdModelProps;
+  selectedFarm: SelectedFarmModelProps;
   queryFarmById: typeof queryFarmById;
 };
 
@@ -37,6 +40,13 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
       props.queryFarmById({ id });
     }
   });
+
+  useEffect(() => {
+    if (props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [props.selectedFarm]);
   
   // Main TSX
   return (
@@ -162,7 +172,13 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
 };
 
 // Redux mappings
-const mapStateToProps = ({ farm }: any) => ({ farm });
+const mapStateToProps = ({
+  farm,
+  selectedFarm
+}: any) => ({
+  farm,
+  selectedFarm
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryFarmById: (props: any) => dispatch(queryFarmById(props)),
