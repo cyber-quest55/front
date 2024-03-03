@@ -389,7 +389,6 @@ const NoFoundPage: React.FC = () => {
       children: (
         <AlarmPivotList
           title="Pivôs"
-          dataSource={dataSource}
           size="large"
         />
       ),

@@ -63,3 +63,55 @@ export async function enablePivotNotification(
     data: options
   });
 }
+
+export async function getPivotMonitorNotifications() {
+  return request<API.GetPivotNotificationsResponse>(`/v4/notifications/pivots-monitors/`, {
+    method: 'GET',
+  });
+}
+
+export async function postPivotMonitorNotification(
+  options?: APIModels.Notification,
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/pivots-monitors/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function updatePivotMonitorNotification(
+  props: { notificationId: number },
+  options?: APIModels.Notification,
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/pivots-monitors/${props.notificationId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function deletePivotMonitorNotification(
+  props: { notificationId: number },
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+
+  }>(`/v4/notifications/pivots-monitors/${props.notificationId}/`, {
+    method: 'DELETE',
+  });
+}
+
+export async function enablePivotMonitorNotification(
+  props: { notificationId: number },
+  options: { enable: boolean } 
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/pivots-monitors/${props.notificationId}/`, {
+    method: 'PATCH',
+    data: options
+  });
+}

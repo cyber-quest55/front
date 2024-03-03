@@ -18,7 +18,6 @@ import React, { ReactText, useEffect, useState } from 'react';
 
 export type AlarmPivotListProps = {
   title: string;
-  dataSource: any[];
   size?: 'small' | 'default' | 'large';
 };
 
@@ -48,7 +47,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
     setIsModalOpen(false);
   };
 
-  const handleDeletePivotNotification = async (id: number) => {
+  const handleDeleteNotification = async (id: number) => {
     try {
       await deletePivotNotificationReq.runAsync({ notificationId: id });
       setNotificationsMapped(notificationsMapped.filter((n) => n.id !== id));
@@ -58,7 +57,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
     }
   };
 
-  const handleEnablePivotNotification = async (id: number, checked: boolean, index: number) => {
+  const handleEnableNotification = async (id: number, checked: boolean, index: number) => {
     try {
       await enablePivotNotificationReq.runAsync({ notificationId: id }, { enable: checked });
       const newNotificationMapped = [...notificationsMapped];
@@ -115,7 +114,8 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
       for (let notification of notifications) {
         newNotificationMapped.push({
           ...notification,
-          subTitle: {
+          title: {
+            name: notification.name,
             startDate: notification.start,
             endDate: notification.end,
             devices: pivots.filter((pivot: any) => notification.devices.includes(pivot.id)),
@@ -216,7 +216,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
                     id: 'component.alarmpivotlist.deletemodal.title',
                   })}
                   open={isModalOpen}
-                  onOk={() => handleDeletePivotNotification(item.id)}
+                  onOk={() => handleDeleteNotification(item.id)}
                   onCancel={handleCancel}
                 >
                   <p>
@@ -228,7 +228,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
               </>,
               <Switch
                 checked={item.enable}
-                onChange={(checked) => handleEnablePivotNotification(item.id, checked, index)}
+                onChange={(checked) => handleEnableNotification(item.id, checked, index)}
                 size={lg ? 'default' : 'small'}
                 key="1-swtich"
               />,

@@ -1,7 +1,7 @@
 import { useScreenHook } from '@/hooks/screen';
-import { postPivotNotification } from '@/services/notification';
+import { updatePivotMonitorNotification, updatePivotNotification } from '@/services/notification';
 import { yupValidator } from '@/utils/adapters/yup';
-import { PlusCircleFilled } from '@ant-design/icons';
+import { EditFilled } from '@ant-design/icons';
 import {
   ModalForm,
   ProCard,
@@ -10,7 +10,6 @@ import {
   ProFormDependency,
   ProFormGroup,
   ProFormInstance,
-  ProFormRadio,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
@@ -19,29 +18,25 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl, useModel, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { App, Button, Col, Divider, Row, Space, Tooltip, Typography } from 'antd';
+import { App, Button, Col, Divider, Row, Space, Tooltip } from 'antd';
 import moment from 'moment';
 import { useRef, useState } from 'react';
 import { IoAlertCircleOutline } from 'react-icons/io5';
 import * as yup from 'yup';
 
-const AddPivotAlarmForm = (props: any) => {
+const EditPivotMonitorAlarmForm = (props: any) => {
   const intl = useIntl();
   const { lg } = useScreenHook();
   const form1Ref = useRef<ProFormInstance<any> | undefined>();
   const form2Ref = useRef<ProFormInstance<any> | undefined>();
   const [visible, setVisible] = useState(false);
-  const postPivotNotificationReq = useRequest(postPivotNotification, { manual: true });
+  const updatePivotMonitorNotificationReq = useRequest(updatePivotMonitorNotification, { manual: true });
   const { initialState } = useModel('@@initialState');
   const params = useParams();
   const { message } = App.useApp();
 
-  const listOptions = (version: string) => {
-    const reasonsFilteredByVersion = props.reasons.filter(
-      (reason) => reason.protocol === Number(version),
-    );
-
-    return reasonsFilteredByVersion.map((reason) => {
+  const listOptions = () => {
+    return props.reasons.map((reason) => {
       return {
         title: reason.label,
         name: ['options', 'reasons', reason.id.toString()],
@@ -52,12 +47,12 @@ const AddPivotAlarmForm = (props: any) => {
     });
   };
 
-  const pivotOptions = (version: string) => {
-    const pivotsFilteredByVersion = props.pivots.filter(
-      (pivot) => pivot.automation_type === 0 && pivot.protocol === Number(version),
+  const pivotOptions = () => {
+    const pivotMonitors = props.pivots.filter(
+      (pivot) => pivot.automation_type === 1
     );
 
-    return pivotsFilteredByVersion.map((pivot) => {
+    return pivotMonitors.map((pivot) => {
       return {
         value: pivot.id,
         label: pivot.name,
@@ -83,7 +78,6 @@ const AddPivotAlarmForm = (props: any) => {
             id: 'validations.required',
           }),
         ),
-      version: yup.string(),
       all_day: yup.boolean(),
       start_at: yup.string().when('all_day', {
         is: false,
@@ -130,18 +124,15 @@ const AddPivotAlarmForm = (props: any) => {
   return (
     <>
       <Button
+        size={lg ? 'middle' : 'small'}
+        key="1-btn-"
         onClick={() => setVisible(true)}
-        size={lg ? 'large' : 'middle'}
-        type="primary"
-        icon={<PlusCircleFilled />}
-      >
-        {intl.formatMessage({
-          id: 'component.addalarmform.pivot.button',
-        })}
-      </Button>
+        icon={<EditFilled />}
+      />
+
       <ModalForm
         title={intl.formatMessage({
-          id: 'component.addalarmform.pivot.modal.title',
+          id: 'component.editalarmform.pivot.modal.title',
         })}
         width={800}
         open={visible}
@@ -182,9 +173,13 @@ const AddPivotAlarmForm = (props: any) => {
                 enable: true,
                 farm: Number(params.farmId),
                 user: initialState?.currentUser.id,
+                id: props.notification.id,
               };
-              await postPivotNotificationReq.runAsync(data);
-              message.success('Notificação criada com sucesso');
+              await updatePivotMonitorNotificationReq.runAsync(
+                { notificationId: props.notification.id },
+                data,
+              );
+              message.success('Notificação atualizada com sucesso');
               props.refresh();
               setVisible(false);
             } catch (err) {
@@ -196,17 +191,18 @@ const AddPivotAlarmForm = (props: any) => {
           <>
             <StepsForm.StepForm
               title={intl.formatMessage({
-                id: 'component.addalarmform.pivot.modal.step1.title',
+                id: 'component.editalarmform.pivot.modal.step1.title',
               })}
               name="information"
               formRef={form1Ref}
               initialValues={{
                 information: {
-                  notification_group_name: '',
-                  all_day: true,
-                  start_at: moment().startOf('day'),
-                  end_at: moment().endOf('day'),
-                  version: 5,
+                  notification_group_name: props.notification.name,
+                  all_day:
+                    props.notification.start === '00:00:00' &&
+                    props.notification.end === '23:59:59',
+                  start_at: props.notification.start,
+                  end_at: props.notification.end,
                 },
               }}
               grid
@@ -218,36 +214,12 @@ const AddPivotAlarmForm = (props: any) => {
                   colProps={{ xs: 24, md: 24 }}
                   name={['information', 'notification_group_name']}
                   label={intl.formatMessage({
-                    id: 'component.addalarmform.pivot.modal.step1.name.label',
+                    id: 'component.editalarmform.pivot.modal.step1.name.label',
                   })}
-                />
-
-                <ProFormRadio.Group
-                  name={['information', 'version']}
-                  layout="horizontal"
-                  label={intl.formatMessage({
-                    id: 'component.addalarmform.pivot.modal.step1.version.label',
-                  })}
-                  rules={[yupSync1]}
-                  fieldProps={{
-                    onChange: () => {
-                      form2Ref.current?.resetFields();
-                    },
-                  }}
-                  options={[
-                    {
-                      label: 'G1',
-                      value: 4.1,
-                    },
-                    {
-                      label: 'G2',
-                      value: 5,
-                    },
-                  ]}
                 />
                 <ProFormGroup
                   title={intl.formatMessage({
-                    id: 'component.addalarmform.pivot.modal.step1.date.title',
+                    id: 'component.editalarmform.pivot.modal.step1.date.title',
                   })}
                 >
                   <ProFormDependency name={['information']} colon style={{ width: '100%' }}>
@@ -257,23 +229,22 @@ const AddPivotAlarmForm = (props: any) => {
                           <ProFormTimePicker
                             rules={[yupSync1]}
                             allowClear={false}
-                            colProps={{ xs: 12, md: 5 }}
+                            colProps={{ xs: 12, md: 6 }}
                             name={['information', 'start_at']}
                             dataFormat="HH:mm"
                             label={intl.formatMessage({
-                              id: 'component.addalarmform.pivot.modal.step1.start.label',
+                              id: 'component.editalarmform.pivot.modal.step1.start.label',
                             })}
                             disabled={information.all_day}
                           />
-
                           <ProFormTimePicker
                             rules={[yupSync1]}
                             allowClear={false}
-                            colProps={{ xs: 12, md: 5 }}
+                            colProps={{ xs: 12, md: 6 }}
                             name={['information', 'end_at']}
                             dataFormat="HH:mm"
                             label={intl.formatMessage({
-                              id: 'component.addalarmform.pivot.modal.step1.end.label',
+                              id: 'component.editalarmform.pivot.modal.step1.end.label',
                             })}
                             disabled={information.all_day}
                           />
@@ -286,14 +257,20 @@ const AddPivotAlarmForm = (props: any) => {
                     rules={[yupSync1]}
                     fieldProps={{
                       onChange: () => {
-                        form1Ref.current?.setFieldValue(['information', 'start_at'], moment().startOf('day'));
-                        form1Ref.current?.setFieldValue(['information', 'end_at'], moment().endOf('day'));
+                        form1Ref.current?.setFieldValue(
+                          ['information', 'start_at'],
+                          moment().startOf('day'),
+                        );
+                        form1Ref.current?.setFieldValue(
+                          ['information', 'end_at'],
+                          moment().endOf('day'),
+                        );
                       },
                     }}
                     colProps={{ xs: 24, md: 4 }}
                     name={['information', 'all_day']}
                     label={intl.formatMessage({
-                      id: 'component.addalarmform.pivot.modal.step1.allday.label',
+                      id: 'component.editalarmform.pivot.modal.step1.allday.label',
                     })}
                   />
                 </ProFormGroup>
@@ -301,17 +278,28 @@ const AddPivotAlarmForm = (props: any) => {
             </StepsForm.StepForm>
             <StepsForm.StepForm
               title={intl.formatMessage({
-                id: 'component.addalarmform.pivot.modal.step2.title',
+                id: 'component.editalarmform.pivot.modal.step2.title',
               })}
               name="options"
               formRef={form2Ref}
               onInit={(values, form) => {
                 const reasonsObj: any = {};
+                const criticalReasonsObj: any = {};
                 for (let reason of props.reasons) {
                   reasonsObj[reason.id.toString()] = false;
                 }
+                for (let reason of props.notification.reasons) {
+                  reasonsObj[reason.id.toString()] = true;
+                }
+                for (let criticalReason of props.notification.critical_reasons) {
+                  criticalReasonsObj[criticalReason.toString()] = true;
+                }
                 form2Ref.current?.setFieldsValue({
-                  options: { reasons: reasonsObj, critical_reasons: {}, devices: [] },
+                  options: {
+                    reasons: reasonsObj,
+                    critical_reasons: criticalReasonsObj,
+                    devices: props.notification.devices,
+                  },
                 });
               }}
             >
@@ -322,17 +310,12 @@ const AddPivotAlarmForm = (props: any) => {
                       <ProFormSelect
                         rules={[yupSync2]}
                         label={intl.formatMessage({
-                          id: 'component.addalarmform.pivot.modal.step2.pivots.label',
+                          id: 'component.editalarmform.pivot.modal.step2.pivots.label',
                         })}
                         name={['options', 'devices']}
-                        options={pivotOptions(
-                          form1Ref.current?.getFieldValue(['information', 'version']),
-                        )}
+                        options={pivotOptions()}
                         fieldProps={{
                           mode: 'multiple',
-                          onChange: () => {
-                            console.log(form2Ref.current?.getFieldValue(['options', 'devices']))
-                          }
                         }}
                       />
                     );
@@ -353,14 +336,7 @@ const AddPivotAlarmForm = (props: any) => {
                             paddingRight: 4,
                           }}
                         >
-                          <Typography.Text>
-                            {intl.formatMessage({
-                              id: 'component.addalarmform.pivot.modal.step2.reasons.label',
-                            })}
-                          </Typography.Text>
-                          {listOptions(
-                            form1Ref.current?.getFieldValue(['information', 'version']),
-                          ).map((item) => (
+                          {listOptions().map((item) => (
                             <ProCard
                               collapsible={item.critical}
                               title={item.title}
@@ -395,14 +371,14 @@ const AddPivotAlarmForm = (props: any) => {
                                       <Row align={'middle'}>
                                         <Tooltip
                                           title={intl.formatMessage({
-                                            id: 'component.addalarmform.pivot.modal.step2.criticalreasons.tooltip',
+                                            id: 'component.editalarmform.pivot.modal.step2.criticalreasons.tooltip',
                                           })}
                                         >
                                           <IoAlertCircleOutline color="#DA1D29" size={20} />
                                         </Tooltip>
                                         <div style={{ paddingLeft: 8 }}>
                                           {intl.formatMessage({
-                                            id: 'component.addalarmform.pivot.modal.step2.criticalreasons.enable',
+                                            id: 'component.editalarmform.pivot.modal.step2.criticalreasons.enable',
                                           })}
                                         </div>
                                       </Row>
@@ -425,13 +401,11 @@ const AddPivotAlarmForm = (props: any) => {
                             </ProCard>
                           ))}
                         </ProCard>
-                        <Typography.Text type="danger" style={{ fontWeight: 'lighter' }}>
-                          {form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
-                            ? intl.formatMessage({
-                                id: 'validations.required',
-                              })
-                            : ''}
-                        </Typography.Text>
+                        {form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
+                          ? intl.formatMessage({
+                              id: 'validations.required',
+                            })
+                          : ''}
                       </>
                     );
                   }}
@@ -445,4 +419,4 @@ const AddPivotAlarmForm = (props: any) => {
   );
 };
 
-export default AddPivotAlarmForm;
+export default EditPivotMonitorAlarmForm;

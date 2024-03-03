@@ -110,12 +110,12 @@ const EditPivotAlarmForm = (props: any) => {
 
   const schema2 = yup.object().shape({
     options: yup.object().shape({
-      devices: yup.array().required(
-        intl.formatMessage({
-          id: 'validations.required',
-        }),
-      ),
-      // reasons: yup
+      devices: yup.array().min(1, intl.formatMessage(
+        {
+          id: 'validations.min',
+        },
+        { value: 1 },
+      )),
       reasons: yup
         .object()
         .test('is-jimmy', 'error', (value, testContext) =>
