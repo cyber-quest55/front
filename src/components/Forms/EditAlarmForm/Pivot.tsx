@@ -8,6 +8,7 @@ import {
   ProForm,
   ProFormCheckbox,
   ProFormDependency,
+  ProFormGroup,
   ProFormInstance,
   ProFormSelect,
   ProFormSwitch,
@@ -136,7 +137,9 @@ const EditPivotAlarmForm = (props: any) => {
       />
 
       <ModalForm
-        title="Edit Notifications"
+        title={intl.formatMessage({
+          id: 'component.editalarmform.pivot.modal.title',
+        })}
         width={800}
         open={visible}
         modalProps={{
@@ -193,7 +196,9 @@ const EditPivotAlarmForm = (props: any) => {
         >
           <>
             <StepsForm.StepForm
-              title="Informações"
+              title={intl.formatMessage({
+                id: 'component.editalarmform.pivot.modal.step1.title',
+              })}
               name="information"
               formRef={form1Ref}
               initialValues={{
@@ -214,51 +219,73 @@ const EditPivotAlarmForm = (props: any) => {
                   rules={[yupSync1]}
                   colProps={{ xs: 24, md: 24 }}
                   name={['information', 'notification_group_name']}
-                  label="Nome do grupo de notificações"
+                  label={intl.formatMessage({
+                    id: 'component.editalarmform.pivot.modal.step1.name.label',
+                  })}
                 />
-                <ProFormDependency name={['information']} colon style={{ width: '100%' }}>
-                  {({ information }) => {
-                    return (
-                      <>
-                        <ProFormTimePicker
-                          rules={[yupSync1]}
-                          allowClear={false}
-                          colProps={{ xs: 12, md: 6 }}
-                          name={['information', 'start_at']}
-                          dataFormat="HH:mm"
-                          label="Horário de início"
-                          disabled={information.all_day}
-                        />
-                        <ProFormTimePicker
-                          rules={[yupSync1]}
-                          allowClear={false}
-                          colProps={{ xs: 12, md: 6 }}
-                          name={['information', 'end_at']}
-                          dataFormat="HH:mm"
-                          label="Horário de fim"
-                          disabled={information.all_day}
-                        />
-                      </>
-                    );
-                  }}
-                </ProFormDependency>
+                <ProFormGroup
+                  title={intl.formatMessage({
+                    id: 'component.editalarmform.pivot.modal.step1.date.title',
+                  })}
+                >
+                  <ProFormDependency name={['information']} colon style={{ width: '100%' }}>
+                    {({ information }) => {
+                      return (
+                        <>
+                          <ProFormTimePicker
+                            rules={[yupSync1]}
+                            allowClear={false}
+                            colProps={{ xs: 12, md: 6 }}
+                            name={['information', 'start_at']}
+                            dataFormat="HH:mm"
+                            label={intl.formatMessage({
+                              id: 'component.editalarmform.pivot.modal.step1.start.label',
+                            })}
+                            disabled={information.all_day}
+                          />
+                          <ProFormTimePicker
+                            rules={[yupSync1]}
+                            allowClear={false}
+                            colProps={{ xs: 12, md: 6 }}
+                            name={['information', 'end_at']}
+                            dataFormat="HH:mm"
+                            label={intl.formatMessage({
+                              id: 'component.editalarmform.pivot.modal.step1.end.label',
+                            })}
+                            disabled={information.all_day}
+                          />
+                        </>
+                      );
+                    }}
+                  </ProFormDependency>
 
-                <ProFormCheckbox
-                  rules={[yupSync1]}
-                  fieldProps={{
-                    onChange: () => {
-                      form1Ref.current?.setFieldValue('start_at', moment().startOf('day'));
-                      form1Ref.current?.setFieldValue('end_at', moment().endOf('day'));
-                    },
-                  }}
-                  colProps={{ xs: 24, md: 4 }}
-                  name={['information', 'all_day']}
-                  label="Dia todo?"
-                />
+                  <ProFormCheckbox
+                    rules={[yupSync1]}
+                    fieldProps={{
+                      onChange: () => {
+                        form1Ref.current?.setFieldValue(
+                          ['information', 'start_at'],
+                          moment().startOf('day'),
+                        );
+                        form1Ref.current?.setFieldValue(
+                          ['information', 'end_at'],
+                          moment().endOf('day'),
+                        );
+                      },
+                    }}
+                    colProps={{ xs: 24, md: 4 }}
+                    name={['information', 'all_day']}
+                    label={intl.formatMessage({
+                      id: 'component.editalarmform.pivot.modal.step1.allday.label',
+                    })}
+                  />
+                </ProFormGroup>
               </>
             </StepsForm.StepForm>
             <StepsForm.StepForm
-              title="Opções"
+              title={intl.formatMessage({
+                id: 'component.editalarmform.pivot.modal.step2.title',
+              })}
               name="options"
               formRef={form2Ref}
               onInit={(values, form) => {
@@ -288,7 +315,9 @@ const EditPivotAlarmForm = (props: any) => {
                     return (
                       <ProFormSelect
                         rules={[yupSync2]}
-                        label="Pivôs"
+                        label={intl.formatMessage({
+                          id: 'component.editalarmform.pivot.modal.step2.pivots.label',
+                        })}
                         name={['options', 'devices']}
                         options={pivotOptions()}
                         fieldProps={{
@@ -346,11 +375,17 @@ const EditPivotAlarmForm = (props: any) => {
                                   <Row justify="space-between" align={'middle'}>
                                     <Col>
                                       <Row align={'middle'}>
-                                        <Tooltip title="Critical alerts play different and louder sounds than conventional notifications. These notifications are disruptive and should be used when immediate action is required, for example in the event of unexpected downtime.">
+                                        <Tooltip
+                                          title={intl.formatMessage({
+                                            id: 'component.editalarmform.pivot.modal.step2.criticalreasons.tooltip',
+                                          })}
+                                        >
                                           <IoAlertCircleOutline color="#DA1D29" size={20} />
                                         </Tooltip>
                                         <div style={{ paddingLeft: 8 }}>
-                                          Do you want to enable critical alerts?
+                                          {intl.formatMessage({
+                                            id: 'component.editalarmform.pivot.modal.step2.criticalreasons.enable',
+                                          })}
                                         </div>
                                       </Row>
                                     </Col>
@@ -372,7 +407,11 @@ const EditPivotAlarmForm = (props: any) => {
                             </ProCard>
                           ))}
                         </ProCard>
-                        {form2Ref.current?.getFieldsError()[1]?.errors?.length > 0 ? 'Erro' : ''}
+                        {form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
+                          ? intl.formatMessage({
+                              id: 'validations.required',
+                            })
+                          : ''}
                       </>
                     );
                   }}
