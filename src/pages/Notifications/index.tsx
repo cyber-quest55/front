@@ -17,6 +17,7 @@ import AlarmPumpList from '@/components/Lists/Alarm/PumpList';
 import AlarmServiceOrdersList from '@/components/Lists/Alarm/ServiceOrdersList';
 import WaterGroupList from '@/components/Lists/Alarm/WaterGroupList';
 import { useScreenHook } from '@/hooks/screen';
+import AlarmIrpdList from '@/components/Lists/Alarm/AlarmIrpdList';
 
 const NoFoundPage: React.FC = () => {
   const { lg } = useScreenHook();
@@ -400,8 +401,6 @@ const NoFoundPage: React.FC = () => {
       children: (
         <AlarmPivotMonitorList
           title="Monitores de Pivôs"
-          dataSource={dataSource}
-          form={<AddPivotMonitorAlarmForm />}
           size="large"
         />
       ),
@@ -411,10 +410,8 @@ const NoFoundPage: React.FC = () => {
       key: '2',
       label: 'Bombas',
       children: (
-        <AlarmPumpList
+        <AlarmIrpdList
           title="Bombas"
-          dataSource={dataSource}
-          form={<AddPumpAlarmForm />}
           size="large"
         />
       ),

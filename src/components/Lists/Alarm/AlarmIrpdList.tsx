@@ -1,14 +1,14 @@
-import AddPivotMonitorAlarmForm from '@/components/Forms/AddAlarmForm/PivotMonitor';
-import EditPivotAlarmForm from '@/components/Forms/EditAlarmForm/Pivot';
+import AddIrpdAlarmForm from '@/components/Forms/AddAlarmForm/Irpd';
+import EditIrpdAlarmForm from '@/components/Forms/EditAlarmForm/Irpd';
 import EditPivotMonitorAlarmForm from '@/components/Forms/EditAlarmForm/PivotMonitor';
 import { useScreenHook } from '@/hooks/screen';
+import { getIrpds } from '@/services/irpd';
 import {
-  deletePivotMonitorNotification,
-  enablePivotMonitorNotification,
-  getPivotMonitorNotifications,
+  deleteIrpdNotification,
+  enableIrpdNotification,
+  getIrpdNotifications,
   getPivotNotificationsReasons,
 } from '@/services/notification';
-import { getPivots } from '@/services/pivot';
 import { BellOutlined, DeleteFilled } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -17,32 +17,32 @@ import { useRequest } from 'ahooks';
 import { App, Button, Col, Modal, Row, Switch, Tag, Typography } from 'antd';
 import React, { ReactText, useEffect, useState } from 'react';
 
-export type AlarmPivotMonitorListProps = {
+export type AlarmIrpdListProps = {
   title: string;
   size?: 'small' | 'default' | 'large';
 };
 
-const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
+const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
   const { lg } = useScreenHook();
   const intl = useIntl();
-  const getPivotMonitorNotificationsReq = useRequest(getPivotMonitorNotifications, {
+  const getIrpdNotificationsReq = useRequest(getIrpdNotifications, {
     manual: true,
   });
-  const getPivotsReq = useRequest(getPivots, { manual: true });
+  const getIrpdsReq = useRequest(getIrpds, { manual: true });
   const getPivotNotificationsReasonsReq = useRequest(getPivotNotificationsReasons, {
     manual: true,
   });
-  const deletePivotMonitorNotificationReq = useRequest(deletePivotMonitorNotification, {
+  const deleteIrpdNotificationReq = useRequest(deleteIrpdNotification, {
     manual: true,
   });
-  const enablePivotMonitorNotificationReq = useRequest(enablePivotMonitorNotification, {
+  const enableIrpdNotificationReq = useRequest(enableIrpdNotification, {
     manual: true,
   });
   const { message } = App.useApp();
   const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
   const [notificationsMapped, setNotificationsMapped] = useState<any>([]);
   const [reasons, setReasons] = useState<any>([]);
-  const [pivots, setPivots] = useState<any>([]);
+  const [irpds, setIrpds] = useState<any>([]);
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemToDeleteId, setItemToDeleteId] = useState<number>(false);
@@ -57,7 +57,7 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
 
   const handleDeleteNotification = async () => {
     try {
-      await deletePivotMonitorNotificationReq.runAsync({ notificationId: itemToDeleteId });
+      await deleteIrpdNotificationReq.runAsync({ notificationId: itemToDeleteId });
       setNotificationsMapped(notificationsMapped.filter((n) => n.id !== itemToDeleteId));
       setIsModalOpen(false);
     } catch (err) {
@@ -67,7 +67,7 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
 
   const handleEnableNotification = async (id: number, checked: boolean, index: number) => {
     try {
-      await enablePivotMonitorNotificationReq.runAsync({ notificationId: id }, { enable: checked });
+      await enableIrpdNotificationReq.runAsync({ notificationId: id }, { enable: checked });
       const newNotificationMapped = [...notificationsMapped];
       newNotificationMapped[index].enable = checked;
       setNotificationsMapped(newNotificationMapped);
@@ -86,10 +86,10 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
 
   useEffect(() => {
     Promise.all([
-      getPivotsReq.runAsync({ id: params.farmId as any }),
-      getPivotMonitorNotificationsReq.runAsync(),
-      getPivotNotificationsReasonsReq.runAsync({ equipmentType: 1, language: 'en' }),
-    ]).then(([pivots, notifications, reasons]) => {
+      getIrpdsReq.runAsync({ id: params.farmId as any }),
+      getIrpdNotificationsReq.runAsync(),
+      getPivotNotificationsReasonsReq.runAsync({ equipmentType: 2, language: 'en' }),
+    ]).then(([irpds, notifications, reasons]) => {
       let newNotificationMapped = [];
       for (let notification of notifications) {
         newNotificationMapped.push({
@@ -98,7 +98,7 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
             name: notification.name,
             startDate: notification.start,
             endDate: notification.end,
-            devices: pivots.filter((pivot: any) => notification.devices.includes(pivot.id)),
+            devices: irpds.filter((pivot: any) => notification.devices.includes(pivot.id)),
           },
           reasons: reasons.filter((reason: any) => notification.reasons.includes(reason.id)),
           criticalReasons: reasons.filter((reason: any) =>
@@ -107,14 +107,14 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
         });
       }
       setReasons(reasons);
-      setPivots(pivots);
+      setIrpds(irpds);
       setNotificationsMapped(newNotificationMapped);
     });
   }, []);
 
   const refresh = async () => {
     let newNotificationMapped: any[] = [];
-    await getPivotMonitorNotificationsReq.runAsync().then((notifications) => {
+    await getIrpdNotificationsReq.runAsync().then((notifications) => {
       for (let notification of notifications) {
         newNotificationMapped.push({
           ...notification,
@@ -122,7 +122,7 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
             name: notification.name,
             startDate: notification.start,
             endDate: notification.end,
-            devices: pivots.filter((pivot: any) => notification.devices.includes(pivot.id)),
+            devices: irpds.filter((pivot: any) => notification.devices.includes(pivot.id)),
           },
           reasons: reasons.filter((reason: any) => notification.reasons.includes(reason.id)),
           criticalReasons: reasons.filter((reason: any) =>
@@ -150,10 +150,10 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
           },
         }}
         toolBarRender={() => [
-          <AddPivotMonitorAlarmForm
+          <AddIrpdAlarmForm
             key="form"
             reasons={reasons}
-            pivots={pivots}
+            irpds={irpds}
             refresh={refresh}
           />,
         ]}
@@ -205,10 +205,10 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
           },
           actions: {
             render: (dom, item, index) => [
-              <EditPivotMonitorAlarmForm
+              <EditIrpdAlarmForm
                 key={item.id}
                 reasons={reasons}
-                pivots={pivots}
+                irpds={irpds}
                 refresh={refresh}
                 notification={item}
               />,
@@ -250,4 +250,4 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
   );
 };
 
-export default AlarmPivotMonitorList;
+export default AlarmIrpdList;

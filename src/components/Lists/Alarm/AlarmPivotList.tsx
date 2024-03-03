@@ -72,11 +72,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
     return {
       '.ant-list .ant-list-item': {
         alignItems: 'baseline',
-        padding: 0,
       },
-      'ant-pro-list-row-header-container': {
-        display: 'block' 
-      }
     };
   });
 

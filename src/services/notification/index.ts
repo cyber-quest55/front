@@ -115,3 +115,55 @@ export async function enablePivotMonitorNotification(
     data: options
   });
 }
+
+export async function getIrpdNotifications() {
+  return request<API.GetPivotNotificationsResponse>(`/v4/notifications/irpds/`, {
+    method: 'GET',
+  });
+}
+
+export async function postIrpdNotification(
+  options?: APIModels.Notification,
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/irpds/`, {
+    method: 'POST',
+    data: options,
+  });
+}
+
+export async function updateIrpdNotification(
+  props: { notificationId: number },
+  options?: APIModels.Notification,
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/irpds/${props.notificationId}/`, {
+    method: 'PATCH',
+    data: options,
+  });
+}
+
+export async function deleteIrpdNotification(
+  props: { notificationId: number },
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+
+  }>(`/v4/notifications/irpds/${props.notificationId}/`, {
+    method: 'DELETE',
+  });
+}
+
+export async function enableIrpdNotification(
+  props: { notificationId: number },
+  options: { enable: boolean } 
+) {
+  return request<{
+    data: API.PostPivotNotificationResponse;
+  }>(`/v4/notifications/irpds/${props.notificationId}/`, {
+    method: 'PATCH',
+    data: options
+  });
+}

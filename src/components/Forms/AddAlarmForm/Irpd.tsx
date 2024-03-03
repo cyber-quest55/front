@@ -1,5 +1,5 @@
 import { useScreenHook } from '@/hooks/screen';
-import { postPivotMonitorNotification } from '@/services/notification';
+import { postIrpdNotification } from '@/services/notification';
 import { yupValidator } from '@/utils/adapters/yup';
 import { PlusCircleFilled } from '@ant-design/icons';
 import {
@@ -24,13 +24,13 @@ import { useRef, useState } from 'react';
 import { IoAlertCircleOutline } from 'react-icons/io5';
 import * as yup from 'yup';
 
-const AddPivotMonitorAlarmForm = (props: any) => {
+const AddIrpdAlarmForm = (props: any) => {
   const intl = useIntl();
   const { lg } = useScreenHook();
   const form1Ref = useRef<ProFormInstance<any> | undefined>();
   const form2Ref = useRef<ProFormInstance<any> | undefined>();
   const [visible, setVisible] = useState(false);
-  const postPivotMonitorNotificationReq = useRequest(postPivotMonitorNotification, { manual: true });
+  const postIrpdNotificationReq = useRequest(postIrpdNotification, { manual: true });
   const { initialState } = useModel('@@initialState');
   const params = useParams();
   const { message } = App.useApp();
@@ -47,13 +47,11 @@ const AddPivotMonitorAlarmForm = (props: any) => {
     });
   };
 
-  const pivotOptions = () => {
-    const pivotsFilteredByVersion = props.pivots.filter((pivot) => pivot.automation_type === 1);
-
-    return pivotsFilteredByVersion.map((pivot) => {
+  const irpdOptions = () => {
+    return props.irpds.map((irpd) => {
       return {
-        value: pivot.id,
-        label: pivot.name,
+        value: irpd.id,
+        label: irpd.name,
       };
     });
   };
@@ -176,7 +174,7 @@ const AddPivotMonitorAlarmForm = (props: any) => {
                 farm: Number(params.farmId),
                 user: initialState?.currentUser.id,
               };
-              await postPivotMonitorNotificationReq.runAsync(data);
+              await postIrpdNotificationReq.runAsync(data);
               message.success('Notificação criada com sucesso');
               props.refresh();
               setVisible(false);
@@ -279,7 +277,7 @@ const AddPivotMonitorAlarmForm = (props: any) => {
               })}
               name="options"
               formRef={form2Ref}
-              onInit={(values, form) => {
+              onInit={() => {
                 const reasonsObj: any = {};
                 for (let reason of props.reasons) {
                   reasonsObj[reason.id.toString()] = false;
@@ -299,7 +297,7 @@ const AddPivotMonitorAlarmForm = (props: any) => {
                           id: 'component.addalarmform.pivot.modal.step2.pivots.label',
                         })}
                         name={['options', 'devices']}
-                        options={pivotOptions()}
+                        options={irpdOptions()}
                         fieldProps={{
                           mode: 'multiple',
                         }}
@@ -412,4 +410,4 @@ const AddPivotMonitorAlarmForm = (props: any) => {
   );
 };
 
-export default AddPivotMonitorAlarmForm;
+export default AddIrpdAlarmForm;
