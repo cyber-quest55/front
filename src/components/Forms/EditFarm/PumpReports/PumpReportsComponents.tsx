@@ -1,15 +1,19 @@
 // Dependencies
 import { ProCard } from '@ant-design/pro-components';
-import { SaveOutlined } from '@ant-design/icons';
 import { queryFarmById } from '@/models/farm-by-id';
-import { useIntl } from '@umijs/max'
+import { useIntl } from '@umijs/max';
+import { enableIrpdReports, recalculateIrpdReports } from '@/services/farm';
+import { useRequest } from 'ahooks';
 import {
 	Alert,
 	Card, 
 	Button,
 	Typography 
 } from 'antd';
-import { FunctionComponent, ReactElement, useState } from 'react';
+import {
+	FunctionComponent,
+	ReactElement
+} from 'react';
 
 // Component props
 type Props = {
@@ -23,7 +27,10 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 }): ReactElement => {
 	// Hooks
 	const intl = useIntl()
-	const [ loading ] = useState(false);
+
+	// Requests
+	const reqEnableReports = useRequest(enableIrpdReports, { manual: true });
+	const reqRecalculateReports = useRequest(recalculateIrpdReports, { manual: true });
 
 	// Main TSX
   return (
@@ -34,13 +41,6 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 						id: 'component.edit.farm.pumpreports.title',
 					})}
 				</Typography.Title>
-			}
-			extra={
-				<Button loading={loading} icon={<SaveOutlined />} type="primary">
-					{intl.formatMessage({
-						id: 'component.edit.farm.button.save',
-					})}
-				</Button>
 			}
 			ghost
 			gutter={[12, 12]}
@@ -78,7 +78,8 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 							type="primary"
 							disabled={
 								!farm.power_ranges['0']?.length ||
-								farm.start_irpd_report_aggregate !== 0
+								farm.start_irpd_report_aggregate !== 0 ||
+								reqEnableReports.loading
 							}
 						>
 							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.enable.reports.action.enable' })}
@@ -93,6 +94,7 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 						</Typography.Paragraph>
 						<Button
 							type="primary"
+							disabled={reqRecalculateReports.loading}
 						>
 							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.calc.reports.action.recalculate' })}
 						</Button>

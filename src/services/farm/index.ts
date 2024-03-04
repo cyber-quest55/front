@@ -26,6 +26,30 @@ export async function updatedBase(
   });
 }
 
+export async function enablePivotReports(options: API.GetFarmFullParams) {
+  return request<string>(`/v3/reports/farms/${options.id}/pivot-enable/`, {
+    method: 'POST'
+  });
+}
+
+export async function enableIrpdReports(options: API.GetFarmFullParams) {
+  return request<string>(`/v3/reports/farms/${options.id}/irpd-enable/`, {
+    method: 'POST'
+  });
+}
+
+export async function recalculatePivotReports(options: API.GetFarmFullParams) {
+  return request<string>(`/v3/reports/farms/${options.id}/pivot-recalculate/`, {
+    method: 'POST'
+  });
+}
+
+export async function recalculateIrpdReports(options: API.GetFarmFullParams) {
+  return request<string>(`/v3/reports/farms/${options.id}/irpd-recalculate/`, {
+    method: 'POST'
+  });
+}
+
 export async function updateFarm(options: API.UpdateFarmParams) {
   return request<API.GetFarmFullResponse>(`/v3/farms/${options.id}/`, {
     method: 'PATCH',
