@@ -219,6 +219,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 	// Main TSX
   return (
     <ProCard
+			id="edit-farm-holiday-tab"
 			title={
 				<Typography.Title style={{ margin: 0 }} level={5}>
 					{intl.formatMessage({
@@ -246,31 +247,35 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 				{intl.formatMessage({ id: 'component.edit.farm.holiday.desc' })}
 			</Typography.Paragraph>
 			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
-				<Col xs={24} md={24} xl={6}>
-					<Button
-						type="primary"
-						style={{ width: '100%' }}
-						disabled={reqSaveFarm.loading}
-						icon={<PlusOutlined/>}
-						onClick={() => {
-							if (selectedValue) {
-								const hasHoliday = holidayList.find(h => h.day === selectedValue.date() && h.month === selectedValue.month() + 1);
-								if (!hasHoliday) {
-									setHolidayList(prev => [ ...prev, {
-										day: selectedValue.date(),
-										month: selectedValue.month() + 1,
-									}]);
-								} else {
-									message.warning(intl.formatMessage({
-										id: 'component.edit.farm.holiday.messages.holidaypresent',
-									}))
-								}
-							}
-						}}
-					>
-						{intl.formatMessage({ id: 'component.edit.farm.holiday.add' })}
-					</Button>
-				</Col>
+				{
+					lg ? (
+						<Col xs={24} md={24} xl={6}>
+							<Button
+								type="primary"
+								style={{ width: '100%' }}
+								disabled={reqSaveFarm.loading}
+								icon={<PlusOutlined/>}
+								onClick={() => {
+									if (selectedValue) {
+										const hasHoliday = holidayList.find(h => h.day === selectedValue.date() && h.month === selectedValue.month() + 1);
+										if (!hasHoliday) {
+											setHolidayList(prev => [ ...prev, {
+												day: selectedValue.date(),
+												month: selectedValue.month() + 1,
+											}]);
+										} else {
+											message.warning(intl.formatMessage({
+												id: 'component.edit.farm.holiday.messages.holidaypresent',
+											}))
+										}
+									}
+								}}
+							>
+								{intl.formatMessage({ id: 'component.edit.farm.holiday.add' })}
+							</Button>
+						</Col>
+					) : null
+				}
 				<Col xs={24} md={24} xl={8} >
 					<Dropdown menu={{ items: holidayImportOptions }} placement="bottom">
 						<Button
