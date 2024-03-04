@@ -135,37 +135,37 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				footer={false}
 				closable
 			>
-				<Typography.Paragraph>
+				<Typography.Paragraph type="secondary">
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description' })}
 				</Typography.Paragraph>
 				<Typography.Title level={5}>
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.nopermission' })}
 				</Typography.Title>
-				<Typography.Paragraph>
+				<Typography.Paragraph type="secondary">
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.nopermission' })}
 				</Typography.Paragraph>
 				<Typography.Title level={5}>
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.viewer' })}
 				</Typography.Title>
-				<Typography.Paragraph>
+				<Typography.Paragraph type="secondary">
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.viewer' })}
 				</Typography.Paragraph>
 				<Typography.Title level={5}>
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.operator' })}
 				</Typography.Title>
-				<Typography.Paragraph>
+				<Typography.Paragraph type="secondary">
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.operator' })}
 				</Typography.Paragraph>
 				<Typography.Title level={5}>
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.technician' })}
 				</Typography.Title>
-				<Typography.Paragraph>
+				<Typography.Paragraph type="secondary">
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.technician' })}
 				</Typography.Paragraph>
 				<Typography.Title level={5}>
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.admin' })}
 				</Typography.Title>
-				<Typography.Paragraph>
+				<Typography.Paragraph type="secondary">
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description.admin' })}
 				</Typography.Paragraph>
       </Modal>
