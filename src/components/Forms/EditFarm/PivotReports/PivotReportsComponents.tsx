@@ -54,14 +54,32 @@ const EditFarmPivotReportsComponent: FunctionComponent<Props> = ({
 						<Typography.Paragraph>
 							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.description' })}
 						</Typography.Paragraph>
-						<Alert
-							message={intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.alreadyenabled' })}
-							type="warning"
-							style={{ marginBottom: 16 }}
-							showIcon
-						/>
+						{
+							!farm.power_ranges['0']?.length ? (
+								<Alert
+									message={intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.nopowerranges' })}
+									type="error"
+									style={{ marginBottom: 16 }}
+									showIcon
+								/>
+							): null
+						}
+						{
+							farm.start_pivot_report_aggregate === 2 ? (
+								<Alert
+									message={intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.alreadyenabled' })}
+									type="warning"
+									style={{ marginBottom: 16 }}
+									showIcon
+								/>
+							) : null
+						}
 						<Button
 							type="primary"
+							disabled={
+								!farm.power_ranges['0']?.length ||
+								farm.start_pivot_report_aggregate !== 0
+							}
 						>
 							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.action.enable' })}
 						</Button>
