@@ -48,7 +48,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
   } = props;
 
   const intl = useIntl();
-  const { xl, xs, md } = useScreenHook();
+  const { xl, xs } = useScreenHook();
 
   const {
     zoom,
@@ -120,7 +120,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
                 colProps={{ xs: 24, md: 24 }}
                 label={item.name}
                 name={item.name as string}
-                width={xs ? ('100%' as 'sm') : ('450px' as 'sm')}
+                width={xs ? ('100%' as 'xs') : ('450px' as 'sm')}
                 fieldProps={{
                   width: xs ? '100%' : '450px',
                   value: `${item.value.lat},${item.value.lng}`,
@@ -202,10 +202,8 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
                 label={item.name}
                 name={item.name as string}
                 width={xs ? ('100%' as 'sm') : ('450px' as 'sm')}
-                style={{ maxWidth: '100%' }}
                 fieldProps={{
                   width: xs ? '100%' : '450px',
-                  style: { maxWidth: '100%' },
                   value: `${item.value.lat},${item.value.lng}`,
                 }}
                 addonAfter={
