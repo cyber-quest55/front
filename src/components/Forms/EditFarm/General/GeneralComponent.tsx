@@ -18,6 +18,7 @@ import { useRequest } from 'ahooks';
 import {
 	App,
 	Button,
+	Col,
 	Form,
 	Typography,
 	Row
@@ -190,8 +191,10 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 									span={{
 										xs: 24,
 										md: 24,
+										xl: 6
 									}}
 								/>
+								<Col xs={24} md={24} xl={18} />
 								<ProFormField
 									rules={[yupSync]}
 									name={['name']}
