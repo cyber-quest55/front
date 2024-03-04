@@ -72,6 +72,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   const [isLoading, setLoading] = React.useState(false);
   const [isCentralOpen, setIsCentralOpen] = React.useState(false);
   const [qrReaderEnable, setQrReaderEnable] = React.useState(false);
+  const [innerQrReaderEnable, setInnerQrReaderEnable] = React.useState(false);
   const [dropdownDevices, setDropdownDevices] = React.useState([
     {
       label: intl.formatMessage({ id: 'component.radio.modal.base.fields.device.placeholder' }),
@@ -285,7 +286,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
     <Col {...span}>
       <Modal
         title={intl.formatMessage({ id: 'component.radio.modal.base.title' })}
-        bodyStyle={{ padding: 0 }}
+        style={{ padding: 0 }}
         width={500}
         footer={false}
         open={isCentralOpen}
@@ -302,11 +303,22 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
           bodyStyle={{ padding: 16 }}
           style={{ marginBottom: 16 }}
         >
+          {innerQrReaderEnable ? (
+            <QRCodeScannerContainer
+              setFieldValue={props.setFieldValue}
+              handleVisible={setInnerQrReaderEnable}
+            />
+          ) : null}
           <ProFormText
             name={props.name}
             noStyle
             disabled={isLoading}
             fieldProps={{
+              addonAfter: (
+                <QrcodeOutlined
+                  onClick={() => setInnerQrReaderEnable(prev => !prev)}
+                />
+              ),
               suffix: operable ? (
                 <Tooltip
                   title={
@@ -390,7 +402,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       </Modal>
       <Modal
         title={`Trocar o rádio do ${deviceType}`}
-        bodyStyle={{ padding: 0 }}
+        style={{ padding: 0 }}
         width={690}
         footer={false}
         open={isOpen}
@@ -519,7 +531,9 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
           disabled={!isEditing}
           fieldProps={{
             addonAfter: isEditing ? (
-              <QrcodeOutlined onClick={() => setQrReaderEnable(!qrReaderEnable)} />
+              <QrcodeOutlined
+                onClick={() => setQrReaderEnable(!qrReaderEnable)}
+              />
             ) : null,
             suffix: operable ? (
               <Tooltip
