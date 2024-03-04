@@ -131,7 +131,7 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 							okText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.yes' })}
 							cancelText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.no' })}
 							disabled={
-								farm.start_pivot_report_aggregate !== 2 ||
+								farm.start_irpd_report_aggregate !== 2 ||
 								!farm.power_ranges['0']?.length ||
 								reqRecalculateReports.loading
 							}
