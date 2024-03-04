@@ -10,6 +10,7 @@ import {
 	Card, 
 	Button,
 	Popconfirm,
+	Switch,
 	Typography 
 } from 'antd';
 import {
@@ -107,17 +108,30 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 								/>
 							) : null
 						}
-						<Button
-							type="primary"
-							onClick={enableReports}
+						<Switch 
 							disabled={
 								!farm.power_ranges['0']?.length ||
+								!farm.timezone ||
 								farm.start_irpd_report_aggregate !== 0 ||
 								reqEnableReports.loading
 							}
-						>
-							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.enable.reports.action.enable' })}
-						</Button>
+							checked={
+								!farm.power_ranges['0']?.length ||
+								!farm.timezone ||
+								farm.start_irpd_report_aggregate !== 0
+							}
+							onChange={async (checked) => {
+								if (checked) {
+									await enableReports();
+								}
+							}}
+							checkedChildren={intl.formatMessage({
+								id: 'component.edit.farm.pivotreports.enable.reports.action.enabled',
+							})}
+							unCheckedChildren={intl.formatMessage({
+								id: 'component.edit.farm.pivotreports.enable.reports.action.disabled',
+							})}
+						/>
 					</Card>
 					<Card>
 						<Typography.Title level={5}>

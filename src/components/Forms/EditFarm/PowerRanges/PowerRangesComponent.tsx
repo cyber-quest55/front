@@ -141,7 +141,9 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 	// Grouping power ranges by days of week
 	useEffect(() => {
 		if (farm) {
-			setEnergyBands(getPowerRanges(farm.power_ranges, daysOfWeekTranslations()));	
+			if (!farm.power_ranges['none']) {
+				setEnergyBands(getPowerRanges(farm.power_ranges, daysOfWeekTranslations()));	
+			}
 		}
 	}, [farm]);
 

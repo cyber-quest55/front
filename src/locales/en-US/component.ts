@@ -733,6 +733,8 @@ export default {
   'component.edit.farm.pivotreports.enable.reports.alreadyenabled': 'Your reports is already enabled',
   'component.edit.farm.pivotreports.enable.reports.nopowerranges': 'Register valid Power Ranges to enable reporting.',
   'component.edit.farm.pivotreports.enable.reports.action.enable': 'Enable',
+  'component.edit.farm.pivotreports.enable.reports.action.enabled': 'Enabled',
+  'component.edit.farm.pivotreports.enable.reports.action.disabled': 'Disabled',
   'component.edit.farm.pivotreports.calc.reports.label': 'Recalculate Reports',
   'component.edit.farm.pivotreports.calc.reports.description': 'Press the button below to recalculate pivot reports.',
   'component.edit.farm.pivotreports.calc.reports.action.recalculate': 'Recalculate',
