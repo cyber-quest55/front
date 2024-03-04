@@ -84,7 +84,7 @@ const EditFarmLocationCallerComponent: FunctionComponent<Props> = ({
 				farm ? (
 					<>
 						<div style={{ marginBottom: 20 }}>
-							<Typography.Text>
+							<Typography.Text type="secondary">
 								{intl.formatMessage({
 									id: 'component.edit.farm.location.desc',
 								})}

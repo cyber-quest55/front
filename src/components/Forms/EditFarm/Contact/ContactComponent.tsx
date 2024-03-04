@@ -147,7 +147,11 @@ const EditFarmContactComponent: FunctionComponent<Props> = ({
 							}
 						}}
 					>
-						<Typography.Title style={{ margin: 0 }} level={5}>
+						<Typography.Title
+						  style={{ margin: 0 }}
+						  level={5}
+						  type="secondary"
+						>
 							{intl.formatMessage({ id: 'component.edit.farm.contact.contact.label' })}
 						</Typography.Title>
 						<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
@@ -165,7 +169,11 @@ const EditFarmContactComponent: FunctionComponent<Props> = ({
 							/>
 							
 						</Row>
-						<Typography.Title style={{ margin: 0 }} level={5}>
+						<Typography.Title
+						  style={{ margin: 0 }}
+						  level={5}
+						  type="secondary"
+						>
 							{intl.formatMessage({ id: 'component.edit.farm.contact.address.label' })}
 						</Typography.Title>
 						<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>

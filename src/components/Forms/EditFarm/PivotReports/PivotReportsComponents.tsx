@@ -84,7 +84,7 @@ const EditFarmPivotReportsComponent: FunctionComponent<Props> = ({
 						<Typography.Title level={5}>
 							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.label' })}
 						</Typography.Title>
-						<Typography.Paragraph>
+						<Typography.Paragraph type="secondary">
 							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.enable.reports.description' })}
 						</Typography.Paragraph>
 						{
@@ -136,7 +136,7 @@ const EditFarmPivotReportsComponent: FunctionComponent<Props> = ({
 						<Typography.Title level={5}>
 							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.calc.reports.label' })}
 						</Typography.Title>
-						<Typography.Paragraph>
+						<Typography.Paragraph type="secondary">
 							{intl.formatMessage({ id: 'component.edit.farm.pivotreports.calc.reports.description' })}
 						</Typography.Paragraph>
 						<Popconfirm

@@ -208,7 +208,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 								}
 							}}
 						/>
-						<Typography.Paragraph>
+						<Typography.Paragraph type="secondary">
 							{intl.formatMessage({
 								id: 'component.edit.farm.powerranges.description',
 							})}

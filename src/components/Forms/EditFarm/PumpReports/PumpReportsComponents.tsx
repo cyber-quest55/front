@@ -85,7 +85,7 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 						<Typography.Title level={5}>
 							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.enable.reports.label' })}
 						</Typography.Title>
-						<Typography.Paragraph>
+						<Typography.Paragraph type="secondary">
 							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.enable.reports.description' })}
 						</Typography.Paragraph>
 						{
@@ -137,7 +137,7 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 						<Typography.Title level={5}>
 							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.calc.reports.label' })}
 						</Typography.Title>
-						<Typography.Paragraph>
+						<Typography.Paragraph type="secondary">
 							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.calc.reports.description' })}
 						</Typography.Paragraph>
 						<Popconfirm

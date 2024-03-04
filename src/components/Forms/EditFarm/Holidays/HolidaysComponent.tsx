@@ -243,7 +243,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 			ghost
 			gutter={[12, 12]}
 		>
-			<Typography.Paragraph>
+			<Typography.Paragraph type="secondary">
 				{intl.formatMessage({ id: 'component.edit.farm.holiday.desc' })}
 			</Typography.Paragraph>
 			<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>

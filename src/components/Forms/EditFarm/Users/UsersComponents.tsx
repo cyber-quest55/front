@@ -345,7 +345,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					)
 				}
 			</Modal>
-			<Typography.Paragraph>
+			<Typography.Paragraph type="secondary">
 				{intl.formatMessage({ id: 'component.edit.farm.users.description' })}
 			</Typography.Paragraph>
 			<Row style={{ width: '100%' }} gutter={[12, 12]}>

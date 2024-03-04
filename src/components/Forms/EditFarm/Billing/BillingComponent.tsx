@@ -141,7 +141,7 @@ const EditFarmBillingComponent: FunctionComponent<Props> = ({
 			>
 				<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
 					<Col xs={24}>
-						<Typography.Paragraph style={{ margin: 0 }}>
+						<Typography.Paragraph style={{ margin: 0 }} type="secondary">
 							{intl.formatMessage({ id: 'component.edit.farm.billing.billing.title' })}
 						</Typography.Paragraph>
 					</Col>

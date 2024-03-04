@@ -769,6 +769,7 @@ export default {
   'component.edit.farm.messages.save.success': 'Farm data successfully saved!',
   'component.edit.farm.messages.save.error': 'Fail',
   // General tab
+  'component.edit.farm.general.description.text': 'This tab contains general info about your farm:',
   'component.edit.farm.general.centralradio.label': 'Central radio',
   'component.edit.farm.general.name.label': 'Name',
   'component.edit.farm.general.timezone.label': 'Timezone',

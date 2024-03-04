@@ -172,6 +172,11 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 								}							
 							}}
 						>
+							<Typography.Paragraph type="secondary">
+								{intl.formatMessage({
+									id: 'component.edit.farm.general.description.text',
+								})}
+							</Typography.Paragraph>
 							<Row style={{ width: '100%', marginBottom: 12 }} gutter={[12, 12]}>
 								<RadioInputContainer
 									name={['base', 'radio_id']}
