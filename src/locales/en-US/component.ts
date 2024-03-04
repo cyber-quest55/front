@@ -800,6 +800,7 @@ export default {
   'component.edit.farm.contact.city.label': 'City',
   'component.edit.farm.contact.state.label': 'State',
   'component.edit.farm.contact.country.label': 'Country',
+  'component.edit.farm.contact.phone.label': 'Contact Phone',
   // Pivot Reports tab
   'component.edit.farm.pivotreports.enable.reports.label': 'Enable Reports',
   'component.edit.farm.pivotreports.enable.reports.description': 'Press the button below to enable pivot reports.',
