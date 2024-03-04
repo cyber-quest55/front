@@ -32,17 +32,16 @@ export default {
       { payload }: { payload: API.GetIrpdEventsParams },
       { call, put }: { call: any; put: any },
     ) {
-      const { farmId, irpdId, params } = payload;
+      const { farmId, irpdId,   } = payload;
       yield put({ type: 'queryIrpdEventsStart' });
-      console.log('here there', params);
+
       try {
         const response: API.GetIrpdEventsResponse = yield call(
           getIrpdEvents,
           {
             farmId,
             irpdId,
-          },
-          params,
+          }, {}
         );
         yield put({ type: 'queryIrpdEventsSuccess', payload: response });
       } catch (error: any) {

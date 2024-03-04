@@ -304,7 +304,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
       }}
     >
       <Row gutter={[12, 12]}>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormText
             name="name"
             label={intl.formatMessage({
@@ -314,7 +314,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
           />
         </Col>
 
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormSelect
             name="brand_model"
             label={intl.formatMessage({
@@ -350,7 +350,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
           {(form) => {
             return form.getFieldValue('brand_model') === 'other' ? (
               <>
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={8}>
                   <ProFormText
                     rules={[yupSync]}
                     name="other_brand_model"
@@ -363,7 +363,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
             ) : null;
           }}
         </ProForm.Item>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormSelect
             name="panel_type"
             label={intl.formatMessage({
@@ -374,7 +374,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
           />
         </Col>
 
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormSelect
             name="communication_type"
             label={intl.formatMessage({
@@ -391,7 +391,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
           {() => {
             return props.form.getFieldValue('communication_type') === '0' ? (
               <>
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={8}>
                   <ProFormText
                     name="control"
                     label={intl.formatMessage({
@@ -404,7 +404,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
                   />
                 </Col>
 
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={8}>
                   <ProFormText
                     name="monitor"
                     label={intl.formatMessage({
@@ -417,7 +417,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
                   />
                 </Col>
 
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={8}>
                   <ProFormText
                     name="pump"
                     label={intl.formatMessage({
@@ -431,7 +431,7 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
                 </Col>
               </>
             ) : (
-              <Col xs={24} sm={12}>
+              <Col xs={24} sm={8}>
                 <ProFormText
                   name="gateway"
                   label={intl.formatMessage({
@@ -446,10 +446,12 @@ const PivotForm: React.FC<PivotFormProps> = (props) => {
             );
           }}
         </ProForm.Item>
-        <Col xs={24} sm={24}>
-          <ProFormCheckbox name="pluviometer">
-            {intl.formatMessage({
+        <Col xs={24} sm={8}>
+          <ProFormCheckbox label={intl.formatMessage({
               id: 'component.adddevice.modal.form.step2.pivot.pluviometer.label',
+            })} name="pluviometer">
+            {intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.pivot.pluviometer.checkbox.haspluviometer',
             })}
           </ProFormCheckbox>
         </Col>

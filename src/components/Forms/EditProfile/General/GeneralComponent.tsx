@@ -227,7 +227,7 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
             pform.setFieldValue('birth', currentUser.birth ? moment(currentUser.birth) : moment());
             pform.setFieldValue(
               'prefix_cell_phone',
-              currentUser.prefix_cell_phone.padStart(4, '0'),
+              currentUser.prefix_cell_phone?.padStart(4, '0') ?? null,
             );
           }}
           initialValues={{ ...currentUser, doc_type: 1 }}

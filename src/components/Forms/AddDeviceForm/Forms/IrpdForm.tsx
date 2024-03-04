@@ -213,7 +213,7 @@ const IrpdForm: React.FC<IrpdFormProps> = (props) => {
       }}
     >
       <Row gutter={[12, 12]}>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormText
             name="name"
             label={intl.formatMessage({
@@ -222,7 +222,7 @@ const IrpdForm: React.FC<IrpdFormProps> = (props) => {
             rules={[yupSync]}
           />
         </Col>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormText
             name="pump"
             label={intl.formatMessage({
@@ -232,6 +232,19 @@ const IrpdForm: React.FC<IrpdFormProps> = (props) => {
             fieldProps={{
               onInput: (e: any) => (e.target.value = e.target.value.toUpperCase()),
             }}
+          />
+        </Col>
+        <Col xs={24} sm={8}>
+          <ProFormSelect
+            rules={[yupSync]}
+            valueEnum={{
+              '5.0': '5.0',
+              '5.1': '5.1',
+            }}
+            name="protocol"
+            label={intl.formatMessage({
+              id: 'component.adddevice.modal.form.step2.irpd.version.label',
+            })}
           />
         </Col>
         <Col xs={24} sm={12}>
@@ -266,19 +279,7 @@ const IrpdForm: React.FC<IrpdFormProps> = (props) => {
             }}
           />
         </Col>
-        <Col xs={24} sm={12}>
-          <ProFormSelect
-            rules={[yupSync]}
-            valueEnum={{
-              '5.0': '5.0',
-              '5.1': '5.1',
-            }}
-            name="protocol"
-            label={intl.formatMessage({
-              id: 'component.adddevice.modal.form.step2.irpd.version.label',
-            })}
-          />
-        </Col>
+
         <Col xs={24} sm={24}>
           <ProFormRadio.Group
             name="potency_unit"

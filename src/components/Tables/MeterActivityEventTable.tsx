@@ -1,144 +1,187 @@
-import { useTableHook } from '@/hooks/table';
-import { GetMeterSystemEventModelProps, queryMeterSystemEvent } from '@/models/meter-events';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { getMeterSystemTable } from '@/services/metersystem';
+import { formatDateTime } from '@/utils/formater/get-formated-date';
+import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
-import { LightFilter, ProFormDateRangePicker, ProTable } from '@ant-design/pro-components';
-import { Button, Col, Pagination, PaginationProps, Row, Space } from 'antd';
-import { useEffect } from 'react';
+import {
+  ActionType,
+  LightFilter,
+  ProFormDateRangePicker,
+  ProTable,
+} from '@ant-design/pro-components';
+import { useIntl } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import { Button, Space, App } from 'antd';
+import dayjs from 'dayjs';
+import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
+import { getMeterExcelReport } from '../../services/metersystem';
+import { httpToExcel } from '../../utils/adapters/excel';
 
 type Props = {
-  meterSystemEvent: GetMeterSystemEventModelProps;
   selectedDevice: SelectedDeviceModelProps;
-  queryMeterSystemEvent: typeof queryMeterSystemEvent;
 };
 
 const MeterActivityEventTable: React.FC<Props> = (props) => {
-  const { pageSize, currentPage, range, setPageSize, setCurrentPage, setRange } = useTableHook(50);
+  const intl = useIntl();
+  const ref = useRef<ActionType>();
+  const { message } = App.useApp();
 
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (currentPage, pageSize) => {
-    setCurrentPage(currentPage);
-    setPageSize(pageSize);
-  };
+  const reqGetData = useRequest(getMeterSystemTable, { manual: true });
+  const reqGetExcel = useRequest(getMeterExcelReport, { manual: true });
 
-  const onDateChange = (value: any) => {
-    setRange({
-      startDate: value[0],
-      endDate: value[1],
-    });
-  };
-
-  const update = () => {
-    const { startDate, endDate } = range;
-
-    props.queryMeterSystemEvent({
-      farmId: props.selectedDevice.farmId,
-      meterId: props.selectedDevice.deviceId,
-      otherId: props.selectedDevice.otherProps.imeterSetId,
-      params: { currentPage, pageSize, startDate, endDate },
-    });
-  };
+  const [dates, setDates] = useState<any>([dayjs().subtract(1, 'month'), dayjs()]);
 
   useEffect(() => {
-    update();
-  }, [range, currentPage, pageSize]);
+    ref.current?.reload();
+  }, [props.selectedDevice, dates])
+
+  const handleExportReport = async  () => { 
+    try {
+      const response = await reqGetExcel.runAsync({
+        deviceId: props.selectedDevice.deviceId, 
+        otherId: props.selectedDevice?.otherProps?.imeterSetId 
+      },
+        {
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(), 
+        }
+      )
+      httpToExcel(response, `relatório-metersystem-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      message.success({
+        duration: 7,
+        content: intl.formatMessage({
+          id: 'component.pivot.download.report.success',
+        }) 
+      });
+    } catch (error) {
+      message.error(intl.formatMessage({
+        id: 'component.pivot.download.report.fail',
+      }));
+    }
+  }
+
+  const ExportButton = <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
+    {intl.formatMessage({
+      id: 'component.export',
+    })}
+  </Button>
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <ProTable<any>
+        actionRef={ref}
         columns={[
           {
-            title: 'Início',
+            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.1' }),
             dataIndex: 'date',
             render: (_value, item) => {
               return <>{item.date}</>;
             },
           },
           {
-            title: 'Medição',
+            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.2' }),
             dataIndex: 'measurement',
             render: (_value, item) => {
-              return <>{`${item.measurement}m`}</>;
+              return <>{`${item.measurement} m`}</>;
             },
           },
           {
-            title: 'Offset',
+            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.3' }),
             dataIndex: 'offset',
             render: (_value, item) => {
-              return <>{item.offset}m</>;
+              return <>{item.offset} m</>;
             },
           },
           {
-            title: 'Nível do Reservatório',
+            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.4' }),
             dataIndex: 'tankLevel',
             render: (_value, item) => {
-              return <>{item.tankLevel}m</>;
+              return <>{item.tankLevel} m</>;
             },
           },
           {
-            title: 'Vazão',
+            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.5' }),
             dataIndex: 'flowRate',
             render: (_value, item) => {
-              return <>{item.flowRate}m³/h</>;
+              return <>{item.flowRate} m³/h</>;
             },
           },
         ]}
-        dataSource={props.meterSystemEvent.result}
+        request={async (p): Promise<any> => {
+          const result = (await reqGetData.runAsync(
+            {
+              farmId: props.selectedDevice.farmId,
+              meterId: props.selectedDevice.deviceId as any,
+              otherId: props.selectedDevice.otherProps.imeterSetId,
+              params: {},
+            },
+            {
+              page: p.current,
+              date_start: dates[0].toISOString(),
+              date_end: dates[1].toISOString(),
+            },
+          )) as any;
+
+          return {
+            data: result.results.map((item: any, index: number) => {
+              const measurement = item.content.imanage_sensor_measure_value[0];
+              return {
+                key: `row-key-meter-event-table-${index}`,
+                ...item,
+                date: formatDateTime(item.created),
+                measurement: `${measurement ? measurement.value.toFixed(2) / 100 : (0).toFixed(2)}`,
+                offset: `${measurement ? measurement.value.toFixed(2) / 100 : (0).toFixed(2)}`,
+                tankLevel: (1).toFixed(2),
+                flowRate: item.flow,
+              };
+            }),
+            success: true,
+            total: result.count,
+            page: result.current_page,
+          };
+        }}
         rowKey="key"
-        pagination={false}
         options={false}
         search={false}
-        loading={props.meterSystemEvent.loading}
         dateFormatter="string"
         toolbar={{
           title: (
             <LightFilter>
               <ProFormDateRangePicker
-                disabled={props.meterSystemEvent.loading}
+              
                 name="startdate"
-                label="Periodo"
-                allowClear
+                label={intl.formatMessage({
+                  id: 'component.pivot.tab.history.rangepicker.label',
+                })}
+                disabled={reqGetData.loading}
                 fieldProps={{
-                  onChange: onDateChange,
+                  
+                  presets: rangePresets,
+                  onChange: (v) => {
+                    if (v && v[0] && v[1]) {
+                      setDates(v);
+                    }
+                  },
 
-                  value: [range.startDate, range.endDate],
+                  value: dates,
                 }}
               />
             </LightFilter>
           ),
           filter: (
-            <Space>
-              <Button icon={<DownloadOutlined />}>Exportar</Button>
-            </Space>
+            ExportButton
           ),
         }}
       />
-      <Row justify="end">
-        <Col>
-          <Pagination
-            disabled={props.meterSystemEvent.loading}
-            responsive
-            size="small"
-            className=""
-            showSizeChanger
-            onChange={onShowSizeChange}
-            onShowSizeChange={onShowSizeChange}
-            defaultCurrent={1}
-            total={props.meterSystemEvent.total}
-          />
-        </Col>
-      </Row>
     </Space>
   );
 };
 
 const mapStateToProps = ({ meterSystemEvent, selectedDevice }: any) => ({
-  meterSystemEvent,
   selectedDevice,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  queryMeterSystemEvent: (props: any) => dispatch(queryMeterSystemEvent(props)),
-});
+const mapDispatchToProps = (dispatch: Dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeterActivityEventTable);

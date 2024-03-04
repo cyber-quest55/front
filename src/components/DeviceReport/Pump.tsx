@@ -4,16 +4,19 @@ import IrpdActivityHistoricTable from '@/components/Tables/IrpdActivityHistoricT
 import { useScreenHook } from '@/hooks/screen';
 import { useTabsHook } from '@/hooks/tabs';
 import { DeviceType } from '@/utils/enum/device-type';
-import { ProCard, StatisticCard } from '@ant-design/pro-components';
+import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanelContainer from '../DevicePanel/DevicePanelContainer';
+import { useIntl } from '@umijs/max'; 
 
 const PumpReport: React.FC = () => {
+
   const { md } = useScreenHook();
+  const intl = useIntl()
 
   const { tab, setTab } = useTabsHook('tab1');
-
+ 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
       height: '100vh',
@@ -35,6 +38,8 @@ const PumpReport: React.FC = () => {
     };
   });
 
+
+
   return (
     <>
       <ProCard
@@ -51,11 +56,9 @@ const PumpReport: React.FC = () => {
           <ProCard colSpan={{ xs: 24, md: 16, xxl: 15 }} style={{ height: md ? 275 : '100%' }}>
             <DevicePanelContainer type={DeviceType.Pump} />
           </ProCard>
-          <StatisticCard
-            title="Gráfico de Consumo"
-            chart={<PumpEnergyConsumptionChart />}
-            colSpan={{ xs: 24 }}
-          />
+          <ProCard title={intl.formatMessage({ id: 'component.irpd.report.chart.consumption.title' })} >
+            <PumpEnergyConsumptionChart />
+          </ProCard>
         </ProCard>
 
         <ProCard
@@ -65,18 +68,18 @@ const PumpReport: React.FC = () => {
           gutter={[0, 16]}
         >
           <ProCard
-            title="Histórico"
+            title={intl.formatMessage({ id: 'component.irpd.report.title' })}
             tabs={{
               tabPosition: 'top',
               activeKey: tab,
               items: [
                 {
-                  label: `Eventos`,
+                  label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.1' }),
                   key: 'tab1',
-                  children: <IrpdActivityHistoricTable />,
+                  children: <IrpdActivityHistoricTable  />,
                 },
                 {
-                  label: `Operações`,
+                  label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.2' }),
                   key: 'tab2',
                   children: <IrpdActivityEventTable />,
                 },
@@ -92,6 +95,5 @@ const PumpReport: React.FC = () => {
     </>
   );
 };
- 
 
-export default (PumpReport);
+export default PumpReport;

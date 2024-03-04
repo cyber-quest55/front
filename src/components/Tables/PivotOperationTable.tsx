@@ -1,8 +1,9 @@
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { getPivotListGpsStream, getPivotListOperation } from '@/services/pivot';
+import { getPivotListGpsStream, getPivotListOperation, getPivotExcelReport } from '@/services/pivot';
 import { getPivotDirection } from '@/utils/formater/get-pivot-direction';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
+import { rangePresets } from '@/utils/presets/RangePicker';
 
 import { DownloadOutlined } from '@ant-design/icons';
 import {
@@ -17,6 +18,7 @@ import { App, Button, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
+import { httpToExcel } from '../../utils/adapters/excel';
 
 type Props = {
   pivotHistory: GetPivotHistoryModelProps;
@@ -26,12 +28,38 @@ type Props = {
 const PivotOperationTable: React.FC<Props> = (props) => {
   const reqGetData = useRequest(getPivotListOperation, { manual: true });
   const reqGetGPSData = useRequest(getPivotListGpsStream, { manual: true });
+  const reqGetExcel = useRequest(getPivotExcelReport, { manual: true });
 
   const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
   const intl = useIntl();
-  const { modal } = App.useApp();
+  const { modal, message } = App.useApp();
 
   const ref = useRef<ActionType>();
+
+  const handleExportReport = async  () => { 
+    try {
+      const response = await reqGetExcel.runAsync({pivotId: props.selectedDevice.deviceId},
+        {
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
+          kwh_value_p : 1,
+          kwh_value_hfp: 1, 
+          kwh_value_r: 1
+        }
+      )
+      httpToExcel(response, `relatório-pivo-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      message.success({
+        duration: 7,
+        content: intl.formatMessage({
+          id: 'component.pivot.download.report.success',
+        }) 
+      });
+    } catch (error) {
+      message.error(intl.formatMessage({
+        id: 'component.pivot.download.report.fail',
+      }));
+    }
+  }
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -45,8 +73,8 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                 label={intl.formatMessage({
                   id: 'component.pivot.tab.history.rangepicker.label',
                 })}
-                allowClear
                 fieldProps={{
+                  presets: rangePresets,
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
                       setDates(v);
@@ -60,16 +88,16 @@ const PivotOperationTable: React.FC<Props> = (props) => {
             </LightFilter>
           ),
           filter: (
-            <Space>
-              <Button icon={<DownloadOutlined />}>
+        
+              <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
                 {intl.formatMessage({
                   id: 'component.export',
                 })}
               </Button>
-            </Space>
+            
           ),
         }}
-        request={async (p, sort, filter): Promise<any> => {
+        request={async (p): Promise<any> => {
           const result: API.GetPivotHistoryOperationResponse = (await reqGetData.runAsync(
             {
               pivotId: props.selectedDevice.deviceId as any,

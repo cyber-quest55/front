@@ -233,7 +233,7 @@ const PivotMonitorForm: React.FC<PivotMonitorFormProps> = (props) => {
       }}
     >
       <Row gutter={[12, 12]}>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormText
             name="name"
             label={intl.formatMessage({
@@ -242,7 +242,7 @@ const PivotMonitorForm: React.FC<PivotMonitorFormProps> = (props) => {
             rules={[yupSync]}
           />
         </Col>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormText
             name="monitor"
             label={intl.formatMessage({
@@ -254,7 +254,7 @@ const PivotMonitorForm: React.FC<PivotMonitorFormProps> = (props) => {
             }}
           />
         </Col>
-        <Col xs={24} sm={12}>
+        <Col xs={24} sm={8}>
           <ProFormSelect
             name="brand_model"
             label={intl.formatMessage({
