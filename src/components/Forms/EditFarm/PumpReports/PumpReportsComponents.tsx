@@ -9,6 +9,7 @@ import {
 	App,
 	Card, 
 	Button,
+	Popconfirm,
 	Typography 
 } from 'antd';
 import {
@@ -42,11 +43,25 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 		try {
 			message.success(intl.formatMessage({
 				id: 'component.edit.farm.pumpreports.messages.reportsenabled',
-			}))
+			}));
 		} catch (err) {
 			message.error(intl.formatMessage({
 				id: 'component.edit.farm.messages.save.error',
-			}))
+			}));
+		}
+	}
+
+	const recalculateReports = async () => {
+		await reqRecalculateReports.runAsync({ id: farm!.id.toString() });
+		queryFarmById({ id: farm!.id });
+		try {
+			message.success(intl.formatMessage({
+				id: 'component.edit.farm.pumpreports.messages.reportscalculated',
+			}));
+		} catch (err) {
+			message.error(intl.formatMessage({
+				id: 'component.edit.farm.messages.save.error',
+			}));
 		}
 	}
 
@@ -111,12 +126,28 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
 						<Typography.Paragraph>
 							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.calc.reports.description' })}
 						</Typography.Paragraph>
-						<Button
-							type="primary"
-							disabled={reqRecalculateReports.loading}
+						<Popconfirm
+							title={intl.formatMessage({ id: 'component.edit.farm.pumpreports.messages.popconfirm' })}
+							okText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.yes' })}
+							cancelText={intl.formatMessage({ id: 'component.edit.farm.users.edit.message.confirm.no' })}
+							disabled={
+								farm.start_pivot_report_aggregate !== 2 ||
+								!farm.power_ranges['0']?.length ||
+								reqRecalculateReports.loading
+							}
+							onConfirm={recalculateReports}
 						>
-							{intl.formatMessage({ id: 'component.edit.farm.pumpreports.calc.reports.action.recalculate' })}
-						</Button>
+							<Button
+								type="primary"
+								disabled={
+									farm.start_irpd_report_aggregate !== 2 ||
+									!farm.power_ranges['0']?.length ||
+									reqRecalculateReports.loading
+								}
+							>
+								{intl.formatMessage({ id: 'component.edit.farm.pumpreports.calc.reports.action.recalculate' })}
+							</Button>
+						</Popconfirm>
 					</Card>
 				</>
 			) : null }
