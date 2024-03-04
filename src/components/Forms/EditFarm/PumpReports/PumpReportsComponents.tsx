@@ -70,7 +70,7 @@ const EditFarmPumpReportsComponent: FunctionComponent<Props> = ({
   return (
     <ProCard
 			title={
-				<Typography.Title style={{ margin: 0 }} level={4}>
+				<Typography.Title style={{ margin: 0 }} level={2}>
 					{intl.formatMessage({
 						id: 'component.edit.farm.pumpreports.title',
 					})}
