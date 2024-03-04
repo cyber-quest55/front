@@ -143,6 +143,8 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 		if (farm) {
 			if (!farm.power_ranges['none']) {
 				setEnergyBands(getPowerRanges(farm.power_ranges, daysOfWeekTranslations()));	
+			} else {
+				setAvailableDays([]);
 			}
 		}
 	}, [farm]);
