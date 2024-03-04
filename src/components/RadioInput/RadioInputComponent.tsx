@@ -91,22 +91,10 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   const { label, status, operable, span, device, deviceType, fieldIndex } = props;
 
   const onOpenCentralModal = React.useCallback(async () => {
-    // Step 1. Retrieve farm devices from irpq and pivots
-    const [
-      pivotResults,
-      irpdResults,
-      meterResults
-    ]: [ any, any, any ] = await Promise.all([
-      reqPivots.runAsync({
-        id: params.id as any,
-      }),
-      reqIrpds.runAsync({
-        id: params.id as any,
-      }),
-      reqMeterSystem.runAsync({
-        id: params.id as any,
-      })
-    ]);
+    // Step 1. Retrieve farm devices from irpq and pivots 
+    reqPivots.run({ id: params.id as any, });
+    reqIrpds.run({ id: params.id as any, });
+    reqMeterSystem.run({ id: params.id as any, })
     setIsCentralOpen(true)
     
     // Step 2 join into a datasource for select element
@@ -116,25 +104,14 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         value: -1,
       }
     ]);
-    const pivotsDatasource = pivotResults.map((r: any) => ({
-      label: r.name,
-      id: r.id,
-    }))
-    const irpdDatasource = irpdResults.map((r: any) => ({
-      label: r.name,
-      id: r.id,
-    }))
-    const meterDatasource = meterResults.map((r: any) => ({
-      label: r.name,
-      id: r.id,
-    }))
-    setDropdownDevices(prev => [
-      ...prev,
-      ...pivotsDatasource,
-      ...irpdDatasource,
-      ...meterDatasource
-    ])
-  }, [params, reqIrpds, reqPivots, setIsCentralOpen, setDropdownDevices])
+  }, [
+    params, 
+    reqIrpds, 
+    reqPivots, 
+    reqMeterSystem, 
+    setIsCentralOpen,
+     setDropdownDevices
+  ])
 
   const onSave = async () => {
     try {
@@ -282,6 +259,37 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
     },
   ];
 
+  // Update central radio list
+  React.useEffect(() => {
+    if (reqPivots.data && reqIrpds.data && reqMeterSystem.data) {
+      const pivotResults = reqPivots.data as any;
+      const irpdResults = reqIrpds.data as any;
+      const meterResults = reqMeterSystem.data as any;
+      const pivotsDatasource = pivotResults.map((r: any) => ({
+        label: r.name,
+        id: r.id,
+      }))
+      const irpdDatasource = irpdResults.map((r: any) => ({
+        label: r.name,
+        id: r.id,
+      }))
+      const meterDatasource = meterResults.map((r: any) => ({
+        label: r.name,
+        id: r.id,
+      }))
+      setDropdownDevices([
+        {
+          label: intl.formatMessage({ id: 'component.radio.modal.base.fields.device.placeholder' }),
+          value: -1,
+        },
+        ...pivotsDatasource,
+        ...irpdDatasource,
+        ...meterDatasource
+      ]);
+    }
+
+  }, [reqPivots.data, reqIrpds.data, reqMeterSystem.data]);
+
   return (
     <Col {...span}>
       <Modal
@@ -391,6 +399,11 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         <List
           bordered
           dataSource={dropdownDevices}
+          loading={
+            reqIrpds.loading ||
+            reqPivots.loading ||
+            reqMeterSystem.loading
+          }
           renderItem={(item, index) => index !== 0 ? (
             <List.Item>
               <Typography.Text>
