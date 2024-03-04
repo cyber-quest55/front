@@ -115,7 +115,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
   return (
     <ProCard
 			title={
-				<Typography.Title style={{ margin: 0 }} level={5}>
+				<Typography.Title style={{ margin: 0 }} level={4}>
 					{intl.formatMessage({
 						id: 'component.edit.farm.users.title',
 					})}
@@ -125,7 +125,11 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			ghost
 		>
 			<Modal
-				title={intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title' })}
+				title={
+					<Typography.Title level={3}>
+						{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title' })}
+					</Typography.Title>
+					}
 				open={isGuidelinesOpen}
 				onCancel={handleGuidelinesOk}
 				footer={false}
@@ -166,7 +170,11 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				</Typography.Paragraph>
       </Modal>
 			<Modal
-				title={intl.formatMessage({ id: 'component.edit.farm.users.add.title' })}
+				title={
+					<Typography.Title level={3}>
+						{intl.formatMessage({ id: 'component.edit.farm.users.add.title' })}
+					</Typography.Title>
+				}
 				open={isAddUserOpen}
 				onCancel={toggleAddUser}
 				footer={false}
@@ -198,7 +206,11 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				/>
 			</Modal>
 			<Modal
-				title={intl.formatMessage({ id: 'component.edit.farm.users.edit.title' })}
+				title={
+					<Typography.Title level={3}>
+						{intl.formatMessage({ id: 'component.edit.farm.users.edit.title' })}
+					</Typography.Title>
+				}
 				open={isEditUserOpen}
 				onCancel={toggleEditUser}
 				footer={false}

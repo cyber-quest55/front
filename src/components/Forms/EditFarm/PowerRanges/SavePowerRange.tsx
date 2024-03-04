@@ -154,7 +154,11 @@ const SavePowerRange = ({
   // TSX
   return (
     <Modal
-      title={intl.formatMessage({ id: 'component.edit.farm.powerranges.modal.title' })}
+      title={
+        <Typography.Title level={3}>
+          {intl.formatMessage({ id: 'component.edit.farm.powerranges.modal.title' })}
+        </Typography.Title>
+      }
       open={open}
       onCancel={() => {
         form.setFieldValue('start', '00:00:00');

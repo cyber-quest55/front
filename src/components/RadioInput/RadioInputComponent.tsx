@@ -293,7 +293,11 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   return (
     <Col {...span}>
       <Modal
-        title={intl.formatMessage({ id: 'component.radio.modal.base.title' })}
+        title={
+          <Typography.Title level={3}>
+            {intl.formatMessage({ id: 'component.radio.modal.base.title' })}
+          </Typography.Title>
+        }
         style={{ padding: 0 }}
         width={500}
         footer={false}

@@ -102,7 +102,7 @@ const EditFarmBillingComponent: FunctionComponent<Props> = ({
   return (
     <ProCard
 			title={
-				<Typography.Title style={{ margin: 0 }} level={5}>
+				<Typography.Title style={{ margin: 0 }} level={4}>
 					{intl.formatMessage({
 						id: 'component.edit.farm.billing.title',
 					})}
