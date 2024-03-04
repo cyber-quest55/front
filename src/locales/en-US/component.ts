@@ -736,6 +736,7 @@ export default {
   'component.edit.farm.pivotreports.calc.reports.label': 'Recalculate Reports',
   'component.edit.farm.pivotreports.calc.reports.description': 'Press the button below to recalculate pivot reports.',
   'component.edit.farm.pivotreports.calc.reports.action.recalculate': 'Recalculate',
+  'component.edit.farm.pivotreports.messages.reportsenabled': 'Pivots reports are now enabled!',
   // Pump Reports tab
   'component.edit.farm.pumpreports.enable.reports.label': 'Enable Reports',
   'component.edit.farm.pumpreports.enable.reports.description': 'Press the button below to enable pump reports.',
@@ -745,6 +746,7 @@ export default {
   'component.edit.farm.pumpreports.calc.reports.label': 'Recalculate Reports',
   'component.edit.farm.pumpreports.calc.reports.description': 'Press the button below to recalculate pump reports.',
   'component.edit.farm.pumpreports.calc.reports.action.recalculate': 'Recalculate',
+  'component.edit.farm.pumpreports.messages.reportsenabled': 'Pump reports are now enabled!',
   // Power ranges tab
   'component.edit.farm.powerranges.description': 'Power ranges are used for cost calculation in reports.',
   'component.edit.farm.powerranges.add.action': 'Add Power range',
