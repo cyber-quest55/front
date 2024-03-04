@@ -2,42 +2,41 @@ import AddPivotAlarmForm from '@/components/Forms/AddAlarmForm/Pivot';
 import EditPivotAlarmForm from '@/components/Forms/EditAlarmForm/Pivot';
 import { useScreenHook } from '@/hooks/screen';
 import {
-  deletePivotNotification,
-  enablePivotNotification,
-  getPivotNotifications,
-  getPivotNotificationsReasons,
-} from '@/services/notification';
-import { getPivots } from '@/services/pivot';
+  deletePivotNotificationAction,
+  enablePivotNotificationAction,
+  NotificationMapped,
+  queryPivotNotifications,
+} from '@/models/pivot-notification';
+import { deletePivotNotification, enablePivotNotification } from '@/services/notification';
 import { BellOutlined, DeleteFilled } from '@ant-design/icons';
-import { ProList } from '@ant-design/pro-components';
-import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { ProCard } from '@ant-design/pro-components';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { App, Button, Col,  Modal, Row, Switch, Tag, Typography } from 'antd';
-import React, { ReactText, useEffect, useState } from 'react';
+import { App, Button, Col, Empty, Modal, Row, Spin, Switch, Tag, Tooltip, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { IoAlertCircleOutline } from 'react-icons/io5';
 
 export type AlarmPivotListProps = {
   title: string;
-  size?: 'small' | 'default' | 'large';
+  queryPivotNotifications: typeof queryPivotNotifications;
+  enablePivotNotificationAction: typeof enablePivotNotificationAction;
+  deletePivotNotificationAction: typeof deletePivotNotificationAction;
+  notificationsFormatted: NotificationMapped[];
+  reasons: APIModels.NotificationReason[];
+  loading: boolean;
+  pivots: APIModels.PivotByFarm[];
 };
 
 const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
   const { lg } = useScreenHook();
   const intl = useIntl();
-  const getPivotNotificationsReq = useRequest(getPivotNotifications, { manual: true });
-  const getPivotsReq = useRequest(getPivots, { manual: true });
-  const getPivotNotificationsReasonsReq = useRequest(getPivotNotificationsReasons, {
-    manual: true,
-  });
+  const { reasons, pivots, loading, notificationsFormatted } = props;
   const deletePivotNotificationReq = useRequest(deletePivotNotification, { manual: true });
   const enablePivotNotificationReq = useRequest(enablePivotNotification, { manual: true });
   const { message } = App.useApp();
-  const [expandedRowKeys, setExpandedRowKeys] = useState<readonly ReactText[]>([]);
-  const [notificationsMapped, setNotificationsMapped] = useState<any>([]);
-  const [reasons, setReasons] = useState<any>([]);
-  const [pivots, setPivots] = useState<any>([]);
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [itemToDeleteId, setItemToDeleteId] = useState<number>(-1);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -47,10 +46,10 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
     setIsModalOpen(false);
   };
 
-  const handleDeleteNotification = async (id: number) => {
+  const handleDeleteNotification = async () => {
     try {
-      await deletePivotNotificationReq.runAsync({ notificationId: id });
-      setNotificationsMapped(notificationsMapped.filter((n) => n.id !== id));
+      await deletePivotNotificationReq.runAsync({ notificationId: itemToDeleteId });
+      props.deletePivotNotificationAction(itemToDeleteId);
       setIsModalOpen(false);
     } catch (err) {
       message.error('Fail');
@@ -60,179 +59,155 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
   const handleEnableNotification = async (id: number, checked: boolean, index: number) => {
     try {
       await enablePivotNotificationReq.runAsync({ notificationId: id }, { enable: checked });
-      const newNotificationMapped = [...notificationsMapped];
-      newNotificationMapped[index].enable = checked;
-      setNotificationsMapped(newNotificationMapped);
+      props.enablePivotNotificationAction({ enable: checked, index });
     } catch (err) {
       message.error('Fail');
     }
   };
 
-  const className = useEmotionCss(({ token }) => {
-    return {
-      '.ant-list .ant-list-item': {
-        alignItems: 'baseline',
-      },
-    };
-  });
-
   useEffect(() => {
-    Promise.all([
-      getPivotsReq.runAsync({ id: params.farmId as any }),
-      getPivotNotificationsReq.runAsync(),
-      getPivotNotificationsReasonsReq.runAsync({ equipmentType: 0, language: 'en' }),
-    ]).then(([pivots, notifications, reasons]) => {
-      let newNotificationMapped = [];
-      for (let notification of notifications) {
-        newNotificationMapped.push({
-          ...notification,
-          title: {
-            name: notification.name,
-            startDate: notification.start,
-            endDate: notification.end,
-            devices: pivots.filter((pivot: any) => notification.devices.includes(pivot.id)),
-          },
-          reasons: reasons.filter((reason: any) => notification.reasons.includes(reason.id)),
-          criticalReasons: reasons.filter((reason: any) =>
-            notification.critical_reasons.includes(reason.id),
-          ),
-        });
-      }
-      setReasons(reasons);
-      setPivots(pivots);
-      setNotificationsMapped(newNotificationMapped);
-    });
+    props.queryPivotNotifications({ farmId: params.farmId });
   }, []);
 
-  const refresh = async () => {
-    let newNotificationMapped: any[] = [];
-    await getPivotNotificationsReq.runAsync().then((notifications) => {
-      for (let notification of notifications) {
-        newNotificationMapped.push({
-          ...notification,
-          title: {
-            name: notification.name,
-            startDate: notification.start,
-            endDate: notification.end,
-            devices: pivots.filter((pivot: any) => notification.devices.includes(pivot.id)),
-          },
-          reasons: reasons.filter((reason: any) => notification.reasons.includes(reason.id)),
-          criticalReasons: reasons.filter((reason: any) =>
-            notification.critical_reasons.includes(reason.id),
-          ),
-        });
-      }
-      setNotificationsMapped(newNotificationMapped);
-    });
-  };
-
   return (
-    <div>
-      <ProList<any>
-        className={className}
-        expandable={{ expandedRowKeys, onExpandedRowsChange: setExpandedRowKeys }}
-        rowKey="id"
-        size={props.size}
-        headerTitle={props.title}
-        dataSource={notificationsMapped}
-        showActions="hover"
-        editable={{
-          onSave: async () => {
-            return true;
-          },
-        }}
-        toolBarRender={() => [
-          <AddPivotAlarmForm key="form" reasons={reasons} pivots={pivots} refresh={refresh} />,
-        ]}
-        metas={{
-          title: {
-            dataIndex: ['title'],
-            render: (dom) => (
-              <Row justify="space-between" gutter={[12, 12]}>
-                <Col>
-                  <div>
-                    <Typography.Text>{dom.name}</Typography.Text>
-                  </div>
-                  <div>
+    <ProCard
+      title={props.title}
+      loading={
+        loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Spin />
+          </div>
+        ) : (
+          false
+        )
+      }
+      direction="column"
+      gutter={[0, 16]}
+      extra={
+        <AddPivotAlarmForm
+          reasons={reasons}
+          pivots={pivots}
+          queryPivotNotifications={props.queryPivotNotifications}
+        />
+      }
+    >
+      {notificationsFormatted.length === 0 ? (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      ) : (
+        notificationsFormatted.map((notification: any, index: number) => {
+          return (
+            <ProCard
+              key={notification.id}
+              title={
+                <span>
+                  <span>
+                    <BellOutlined style={{ fontSize: 18, marginTop: 2 }}></BellOutlined>
+                  </span>
+                  <span style={{ marginLeft: 8 }}>
+                    <Typography.Text strong>{notification.name}</Typography.Text>{' '}
+                  </span>
+                  <span style={{ marginLeft: 8 }}>
                     <Typography.Text type="secondary" style={{ fontWeight: 'lighter' }}>
-                      {dom.startDate === '00:00:00' && dom.endDate === '23:59:59'
+                      {notification.start === '00:00:00' && notification.end === '23:59:59'
                         ? intl.formatMessage({
-                            id: 'component.alarmpivotlist.allday.text',
+                            id: 'component.alarmlist.allday.text',
                           })
-                        : `${dom.startDate} > ${dom.endDate}`}
+                        : `${notification.start} > ${notification.end}`}
                     </Typography.Text>
-                  </div>
-                  <div>
-                    {dom?.devices.map((it: any, index: number) => (
-                      <Tag key={`alarm-pivot-monitor-list-pivot-${index}`}>{it.name}</Tag>
-                    ))}
-                  </div>
-                </Col>
+                    <div style={{ marginLeft: 22, marginTop: 8 }}>
+                      {notification?.devices.map((it: any, index: number) => (
+                        <Tag key={index}>{it.name}</Tag>
+                      ))}
+                    </div>
+                  </span>
+                </span>
+              }
+              bordered
+              headerBordered
+              collapsible
+              defaultCollapsed
+              size="small"
+              extra={
+                <Row gutter={[8, 8]} align="middle">
+                  <Col>
+                    <EditPivotAlarmForm
+                      reasons={reasons}
+                      pivots={pivots}
+                      queryPivotNotifications={props.queryPivotNotifications}
+                      notification={notification}
+                    />
+                  </Col>
+                  <Col>
+                    <Button
+                      onClick={() => {
+                        showModal();
+                        setItemToDeleteId(notification.id);
+                      }}
+                      size={lg ? 'middle' : 'small'}
+                      key="2-btn-"
+                      icon={<DeleteFilled />}
+                    />
+                  </Col>
+                  <Col>
+                    <Switch
+                      checked={notification.enable}
+                      onChange={(checked) =>
+                        handleEnableNotification(notification.id, checked, index)
+                      }
+                      size={lg ? 'default' : 'small'}
+                      key="1-swtich"
+                    />
+                  </Col>
+                </Row>
+              }
+            >
+              <Row gutter={[8, 8]} style={{ flexDirection: 'column' }}>
+                <Row gutter={[4, 4]}>
+                  {notification?.reasons?.map((reason: any, index: number) => (
+                    <Col key={index}>
+                      <Tag
+                      style={{ display: 'flex', alignItems: 'center'}}
+                        icon={
+                          notification.critical_reasons.includes(reason.id) ? (
+                            <Tooltip
+                              title={intl.formatMessage({
+                                id: 'component.alarmlist.critical.tooltip',
+                              })}
+                            >
+                              <IoAlertCircleOutline
+                                color="#DA1D29"
+                                size={18}
+                                style={{ marginRight: 7 }}
+                              />
+                            </Tooltip>
+                          ) : null
+                        }
+                      >
+                        {reason.label}
+                      </Tag>
+                    </Col>
+                  ))}
+                </Row>
               </Row>
-            ),
-          },
-          avatar: {
-            dataIndex: 'image',
-            editable: false,
-            render: () => <BellOutlined style={{ fontSize: 22 }}></BellOutlined>,
-          },
-          description: {
-            dataIndex: 'reasons',
-            render: (dom: any) => {
-              return (
-                  <Row gutter={[12, 4]}>
-                    {dom?.map((it: any, index: number) => (
-                      <Col key={`alarm-pivot-monitor-list-tag-${index}`}>
-                        <Typography.Text type="secondary">{it.label}</Typography.Text>
-                      </Col>
-                    ))}
-                  </Row>
-              );
-            },
-          },
-          actions: {
-            render: (dom, item, index) => [
-              <>
-                <EditPivotAlarmForm
-                  reasons={reasons}
-                  pivots={pivots}
-                  refresh={refresh}
-                  notification={item}
-                />
-              </>,
-              <>
-                <Button
-                  onClick={showModal}
-                  size={lg ? 'middle' : 'small'}
-                  key="2-btn-"
-                  icon={<DeleteFilled />}
-                />
-                <Modal
-                  title={intl.formatMessage({
-                    id: 'component.alarmpivotlist.deletemodal.title',
-                  })}
-                  open={isModalOpen}
-                  onOk={() => handleDeleteNotification(item.id)}
-                  onCancel={handleCancel}
-                >
-                  <p>
-                    {intl.formatMessage({
-                      id: 'component.alarmpivotlist.deletemodal.text',
-                    })}
-                  </p>
-                </Modal>
-              </>,
-              <Switch
-                checked={item.enable}
-                onChange={(checked) => handleEnableNotification(item.id, checked, index)}
-                size={lg ? 'default' : 'small'}
-                key="1-swtich"
-              />,
-            ],
-          },
-        }}
-      />
-    </div>
+            </ProCard>
+          );
+        })
+      )}
+      <Modal
+        title={intl.formatMessage({
+          id: 'component.alarmlist.deletemodal.title',
+        })}
+        open={isModalOpen}
+        onOk={handleDeleteNotification}
+        onCancel={handleCancel}
+      >
+        <p>
+          {intl.formatMessage({
+            id: 'component.alarmlist.deletemodal.text',
+          })}
+        </p>
+      </Modal>
+    </ProCard>
   );
 };
 

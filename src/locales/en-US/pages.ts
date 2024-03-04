@@ -54,5 +54,9 @@ export default {
   'pages.edit.irpd.tab.header.history': 'History',
   'pages.edit.irpd.tab.options.general': 'General',
   'pages.edit.irpd.tab.options.location': 'Location',
-  'pages.edit.irpd.tab.options.pausetime': 'Pause Time'
+  'pages.edit.irpd.tab.options.pausetime': 'Pause Time',
+  'pages.notifications.tab.pivot': 'Pivot',
+  'pages.notifications.tab.pivotmonitor': 'Pivot Monitor',
+  'pages.notifications.tab.irpd': 'Pump',
+  'pages.notifications.breadcrumb.title': 'Notifications',
  };
