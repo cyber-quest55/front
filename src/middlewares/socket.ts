@@ -2,7 +2,11 @@ import { Socket } from 'socket.io-client';
 
 const channelMap: { [id: string]: string } = {};
 
-export const socketMiddleware = (socket: Socket) => (params) => (next) => (action) => {
+type Params = {
+  dispatch: any;
+}
+
+export const socketMiddleware = (socket: Socket) => (params: Params) => (next: any) => (action: any) => {
   const { dispatch } = params;
   const { type, payload } = action;
 
