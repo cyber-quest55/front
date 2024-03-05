@@ -2,7 +2,7 @@ import SegmentSVG from '@/components/SegmentsSvg/SegmentSvg';
 import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 import { getPivotWaterConsumptionBySegment } from '@/services/pivot';
 import { getSegmentsInPivot } from '@/utils/formater/get-segments';
-import { ProList, intlMap } from '@ant-design/pro-components';
+import { ProList } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Button, Modal, Progress, Tag, Typography } from 'antd';
