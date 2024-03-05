@@ -42,7 +42,7 @@ export async function getPivotHistory(
 ) {
   return request<{
     data: API.GetPivotHistoryResponse;
-  }>(`/v3/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
+  }>(`/v3/farms/${props.farmId}/pivots/${props.deviceId}/history/`, {
     method: 'GET',
     params: options,
   });
@@ -196,7 +196,7 @@ export async function createPivot(
   props: API.CreatePivotParams,
   options: APIModels.CreatePivotPayload,
 ) {
-  return request<{ 
+  return request<{
     data: APIModels.PivotByIdInformation;
   }>(`/farms/${props.farmId}/pivots/`, {
     method: 'POST',

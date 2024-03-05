@@ -6,14 +6,13 @@ import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetPivotReportModelProps } from '@/models/pivot-report';
 import {
   SelectedDeviceModelProps,
-  setDeviceClose,
   setSelectedDevice,
 } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { G2, Line, Pie } from '@ant-design/plots';
 import {
   ProCard,
- 
+
   StatisticCard,
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -48,7 +47,6 @@ type Props = {
   pivotInformation: GetPivotInformationModelProps;
   selectedDevice: SelectedDeviceModelProps;
   setSelectedDevice: typeof setSelectedDevice;
-  setDeviceClose: typeof setDeviceClose;
 };
 
 const PivotReport: React.FC<Props> = (props) => {
@@ -60,7 +58,7 @@ const PivotReport: React.FC<Props> = (props) => {
   const [option, setOption] = useState<undefined | number>(undefined);
 
   const energyConsumption = props.pivotReport.result.energy_consumption;
- 
+
   const data = [
     {
       type: intl.formatMessage({
@@ -120,7 +118,7 @@ const PivotReport: React.FC<Props> = (props) => {
       },
     };
   });
-  
+
   return (
     <>
       <Modal
@@ -575,23 +573,19 @@ const PivotReport: React.FC<Props> = (props) => {
             </ProCard>
           </ProCard>
         </ProCard>
-        <ProCard     
-         
+        <ProCard
+          loading={props.pivotReport.loading && <TableSkeleton rows={12} />}
           colSpan={{ xs: 24, lg: 12 }}
-          wrap 
-          ghost 
+          wrap
+          ghost
            className={classNameTableProCard}
         >
           <ProCard
-          loading={props.pivotReport.loading && <TableSkeleton rows={12}/>}
-            style={{ minHeight: 1032 }}
+             style={{ minHeight: 1032 }}
             title={intl.formatMessage({
               id: 'component.pivot.tab.history.title',
             })}
-            tabs={
-              props.pivotHistory.loading
-                ? undefined
-                : {
+            tabs={   {
                     tabPosition: 'top',
                     activeKey: tab,
                     items: [
@@ -689,7 +683,6 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
-  setDeviceClose: () => dispatch(setDeviceClose()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PivotReport);

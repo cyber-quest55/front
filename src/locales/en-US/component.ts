@@ -317,6 +317,9 @@ export default {
   'component.pivot.tab.history.event.table.col.3.value.4': 'Central offline',
   'component.pivot.tab.history.event.table.col.3.value.5': 'Central online',
   'component.pivot.tab.history.event.table.col.3.value.6': 'Dry',
+  'component.pivot.tab.history.event.table.col.3.value.7': 'Segment Irrigation',
+  'component.pivot.tab.history.event.table.col.3.value.8': 'Simple Irrigation',
+  'component.pivot.tab.history.event.table.col.3.value.9': 'Programmed Irrigation',
   'component.pivot.tab.history.event.table.col.3': 'Status',
   'component.pivot.tab.history.operations': 'Operations',
   'component.pivot.tab.history.operations.table.col.1': 'Begin',
@@ -557,6 +560,7 @@ export default {
   'component.edit.irpd.pausetime.prices.title': 'Prices of Power Ranges',
   'component.edit.irpd.pausetime.daysofweek.title': 'Days of the Week',
   'component.edit.irpd.pausetime.configurations.title': 'Configurations',
+ 
   'component.pivot.weatherstation.modal.title': 'Meteorological Summary',
   'component.pivot.weatherstation.modal.temperature': 'Current temperature',
   'component.pivot.weatherstation.modal.moisture': 'Moisture',
@@ -623,7 +627,7 @@ export default {
   'component.weatherstation.deltat.tab.table.riskytoinadequate.legend': 'Risky to Inadequate',
   'component.weatherstation.deltat.tab.table.xaxis.label': 'Temperature',
   'component.weatherstation.deltat.tab.table.yaxis.label': 'Humidity',
-  'component.adddevice.modal.trigger': 'Create equipment',
+   'component.adddevice.modal.trigger': 'Create equipment',
   'component.adddevice.modal.form.title': "Create equipment",
   'component.adddevice.modal.form.cancel': 'Cancel',
   'component.adddevice.modal.form.next': 'Next',
@@ -661,7 +665,7 @@ export default {
   'component.adddevice.modal.form.step2.pivotmonitor.potency.label': 'Potency',
   'component.adddevice.modal.form.step2.pivotmonitor.performance.label': 'Performance',
   'component.adddevice.modal.form.step2.pivotmonitor.convertedpotency.label': 'Potency Converted',
-  'component.adddevice.modal.form.step2.pivotmonitor.pumppotency.label': 'Pump Potency',  
+  'component.adddevice.modal.form.step2.pivotmonitor.pumppotency.label': 'Pump Potency',
   'component.adddevice.modal.form.step2.linearpivotmonitor.name.label': 'Equipment Name',
   'component.adddevice.modal.form.step2.linearpivotmonitor.brand.label': 'Manufacturer',
   'component.adddevice.modal.form.step2.linearpivotmonitor.brandother.label': 'Other Manufacturer',
@@ -678,6 +682,7 @@ export default {
   'component.adddevice.modal.form.step2.irpd.potency.label': 'Potency',
   'component.adddevice.modal.form.step2.irpd.performance.label': 'Performance',
   'component.adddevice.modal.form.step2.irpd.convertedpotency.label': 'Potency Converted',
+ 
   'component.adddevice.modal.form.step2.irpd.pumppotency.label': 'Pump Potency',  
   'component.adddevice.modal.form.step2.repeater.name.label': 'Equipment Name',  
   'component.adddevice.modal.form.step2.repeater.repeater.label': 'Repeater Radio',  
@@ -699,6 +704,7 @@ export default {
   'component.adddevice.modal.form.step2.weatherstation.apikey.label': 'API Key',
   'component.adddevice.modal.form.step2.weatherstation.apisecret.label': 'API Secret',
   'component.adddevice.modal.form.step2.weatherstation.identification.label': 'Weather Station ID',
+ 
 
   'component.meter.report.table.title': 'History',
   'component.meter.report.table.tab.1': 'Measurements',
@@ -733,9 +739,9 @@ export default {
   'component.irpd.report.chart.label.2': 'Horas em fora de pico',
   'component.irpd.report.chart.label.3': 'Horas em reduzido',
   'component.irpd.command.opt.0': 'Stop bomb',
-  'component.irpd.command.opt.1': 'Turn on pump', 
+  'component.irpd.command.opt.1': 'Turn on pump',
   'component.irpd.command.opt.2': 'Possibly stopped',
-  'component.irpd.command.origin.opt.1': 'Command', 
+  'component.irpd.command.origin.opt.1': 'Command',
   'component.irpd.command.origin.opt.2': 'Central Update',
   'component.irpd.operationalpanel.button.start': 'Start Pump',
   'component.irpd.operationalpanel.button.stop': 'Stop Pump',
@@ -745,5 +751,5 @@ export default {
   'component.irpd.scheduleirr.type.opt.2': "Don't stop",
   'component.irpd.scheduleirr.label.opt.1': 'Start in',
   'component.irpd.scheduleirr.label.opt.2': 'Stop in',
-  
+ 
 };

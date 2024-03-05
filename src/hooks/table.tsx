@@ -26,7 +26,7 @@ const useTableHook: (pSize: number) => {
   /**
    * It define the date range of tables
    */
-  const [range, setRange] = useState<Range>({ startDate: dayjs(), endDate: dayjs() });
+  const [range, setRange] = useState<Range>([dayjs().subtract(1, 'month'), dayjs()]);
 
   return {
     pageSize,
