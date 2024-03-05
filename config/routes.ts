@@ -53,6 +53,11 @@ export default [
         name: 'Sua Fazenda',
         component: './Farms/[id].tsx',
       }, 
+      {
+        path: '/farms/:id/edit',
+        name: 'Editar fazenda',
+        component: './Farms/Edit.tsx'
+      },
     ],
   },
   {

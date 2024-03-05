@@ -54,5 +54,15 @@ export default {
   'pages.edit.irpd.tab.header.history': 'History',
   'pages.edit.irpd.tab.options.general': 'General',
   'pages.edit.irpd.tab.options.location': 'Location',
-  'pages.edit.irpd.tab.options.pausetime': 'Pause Time'
+  'pages.edit.irpd.tab.options.pausetime': 'Pause Time',
+  'pages.edit.farm.tab.header.title': 'Farm Data',
+  'pages.edit.farm.tab.options.general': 'General',
+  'pages.edit.farm.tab.options.location': 'Location',
+  'pages.edit.farm.tab.options.billing': 'Billing',
+  'pages.edit.farm.tab.options.contact': 'Contact',
+  'pages.edit.farm.tab.options.powerranges': 'Power Ranges',
+  'pages.edit.farm.tab.options.pivotreports': 'Pivot Reports',
+  'pages.edit.farm.tab.options.pumpreports': 'Pump Reports',
+  'pages.edit.farm.tab.options.holidays': 'Holidays',
+  'pages.edit.farm.tab.options.users': 'Users'
  };
