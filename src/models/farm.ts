@@ -9,7 +9,7 @@ export interface GetFarmModelProps {
   error: any;
 }
 
-export const queryFarm = (payload: { id: number }) => {
+export const queryFarm = (payload ) => {
   return {
     type: 'farm/queryFarm',
     payload: payload,
@@ -29,9 +29,11 @@ export default {
 
   effects: {
     *queryFarm({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+      console.log('entrou aqui foi chamado')
       yield put({ type: 'queryFarmStart' });
       try {
-        const response: API.GetFarmResponse = yield call(getFarms, payload);
+        const response: API.GetFarmResponse = yield call(getFarms);
+
         const selectedFarm = response[0];
         yield put({ type: 'queryFarmSuccess', payload: { data: response, id: payload.id } });
 
