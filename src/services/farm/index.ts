@@ -3,7 +3,7 @@
 import { request } from '@umijs/max';
 
 /** GET /farms */
-export async function getFarms(options?: API.GetFarmsParams) {
+export async function getFarms() {
   return request<{
     data: API.GetFarmResponse;
   }>('/v3/farms', {

@@ -43,7 +43,10 @@ import StartPivotSegmentContainer from '../Forms/StartPivotSegment/StartPivotSeg
 import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
 import StartPumpScheduleContainer from '../Forms/StartPumpSchedule/StartPumpScheduleContainer';
 import CropSegmentsModalContainer from '../Modals/Crop/CropContainer';
+ import { DevicePanelModelProps, togglePivotMaintenance } from '../../models/device-panel';
+ 
 import WeatherStationOverviewContainer from '../Modals/WeatherStationOverview/WeatherStationOverviewContainer';
+ 
 
 const { Text } = Typography;
 
@@ -60,6 +63,10 @@ type Props = {
   device: any;
 
   setDeviceClose: typeof setDeviceClose;
+
+  devicePanel:  DevicePanelModelProps;
+
+  togglePivotMaintenance: typeof togglePivotMaintenance;
 };
 
 export const DevicePanelComponent: React.FC<Props> = (props) => {
@@ -77,8 +84,10 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const meter: API.GetMeterSystemByIdResponse =
     props.type === DeviceType.Meter ? props.device.unformated : null;
 
+  const isInMaintenance = props?.devicePanel?.result?.underMaintenance
+
   // For pivot
-  const isDisabled = !isOnReq.data?.is_online || mtncGetReq.data?.maintenance;
+  const isDisabled = !isOnReq.data?.is_online || isInMaintenance;
 
   // For IRPD
   const isDisabledIrpd = !isOnReq.data?.is_online;
@@ -87,7 +96,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     meter?.imeter_set?.length > 0
       ? meter?.imeter_set[0]?.latest_config?.content?.imanage_sensors[0]?.max_value
       : 1;
- 
+
   const minLimit =
     meter?.imeter_set?.length > 0 ? meter?.imeter_set[0]?.latest_config?.min_limit : undefined;
   const maxLimit =
@@ -100,8 +109,6 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
       : undefined;
 
   const { options, device, type, onChangeDevice } = props;
-
-  console.log(maxValue, maxLimit, meterVolume);
 
   const classNameSelect = useEmotionCss(({ token }) => {
     return {
@@ -132,11 +139,11 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
             pivotId: device.id as any,
           },
           {
-            maintenance: !mtncGetReq.data?.maintenance,
+            maintenance: !isInMaintenance,
           },
         );
 
-        await mtncGetReq.refreshAsync();
+         await mtncGetReq.refreshAsync();
 
         message.success(
           intl.formatMessage({
@@ -163,7 +170,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
           pivotId: device.id as any,
         },
         {
-          maintenance: !mtncGetReq.data?.maintenance,
+          maintenance: !isInMaintenance,
         },
       );
 
@@ -312,24 +319,6 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
     },
   ];
 
-  // To lo((minLimit / 100) * maxValue) / 10 ad maintain mode
-  useEffect(() => {
-    if (device.id && type === DeviceType.Pivot && !mtncGetReq.loading) {
-      mtncGetReq.runAsync(
-        {
-          farmId: params.id as any,
-          pivotId: device.id as any,
-        },
-        {},
-      );
-      isOnReq.runAsync({ deviceId: props.device.base_radio_id }, {});
-    }
-
-    if (DeviceType.Pump) {
-      isOnReq.runAsync({ deviceId: props.device.base_radio_id }, {});
-    }
-  }, [device]);
-
   const deviceActions = (type: DeviceType) => {
     switch (type) {
       case DeviceType.Pivot: {
@@ -418,7 +407,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
             <Popconfirm
               onConfirm={onMaintenanceModeToggle}
               title={
-                mtncGetReq.data?.maintenance
+                isInMaintenance
                   ? `${intl.formatMessage({
                       id: 'component.pivot.operationalpanel.button.tooltip.maintain.2',
                     })}?`
@@ -427,7 +416,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                     })}?`
               }
             >
-              <Button icon={mtncGetReq.data?.maintenance ? <GiPadlock /> : <GiPadlockOpen />} />
+              <Button icon={isInMaintenance ? <GiPadlock /> : <GiPadlockOpen />} />
             </Popconfirm>
             <CropSegmentsModalContainer />
             <WeatherStationOverviewContainer />
@@ -525,7 +514,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const RenderPivotAlert = () => {
     if (type === DeviceType.Pivot)
       return isOnReq.data?.is_online ? (
-        mtncGetReq.data?.maintenance ? (
+        isInMaintenance ? (
           <Row style={{ width: 259 }} align={'middle'}>
             <Col style={{ width: '100%' }}>
               <Alert
@@ -569,6 +558,31 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
 
     return <></>;
   };
+
+  // To lo((minLimit / 100) * maxValue) / 10 ad maintain mode
+  useEffect(() => {
+    if (device.id && type === DeviceType.Pivot && !mtncGetReq.loading) {
+      mtncGetReq.runAsync(
+        {
+          farmId: params.id as any,
+          pivotId: device.id as any,
+        },
+        {},
+      );
+      isOnReq.runAsync({ deviceId: props.device.base_radio_id }, {});
+    }
+
+    if (DeviceType.Pump) {
+      isOnReq.runAsync({ deviceId: props.device.base_radio_id }, {});
+    }
+  }, [device]);
+
+  // To lo((minLimit / 100) * maxValue) / 10 ad maintain mode
+  useEffect(() => {
+    if ( !mtncGetReq.loading  && mtncGetReq.data ) {
+      props.togglePivotMaintenance(mtncGetReq.data)
+    }
+  }, [mtncGetReq.data]);
 
   return (
     <Space direction="vertical" style={{ width: '100%' }} size="large">
