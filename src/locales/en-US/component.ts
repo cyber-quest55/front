@@ -865,6 +865,7 @@ export default {
   'component.edit.farm.holiday.import.brazil': 'Brazil',
   'component.edit.farm.holiday.import.russia': 'Russia',
   'component.edit.farm.holiday.messages.holidaypresent': 'This day is already set as a holiday.',
+  'component.edit.farm.holiday.year.hasholiday': 'Has Holidays',
   // Users tabs
   'component.edit.farm.users.description': 'Manage users from your farm. Make sure to read the permission guidelines to assign correct roles to users.',
   'component.edit.farm.users.guidelines': 'Permission guidelines',

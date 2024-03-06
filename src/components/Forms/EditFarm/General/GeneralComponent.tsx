@@ -9,9 +9,6 @@ import { SaveOutlined } from '@ant-design/icons';
 import RadioInputContainer from '@/components/RadioInput/RadioInputContainer';
 import { queryFarmById } from '@/models/farm-by-id';
 import { updateFarm, updatedBase } from '@/services/farm';
-import { getIrpds } from '@/services/irpd';
-import { getMeterSystem } from '@/services/metersystem';
-import { getPivots } from '@/services/pivot';
 import { yupValidator } from '@/utils/adapters/yup';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
@@ -35,7 +32,7 @@ type Props = {
 // Component
 const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 	farm,
-	queryFarmById
+	queryFarmById,
 }): ReactElement => {
 	// Hooks
 	const intl = useIntl();
@@ -186,9 +183,6 @@ const EditFarmGeneralComponent: FunctionComponent<Props> = ({
 									status={'processing'}
 									deviceType=""
 									device="central"
-									requestPivots={getPivots}
-									requestIrpds={getIrpds}
-									requestMeterSystem={getMeterSystem}
 									requestBase={updatedBase}
 									label={intl.formatMessage({
 										id: 'component.edit.farm.general.centralradio.label',

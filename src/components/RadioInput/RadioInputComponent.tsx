@@ -15,6 +15,9 @@ import {
   ProFormSelect
 } from '@ant-design/pro-components';
 import { Request, useParams, useIntl } from '@umijs/max';
+import { queryIrpd } from '@/models/irpd';
+import { queryMeterSystem } from '@/models/meter-sysem';
+import { queryPivot } from '@/models/pivot';
 import { useRequest } from 'ahooks';
 import {
   Alert,
@@ -56,7 +59,14 @@ type IRadioInputComponentProps = {
   setFieldValue: any;
   form: any;
   requestDeviceId: string;
-  requestAfterChange?: any
+  requestAfterChange?: any;
+  queryPivot: typeof queryPivot;
+  queryIrpd: typeof queryIrpd;
+  queryMeterSystem: typeof queryMeterSystem;
+  pivot: any;
+  pivotById: any;
+  irpd: any;
+  meterSystem: any;
 }
 
 const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = (props) => {
@@ -83,18 +93,15 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   const reqGet = useRequest(props.request as any, { manual: true });
   const reqPost = useRequest(props.requestSwapChange as any, { manual: true });
   const reqManual = useRequest(props.requestChange as any, { manual: true });
-  const reqPivots = useRequest(props.requestPivots as any, { manual: true });
-  const reqMeterSystem = useRequest(props.requestMeterSystem as any, { manual: true })
-  const reqIrpds = useRequest(props.requestIrpds as any, { manual: true });
   const reqBase = useRequest(props.requestBase as any, { manual: true })
 
   const { label, status, operable, span, device, deviceType, fieldIndex } = props;
 
   const onOpenCentralModal = React.useCallback(async () => {
     // Step 1. Retrieve farm devices from irpq and pivots 
-    reqPivots.run({ id: params.id as any, });
-    reqIrpds.run({ id: params.id as any, });
-    reqMeterSystem.run({ id: params.id as any, })
+    props.queryPivot({ id: params.id as any, });
+    props.queryIrpd({ id: params.id as any, });
+    props.queryMeterSystem({ id: params.id as any, });
     setIsCentralOpen(true)
     
     // Step 2 join into a datasource for select element
@@ -106,9 +113,9 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
     ]);
   }, [
     params, 
-    reqIrpds, 
-    reqPivots, 
-    reqMeterSystem, 
+    props.queryPivot, 
+    props.queryIrpd, 
+    props.queryMeterSystem, 
     setIsCentralOpen,
      setDropdownDevices
   ])
@@ -261,10 +268,14 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
 
   // Update central radio list
   React.useEffect(() => {
-    if (reqPivots.data && reqIrpds.data && reqMeterSystem.data) {
-      const pivotResults = reqPivots.data as any;
-      const irpdResults = reqIrpds.data as any;
-      const meterResults = reqMeterSystem.data as any;
+    if (
+      props.pivot?.result &&
+      props.meterSystem?.result && 
+      props.irpd?.result
+    ) {
+      const pivotResults = props.pivot.result as any;
+      const irpdResults = props.irpd.result as any;
+      const meterResults = props.meterSystem.result as any;
       const pivotsDatasource = pivotResults.map((r: any) => ({
         label: r.name,
         id: r.id,
@@ -288,7 +299,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       ]);
     }
 
-  }, [reqPivots.data, reqIrpds.data, reqMeterSystem.data]);
+  }, [props.irpd, props.pivot, props.meterSystem]);
 
   return (
     <Col {...span}>
@@ -404,9 +415,9 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
           bordered
           dataSource={dropdownDevices}
           loading={
-            reqIrpds.loading ||
-            reqPivots.loading ||
-            reqMeterSystem.loading
+            props.pivot.loading ||
+            props.irpd.loading ||
+            props.meterSystem.loading
           }
           renderItem={(item, index) => index !== 0 ? (
             <List.Item>

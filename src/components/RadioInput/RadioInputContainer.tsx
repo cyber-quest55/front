@@ -3,6 +3,9 @@ import { PresetStatusColorType } from '@/typings';
 import { Breakpoint } from 'antd';
 import { connect } from 'dva';
 import * as React from 'react';
+import { queryIrpd } from '@/models/irpd';
+import { queryMeterSystem } from '@/models/meter-sysem';
+import { queryPivot } from '@/models/pivot';
 import RadioInputComponent from './RadioInputComponent';
 import RadioInputSkeleton from './RadioInputSkeleton';
 import { Dispatch } from '@umijs/max';
@@ -28,8 +31,15 @@ type IRadioInputContainerProps = {
   name?: string[];
   fieldIndex?: string;
   form: any;
-  requestDeviceId: string,
-  requestAfterChange?: any,
+  requestDeviceId: string;
+  requestAfterChange?: any;
+  queryPivot: typeof queryPivot;
+  queryIrpd: typeof queryIrpd;
+  queryMeterSystem: typeof queryMeterSystem;
+  pivot: any;
+  pivotById: any;
+  irpd: any;
+  meterSystem: any;
 };
 
 const RadioInputContainer: React.FunctionComponent<IRadioInputContainerProps> = (props) => {
@@ -48,13 +58,26 @@ const RadioInputContainer: React.FunctionComponent<IRadioInputContainerProps> = 
   );
 };
 
-const mapStateToProps = ({ pivotById }: any) => ({
+const mapStateToProps = ({
+  pivot,
   pivotById,
+  irpd,
+  meterSystem,
+}: any) => ({
+  pivot,
+  pivotById,
+  irpd,
+  meterSystem
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
-
+  queryPivot: (props: any) => dispatch(queryPivot(props)),
+  queryIrpd: (props: any) => dispatch(queryIrpd(props)),
+  queryMeterSystem: (props: any) => dispatch(queryMeterSystem(props)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RadioInputContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RadioInputContainer);

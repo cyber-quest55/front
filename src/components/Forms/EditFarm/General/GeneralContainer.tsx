@@ -9,7 +9,11 @@ import GeneralSkeleton from './GeneralSkeleton';
 // Type props
 type Props = {
   farmById: GetFarmByIdModelProps;
-  queryFarmById: typeof queryFarmById
+  irpd: any;
+  pivot: any;
+  meterSystem: any;
+  queryFarmById: typeof queryFarmById;
+  
 }
 
 // Component
@@ -35,4 +39,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryFarmById: (props: any) => dispatch(queryFarmById(props)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditFarmGeneralContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditFarmGeneralContainer);
