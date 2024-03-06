@@ -188,7 +188,6 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       valueType: 'text',
       title: 'Rádio',
     },
-
     {
       title: 'Ações',
       valueType: 'option',
@@ -414,6 +413,12 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         <List
           bordered
           dataSource={dropdownDevices}
+          id="transparent-list-scrollbar"
+          style={{
+            maxHeight: '192px',
+            overflowY: 'auto',
+            paddingLeft: '12px',
+          }}
           loading={
             props.pivot.loading ||
             props.irpd.loading ||

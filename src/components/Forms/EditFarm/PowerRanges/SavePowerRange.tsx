@@ -311,10 +311,12 @@ const SavePowerRange = ({
                 disabled
               />
             </Col>
-            <Col xs={24} md={8} xl={8}>   
+            <Col xs={24}  md={8} xl={8}>   
               <ProFormTimePicker
-                fieldProps={{ style: { width: '100%' } }}
                 name={["end"]}
+                fieldProps={{ 
+                  style: { width: '100%' },
+                }}
                 rules={[
                   yupSync,
                   { validator: validateEnd },

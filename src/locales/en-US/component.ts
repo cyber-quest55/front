@@ -763,7 +763,7 @@ export default {
   // Edit farm tabs
   'component.edit.farm.button.save': 'Save',
   'component.edit.farm.general.title': 'General',
-  'component.edit.farm.location.title': 'Location',
+  'component.edit.farm.location.title': 'Farm Location',
   'component.edit.farm.billing.title': 'Billing',
   'component.edit.farm.contact.title': 'Contact',
   'component.edit.farm.powerranges.title': 'Power Ranges',
@@ -778,8 +778,8 @@ export default {
   'component.edit.farm.general.centralradio.label': 'Central radio',
   'component.edit.farm.general.name.label': 'Name',
   'component.edit.farm.general.timezone.label': 'Timezone',
-  'component.edit.farm.general.billing_date.label': 'Billing Date',
-  'component.edit.farm.general.water_billing_date.label': 'Water Billing Date',
+  'component.edit.farm.general.billing_date.label': 'Power billing date',
+  'component.edit.farm.general.water_billing_date.label': 'Water billing date',
   // Location tab
   'component.edit.farm.location.label': 'Farm location',
   'component.edit.farm.location.desc':
