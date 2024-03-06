@@ -23,6 +23,7 @@ type Props = {
   farm: GetFarmByIdModelProps;
   selectedFarm: SelectedFarmModelProps;
   queryFarmById: typeof queryFarmById;
+  connectWebSocket: () => void;
 };
 
 // Component
@@ -35,6 +36,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
 
   // Effects
   useMount(() => {
+    props.connectWebSocket();
     if (!props.farm.loaded) {
       const id = parseInt(params.id as string);
       props.queryFarmById({ id });
@@ -181,6 +183,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  connectWebSocket: () => dispatch({ type: 'socket/connect', payload: {} }),
   queryFarmById: (props: any) => dispatch(queryFarmById(props)),
 });
 

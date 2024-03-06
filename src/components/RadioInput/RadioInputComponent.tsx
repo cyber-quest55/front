@@ -86,6 +86,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
   const [isCentralOpen, setIsCentralOpen] = React.useState(false);
   const [qrReaderEnable, setQrReaderEnable] = React.useState(false);
   const [innerQrReaderEnable, setInnerQrReaderEnable] = React.useState(false);
+  const [counter, setCounter] = React.useState<number>(0);
   const [dropdownDevices, setDropdownDevices] = React.useState([
     {
       label: intl.formatMessage({ id: 'component.radio.modal.base.fields.device.placeholder' }),
@@ -303,6 +304,13 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
 
   }, [props.irpd, props.pivot, props.meterSystem]);
 
+  // Update equipment counter
+  React.useEffect(() => {
+    if (counter > 0) {
+      setTimeout(() => setCounter(prev => prev -1), 1000);
+    }
+  }, [counter]);
+
   return (
     <Col {...span}>
       <Modal
@@ -381,14 +389,30 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
               radio_id: props.form.getFieldValue(props.name)
             }
             try {
-              await reqBase.runAsync({ id: params.id }, payload)
+              // Update base endpoint (WS Update clock trigger)
+              const selectedEquipment = values.send_updates;
+              await reqBase.runAsync({ id: params.id }, payload);
+
+              // Update all equipments
+              if (selectedEquipment === -1) {
+                setCounter((
+                  props.pivot.result.length +
+                  props.irpd.result.length +
+                  props.meterSystem.result.length
+                ) * 6);
+              } else {
+                // Single equipment
+                setCounter(20);
+              }
+
+
               message.success(intl.formatMessage({
                 id: 'component.radio.messages.base.success',
-              }))
+              }));
             } catch (_) {
               message.error(intl.formatMessage({
                 id: 'component.radio.messages.base.error'
-              }))
+              }));
             }
             setLoading(false);
           }}
@@ -416,6 +440,11 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             })}
           </Button>
         </ProForm>
+        {
+          counter > 0 ? (
+            <p>Updating counter: {counter}</p>
+          ) : null
+        }
         <List
           bordered
           dataSource={dropdownDevices}
