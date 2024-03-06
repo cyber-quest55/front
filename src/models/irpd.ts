@@ -3,6 +3,7 @@ import { getIrpds } from '@/services/irpd';
 import { getIrpdColor } from '@/utils/formater/get-irpd-color';
 import { getIrpdStatus } from '@/utils/formater/get-irpd-status';
 import { AxiosError } from 'axios';
+import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetIrpdModelProps {
   result: WaterPumpProps[];
@@ -15,6 +16,20 @@ export const queryIrpd = (payload: API.GetIrpdParams) => {
   return {
     type: 'irpd/queryIrpd',
     payload: payload,
+  };
+};
+
+export const queryIrpdWs = (payload: API.GetIrpdParams) => {
+  return {
+    type: 'irpd/queryIrpdWs',
+    payload: payload,
+  };
+};
+
+export const destroyIrpdWs = () => {
+  return {
+    type: 'irpd/onDestroy',
+    payload: {},
   };
 };
 
@@ -37,6 +52,62 @@ export default {
       } catch (error: any) {
         yield put({ type: 'queryIrpdError', payload: error });
       }
+    },
+    *queryIrpdWs({ payload }: { payload: API.GetIrpdParams }, { call, put }: { call: any; put: any }) {
+      yield put({ type: 'queryIrpdStart' });
+      try {
+        const response: API.GetIrpdResponse = yield call(getIrpds, payload);
+        yield put({ type: 'queryIrpdSuccess', payload: response });
+        yield put({ type: 'irpd/onInit', payload: {} });
+      } catch (error: any) {
+        yield put({ type: 'queryIrpdError', payload: error });
+      }
+    },
+    *onInit({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.irpd);
+      console.log('[irpd ws init]');
+
+      const channels = state.result.map(r => ({
+        title: `d@irpd@${r.id}`,
+        id: state.id,
+        binds: [
+          {
+            callback: ['terst'],
+            event: 'IrpdConfigV5_standard',
+            id: r.id,
+          },
+          {
+            callback: ['terst'],
+            event: 'irpd_config',
+            id: r.id,
+          },
+        ],
+      }));
+      
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({ }, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.irpd);
+      console.log('[irpd ws destroy]');
+
+      const channels = state.result.map(r => ({
+        title: `d@irpd@${r.id}`,
+        id: state.id,
+        binds: [
+          {
+            callback: ['terst'],
+            event: 'IrpdConfigV5_standard',
+            id: r.id,
+          },
+          {
+            callback: ['terst'],
+            event: 'irpd_config',
+            id: r.id,
+          },
+        ],
+      }));
+
+      yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
 

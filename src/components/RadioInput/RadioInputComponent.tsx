@@ -15,9 +15,9 @@ import {
   ProFormSelect
 } from '@ant-design/pro-components';
 import { Request, useParams, useIntl } from '@umijs/max';
-import { queryIrpd } from '@/models/irpd';
-import { queryMeterSystem } from '@/models/meter-sysem';
-import { queryPivot } from '@/models/pivot';
+import { destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
+import { destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
+import { destroyPivotWs, queryPivotWs } from '@/models/pivot';
 import { useRequest } from 'ahooks';
 import {
   Alert,
@@ -60,9 +60,12 @@ type IRadioInputComponentProps = {
   form: any;
   requestDeviceId: string;
   requestAfterChange?: any;
-  queryPivot: typeof queryPivot;
-  queryIrpd: typeof queryIrpd;
-  queryMeterSystem: typeof queryMeterSystem;
+  queryPivotWs: typeof queryPivotWs;
+  destroyPivotWs: typeof destroyPivotWs;
+  queryIrpdWs: typeof queryIrpdWs;
+  destroyIrpdWs: typeof destroyIrpdWs;
+  queryMeterSystemWs: typeof queryMeterSystemWs;
+  destroyMeterSystemWs: typeof destroyMeterSystemWs;
   pivot: any;
   pivotById: any;
   irpd: any;
@@ -99,9 +102,9 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
 
   const onOpenCentralModal = React.useCallback(async () => {
     // Step 1. Retrieve farm devices from irpq and pivots 
-    props.queryPivot({ id: params.id as any, });
-    props.queryIrpd({ id: params.id as any, });
-    props.queryMeterSystem({ id: params.id as any, });
+    props.queryPivotWs({ id: params.id as any, });
+    props.queryIrpdWs({ id: params.id as any, });
+    props.queryMeterSystemWs({ id: params.id as any, });
     setIsCentralOpen(true)
     
     // Step 2 join into a datasource for select element
@@ -113,9 +116,9 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
     ]);
   }, [
     params, 
-    props.queryPivot, 
-    props.queryIrpd, 
-    props.queryMeterSystem, 
+    props.queryPivotWs, 
+    props.queryIrpdWs, 
+    props.queryMeterSystemWs, 
     setIsCentralOpen,
      setDropdownDevices
   ])
@@ -314,6 +317,9 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         open={isCentralOpen}
         destroyOnClose
         onCancel={() => {
+          props.destroyPivotWs();
+          props.destroyIrpdWs();
+          props.destroyMeterSystemWs();
           setIsCentralOpen(false);
         }}
       >
@@ -420,9 +426,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             paddingLeft: '12px',
           }}
           loading={
-            props.pivot.loading ||
-            props.irpd.loading ||
-            props.meterSystem.loading
+            props.pivot.loading
           }
           renderItem={(item, index) => index !== 0 ? (
             <List.Item>

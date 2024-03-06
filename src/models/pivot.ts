@@ -17,6 +17,21 @@ export const queryPivot  = (payload: API.GetPivotByFarmParam) => {
   };
 };
 
+export const queryPivotWs  = (payload: API.GetPivotByFarmParam) => {
+  return {
+    type: 'pivot/queryPivotWs',
+    payload: payload,
+  };
+};
+
+export const destroyPivotWs = () => {
+  return {
+    type: 'pivot/onDestroy',
+    payload: {},
+  };
+}
+
+
 export default {
   namespace: 'pivot',
 
@@ -39,34 +54,72 @@ export default {
         const response:  API.GetPivotByFarmResponse = yield call(getPivots, payload);
 
         yield put({ type: 'queryPivotSuccess', payload: response });
+        
+      } catch (error: any) {
+        yield put({ type: 'queryPivotError', payload: error });
+      }
+    },
+    *queryPivotWs(
+      { payload }: { payload: API.GetPivotByFarmParam },
+      { call, put }: { call: any; put: any },
+    ) {
+      yield put({ type: 'queryPivotStart' });
+
+      try {
+        const response:  API.GetPivotByFarmResponse = yield call(getPivots, payload);
+
+        yield put({ type: 'queryPivotSuccess', payload: response });
+        yield put({ type: 'pivot/onInit', payload: {} })
+        
       } catch (error: any) {
         yield put({ type: 'queryPivotError', payload: error });
       }
     },
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.pivot);
-      console.log('[here with state]', state);
+      console.log('[pivot ws init]');
 
-      const channels = [
-        {
-          title: `d@pivot@${787}`,
-          id: state.id,
-          binds: [
-            {
-              callback: ['terst'],
-              event: 'ControllerConfig_standard',
-              id: state.id,
-            },
-            {
-              callback: ['terst'],
-              event: 'pivot_config',
-              id: state.id,
-            },
-          ],
-        },
-      ];
-
+      const channels = state.result.map(r => ({
+        title: `d@pivot@${r.id}`,
+        id: r.id,
+        binds: [
+          {
+            callback: ['terst'],
+            event: 'ControllerConfig_standard',
+            id: r.id,
+          },
+          {
+            callback: ['terst'],
+            event: 'pivot_config',
+            id: r.id,
+          },
+        ],
+      }));
+      
       yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({ }, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.pivot);
+      console.log('[pivot ws destroy]');
+
+      const channels = state.result.map(r => ({
+        title: `d@pivot@${r.id}`,
+        id: r.id,
+        binds: [
+          {
+            callback: ['terst'],
+            event: 'ControllerConfig_standard',
+            id: r.id,
+          },
+          {
+            callback: ['terst'],
+            event: 'pivot_config',
+            id: r.id,
+          },
+        ],
+      }));
+
+      yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
 

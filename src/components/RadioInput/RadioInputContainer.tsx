@@ -3,9 +3,9 @@ import { PresetStatusColorType } from '@/typings';
 import { Breakpoint } from 'antd';
 import { connect } from 'dva';
 import * as React from 'react';
-import { queryIrpd } from '@/models/irpd';
-import { queryMeterSystem } from '@/models/meter-sysem';
-import { queryPivot } from '@/models/pivot';
+import { destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
+import { destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
+import { destroyPivotWs, queryPivotWs } from '@/models/pivot';
 import RadioInputComponent from './RadioInputComponent';
 import RadioInputSkeleton from './RadioInputSkeleton';
 import { Dispatch } from '@umijs/max';
@@ -33,9 +33,12 @@ type IRadioInputContainerProps = {
   form: any;
   requestDeviceId: string;
   requestAfterChange?: any;
-  queryPivot: typeof queryPivot;
-  queryIrpd: typeof queryIrpd;
-  queryMeterSystem: typeof queryMeterSystem;
+  queryPivotWs: typeof queryPivotWs;
+  destroyPivotWs: typeof destroyPivotWs;
+  queryIrpdWs: typeof queryIrpdWs;
+  destroyIrpdWs: typeof destroyIrpdWs;
+  queryMeterSystemWs: typeof queryMeterSystemWs;
+  destroyMeterSystemWs: typeof destroyMeterSystemWs;
   pivot: any;
   pivotById: any;
   irpd: any;
@@ -72,9 +75,12 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryPivotByIdStart: (props: any) => dispatch(queryPivotByIdStart(props)),
-  queryPivot: (props: any) => dispatch(queryPivot(props)),
-  queryIrpd: (props: any) => dispatch(queryIrpd(props)),
-  queryMeterSystem: (props: any) => dispatch(queryMeterSystem(props)),
+  queryPivotWs: (props: any) => dispatch(queryPivotWs(props)),
+  queryIrpdWs: (props: any) => dispatch(queryIrpdWs(props)),
+  queryMeterSystemWs: (props: any) => dispatch(queryMeterSystemWs(props)),
+  destroyPivotWs: () => dispatch(destroyPivotWs()),
+  destroyIrpdWs: () => dispatch(destroyIrpdWs()),
+  destroyMeterSystemWs: () => dispatch(destroyMeterSystemWs()),
 });
 
 export default connect(

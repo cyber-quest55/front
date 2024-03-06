@@ -34,6 +34,7 @@ import {
 	useState,
 } from 'react';
 import SavePowerRange from './SavePowerRange';
+import dayjs from 'dayjs';
 
 // Component props
 type Props = {
@@ -284,7 +285,7 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 												dataIndex: 'interval',
 												render: (text, record) => (
 													<Typography.Text>
-														{record.start} - {record.end}
+														{dayjs(record.start, 'HH:mm').format('HH:mm')} - {dayjs(record.end, 'HH:mm').format('HH:mm')}
 													</Typography.Text>
 												)
 											},
@@ -295,7 +296,12 @@ const EditFarmPowerRangesComponent: FunctionComponent<Props> = ({
 												dataIndex: 'duration',
 												render: (text, record) => (
 													<Typography.Text>
-														{getTimeDifference(record.end, record.start)}
+														{
+															dayjs(
+																getTimeDifference(record.end, record.start),
+																'HH:mm'
+															).format('HH:mm')
+														}
 													</Typography.Text>
 												)
 											},

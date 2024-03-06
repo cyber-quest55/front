@@ -3,6 +3,7 @@ import { getMeterSystem } from '@/services/metersystem';
 import { getIrpdColor } from '@/utils/formater/get-irpd-color';
 import { getMeterStatus } from '@/utils/formater/get-meter-status';
 import { AxiosError } from 'axios';
+import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetMeterSystemModelProps {
   result: LakeLevelMeterProps[];
@@ -15,6 +16,20 @@ export const queryMeterSystem = (payload: API.GetMeterSystemParams) => {
   return {
     type: 'meterSystem/queryMeterSystem',
     payload: payload,
+  };
+};
+
+export const queryMeterSystemWs = (payload: API.GetMeterSystemParams) => {
+  return {
+    type: 'meterSystem/queryMeterSystemWs',
+    payload: payload,
+  };
+};
+
+export const destroyMeterSystemWs = () => {
+  return {
+    type: 'meterSystem/onDestroy',
+    payload: {},
   };
 };
 
@@ -37,6 +52,52 @@ export default {
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
+    },
+    *queryMeterSystemWs({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
+      yield put({ type: 'queryMeterSystemStart' });
+      try {
+        const response: API.GetMeterSystemResponse = yield call(getMeterSystem, payload);
+        yield put({ type: 'queryMeterSystemSuccess', payload: response });
+        yield put({ type: 'meterSystem/onInit', payload: {} });
+      } catch (error: any) {
+        yield put({ type: 'queryMeterSystemError', payload: error });
+      }
+    },
+    *onInit({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      console.log('[meter system ws init]');
+
+      const channels = state.result.map(r => ({
+        title: `d@imeter@${r.id}`,
+        id: r.id,
+        binds: [
+          {
+            callback: ['terst'],
+            event: 'IMeterConfig_standard',
+            id: state.id,
+          },
+        ],
+      }));
+      
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({ }, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      console.log('[meter system ws destroy]');
+
+      const channels = state.result.map(r => ({
+        title: `d@imeter@${r.id}`,
+        id: r.id,
+        binds: [
+          {
+            callback: ['terst'],
+            event: 'IMeterConfig_standard',
+            id: state.id,
+          },
+        ],
+      }));
+
+      yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
 
