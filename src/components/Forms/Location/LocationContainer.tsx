@@ -25,6 +25,7 @@ interface ILocationFormContainerProps {
   lng?: number;
   layout?: 'vertical' | 'horizontal';
   extra?: any;
+  autoUpdateCenter?: boolean;
 }
 
 const LocationFormContainer: React.FunctionComponent<ILocationFormContainerProps> = (props) => {

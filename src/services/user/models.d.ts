@@ -73,6 +73,46 @@ declare namespace APIModels {
     email: string;
   };
 
+  type FindByUsernameOrEmailPayload = {
+    username_or_email: string;
+  };
+
+  type UserPermissionData = {
+    id: number;
+    irpd?: {
+      id: number,
+      name: string
+    };
+    equipment?: {
+      id: number;
+      type: string;
+      name: string;
+      position: string;
+      created: string;
+      updated: string;
+      farm: number;
+      base: numbe;
+    };
+    level: number;
+    created: string;
+    updated: string;
+    user: string;
+    pivot?: {
+      id: number;
+      name: string;
+      protocol: number;
+      automation_type: number;
+      form_status: boolean;
+      permission_level: number;
+    };
+  }
+
+  type FindAccountData = {
+    user__email: string;
+    user__username: string;
+    full_name: string;
+  };
+
   type PostChangePasswordPayload = {
     current_password: string;
     new_password: string;

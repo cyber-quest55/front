@@ -8,12 +8,13 @@ import {
 } from '@ant-design/pro-components';
 import { LoadScript } from '@react-google-maps/api';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
+import { history, Link} from '@umijs/max';
 import { App } from 'antd';
 import dayjs from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
 import weekday from 'dayjs/plugin/weekday';
 import uniqid from 'uniqid';
+import { socketMiddleware } from './middlewares/socket';
 import defaultSettings from '../config/defaultSettings';
 import Logo from '../public/images/logo/icon-logo-white-192x192.png';
 import FarmSelect from './components/FarmSelect/FarmSelectContainer';
@@ -23,6 +24,7 @@ import ZendeskChat from './components/ZendeskChat';
 import ForbidenPage from './pages/403';
 import NoFoundPage from './pages/404';
 import { errorConfig } from './requestErrorConfig';
+import { io } from 'socket.io-client';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -79,6 +81,7 @@ export async function getInitialState(): Promise<{
 // testing 4
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 const loaderId = uniqid('loader-');
+
 const libraries: Libraries = ['visualization'];
 
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
@@ -105,7 +108,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     siderMenuType: initialState?.collapsed ? 'sub' : 'group',
 
     logo: Logo,
-    breakpoint: 'xs',
+    breakpoint: 'md',
     avatarProps: {
       style: { color: 'rgba(255,255,255,0.75)', padding: 0 },
       src: <UserOutlined />,
@@ -179,6 +182,12 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
   };
 };
+
+export const dva = {
+  config: {
+    onAction: [socketMiddleware(io("http://3.137.182.47:8080", {transports: ['websocket', 'polling', 'flashsocket'], autoConnect: false}))]
+  },
+}
 
 /**
  * @name request 配置，可以配置错误处理

@@ -11,6 +11,58 @@ export async function currentUser(options?: { [key: string]: any }) {
   });
 }
 
+export async function findUserByUsernameOrEmail(options: APIModels.FindByUsernameOrEmailPayload) {
+  return request<API.FindByUsernameOrEmailResponse>('/v3/auth/find/', {
+    method: 'GET',
+    params: options,
+  });
+}
+
+export async function getUserPermissions(options: API.GetUserPermissionsParams) {
+  return request<API.GetUserPermissionsResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/`, {
+      method: 'GET',
+    }
+  );
+}
+
+export async function saveUserPermissions(options: API.SaveUserPermissionsParams) {
+  return request<API.GetUserPermissionsResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/`,
+    {
+      method: 'PUT',
+      data: options.body
+    }
+  )
+}
+
+export async function deleteUserFromFarm(options: API.GetUserPermissionsParams) {
+  return request<API.GetUserPermissionsResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/`, {
+      method: 'DELETE',
+    }
+  );
+}
+
+export async function getUserRole(options: API.GetUserPermissionsParams) {
+  return request<API.GetUserRoleResponse>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/admin/`, {
+      method: 'GET',
+    }
+  );
+}
+
+export async function saveUserRole(options: API.SaveUserRoleParams) {
+  return request<string>(
+    `/v3/farms/${options.farmId}/users/${options.id}/permissions/admin/`, {
+      method: 'PATCH',
+      params: {
+        administrator: options.administrator
+      }
+    }
+  );
+}
+
 export async function getUserInfo(options?: { [key: string]: any }) {
   return request<API.CurrentUserResult>('/v3/auth/user', {
     method: 'GET',

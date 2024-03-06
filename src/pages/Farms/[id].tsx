@@ -12,7 +12,6 @@ import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/p
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import {
   SelectedDeviceModelProps,
-  setDeviceClose,
   setSelectedDevice,
 } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
@@ -20,10 +19,12 @@ import { DeviceType } from '@/utils/enum/device-type';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';
-import { useMount, useUnmount } from 'ahooks';
+import { useMount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { queryRepeater } from '../../models/repeaters';
+import { queryPivot } from '../../models/pivot';
 
 type Props = {
   dispatch?: any;
@@ -38,11 +39,14 @@ type Props = {
   pivotInformation: GetPivotInformationModelProps;
   irpd: GetIrpdModelProps;
   setSelectedDevice: typeof setSelectedDevice;
-  setDeviceClose: typeof setDeviceClose;
   queryFarm: typeof queryFarm;
   queryPivotInformation: typeof queryPivotInformation;
   queryMeterSystem: typeof queryMeterSystem;
   queryIrpd: typeof queryIrpd;
+  queryPivot: typeof queryPivot;
+  queryRepeater: typeof queryRepeater;
+  connectWebsocket: any;
+
 };
 
 const Welcome: FunctionComponent<Props> = (props) => {
@@ -106,8 +110,8 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useMount(() => {
     if (!props.farm.loaded) {
-      const id = parseInt(params.id as string);
-      props.queryFarm({ id });
+      console.log('entrando aqui')
+      props.queryFarm({});
     }
   });
 
@@ -118,24 +122,14 @@ const Welcome: FunctionComponent<Props> = (props) => {
     }
   }, [props.selectedFarm]);
 
-  useUnmount(() => {
-    props.setDeviceClose();
-  });
 
   useEffect(() => {
     if (params.id !== ':id') {
-      props.queryPivotInformation({
-        id: parseInt(params.id as string),
-        params: {},
-      });
-
-      props.queryMeterSystem({
-        id: parseInt(params.id as string),
-      });
-
-      props.queryIrpd({
-        id: parseInt(params.id as string),
-      });
+      props.queryMeterSystem({id: parseInt(params.id as string),});
+      props.queryIrpd({id: parseInt(params.id as string),});
+      props.queryPivot({ id: parseInt(params.id as string) });
+      props.queryRepeater({ id: parseInt(params.id as string) });
+      props.queryPivotInformation({id: parseInt(params.id as string), params: {},});
     }
   }, [params]);
 
@@ -144,6 +138,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
       setActiveKey('3');
     }
   }, [props.selectedDevice]);
+
+  useMount(async () => {
+    props.connectWebsocket()
+  })
 
   const className = useEmotionCss(({}) => {
     return md
@@ -220,10 +218,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
       paddingBlock: 0,
       paddingBlockStart: '0px !important',
     },
-    '.ant-pro-page-container-warp-page-header': { 
+    '.ant-pro-page-container-warp-page-header': {
       display: 'none'
     },
-  
+
     '.ant-page-header-heading': {
       paddingBlockStart: '0px !important',
     },
@@ -319,12 +317,16 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  connectWebsocket: () => dispatch({type: "socket/connect", payload: {}} ),
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
-  setDeviceClose: () => dispatch(setDeviceClose()),
   queryFarm: (props: any) => dispatch(queryFarm(props)),
   queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
   queryMeterSystem: (props: any) => dispatch(queryMeterSystem(props)),
   queryIrpd: (props: any) => dispatch(queryIrpd(props)),
+  queryRepeater: (props: any) => dispatch(queryRepeater(props)),
+  queryPivot: (props: any) => dispatch(queryPivot(props)),
+
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

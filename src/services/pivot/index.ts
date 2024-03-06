@@ -42,7 +42,7 @@ export async function getPivotHistory(
 ) {
   return request<{
     data: API.GetPivotHistoryResponse;
-  }>(`/v3/farms/${props.farmId}/pivots/${props.pivotId}/history/`, {
+  }>(`/v3/farms/${props.farmId}/pivots/${props.deviceId}/history/`, {
     method: 'GET',
     params: options,
   });
@@ -196,7 +196,7 @@ export async function createPivot(
   props: API.CreatePivotParams,
   options: APIModels.CreatePivotPayload,
 ) {
-  return request<{ 
+  return request<{
     data: APIModels.PivotByIdInformation;
   }>(`/farms/${props.farmId}/pivots/`, {
     method: 'POST',
@@ -297,10 +297,13 @@ export async function getPressureComparison(
     current_end_date: string;
   },
 ) {
-  return request<API.GetLastSimpleIrrigation>(`/v3/reports/pivots/${props.pivotId}/pressure_chart/`, {
-    method: 'GET',
-    params: options,
-  });
+  return request<API.GetLastSimpleIrrigation>(
+    `/v3/reports/pivots/${props.pivotId}/pressure_chart/`,
+    {
+      method: 'GET',
+      params: options,
+    },
+  );
 }
 
 export async function patchPivotMaintnanceMode(
@@ -352,4 +355,24 @@ export async function getPivotWaterConsumptionBySegment(props: { pivotId: number
       method: 'GET',
     },
   );
+}
+
+export async function getPivotExcelReport(
+  props: { pivotId: number },
+  options: {
+    date_start: string;
+    date_end: string;
+    kwh_value_p: number;
+    kwh_value_hfp: number;
+    kwh_value_r: number;
+  },
+) {
+  return request<any>(`/v3/reports/pivots/${props.pivotId}/excel/`, {
+    method: 'GET',
+    params: options,
+    headers: {
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Tipo de conteúdo do Excel
+    },
+    responseType: 'blob'
+  });
 }

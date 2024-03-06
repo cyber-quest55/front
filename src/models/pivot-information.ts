@@ -93,7 +93,7 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: API.GetPivotsInformationResponse },
     ) {
-      const mapper: CirclePivotProps[] = [];
+      const mapper: any[] = [];
 
       /**
        * Observações:
@@ -232,6 +232,7 @@ export default {
           name: item.name,
           statusText: statusText,
           onSelect: () => null,
+          mapHistory: item.map_history,
         });
       }
 

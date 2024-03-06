@@ -29,6 +29,7 @@ export default {
   effects: {
     *setSelectedFarm({ payload }: { payload: any }, { put }: { put: any }) {
       yield put({ type: 'setSelectedFarmDefinition', payload: payload });
+      yield put({ type: 'selectedDevice/setDeviceClose', payload: {} });
     },
   },
 

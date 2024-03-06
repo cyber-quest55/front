@@ -9,7 +9,7 @@ import { Dispatch } from '@umijs/max';
 import { queryPivotByIdStart } from '@/models/pivot-by-id';
 type ColSpanType = number | string;
 
-interface IRadioInputContainerProps {
+type IRadioInputContainerProps = {
   label: string;
   setFieldValue: any;
   status: PresetStatusColorType;
@@ -20,13 +20,17 @@ interface IRadioInputContainerProps {
   request?: any;
   requestSwapChange?: any;
   requestChange?: any;
+  requestPivots?: any;
+  requestIrpds?: any;
+  requestMeterSystem?: any;
+  requestBase?: any;
   deviceId: string;
   name?: string[];
   fieldIndex?: string;
   form: any;
   requestDeviceId: string,
   requestAfterChange?: any,
-}
+};
 
 const RadioInputContainer: React.FunctionComponent<IRadioInputContainerProps> = (props) => {
   const { xs } = useScreenHook();

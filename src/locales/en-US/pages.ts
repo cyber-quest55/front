@@ -59,4 +59,14 @@ export default {
   'pages.notifications.tab.pivotmonitor': 'Pivot Monitor',
   'pages.notifications.tab.irpd': 'Pump',
   'pages.notifications.breadcrumb.title': 'Notifications',
+  'pages.edit.farm.tab.header.title': 'Farm Data',
+  'pages.edit.farm.tab.options.general': 'General',
+  'pages.edit.farm.tab.options.location': 'Location',
+  'pages.edit.farm.tab.options.billing': 'Billing',
+  'pages.edit.farm.tab.options.contact': 'Contact',
+  'pages.edit.farm.tab.options.powerranges': 'Power Ranges',
+  'pages.edit.farm.tab.options.pivotreports': 'Pivot Reports',
+  'pages.edit.farm.tab.options.pumpreports': 'Pump Reports',
+  'pages.edit.farm.tab.options.holidays': 'Holidays',
+  'pages.edit.farm.tab.options.users': 'Users'
  };

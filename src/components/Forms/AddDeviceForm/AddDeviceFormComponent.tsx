@@ -16,6 +16,7 @@ import PivotForm from './Forms/PivotForm';
 import PivotMonitorForm from './Forms/PivotMonitor';
 import RepeaterForm from './Forms/RepeaterForm';
 import { queryPivot } from '@/models/pivot';
+import WeatherStationForm from './Forms/WeatherStationForm';
 
 interface AddDeviceFormComponentProps {
   queryPivotInformation: typeof queryPivotInformation;
@@ -34,6 +35,7 @@ enum Equipment {
   Pump,
   Repeater,
   MeterSystem,
+  WeatherStation
 }
 
 const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) => {
@@ -51,6 +53,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
   const [irpdForm] = Form.useForm<any>();
   const [meterSystemForm] = Form.useForm<any>();
   const [repeaterForm] = Form.useForm<any>();
+  const [weatherStationForm] = Form.useForm<any>();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [showModalForm, setShowModalForm] = React.useState<boolean>(false);
   const intl = useIntl();
@@ -117,6 +120,8 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
           repeaterForm.submit();
         } else if (step !== 0 && form.getFieldValue('device') === Equipment.MeterSystem) {
           meterSystemForm.submit();
+        } else if (step !== 0 && form.getFieldValue('device') === Equipment.WeatherStation) {
+          weatherStationForm.submit();
         }
       }}
       modalProps={{
@@ -255,6 +260,23 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                   value={Equipment.MeterSystem}
                 />
               </Col>
+              <Col xs={24} sm={12}>
+                <CheckCard
+                  style={{ width: '100%' }}
+                  title={intl.formatMessage({
+                    id: 'component.adddevice.modal.form.step1.weatherstation.title',
+                  })}
+                  avatar={
+                    <Avatar
+                      shape="square"
+                      src="/images/devices/device-4.svg"
+                      style={{ width: 44 / 1.2, height: 95 / 1.2 }}
+                    />
+                  }
+                  description="lorem impsum dorem mackial oggyir mistake dore"
+                  value={Equipment.WeatherStation}
+                />
+              </Col>
             </Row>
           </CheckCard.Group>
         </Form.Item>
@@ -314,6 +336,12 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
                 closeModalForm={closeModalForm}
                 queryMeterSystem={props.queryMeterSystem}
                 location={props.location}
+              />
+            ) : form.getFieldValue('device') === Equipment.WeatherStation ? (
+              <WeatherStationForm
+                form={weatherStationForm}
+                setLoading={setLoading}
+                closeModalForm={closeModalForm}
               />
             ) : null;
           }}

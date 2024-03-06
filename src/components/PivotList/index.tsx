@@ -31,7 +31,7 @@ import {
   Tooltip,
   Typography,
 } from 'antd';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BsCloudRainFill } from 'react-icons/bs';
 import { Marker, StaticGoogleMap } from 'react-static-google-map';
 import { connect } from 'umi';
@@ -114,12 +114,12 @@ const PivotList: React.FC<Props> = (props) => {
       },
     };
   });
-
+ /**
   useEffect(() => {
     props.queryPivot({ id: parseInt(params.id as string) });
     props.queryRepeater({ id: parseInt(params.id as string) });
   }, [params]);
-
+*/
   const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
     const farmId = parseInt(params.id as string);
     if (farmId)
@@ -321,7 +321,7 @@ const PivotList: React.FC<Props> = (props) => {
     {
       key: '1',
       label: (
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+        <a target="_blank" rel="noopener noreferrer" href={`/farms/${params.id}/edit`}>
           Editar Fazenda
         </a>
       ),
@@ -432,9 +432,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  queryPivot: (props: any) => dispatch(queryPivot(props)),
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
-  queryRepeater: (props: any) => dispatch(queryRepeater(props)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PivotList);
