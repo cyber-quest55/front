@@ -17,7 +17,7 @@ import {
 import { Request, useParams, useIntl } from '@umijs/max';
 import { GetIrpdModelProps, destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
 import { GetMeterSystemModelProps, destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
-import pivot, { GetPivotModelProps, destroyPivotWs, queryPivotWs } from '@/models/pivot';
+import { GetPivotModelProps, destroyPivotWs, queryPivotWs } from '@/models/pivot';
 import { useRequest } from 'ahooks';
 import {
   Alert,
@@ -92,6 +92,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
     {
       label: intl.formatMessage({ id: 'component.radio.modal.base.fields.device.placeholder' }),
       value: -1,
+      type: '',
     }
   ]);
   const [wsStatus, setWsStatus] = React.useState<{
@@ -338,14 +339,17 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       const pivotsDatasource = pivotResults.map((r: any) => ({
         label: r.name,
         value: r.id,
+        type: 'pivot',
       }))
       const irpdDatasource = irpdResults.map((r: any) => ({
         label: r.name,
         value: r.id,
+        type: 'irpd',
       }))
       const meterDatasource = meterResults.map((r: any) => ({
         label: r.name,
         value: r.id,
+        type: 'meterSystem'
       }))
       setDropdownDevices([
         {
@@ -545,18 +549,19 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
               actions={
                 wsStatus.some(s => (
                   s.id === item.value &&
-                  s.status !== 0
+                  s.status !== 0 &&
+                  s.type === item.type
                 )) ? [
                   <Tooltip
                     key="tooltip_status"
                     title={getEquipmentStatusLabel(
-                      wsStatus.find(s => s.id === item.value)!.status
+                      wsStatus.find(s => (s.id === item.value && s.type === item.type))!.status
                     )}
                   >
                     <Badge
                       status={
                         getEquipmentStatus(
-                          wsStatus.find(s => s.id === item.value)!.status
+                          wsStatus.find(s => (s.id === item.value && s.type === item.type))!.status
                         )
                       }
                     />
