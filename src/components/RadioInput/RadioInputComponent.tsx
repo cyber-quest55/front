@@ -15,9 +15,9 @@ import {
   ProFormSelect
 } from '@ant-design/pro-components';
 import { Request, useParams, useIntl } from '@umijs/max';
-import { destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
-import { destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
-import { destroyPivotWs, queryPivotWs } from '@/models/pivot';
+import { GetIrpdModelProps, destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
+import { GetMeterSystemModelProps, destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
+import { GetPivotModelProps, destroyPivotWs, queryPivotWs } from '@/models/pivot';
 import { useRequest } from 'ahooks';
 import {
   Alert,
@@ -36,6 +36,7 @@ import {
 import { CloseOutline, RedoOutline } from 'antd-mobile-icons';
 import * as React from 'react';
 import QRCodeScannerContainer from '../QRCode/QRCodeContainer';
+import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 
 type ColSpanType = number | string;
 
@@ -66,10 +67,10 @@ type IRadioInputComponentProps = {
   destroyIrpdWs: typeof destroyIrpdWs;
   queryMeterSystemWs: typeof queryMeterSystemWs;
   destroyMeterSystemWs: typeof destroyMeterSystemWs;
-  pivot: any;
-  pivotById: any;
-  irpd: any;
-  meterSystem: any;
+  pivot: GetPivotModelProps;
+  pivotById: GetPivotByIdModelProps;
+  irpd: GetIrpdModelProps;
+  meterSystem: GetMeterSystemModelProps;
 }
 
 const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = (props) => {

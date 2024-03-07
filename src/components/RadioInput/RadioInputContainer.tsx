@@ -3,13 +3,13 @@ import { PresetStatusColorType } from '@/typings';
 import { Breakpoint } from 'antd';
 import { connect } from 'dva';
 import * as React from 'react';
-import { destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
-import { destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
-import { destroyPivotWs, queryPivotWs } from '@/models/pivot';
+import { GetIrpdModelProps, destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
+import { GetMeterSystemModelProps, destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
+import { GetPivotModelProps, destroyPivotWs, queryPivotWs } from '@/models/pivot';
 import RadioInputComponent from './RadioInputComponent';
 import RadioInputSkeleton from './RadioInputSkeleton';
 import { Dispatch } from '@umijs/max';
-import { queryPivotByIdStart } from '@/models/pivot-by-id';
+import { GetPivotByIdModelProps, queryPivotByIdStart } from '@/models/pivot-by-id';
 type ColSpanType = number | string;
 
 type IRadioInputContainerProps = {
@@ -39,10 +39,10 @@ type IRadioInputContainerProps = {
   destroyIrpdWs: typeof destroyIrpdWs;
   queryMeterSystemWs: typeof queryMeterSystemWs;
   destroyMeterSystemWs: typeof destroyMeterSystemWs;
-  pivot: any;
-  pivotById: any;
-  irpd: any;
-  meterSystem: any;
+  pivot: GetPivotModelProps;
+  pivotById: GetPivotByIdModelProps;
+  irpd: GetIrpdModelProps;
+  meterSystem: GetMeterSystemModelProps;
 };
 
 const RadioInputContainer: React.FunctionComponent<IRadioInputContainerProps> = (props) => {
