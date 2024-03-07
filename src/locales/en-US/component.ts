@@ -784,6 +784,7 @@ export default {
   'component.edit.farm.general.status.sent': 'Sent',
   'component.edit.farm.general.status.error': 'Error',
   'component.edit.farm.general.status.waiting': 'Waiting',
+  'component.edit.farm.general.waiting.label': 'Waiting for device(s) response: {value} seconds remaining.',
   // Location tab
   'component.edit.farm.location.label': 'Farm location',
   'component.edit.farm.location.desc':

@@ -529,7 +529,13 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
         </ProForm>
         {
           counter > 0 ? (
-            <p>Updating counter: {counter}</p>
+            <Typography.Paragraph>
+              {
+                intl.formatMessage({
+                  id: 'component.edit.farm.general.waiting.label',
+                }, { value: counter })
+              }
+            </Typography.Paragraph>
           ) : null
         }
         <List
