@@ -6,14 +6,14 @@ import { AxiosError } from 'axios';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetIrpdModelProps {
-  status: {
-    id: number;
-    status: number;
-  }[];
   result: WaterPumpProps[];
   loading: boolean;
   loaded: boolean;
   error: any;
+  status: {
+    id: number;
+    status: number;
+  }[];
 }
 
 export const queryIrpd = (payload: API.GetIrpdParams) => {
@@ -46,7 +46,7 @@ export default {
     loaded: false,
     loading: true,
     error: {},
-  },
+  } as GetIrpdModelProps,
 
   effects: {
     *queryIrpd({ payload }: { payload: API.GetIrpdParams }, { call, put }: { call: any; put: any }) {
@@ -67,7 +67,7 @@ export default {
         yield put({ type: 'irpd/onInit', payload: {} });
         yield put({ type: 'setWsStatus', payload: response.map(r => ({
           id: r.id,
-          status: WkModels.BaseRadioMessageStatus.NOT_SENT,
+          status: 0,
         }))});
       } catch (error: any) {
         yield put({ type: 'queryIrpdError', payload: error });
@@ -175,7 +175,7 @@ export default {
           if (s.id === payload.irpd) {
             return {
               id: s.id,
-              status: WkModels.BaseRadioMessageStatus.ERROR,
+              status: 3,
             }
           }
           return s;
@@ -207,12 +207,12 @@ export default {
     ) {
       // Delivery or Sent status
       const newStatus = state.status.map(s => {
-        if (s.id === payload.pivot) {
+        if (s.id === payload.irpd) {
           return {
             id: s.id,
             status: payload.received
-              ? WkModels.BaseRadioMessageStatus.DELIVERED
-              : WkModels.BaseRadioMessageStatus.SENT,
+              ? 2
+              : 1,
           }
         }
         return s;

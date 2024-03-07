@@ -17,7 +17,7 @@ import {
 import { Request, useParams, useIntl } from '@umijs/max';
 import { GetIrpdModelProps, destroyIrpdWs, queryIrpdWs } from '@/models/irpd';
 import { GetMeterSystemModelProps, destroyMeterSystemWs, queryMeterSystemWs } from '@/models/meter-sysem';
-import { GetPivotModelProps, destroyPivotWs, queryPivotWs } from '@/models/pivot';
+import pivot, { GetPivotModelProps, destroyPivotWs, queryPivotWs } from '@/models/pivot';
 import { useRequest } from 'ahooks';
 import {
   Alert,
@@ -93,7 +93,12 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       label: intl.formatMessage({ id: 'component.radio.modal.base.fields.device.placeholder' }),
       value: -1,
     }
-  ])
+  ]);
+  const [wsStatus, setWsStatus] = React.useState<{
+    id: number;
+    status: number;
+    type: string;
+  }[]>([]);
 
   const reqGet = useRequest(props.request as any, { manual: true });
   const reqPost = useRequest(props.requestSwapChange as any, { manual: true });
@@ -270,6 +275,56 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
     },
   ];
 
+  // Helpers
+  const getEquipmentStatusLabel = React.useCallback((status: number) => {
+    switch (status) {
+      case 2:
+        return intl.formatMessage({
+          id: 'component.edit.farm.general.status.delivered',
+        });
+
+      case 3:
+        return intl.formatMessage({
+          id: 'component.edit.farm.general.status.error',
+        });
+      
+      case 1:
+        return intl.formatMessage({
+          id: 'component.edit.farm.general.status.sent',
+        });
+
+      case -1:
+        return intl.formatMessage({
+          id: 'component.edit.farm.general.status.waiting',
+        });
+
+      default:
+        return intl.formatMessage({
+          id: 'component.edit.farm.general.status.waiting',
+        });
+
+    }
+  }, [intl])
+
+  const getEquipmentStatus = React.useCallback((status: number) => {
+    switch (status) {
+      case 2:
+        return "success";
+
+      case 3:
+        return "error";
+      
+      case 1:
+        return "warning";
+
+      case -1:
+        return "processing";
+
+      default:
+        return "default";
+    }
+  }, [])
+
   // Update central radio list
   React.useEffect(() => {
     if (
@@ -282,15 +337,15 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       const meterResults = props.meterSystem.result as any;
       const pivotsDatasource = pivotResults.map((r: any) => ({
         label: r.name,
-        id: r.id,
+        value: r.id,
       }))
       const irpdDatasource = irpdResults.map((r: any) => ({
         label: r.name,
-        id: r.id,
+        value: r.id,
       }))
       const meterDatasource = meterResults.map((r: any) => ({
         label: r.name,
-        id: r.id,
+        value: r.id,
       }))
       setDropdownDevices([
         {
@@ -304,6 +359,33 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
     }
 
   }, [props.irpd, props.pivot, props.meterSystem]);
+
+  React.useEffect(() => {
+    const pivotsMapped = props.pivot.status.map(s => ({
+      id: s.id,
+      status: s.status,
+      type: 'pivot',
+    }));
+    const irpdMapped = props.pivot.status.map(s => ({
+      id: s.id,
+      status: s.status,
+      type: 'irpd',
+    }));
+    const meterSystemMapped = props.pivot.status.map(s => ({
+      id: s.id,
+      status: s.status,
+      type: 'meterSystem',
+    }));
+    setWsStatus([
+      ...pivotsMapped,
+      ...irpdMapped,
+      ...meterSystemMapped,
+    ]);
+  }, [
+    props.pivot.status,
+    props.irpd.status,
+    props.meterSystem.status,
+  ]);
 
   // Update equipment counter
   React.useEffect(() => {
@@ -330,6 +412,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
           props.destroyIrpdWs();
           props.destroyMeterSystemWs();
           setIsCentralOpen(false);
+          setWsStatus([]);
         }}
       >
         <ProCard
@@ -458,10 +541,30 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
             props.pivot.loading
           }
           renderItem={(item, index) => index !== 0 ? (
-            <List.Item>
-              <Typography.Text>
-                {item.label}
-              </Typography.Text>
+            <List.Item
+              actions={
+                wsStatus.some(s => (
+                  s.id === item.value &&
+                  s.status !== 0
+                )) ? [
+                  <Tooltip
+                    key="tooltip_status"
+                    title={getEquipmentStatusLabel(
+                      wsStatus.find(s => s.id === item.value)!.status
+                    )}
+                  >
+                    <Badge
+                      status={
+                        getEquipmentStatus(
+                          wsStatus.find(s => s.id === item.value)!.status
+                        )
+                      }
+                    />
+                  </Tooltip>
+                ] : []
+              }
+            >
+              <Typography.Text>{item.label}</Typography.Text>
             </List.Item>
           ) : <></>}
         />

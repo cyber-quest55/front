@@ -780,6 +780,10 @@ export default {
   'component.edit.farm.general.timezone.label': 'Timezone',
   'component.edit.farm.general.billing_date.label': 'Power billing date',
   'component.edit.farm.general.water_billing_date.label': 'Water billing date',
+  'component.edit.farm.general.status.delivered': 'Delivered',
+  'component.edit.farm.general.status.sent': 'Sent',
+  'component.edit.farm.general.status.error': 'Error',
+  'component.edit.farm.general.status.waiting': 'Waiting',
   // Location tab
   'component.edit.farm.location.label': 'Farm location',
   'component.edit.farm.location.desc':

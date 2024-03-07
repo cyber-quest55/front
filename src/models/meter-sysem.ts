@@ -46,7 +46,7 @@ export default {
     loaded: false,
     loading: true,
     error: {},
-  },
+  } as GetMeterSystemModelProps,
 
   effects: {
     *queryMeterSystem({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
@@ -67,7 +67,7 @@ export default {
         yield put({ type: 'meterSystem/onInit', payload: {} });
         yield put({ type: 'setWsStatus', payload: response.map(r => ({
           id: r.id,
-          status: WkModels.BaseRadioMessageStatus.NOT_SENT,
+          status: 0,
         }))});
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemError', payload: error });
@@ -169,7 +169,7 @@ export default {
           if (s.id === payload.equipment) {
             return {
               id: s.id,
-              status: WkModels.BaseRadioMessageStatus.ERROR,
+              status: 3,
             }
           }
           return s;

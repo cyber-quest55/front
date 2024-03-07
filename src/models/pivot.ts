@@ -3,15 +3,15 @@ import { AxiosError } from 'axios';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetPivotModelProps {
-  status: {
-    id: number;
-    status: number;
-  }[];
   result: API.GetPivotByFarmResponse;
   loading: boolean;
   loaded: boolean;
   selectedPivot: any;
   error: any;
+  status: {
+    id: number;
+    status: number;
+  }[];
 }
 
 export const queryPivot  = (payload: API.GetPivotByFarmParam) => {
@@ -44,7 +44,7 @@ export default {
     loading: true,
     selectedPivot: {},
     error: {},
-  },
+  } as GetPivotModelProps,
   effects: {
     *queryPivot(
       { payload }: { payload: API.GetPivotByFarmParam },
@@ -69,13 +69,13 @@ export default {
       yield put({ type: 'queryPivotStart' });
 
       try {
-        const response:  API.GetPivotByFarmResponse = yield call(getPivots, payload);
+        const response: API.GetPivotByFarmResponse = yield call(getPivots, payload);
 
         yield put({ type: 'queryPivotSuccess', payload: response });
         yield put({ type: 'pivot/onInit', payload: {} });
         yield put({ type: 'setWsStatus', payload: response.map(r => ({
           id: r.id,
-          status: WkModels.BaseRadioMessageStatus.NOT_SENT,
+          status: 0,
         }))});
         
       } catch (error: any) {
@@ -149,6 +149,7 @@ export default {
         result: payload,
         selectedPivot: payload[0],
         error: {},
+        status: [],
       };
     },
     setSelectedPivot(state: GetPivotModelProps, { payload }: { payload: any }) {
@@ -168,7 +169,7 @@ export default {
           if (s.id === payload.equipment) {
             return {
               id: s.id,
-              status: WkModels.BaseRadioMessageStatus.ERROR,
+              status: 3,
             }
           }
           return s;
@@ -210,8 +211,8 @@ export default {
           return {
             id: s.id,
             status: payload.received
-              ? WkModels.BaseRadioMessageStatus.DELIVERED
-              : WkModels.BaseRadioMessageStatus.SENT,
+              ? 2
+              : 1,
           }
         }
         return s;

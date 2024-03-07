@@ -1037,14 +1037,6 @@ declare namespace APIModels {
 
 declare namespace WkModels {
   /* Start of central radio update clock WS */
-  enum BaseRadioMessageStatus {
-    WAITING = -1,
-    NOT_SENT = 0,
-    SENT = 1,
-    DELIVERED = 2,
-    ERROR = 3,
-  }
-
   type MeterSystemStandardCallbackPayload  = {
     id: number;
     uuid: string;
