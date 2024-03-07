@@ -75,48 +75,43 @@ export default {
     },
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
-      console.log('[irpd ws init]');
-
       const channels = state.result.map(r => ({
         title: `d@irpd@${r.id}`,
-        id: state.id,
+        id: `@EditFarm_irpd${r.id}`,
         binds: [
           {
             callback: ['irpd/wsIrpdStandardCallback'],
             event: 'IrpdConfigV5_standard',
-            id: r.id,
+            id: `@EditFarm_irpd${r.id}`,
           },
           {
             callback: ['irpd/wsIrpdConfigCallback'],
             event: 'irpd_config',
-            id: r.id,
+            id: `@EditFarm_irpd${r.id}`,
           },
         ],
       }));
-      
       yield getSocketBinds(channels, put, 'subscribe');
     },
     *onDestroy({ }, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
-      console.log('[irpd ws destroy]');
-
       const channels = state.result.map(r => ({
         title: `d@irpd@${r.id}`,
-        id: state.id,
+        id: `@EditFarm_irpd${r.id}`,
         binds: [
           {
             callback: ['irpd/wsIrpdStandardCallback'],
             event: 'IrpdConfigV5_standard',
-            id: r.id,
+            id: `@EditFarm_irpd${r.id}`,
           },
           {
             callback: ['irpd/wsIrpdConfigCallback'],
             event: 'irpd_config',
-            id: r.id,
+            id: `@EditFarm_irpd${r.id}`,
           },
         ],
       }));
-
+      yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
@@ -171,16 +166,18 @@ export default {
     },
     // Web sockets reducers
     wsIrpdStandardCallback(
+      state: GetIrpdModelProps,
       { payload }: { payload: WkModels.IrpdStandardCallbackPayload },
-      { put }: { put: any; call: any; select: any },
     ) {
-      console.log('[WS Irpd standard callback]', payload, put);
+      console.log('[WS Irpd standard callback]', payload);
+      return state;
     },
     wsIrpdConfigCallback(
+      state: GetIrpdModelProps,
       { payload }: { payload: WkModels.IrpdConfigCallbackPayload },
-      { put }: { put: any; call: any; select: any },
     ) {
-      console.log('[WS Irpd config callback]', payload, put);
+      console.log('[WS Irpd config callback]', payload);
+      return state;
     },
     setWsStatus(
       state: GetIrpdModelProps,

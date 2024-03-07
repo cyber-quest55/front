@@ -13,14 +13,11 @@ export const socketMiddleware = (socket: Socket) => (params: Params) => (next: a
   switch (type) {
     case 'socket/connect': {
       socket.connect();
-
-      socket.on('connect', () => {
-      });
-
-      socket.on('disconnect', () => {
-      });
+      socket.on('connect', () => {});
+      socket.on('disconnect', () => {});
       break;
     }
+
     case 'socket/subscribe': {
       socket.emit('subscribe', { channel: payload.channel });
       channelMap[payload.id] = payload.channel;
@@ -29,7 +26,6 @@ export const socketMiddleware = (socket: Socket) => (params: Params) => (next: a
 
     case 'socket/unsubscribe': {
       socket.emit('unsubscribe', { channel: payload.channel });
-
       delete channelMap[payload.id];
       break;
     }
@@ -37,7 +33,7 @@ export const socketMiddleware = (socket: Socket) => (params: Params) => (next: a
     case 'socket/bind': {
       const cnh = channelMap[payload.id];
       socket.on(`${cnh}_${payload.event}`, (data: any) => {
-        payload.callback?.map(item => dispatch({ type: item, payload: data }))
+        payload.callback?.map(item => dispatch({ type: item, payload: data }));
       });
       break;
     }
@@ -47,15 +43,16 @@ export const socketMiddleware = (socket: Socket) => (params: Params) => (next: a
       socket.off(`${cnh2}_${payload.event}`);
       break;
     }
+
     case 'socket/disconnect': {
       socket.disconnect();
       break;
     }
-    default:{
 
+    default: {
         break;
-}
+    }
   }
-  return next(action);
 
+  return next(action);
 };

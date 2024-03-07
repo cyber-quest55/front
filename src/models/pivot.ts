@@ -33,12 +33,10 @@ export const destroyPivotWs = () => {
     type: 'pivot/onDestroy',
     payload: {},
   };
-}
-
+};
 
 export default {
   namespace: 'pivot',
-
   state: {
     result: [],
     status: [],
@@ -47,7 +45,6 @@ export default {
     selectedPivot: {},
     error: {},
   },
-
   effects: {
     *queryPivot(
       { payload }: { payload: API.GetPivotByFarmParam },
@@ -87,53 +84,46 @@ export default {
     },
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.pivot);
-      console.log('[pivot ws init]');
-
       const channels = state.result.map(r => ({
         title: `d@pivot@${r.id}`,
-        id: r.id,
+        id: `@EditFarm_pivot${r.id}`,
         binds: [
           {
-            callback: ['wsPivotStandardCallback'],
+            callback: ['pivot/wsPivotStandardCallback'],
             event: 'ControllerConfig_standard',
-            id: r.id,
+            id: `@EditFarm_pivot${r.id}`,
           },
           {
-            callback: ['wsPivotConfigCallback'],
+            callback: ['pivot/wsPivotConfigCallback'],
             event: 'pivot_config',
-            id: r.id,
+            id: `@EditFarm_pivot${r.id}`,
           },
         ],
       }));
-      
       yield getSocketBinds(channels, put, 'subscribe');
     },
     *onDestroy({ }, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.pivot);
-      console.log('[pivot ws destroy]');
-
       const channels = state.result.map(r => ({
         title: `d@pivot@${r.id}`,
-        id: r.id,
+        id: `@EditFarm_pivot${r.id}`,
         binds: [
           {
             callback: ['wsPivotStandardCallback'],
             event: 'ControllerConfig_standard',
-            id: r.id,
+            id: `@EditFarm_pivot${r.id}`,
           },
           {
             callback: ['wsPivotConfigCallback'],
             event: 'pivot_config',
-            id: r.id,
+            id: `@EditFarm_pivot${r.id}`,
           },
         ],
       }));
-
-      yield put({ type: 'setWsStatus', payload: [] })
+      yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
-
   reducers: {
     queryPivotError(state: GetPivotModelProps, { payload }: { payload: AxiosError }) {
       return {
@@ -152,8 +142,6 @@ export default {
       state: GetPivotModelProps,
       { payload }: { payload: API.GetPivotByFarmResponse },
     ) {
-
-
       return {
         ...state,
         loading: false,
@@ -171,16 +159,67 @@ export default {
     },
     // Web sockets reducers
     wsPivotStandardCallback(
+      state: GetPivotModelProps,
       { payload }: { payload: WkModels.PivotStandardCallbackPayload },
-      { put }: { put: any; call: any; select: any },
     ) {
-      console.log('[WS Pivot standard callback]', payload, put);
+      // Communication error status
+      if (payload.message_error) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.equipment) {
+            return {
+              id: s.id,
+              status: WkModels.BaseRadioMessageStatus.ERROR,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+
+      // Web socket incoming status
+      const item = state.status.find(s => s.id = payload.equipment);
+      if (item && item.status < payload.message_status) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.equipment) {
+            return {
+              id: s.id,
+              status: payload.message_status,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+
+      // Default return
+      return state;
     },
     wsPivotConfigCallback(
+      state: GetPivotModelProps,
       { payload }: { payload: WkModels.PivotConfigCallbackPayload },
-      { put }: { put: any; call: any; select: any },
     ) {
-      console.log('[WS Pivot config callback]', payload, put, payload.delivered);
+      // Delivery or Sent status
+      const newStatus = state.status.map(s => {
+        if (s.id === payload.pivot) {
+          return {
+            id: s.id,
+            status: payload.received
+              ? WkModels.BaseRadioMessageStatus.DELIVERED
+              : WkModels.BaseRadioMessageStatus.SENT,
+          }
+        }
+        return s;
+      })
+      return { 
+        ...state, 
+        status: newStatus
+      };
     },
     setWsStatus(
       state: GetPivotModelProps,

@@ -75,38 +75,33 @@ export default {
     },
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
-      console.log('[meter system ws init]');
-
       const channels = state.result.map(r => ({
         title: `d@imeter@${r.id}`,
-        id: r.id,
+        id: `@EditFarm_metersystem${r.id}`,
         binds: [
           {
             callback: ['meterSystem/wsMeterSystemStandardCallback'],
             event: 'IMeterConfig_standard',
-            id: state.id,
+            id: `@EditFarm_metersystem${r.id}`,
           },
         ],
       }));
-      
       yield getSocketBinds(channels, put, 'subscribe');
     },
     *onDestroy({ }, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
-      console.log('[meter system ws destroy]');
-
       const channels = state.result.map(r => ({
         title: `d@imeter@${r.id}`,
-        id: r.id,
+        id: `@EditFarm_metersystem${r.id}`,
         binds: [
           {
             callback: ['meterSystem/wsMeterSystemStandardCallback'],
             event: 'IMeterConfig_standard',
-            id: state.id,
+            id: `@EditFarm_metersystem${r.id}`,
           },
         ],
       }));
-
+      yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
@@ -165,10 +160,11 @@ export default {
     },
     // Web sockets reducers
     wsMeterSystemStandardCallback(
+      state: GetMeterSystemModelProps,
       { payload }: { payload: WkModels.MeterSystemStandardCallbackPayload },
-      { put }: { put: any; call: any; select: any },
     ) {
-      console.log('[WS MeterSystem standard callback]', payload, put);
+      console.log('[WS MeterSystem standard callback]', payload);
+      return state;
     },
     setWsStatus(
       state: GetMeterSystemModelProps,
