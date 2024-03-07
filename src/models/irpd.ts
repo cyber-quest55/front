@@ -169,15 +169,58 @@ export default {
       state: GetIrpdModelProps,
       { payload }: { payload: WkModels.IrpdStandardCallbackPayload },
     ) {
-      console.log('[WS Irpd standard callback]', payload);
-      return state;
+      // Communication error status
+      if (payload.message_error) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.irpd) {
+            return {
+              id: s.id,
+              status: WkModels.BaseRadioMessageStatus.ERROR,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+
+      // Web socket incoming status
+      const newStatus = state.status.map(s => {
+        if (s.id === payload.irpd) {
+          return {
+            id: s.id,
+            status: payload.message_status,
+          }
+        }
+        return s;
+      })
+      return { 
+        ...state, 
+        status: newStatus
+      };
     },
     wsIrpdConfigCallback(
       state: GetIrpdModelProps,
       { payload }: { payload: WkModels.IrpdConfigCallbackPayload },
     ) {
-      console.log('[WS Irpd config callback]', payload);
-      return state;
+      // Delivery or Sent status
+      const newStatus = state.status.map(s => {
+        if (s.id === payload.pivot) {
+          return {
+            id: s.id,
+            status: payload.received
+              ? WkModels.BaseRadioMessageStatus.DELIVERED
+              : WkModels.BaseRadioMessageStatus.SENT,
+          }
+        }
+        return s;
+      })
+      return { 
+        ...state, 
+        status: newStatus
+      };
     },
     setWsStatus(
       state: GetIrpdModelProps,

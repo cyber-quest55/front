@@ -163,7 +163,42 @@ export default {
       state: GetMeterSystemModelProps,
       { payload }: { payload: WkModels.MeterSystemStandardCallbackPayload },
     ) {
-      console.log('[WS MeterSystem standard callback]', payload);
+      // Communication error status
+      if (payload.message_error) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.equipment) {
+            return {
+              id: s.id,
+              status: WkModels.BaseRadioMessageStatus.ERROR,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+
+      // Web socket incoming status
+      const item = state.status.find(s => s.id = payload.equipment);
+      if (item && item.status <= payload.message_status) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.equipment) {
+            return {
+              id: s.id,
+              status: payload.message_status,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+      
+      // Default return
       return state;
     },
     setWsStatus(
