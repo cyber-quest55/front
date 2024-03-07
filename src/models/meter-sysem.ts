@@ -6,6 +6,10 @@ import { AxiosError } from 'axios';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetMeterSystemModelProps {
+  status: {
+    id: number;
+    status: number;
+  }[];
   result: LakeLevelMeterProps[];
   loading: boolean;
   loaded: boolean;
@@ -37,6 +41,7 @@ export default {
   namespace: 'meterSystem',
 
   state: {
+    status: [],
     result: [],
     loaded: false,
     loading: true,
@@ -53,12 +58,17 @@ export default {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
     },
+    // Web socket effects
     *queryMeterSystemWs({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryMeterSystemStart' });
       try {
         const response: API.GetMeterSystemResponse = yield call(getMeterSystem, payload);
         yield put({ type: 'queryMeterSystemSuccess', payload: response });
         yield put({ type: 'meterSystem/onInit', payload: {} });
+        yield put({ type: 'setWsStatus', payload: response.map(r => ({
+          id: r.id,
+          status: WkModels.BaseRadioMessageStatus.NOT_SENT,
+        }))});
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
@@ -72,7 +82,7 @@ export default {
         id: r.id,
         binds: [
           {
-            callback: ['terst'],
+            callback: ['meterSystem/wsMeterSystemStandardCallback'],
             event: 'IMeterConfig_standard',
             id: state.id,
           },
@@ -90,7 +100,7 @@ export default {
         id: r.id,
         binds: [
           {
-            callback: ['terst'],
+            callback: ['meterSystem/wsMeterSystemStandardCallback'],
             event: 'IMeterConfig_standard',
             id: state.id,
           },
@@ -153,5 +163,21 @@ export default {
         error: {},
       };
     },
+    // Web sockets reducers
+    wsMeterSystemStandardCallback(
+      { payload }: { payload: WkModels.MeterSystemStandardCallbackPayload },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      console.log('[WS MeterSystem standard callback]', payload, put);
+    },
+    setWsStatus(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    }
   },
 };

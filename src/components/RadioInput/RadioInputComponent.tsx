@@ -401,11 +401,10 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
                   props.meterSystem.result.length
                 ) * 6);
               } else {
-                // Single equipment
                 setCounter(20);
               }
 
-
+              // Message user
               message.success(intl.formatMessage({
                 id: 'component.radio.messages.base.success',
               }));

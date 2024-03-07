@@ -3,6 +3,10 @@ import { AxiosError } from 'axios';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetPivotModelProps {
+  status: {
+    id: number;
+    status: number;
+  }[];
   result: API.GetPivotByFarmResponse;
   loading: boolean;
   loaded: boolean;
@@ -37,6 +41,7 @@ export default {
 
   state: {
     result: [],
+    status: [],
     loaded: false,
     loading: true,
     selectedPivot: {},
@@ -59,6 +64,7 @@ export default {
         yield put({ type: 'queryPivotError', payload: error });
       }
     },
+    // Web socket effects
     *queryPivotWs(
       { payload }: { payload: API.GetPivotByFarmParam },
       { call, put }: { call: any; put: any },
@@ -69,7 +75,11 @@ export default {
         const response:  API.GetPivotByFarmResponse = yield call(getPivots, payload);
 
         yield put({ type: 'queryPivotSuccess', payload: response });
-        yield put({ type: 'pivot/onInit', payload: {} })
+        yield put({ type: 'pivot/onInit', payload: {} });
+        yield put({ type: 'setWsStatus', payload: response.map(r => ({
+          id: r.id,
+          status: WkModels.BaseRadioMessageStatus.NOT_SENT,
+        }))});
         
       } catch (error: any) {
         yield put({ type: 'queryPivotError', payload: error });
@@ -84,12 +94,12 @@ export default {
         id: r.id,
         binds: [
           {
-            callback: ['terst'],
+            callback: ['wsPivotStandardCallback'],
             event: 'ControllerConfig_standard',
             id: r.id,
           },
           {
-            callback: ['terst'],
+            callback: ['wsPivotConfigCallback'],
             event: 'pivot_config',
             id: r.id,
           },
@@ -107,18 +117,19 @@ export default {
         id: r.id,
         binds: [
           {
-            callback: ['terst'],
+            callback: ['wsPivotStandardCallback'],
             event: 'ControllerConfig_standard',
             id: r.id,
           },
           {
-            callback: ['terst'],
+            callback: ['wsPivotConfigCallback'],
             event: 'pivot_config',
             id: r.id,
           },
         ],
       }));
 
+      yield put({ type: 'setWsStatus', payload: [] })
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
@@ -158,5 +169,27 @@ export default {
         selectedPivot: payload,
       };
     },
+    // Web sockets reducers
+    wsPivotStandardCallback(
+      { payload }: { payload: WkModels.PivotStandardCallbackPayload },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      console.log('[WS Pivot standard callback]', payload, put);
+    },
+    wsPivotConfigCallback(
+      { payload }: { payload: WkModels.PivotConfigCallbackPayload },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      console.log('[WS Pivot config callback]', payload, put, payload.delivered);
+    },
+    setWsStatus(
+      state: GetPivotModelProps,
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    }
   },
 };

@@ -6,6 +6,10 @@ import { AxiosError } from 'axios';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetIrpdModelProps {
+  status: {
+    id: number;
+    status: number;
+  }[];
   result: WaterPumpProps[];
   loading: boolean;
   loaded: boolean;
@@ -37,6 +41,7 @@ export default {
   namespace: 'irpd',
 
   state: {
+    status: [],
     result: [],
     loaded: false,
     loading: true,
@@ -53,12 +58,17 @@ export default {
         yield put({ type: 'queryIrpdError', payload: error });
       }
     },
+    // Web socket effects
     *queryIrpdWs({ payload }: { payload: API.GetIrpdParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdStart' });
       try {
         const response: API.GetIrpdResponse = yield call(getIrpds, payload);
         yield put({ type: 'queryIrpdSuccess', payload: response });
         yield put({ type: 'irpd/onInit', payload: {} });
+        yield put({ type: 'setWsStatus', payload: response.map(r => ({
+          id: r.id,
+          status: WkModels.BaseRadioMessageStatus.NOT_SENT,
+        }))});
       } catch (error: any) {
         yield put({ type: 'queryIrpdError', payload: error });
       }
@@ -72,12 +82,12 @@ export default {
         id: state.id,
         binds: [
           {
-            callback: ['terst'],
+            callback: ['irpd/wsIrpdStandardCallback'],
             event: 'IrpdConfigV5_standard',
             id: r.id,
           },
           {
-            callback: ['terst'],
+            callback: ['irpd/wsIrpdConfigCallback'],
             event: 'irpd_config',
             id: r.id,
           },
@@ -95,12 +105,12 @@ export default {
         id: state.id,
         binds: [
           {
-            callback: ['terst'],
+            callback: ['irpd/wsIrpdStandardCallback'],
             event: 'IrpdConfigV5_standard',
             id: r.id,
           },
           {
-            callback: ['terst'],
+            callback: ['irpd/wsIrpdConfigCallback'],
             event: 'irpd_config',
             id: r.id,
           },
@@ -159,5 +169,27 @@ export default {
         error: {},
       };
     },
+    // Web sockets reducers
+    wsIrpdStandardCallback(
+      { payload }: { payload: WkModels.IrpdStandardCallbackPayload },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      console.log('[WS Irpd standard callback]', payload, put);
+    },
+    wsIrpdConfigCallback(
+      { payload }: { payload: WkModels.IrpdConfigCallbackPayload },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      console.log('[WS Irpd config callback]', payload, put);
+    },
+    setWsStatus(
+      state: GetIrpdModelProps,
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    }
   },
 };

@@ -1036,6 +1036,316 @@ declare namespace APIModels {
 }
 
 declare namespace WkModels {
+  /* Start of central radio update clock WS */
+  enum BaseRadioMessageStatus {
+    WAITING = -1,
+    NOT_SENT = 0,
+    SENT = 1,
+    DELIVERED = 2,
+    ERROR = 3,
+  }
+
+  type MeterSystemStandardCallbackPayload  = {
+    id: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      clock: {
+        year: number;
+        month: number;
+        day: number;
+        hour: number;
+        minute: number;
+        second: number;
+      };
+      holidays: [];
+      peak_time: {
+        stop_hour_1: number;
+        stop_hour_2: number;
+        start_hour_1: number;
+        start_hour_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        stop_minute_1: number;
+        stop_minute_2: number;
+        sunday_enable: number;
+        start_minute_1: number;
+        start_minute_2: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      pump_action: {
+        enable: number;
+      };
+      imanage_sensors: {
+        max_value: number;
+        min_value: number;
+        sensor_type: number;
+        number_editing: number;
+      }[];
+      enable_peak_time: {
+        enable: number;
+      };
+      rs485_data_write: {
+        data: string;
+        baud_rate: number;
+        registers: string;
+        slave_address: number;
+        number_editing: number;
+      }[];
+      rs485_read_config: {
+        protocol: number;
+        baud_rate: number;
+        registers: string;
+        size_of_bytes: number;
+        slave_address: number;
+        function_field: number;
+        number_editing: number;
+      }[];
+      datalogger_address: {
+        address: string;
+      };
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      event_stream_indexes: {
+        indexes: string;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+      periodic_stream_indexes: {
+        indexes: string;
+      };
+    };
+    graphic_max_value: number;
+    flow_curve_equation: number[];
+    sensor_offset: number;
+    measure_scale: number;
+    measure_unit: string;
+    min_limit: number;
+    max_limit: number;
+    metersystem_name: string;
+    imeter_name: string;
+    position_imeter: string;
+    pinned: boolean;
+    name: string;
+    created_by: null | any;
+    device: number;
+    equipment: number;
+    sensor_process_controller_pair: number;
+  };
+
+  type IrpdStandardCallbackPayload  = {
+    id: number;
+    created_by: null | any;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      clock: {
+        day: number;
+        month: number;
+        year: number;
+        hour: number;
+        minute: number;
+        second: number;
+      };
+      holidays: {
+        day: number;
+        month: number;
+        number_editing: number;
+      }[];
+      peak_time: {
+        stop_hour_1: number;
+        stop_hour_2: number;
+        start_hour_1: number;
+        start_hour_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        stop_minute_1: number;
+        stop_minute_2: number;
+        sunday_enable: number;
+        start_minute_1: number;
+        start_minute_2: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      imanage_sensors: {
+        max_value: number;
+        min_value: number;
+        sensor_type: number;
+        number_editing: number;
+      }[];
+      pump_power_time: {
+        minutes: number;
+      };
+      enable_peak_time: {
+        enable: number;
+      };
+      datalogger_address: {
+        address: string;
+      };
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      event_stream_indexes: {
+        indexes: string;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+      periodic_stream_indexes: {
+        indexes: string;
+      };
+    };
+    monthly_water_limit: number;
+    has_pressure_sensor: boolean;
+    name_irpd_on_config: string;
+    flow: number;
+    position: null | any;
+    potency: number;
+    pinned: boolean;
+    name: string;
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    device: number;
+    irpd: number;
+  };
+
+  type IrpdConfigCallbackPayload  = any
+  
+  type PivotStandardCallbackPayload  = {
+    id: number;
+    gps_config: number;
+    pump_config: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      autoreversion_command: {
+        command: number;
+      };
+      simple_irrigation_index_vector: {
+        vector: string;
+      };
+      schedule_irrigation_index_vector: {
+        vector: string;
+      };
+      segment_irrigation_index_vector: {
+        vector: string;
+      };
+      pivot_config_index_vector: {
+        vector: string;
+      };
+      panel_stream_index_vector: {
+        vector: string;
+      };
+      gps_stream_index_vector: {
+        vector: string;
+      };
+      periodic_stream_index_vector: {
+        vector: string;
+      };
+      periodic_timer: {
+        minutes: number;
+      };
+      periodic_offset: {
+        seconds: number;
+      };
+      radio_addresses: {
+        datalogger_address: string;
+        gps_address: string;
+        pump_address: string;
+        pluviometer_address: string;
+      };
+    };
+    pinned: boolean;
+    name: string;
+    group_uuid: string;
+    segments_crop: any[];
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    injection_pump: boolean;
+    name_pivot_on_config: string;
+    brand_model: string;
+    panel_type: number;
+    potency: number;
+    created_by: null | any;
+    device: number;
+    equipment: number;
+  };
+
+  type PivotConfigCallbackPayload  = {
+    id: number;
+    username: string;
+    sector_angle: null | number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    updated: string;
+    manual: boolean;
+    radius: number;
+    flow: number;
+    speed: number;
+    total_radius: number;
+    area: number;
+    center: string;
+    reference: string;
+    setorial: boolean;
+    end_reference: string;
+    image_maps_url: string;
+    reversion: boolean;
+    endgun: number;
+    extra: boolean;
+    rtc: string;
+    pump_time: number;
+    power_time: number;
+    power_range_max: number;
+    power_range_min: number;
+    hour_range_max: string;
+    hour_range_min: string;
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    sent: boolean;
+    delivered: boolean;
+    received: boolean;
+    pump_delivered: boolean;
+    gps_delivered: boolean;
+    image_url: null | string;
+    pinned: boolean;
+    name: string;
+    user: number;
+    pivot: number;
+  };
+  /* End of central radio update clock WS */
+
   type PivotControllerActionStop = {
     id: number;
     username: string;
