@@ -25,6 +25,8 @@ import ForbidenPage from './pages/403';
 import NoFoundPage from './pages/404';
 import { errorConfig } from './requestErrorConfig';
 import { io } from 'socket.io-client';
+import '@/utils/FCMService'
+import PushNotificationConfig from './components/PushNotificationConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
@@ -171,6 +173,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
                 }}
               />
               <ZendeskChat />
+              <PushNotificationConfig />
             </LoadScript>
           </ProConfigProvider>
         </App>

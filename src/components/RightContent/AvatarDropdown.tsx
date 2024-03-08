@@ -8,6 +8,10 @@ import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
 import LocaleSelectorContainer from '../LocaleSelector/LocaleSelectorContainer';
+import { PushNotifications } from '@capacitor/push-notifications';
+import { FCM } from '@capacitor-community/fcm';
+import { Capacitor } from '@capacitor/core';
+import { unsubscribeTokenFromTopic } from '@/utils/FCMService';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -22,6 +26,8 @@ export const AvatarName = () => {
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
   const { md } = useScreenHook();
+  const { initialState, setInitialState } = useModel('@@initialState');
+  const userID = initialState?.currentUser?.id;
 
   const className = useEmotionCss(({}) => {
     return {
@@ -47,6 +53,36 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     // await outLogin();
   };
 
+  const disableNotifications = async () => {
+    if (userID) {
+      const notificationsSufix = [
+        "pivot",
+        "pivot-monitor",
+        "irpd",
+      ];
+      const languages = ["pt-br", "en", "ru", "es", "de-at"];
+      let nAlertTopics = languages.flatMap(
+        (language) => {
+          return notificationsSufix.map(
+            (sufix) => {
+              return `${FCM_SUFFIX}n-${sufix}-user-${userID}-${language}`;
+            }
+          );
+        }
+      );
+      nAlertTopics.forEach(async (topic) => {
+        if (Capacitor.getPlatform() === "web") {
+          await unsubscribeTokenFromTopic(
+            topic
+          );
+        } else {
+          FCM.unsubscribeFrom({ topic });
+        }
+      });
+      await PushNotifications.removeAllListeners();
+    }
+  }
+
   const actionClassName = useEmotionCss(({ token }) => {
     return {
       display: 'flex',
@@ -63,7 +99,6 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
     };
   });
 
-  const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
     (event: MenuInfo) => {
@@ -73,6 +108,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
           setInitialState((s) => ({ ...s, currentUser: undefined } as any));
         });
         loginOut();
+        disableNotifications();
         history.push(`/user/login`);
         return;
       }
