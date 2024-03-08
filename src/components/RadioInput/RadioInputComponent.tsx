@@ -120,6 +120,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       {
         label: intl.formatMessage({ id: 'component.radio.modal.base.fields.device.placeholder' }),
         value: -1,
+        type: '',
       }
     ]);
   }, [
