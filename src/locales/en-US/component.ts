@@ -717,6 +717,7 @@ export default {
   'component.meter.report.chart.label.min': 'Min value',
   'component.meter.report.chart.label.max': 'Max value',
   'component.meter.report.chart.label.value': 'Value',
+  // Irpd history report table
   'component.irpd.report.title': 'History',
   'component.irpd.report.tabs.opt.1': 'Events',
   'component.irpd.report.tabs.opt.2': 'Operations',
@@ -737,6 +738,7 @@ export default {
   'component.irpd.report.chart.label.1': 'Horas em pico',
   'component.irpd.report.chart.label.2': 'Horas em fora de pico',
   'component.irpd.report.chart.label.3': 'Horas em reduzido',
+  'component.irpd.report.consumption.label': 'Estimated consumption',
   'component.irpd.command.opt.0': 'Stop bomb',
   'component.irpd.command.opt.1': 'Turn on pump',
   'component.irpd.command.opt.2': 'Possibly stopped',

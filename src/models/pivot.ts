@@ -14,14 +14,14 @@ export interface GetPivotModelProps {
   }[];
 }
 
-export const queryPivot  = (payload: API.GetPivotByFarmParam) => {
+export const queryPivot = (payload: API.GetPivotByFarmParam) => {
   return {
     type: 'pivot/queryPivot',
     payload: payload,
   };
 };
 
-export const queryPivotWs  = (payload: API.GetPivotByFarmParam) => {
+export const queryPivotWs = (payload: API.GetPivotByFarmParam) => {
   return {
     type: 'pivot/queryPivotWs',
     payload: payload,
