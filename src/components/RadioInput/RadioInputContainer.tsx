@@ -39,6 +39,9 @@ type IRadioInputContainerProps = {
   destroyIrpdWs: typeof destroyIrpdWs;
   queryMeterSystemWs: typeof queryMeterSystemWs;
   destroyMeterSystemWs: typeof destroyMeterSystemWs;
+  setPivotWsLoadingStatus: (id: string) => void;
+  setIRpdWsLoadingStatus: (id: string) => void;
+  setMeterSystemWsLoadingStatus: (id: string) => void;
   pivot: GetPivotModelProps;
   pivotById: GetPivotByIdModelProps;
   irpd: GetIrpdModelProps;
@@ -81,6 +84,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   destroyPivotWs: () => dispatch(destroyPivotWs()),
   destroyIrpdWs: () => dispatch(destroyIrpdWs()),
   destroyMeterSystemWs: () => dispatch(destroyMeterSystemWs()),
+  setPivotWsLoadingStatus: (id: string) => dispatch({
+    type: 'pivot/setWsLoadingStatus',
+    payload: { id },
+  }),
+  setIRpdWsLoadingStatus: (id: string) => dispatch({
+    type: 'irpd/setWsLoadingStatus',
+    payload: { id },
+  }),
+  setMeterSystemWsLoadingStatus: (id: string) => dispatch({
+    type: 'meterSystem/setWsLoadingStatus',
+    payload: { id },
+  }),
 });
 
 export default connect(

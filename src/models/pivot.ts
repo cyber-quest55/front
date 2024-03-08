@@ -230,6 +230,34 @@ export default {
         ...state,
         status: payload,
       }
-    }
+    },
+    setWsLoadingStatus(
+      state: GetPivotModelProps,
+      { payload }: { payload: { id?: number } }
+    ) {
+      if (payload.id) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.id) {
+            return {
+              id: s.id,
+              status: -1,
+            }
+          }
+          return s
+        });
+        return {
+          ...state,
+          status: newStatus
+        }
+      }
+
+      return {
+        ...state,
+        status: state.status.map(s => ({
+          id: s.id,
+          status: -1,
+        }))
+      }
+    },
   },
 };

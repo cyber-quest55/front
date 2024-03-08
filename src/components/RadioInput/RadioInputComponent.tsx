@@ -67,6 +67,9 @@ type IRadioInputComponentProps = {
   destroyIrpdWs: typeof destroyIrpdWs;
   queryMeterSystemWs: typeof queryMeterSystemWs;
   destroyMeterSystemWs: typeof destroyMeterSystemWs;
+  setPivotWsLoadingStatus: (id?: string) => void;
+  setIRpdWsLoadingStatus: (id?: string) => void;
+  setMeterSystemWsLoadingStatus: (id?: string) => void;
   pivot: GetPivotModelProps;
   pivotById: GetPivotByIdModelProps;
   irpd: GetIrpdModelProps;
@@ -484,12 +487,27 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
 
               // Update all equipments
               if (selectedEquipment === -1) {
+                props.setPivotWsLoadingStatus();
+                props.setIRpdWsLoadingStatus();
+                props.setMeterSystemWsLoadingStatus();
                 setCounter((
                   props.pivot.result.length +
                   props.irpd.result.length +
                   props.meterSystem.result.length
                 ) * 6);
               } else {
+                const equipmentType = wsStatus.find(s => s.id === selectedEquipment)?.type;
+                switch (equipmentType) {
+                  case 'pivot':
+                    props.setPivotWsLoadingStatus(selectedEquipment);
+                    break;
+                  case 'irpd':
+                    props.setIRpdWsLoadingStatus(selectedEquipment);
+                    break;
+                  case 'meterSystem':
+                    props.setMeterSystemWsLoadingStatus(selectedEquipment);
+                    break;
+                }
                 setCounter(20);
               }
 
