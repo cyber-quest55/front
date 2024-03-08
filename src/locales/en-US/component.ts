@@ -906,4 +906,5 @@ export default {
   'component.edit.farm.users.edit.permissions.save': 'Save permissions',
   'component.edit.farm.users.edit.permissions.save.admin': 'Save as Admin',
   'component.edit.farm.users.permissions.custom': 'Custom',
+  'component.edit.farm.users.messages.nosuchuser': 'There is no user matching the inputed username or E-mail!',
 };
