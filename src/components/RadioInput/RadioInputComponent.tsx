@@ -374,12 +374,12 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
       status: s.status,
       type: 'pivot',
     }));
-    const irpdMapped = props.pivot.status.map(s => ({
+    const irpdMapped = props.irpd.status.map(s => ({
       id: s.id,
       status: s.status,
       type: 'irpd',
     }));
-    const meterSystemMapped = props.pivot.status.map(s => ({
+    const meterSystemMapped = props.meterSystem.status.map(s => ({
       id: s.id,
       status: s.status,
       type: 'meterSystem',
@@ -421,6 +421,7 @@ const RadioInputComponent: React.FunctionComponent<IRadioInputComponentProps> = 
           props.destroyMeterSystemWs();
           setIsCentralOpen(false);
           setWsStatus([]);
+          setCounter(0);
         }}
       >
         <ProCard
