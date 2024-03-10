@@ -43,7 +43,7 @@ const AddPivotMonitorAlarmForm = (props: AddPivotMonitorAlarmFormProps) => {
   const { message } = App.useApp();
 
   const listOptions = () => {
-    return props.reasons.map((reason) => {
+    return props.reasons.filter(r => r.protocol === 5).map((reason) => {
       return {
         title: reason.label,
         name: ['options', 'reasons', reason.id.toString()],
@@ -128,6 +128,7 @@ const AddPivotMonitorAlarmForm = (props: AddPivotMonitorAlarmFormProps) => {
   return (
     <>
       <Button
+        disabled={props.pivots.filter(p => p.automation_type === 1).length === 0}
         onClick={() => setVisible(true)}
         size={lg ? 'large' : 'middle'}
         type="primary"

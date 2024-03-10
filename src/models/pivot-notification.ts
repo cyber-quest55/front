@@ -43,7 +43,7 @@ export const deletePivotNotificationAction = (notificationId: number) => {
   };
 };
 
-export const enablePivotNotificationAction = (payload: {enable: boolean, index: number}) => {
+export const enablePivotNotificationAction = (payload: { enable: boolean; index: number }) => {
   return {
     type: 'pivotNotifications/enablePivotNotification',
     payload: payload,
@@ -65,7 +65,7 @@ export default {
 
   effects: {
     *queryPivotNotifications(
-      {payload}: { payload:{farmId: number }},
+      { payload }: { payload: { farmId: number } },
       { call, all, put }: { call: any; all: any; put: any },
     ): any {
       const locale = getLocale();
@@ -79,9 +79,10 @@ export default {
           call(getPivotNotificationsReasons, { equipmentType: 0, language }),
           call(getPivots, { id: payload.farmId }),
         ]);
+        const notificationsFilteredByFarm = notifications.filter((n) => n.farm === Number(payload.farmId));
         yield put({
           type: 'queryPivotNotificationsSuccess',
-          payload: { notifications, reasons, pivots },
+          payload: { notifications: notificationsFilteredByFarm, reasons, pivots },
         });
       } catch (error: any) {
         yield put({ type: 'queryPivotNotificationsError', payload: error });
@@ -90,13 +91,21 @@ export default {
   },
 
   reducers: {
-    deletePivotNotification(state: GetPivotNotificationsModelProps, { payload }: { payload: {notificationId: number} }) {
+    deletePivotNotification(
+      state: GetPivotNotificationsModelProps,
+      { payload }: { payload: { notificationId: number } },
+    ) {
       return {
         ...state,
-        notificationsFormatted: state.notificationsFormatted.filter((n) => n.id !== payload.notificationId),
+        notificationsFormatted: state.notificationsFormatted.filter(
+          (n) => n.id !== payload.notificationId,
+        ),
       };
     },
-    enablePivotNotification(state: GetPivotNotificationsModelProps, { payload }: { payload: { enable: boolean, index: number } }) {
+    enablePivotNotification(
+      state: GetPivotNotificationsModelProps,
+      { payload }: { payload: { enable: boolean; index: number } },
+    ) {
       const { enable, index } = payload;
       const newNotificationsFormatted = [...state.notificationsFormatted];
       newNotificationsFormatted[index].enable = enable;

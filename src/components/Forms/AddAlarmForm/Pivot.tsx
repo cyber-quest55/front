@@ -138,6 +138,7 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
         size={lg ? 'large' : 'middle'}
         type="primary"
         icon={<PlusCircleFilled />}
+        disabled={props.pivots.filter(p => p.automation_type === 0).length === 0}
       >
         {intl.formatMessage({
           id: 'component.addalarmform.button',

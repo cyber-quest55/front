@@ -43,7 +43,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
   const { message } = App.useApp();
 
   const listOptions = () => {
-    return props.reasons.map((reason) => {
+    return props.reasons.filter(r => r.protocol === 5).map((reason) => {
       return {
         title: reason.label,
         name: ['options', 'reasons', reason.id.toString()],
@@ -126,6 +126,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
       <Button
         onClick={() => setVisible(true)}
         size={lg ? 'large' : 'middle'}
+        disabled={props.irpds.length === 0}
         type="primary"
         icon={<PlusCircleFilled />}
       >

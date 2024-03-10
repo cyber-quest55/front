@@ -79,9 +79,10 @@ export default {
           call(getPivotNotificationsReasons, { equipmentType: 1, language }),
           call(getPivots, { id: payload.farmId }),
         ]);
+        const notificationsFilteredByFarm = notifications.filter((n) => n.farm === Number(payload.farmId));
         yield put({
           type: 'queryPivotMonitorNotificationsSuccess',
-          payload: { notifications, reasons, pivots },
+          payload: { notifications: notificationsFilteredByFarm, reasons, pivots },
         });
       } catch (error: any) {
         yield put({ type: 'queryPivotMonitorNotificationsError', payload: error });
