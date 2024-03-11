@@ -69,37 +69,37 @@ export default {
           id: state.idIrpd,
           binds: [
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdPressureStreamCallback'],
               event: 'irpd_pressure_stream',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdStreamCallback'],
               event: 'irpd_stream',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdActionCallback'],
               event: 'irpd_action',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdEventCallback'],
               event: 'IrpdStreamV5_event',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdSimpleCallback'],
               event: 'IrpdActionV5_simple',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdScheduleCallback'],
               event: 'IrpdActionV5_schedule',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdPeriodicCallback'],
               event: 'IrpdStreamV5_periodic',
               id: state.idIrpd,
             },
@@ -110,7 +110,7 @@ export default {
           id: state.idFarm,
           binds: [
             {
-              callback: [],
+              callback: ['irpdHistory/wsFarmCentralCallback'],
               event: 'CentralStream',
               id: state.idFarm
             }
@@ -132,37 +132,37 @@ export default {
           id: state.idIrpd,
           binds: [
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdPressureStreamCallback'],
               event: 'irpd_pressure_stream',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdStreamCallback'],
               event: 'irpd_stream',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdActionCallback'],
               event: 'irpd_action',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdEventCallback'],
               event: 'IrpdStreamV5_event',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdSimpleCallback'],
               event: 'IrpdActionV5_simple',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdScheduleCallback'],
               event: 'IrpdActionV5_schedule',
               id: state.idIrpd,
             },
             {
-              callback: [],
+              callback: ['irpdHistory/wsIrpdPeriodicCallback'],
               event: 'IrpdStreamV5_periodic',
               id: state.idIrpd,
             },
@@ -173,7 +173,7 @@ export default {
           id: state.idFarm,
           binds: [
             {
-              callback: [],
+              callback: ['irpdHistory/wsFarmCentralCallback'],
               event: 'CentralStream',
               id: state.idFarm
             }
@@ -231,5 +231,61 @@ export default {
       };
     },
     // Web socket reducers
+    wsIrpdPressureStreamCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    },
+    wsIrpdStreamCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    },
+    wsIrpdActionCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    },
+    wsIrpdEventCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    },
+    wsIrpdSimpleCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    },
+    wsIrpdScheduleCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    },
+    wsIrpdPeriodicCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    },
+    wsFarmCentralCallback(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[callback payload]', payload)
+      return state;
+    }
   },
 };
