@@ -24,7 +24,6 @@ import { getIrpdExcelReport } from '../../services/irpd';
 import { httpToExcel } from '../../utils/adapters/excel';
 
 type Props = {
-  dispatch: any;
   irpdHistory: GetIrpdHistoryModelProps;
   selectedDevice: SelectedDeviceModelProps;
   queryIrpdHistory: typeof queryIrpdHistory;
@@ -61,11 +60,17 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
     }
   }
 
-  const ExportButton = <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
-    {intl.formatMessage({
-      id: 'component.export',
-    })}
-  </Button>
+  const ExportButton = (
+    <Button 
+      loading={reqGetExcel.loading}
+      onClick={handleExportReport}
+      icon={<DownloadOutlined />}
+    >
+      {intl.formatMessage({
+        id: 'component.export',
+      })}
+    </Button>
+  );
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -116,7 +121,9 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
               {record.origin === PumpHistoryOrigin.Command ? (
                 <ProDescriptions.Item
                   dataIndex="total_flow"
-                  label="Consumo estimado"
+                  label={intl.formatMessage({
+                    id: 'component.irpd.report.consumption.label',
+                  })}
                   valueType="text"
                 >
                   {record.total_flow?.toFixed(2)}m³

@@ -7,5 +7,6 @@ export default {
     'validations.strong.password': 'Not strong enough',
     'validations.password.match': 'The passwords entered do not match',
     'validations.invalid': 'Invalid field',
+    'validations.email': 'Must be a valid E-mail',
   };
   

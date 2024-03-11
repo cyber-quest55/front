@@ -57,7 +57,7 @@ export default {
   'pages.edit.irpd.tab.options.pausetime': 'Pause Time',
   'pages.edit.farm.tab.header.title': 'Farm Data',
   'pages.edit.farm.tab.options.general': 'General',
-  'pages.edit.farm.tab.options.location': 'Location',
+  'pages.edit.farm.tab.options.location': 'Farm Location',
   'pages.edit.farm.tab.options.billing': 'Billing',
   'pages.edit.farm.tab.options.contact': 'Contact',
   'pages.edit.farm.tab.options.powerranges': 'Power Ranges',

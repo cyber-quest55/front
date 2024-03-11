@@ -125,9 +125,32 @@ ol {
 }
 
 // This line is just to hide year on holiday tabs
-#edit-farm-holiday-tab {
-  .ant-picker-calendar-mode-switch {
-    display: none;
+@media (max-width: 991px) {
+  #edit-farm-holiday-tab {
+    .ant-picker-calendar-mode-switch {
+      display: none;
+    }
   }
 }
- 
+
+#transparent-list-scrollbar {
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+  }
+
+  &:hover {
+    scrollbar-color: transparent transparent;
+  }
+}

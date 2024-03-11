@@ -1,9 +1,9 @@
-import { ProForm, ProFormSelect } from '@ant-design/pro-components';
+import { ProForm, ProFormField } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { findUserByUsernameOrEmail } from '@/services/user';
 import { yupValidator } from '@/utils/adapters/yup';
 import { useRequest } from 'ahooks';
-import { Button, Form } from 'antd';
+import { App, Button, Form } from 'antd';
 import { ReactElement, useCallback, useRef } from 'react';
 import * as yup from 'yup';
 
@@ -17,6 +17,7 @@ const AddUserForm = ({
   onSubmit = async () => {}
 }: Props): ReactElement => {
   const intl = useIntl();
+	const { message } = App.useApp();
   const [ addUserForm ] = Form.useForm();
 	const addFormRef = useRef();
 
@@ -31,6 +32,37 @@ const AddUserForm = ({
 	}), [intl]);
 	const yupSync = yupValidator(yupSchema(), addUserForm.getFieldsValue);
 
+	// Validate user action
+	const onFinish = async (values: { user: string }) => {
+		try {
+			// Searching for user accounts
+			const usernameSearch = values.user;
+			const resp = await reqFindUsers.runAsync({
+				username_or_email: usernameSearch,
+			});
+
+			const desiredUser = resp.find(r => 
+				r.user__username === usernameSearch ||
+				r.user__email === usernameSearch
+			);
+
+			// Has account
+			if (resp.length && desiredUser) {
+				onSubmit({ user: desiredUser.user__username });
+				addUserForm.setFieldValue('user', '');
+			} else {
+				message.warning(intl.formatMessage({
+					id: 'component.edit.farm.users.messages.nosuchuser',
+				}));
+			}
+		} catch (err) {
+			message.error(intl.formatMessage({
+				id: 'component.edit.farm.users.general.message.fail',
+			}));
+		}
+	}
+
+	// Component TSX
   return (
     <ProForm
 			validateTrigger="onBlur"
@@ -41,32 +73,16 @@ const AddUserForm = ({
 			form={addUserForm}
 			formRef={addFormRef}
 			initialValues={{ user: '' }}
-			onFinish={async (values) => onSubmit(values)}
+			onFinish={onFinish}
 			grid
 		>
-			<ProFormSelect
-        rules={[yupSync]}
-        request={async (val) => {
-					if (val.keyWords) {
-						const resp = await reqFindUsers.runAsync({
-							username_or_email: val.keyWords,
-						})
-						return resp.map(result => ({
-							label: `${result.full_name} (${result.user__email})`,
-							value: result.user__username,
-						}))
-					}
-					return [{
-						label: intl.formatMessage({ id: 'component.edit.farm.users.add.placeholder' }),
-						value: ''
-					}];
-        }}
-        name={['user']}
-        label={intl.formatMessage({ id: 'component.edit.farm.users.add.label' })}
-		    placeholder={intl.formatMessage({ id: 'component.edit.farm.users.add.placeholder' })}
+			<ProFormField
+				name={['user']}
+				rules={[yupSync]}
+				label={intl.formatMessage({ id: 'component.edit.farm.users.add.label' })}
+				placeholder={intl.formatMessage({ id: 'component.edit.farm.users.add.placeholder' })}
 				colProps={{ xs: 24 }}
-        showSearch
-      />
+			/>
 		 	<Button
 		  	type="primary"
 				style={{ width: '100%' }}

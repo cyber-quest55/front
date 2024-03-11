@@ -717,6 +717,7 @@ export default {
   'component.meter.report.chart.label.min': 'Min value',
   'component.meter.report.chart.label.max': 'Max value',
   'component.meter.report.chart.label.value': 'Value',
+  // Irpd history report table
   'component.irpd.report.title': 'History',
   'component.irpd.report.tabs.opt.1': 'Events',
   'component.irpd.report.tabs.opt.2': 'Operations',
@@ -737,6 +738,7 @@ export default {
   'component.irpd.report.chart.label.1': 'Horas em pico',
   'component.irpd.report.chart.label.2': 'Horas em fora de pico',
   'component.irpd.report.chart.label.3': 'Horas em reduzido',
+  'component.irpd.report.consumption.label': 'Estimated consumption',
   'component.irpd.command.opt.0': 'Stop bomb',
   'component.irpd.command.opt.1': 'Turn on pump',
   'component.irpd.command.opt.2': 'Possibly stopped',
@@ -763,7 +765,7 @@ export default {
   // Edit farm tabs
   'component.edit.farm.button.save': 'Save',
   'component.edit.farm.general.title': 'General',
-  'component.edit.farm.location.title': 'Location',
+  'component.edit.farm.location.title': 'Farm Location',
   'component.edit.farm.billing.title': 'Billing',
   'component.edit.farm.contact.title': 'Contact',
   'component.edit.farm.powerranges.title': 'Power Ranges',
@@ -778,8 +780,13 @@ export default {
   'component.edit.farm.general.centralradio.label': 'Central radio',
   'component.edit.farm.general.name.label': 'Name',
   'component.edit.farm.general.timezone.label': 'Timezone',
-  'component.edit.farm.general.billing_date.label': 'Billing Date',
-  'component.edit.farm.general.water_billing_date.label': 'Water Billing Date',
+  'component.edit.farm.general.billing_date.label': 'Power billing date',
+  'component.edit.farm.general.water_billing_date.label': 'Water billing date',
+  'component.edit.farm.general.status.delivered': 'Delivered',
+  'component.edit.farm.general.status.sent': 'Sent',
+  'component.edit.farm.general.status.error': 'Error',
+  'component.edit.farm.general.status.waiting': 'Waiting',
+  'component.edit.farm.general.waiting.label': 'Waiting for device(s) response: {value} seconds remaining.',
   // Location tab
   'component.edit.farm.location.label': 'Farm location',
   'component.edit.farm.location.desc':
@@ -865,6 +872,7 @@ export default {
   'component.edit.farm.holiday.import.brazil': 'Brazil',
   'component.edit.farm.holiday.import.russia': 'Russia',
   'component.edit.farm.holiday.messages.holidaypresent': 'This day is already set as a holiday.',
+  'component.edit.farm.holiday.year.hasholiday': 'Has Holidays',
   // Users tabs
   'component.edit.farm.users.description': 'Manage users from your farm. Make sure to read the permission guidelines to assign correct roles to users.',
   'component.edit.farm.users.guidelines': 'Permission guidelines',
@@ -900,4 +908,5 @@ export default {
   'component.edit.farm.users.edit.permissions.save': 'Save permissions',
   'component.edit.farm.users.edit.permissions.save.admin': 'Save as Admin',
   'component.edit.farm.users.permissions.custom': 'Custom',
+  'component.edit.farm.users.messages.nosuchuser': 'There is no user matching the inputed username or E-mail!',
 };

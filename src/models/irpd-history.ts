@@ -3,6 +3,7 @@ import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
 import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
 import { AxiosError } from 'axios';
+import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetIrpdHistoryModelProps {
   result: any;
@@ -43,10 +44,32 @@ export default {
           { farmId, irpdId },
          );
         yield put({ type: 'queryIrpdHistorySuccess', payload: response });
+        //yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryIrpdHistoryError', payload: error });
       }
     },
+    // Web sockets binding
+    *onInit({}, { put }: { put: any; select: any }) {
+      console.log('[irpd ws init]');
+      const channels = [{
+        title: `d@irpd@${319}`,
+        id: `@IrpdHistory_irpd${319}`,
+        binds: [
+          {
+            callback: ['pivot/wsPivotStandardCallback'],
+            event: 'ControllerConfig_standard',
+            id: `@EditFarm_pivot${319}`,
+          },
+        ],
+      }];
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({ }, { put }: { put: any; select: any }) {
+      console.log('[irpd ws destroy]');
+      const channels = [];
+      yield getSocketBinds(channels, put, 'unsubscribe');
+    }
   },
 
   reducers: {

@@ -3,12 +3,17 @@ import { getIrpds } from '@/services/irpd';
 import { getIrpdColor } from '@/utils/formater/get-irpd-color';
 import { getIrpdStatus } from '@/utils/formater/get-irpd-status';
 import { AxiosError } from 'axios';
+import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetIrpdModelProps {
   result: WaterPumpProps[];
   loading: boolean;
   loaded: boolean;
   error: any;
+  status: {
+    id: number;
+    status: number;
+  }[];
 }
 
 export const queryIrpd = (payload: API.GetIrpdParams) => {
@@ -18,15 +23,30 @@ export const queryIrpd = (payload: API.GetIrpdParams) => {
   };
 };
 
+export const queryIrpdWs = (payload: API.GetIrpdParams) => {
+  return {
+    type: 'irpd/queryIrpdWs',
+    payload: payload,
+  };
+};
+
+export const destroyIrpdWs = () => {
+  return {
+    type: 'irpd/onDestroy',
+    payload: {},
+  };
+};
+
 export default {
   namespace: 'irpd',
 
   state: {
+    status: [],
     result: [],
     loaded: false,
     loading: true,
     error: {},
-  },
+  } as GetIrpdModelProps,
 
   effects: {
     *queryIrpd({ payload }: { payload: API.GetIrpdParams }, { call, put }: { call: any; put: any }) {
@@ -37,6 +57,62 @@ export default {
       } catch (error: any) {
         yield put({ type: 'queryIrpdError', payload: error });
       }
+    },
+    // Web socket effects
+    *queryIrpdWs({ payload }: { payload: API.GetIrpdParams }, { call, put }: { call: any; put: any }) {
+      yield put({ type: 'queryIrpdStart' });
+      try {
+        const response: API.GetIrpdResponse = yield call(getIrpds, payload);
+        yield put({ type: 'queryIrpdSuccess', payload: response });
+        yield put({ type: 'irpd/onInit', payload: {} });
+        yield put({ type: 'setWsStatus', payload: response.map(r => ({
+          id: r.id,
+          status: 0,
+        }))});
+      } catch (error: any) {
+        yield put({ type: 'queryIrpdError', payload: error });
+      }
+    },
+    *onInit({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.irpd);
+      const channels = state.result.map(r => ({
+        title: `d@irpd@${r.id}`,
+        id: `@EditFarm_irpd${r.id}`,
+        binds: [
+          {
+            callback: ['irpd/wsIrpdStandardCallback'],
+            event: 'IrpdConfigV5_standard',
+            id: `@EditFarm_irpd${r.id}`,
+          },
+          {
+            callback: ['irpd/wsIrpdConfigCallback'],
+            event: 'irpd_config',
+            id: `@EditFarm_irpd${r.id}`,
+          },
+        ],
+      }));
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({ }, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.irpd);
+      const channels = state.result.map(r => ({
+        title: `d@irpd@${r.id}`,
+        id: `@EditFarm_irpd${r.id}`,
+        binds: [
+          {
+            callback: ['irpd/wsIrpdStandardCallback'],
+            event: 'IrpdConfigV5_standard',
+            id: `@EditFarm_irpd${r.id}`,
+          },
+          {
+            callback: ['irpd/wsIrpdConfigCallback'],
+            event: 'irpd_config',
+            id: `@EditFarm_irpd${r.id}`,
+          },
+        ],
+      }));
+      yield put({ type: 'setWsStatus', payload: [] });
+      yield getSocketBinds(channels, put, 'unsubscribe');
     },
   },
 
@@ -88,5 +164,100 @@ export default {
         error: {},
       };
     },
+    // Web sockets reducers
+    wsIrpdStandardCallback(
+      state: GetIrpdModelProps,
+      { payload }: { payload: WkModels.IrpdStandardCallbackPayload },
+    ) {
+      // Communication error status
+      if (payload.message_error) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.irpd) {
+            return {
+              id: s.id,
+              status: 3,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+
+      // Web socket incoming status
+      const newStatus = state.status.map(s => {
+        if (s.id === payload.irpd) {
+          return {
+            id: s.id,
+            status: payload.message_status,
+          }
+        }
+        return s;
+      })
+      return { 
+        ...state, 
+        status: newStatus
+      };
+    },
+    wsIrpdConfigCallback(
+      state: GetIrpdModelProps,
+      { payload }: { payload: WkModels.IrpdConfigCallbackPayload },
+    ) {
+      // Delivery or Sent status
+      const newStatus = state.status.map(s => {
+        if (s.id === payload.irpd) {
+          return {
+            id: s.id,
+            status: payload.received
+              ? 2
+              : 1,
+          }
+        }
+        return s;
+      })
+      return { 
+        ...state, 
+        status: newStatus
+      };
+    },
+    setWsStatus(
+      state: GetIrpdModelProps,
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    },
+    setWsLoadingStatus(
+      state: GetIrpdModelProps,
+      { payload }: { payload: { id?: number } }
+    ) {
+      if (payload.id) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.id) {
+            return {
+              id: s.id,
+              status: -1,
+            }
+          }
+          return s
+        });
+        return {
+          ...state,
+          status: newStatus
+        }
+      }
+      
+      return {
+        ...state,
+        status: state.status.map(s => ({
+          id: s.id,
+          status: -1,
+        }))
+      }
+    }
   },
 };
