@@ -37,6 +37,7 @@ export const destroyPivotWs = () => {
 
 export default {
   namespace: 'pivot',
+  
   state: {
     result: [],
     status: [],
@@ -45,6 +46,7 @@ export default {
     selectedPivot: {},
     error: {},
   } as GetPivotModelProps,
+
   effects: {
     *queryPivot(
       { payload }: { payload: API.GetPivotByFarmParam },
@@ -137,6 +139,7 @@ export default {
       yield put({ type: 'wsPivotConfigCallbackSuccess', payload });
     }
   },
+
   reducers: {
     queryPivotError(state: GetPivotModelProps, { payload }: { payload: AxiosError }) {
       return {

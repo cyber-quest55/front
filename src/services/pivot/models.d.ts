@@ -1036,6 +1036,93 @@ declare namespace APIModels {
 }
 
 declare namespace WkModels {
+  /* Start of irpd history history WS */
+  type IrpdControllerPressureStream = {
+    id: number;
+    irpd: number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    payload: string;
+    pressure: number;
+    frame_id: number;
+    device: string;
+  };
+
+  type IrpdControllerCentralStream = {
+    uuid: string;
+    status: boolean;
+    created: Date;
+  };
+
+  type IrpdControllerAction = {
+    uuid: number;
+    user: number;
+    irpd: number;
+    mode: number;
+    start: any;
+    end: any;
+    created: string;
+    type: number;
+    username: string;
+    humanized: string;
+    sent: boolean;
+    delivered: number;
+  };
+
+  type IrpdControllerActionV5 = {
+    uuid: string;
+    next: string;
+    message_error?: any;
+    previous: string;
+    created_on_hardware: boolean;
+    created_at?: string;
+    username?: string;
+    created: string;
+    device: number;
+    arrived: string;
+    message_status: number;
+    message_subtype?: string;
+    gps_config?: number;
+    created_by: any;
+    pivot?: number;
+    content: any;
+    total_flow: number;
+  };
+
+  type IrpdControllerStream = {
+    uuid: number;
+    arrived: string;
+    created: string;
+    device: number;
+    payload: string;
+    irpd: number;
+    reason: number;
+    hourmeter: number;
+    frame_id: number;
+  };
+
+  type IrpdControllerStreamV5 = {
+    uuid: string;
+    next: string;
+    message_error?: any;
+    previous: string;
+    created_on_hardware: boolean;
+    created_at?: string;
+    username?: string;
+    created: string;
+    device: number;
+    arrived: string;
+    message_status: number;
+    message_subtype?: string;
+    gps_config?: number;
+    created_by: any;
+    pivot?: number;
+    content: any;
+    total_flow: number;
+  };
+  /* End of irpd history history WS */
+
   /* Start of central radio update clock WS */
   type MeterSystemStandardCallbackPayload  = {
     id: number;
