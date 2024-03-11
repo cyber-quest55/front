@@ -202,43 +202,64 @@ export default {
       { payload }: { payload: WkModels.IrpdControllerStream },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdStreamCallbackSuccess', payload });
+      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+        type: 'stream',
+        data: payload,
+      }});
     },
     *wsIrpdActionCallback(
       { payload }: { payload: WkModels.IrpdControllerAction },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdActionCallbackSuccess', payload });
+      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+        type: 'action',
+        data: payload,
+      }});
     },
     *wsIrpdEventCallback(
       { payload }: { payload: WkModels.IrpdControllerStreamV5  },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdEventCallbackSuccess', payload });
+      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+        type: 'stream_v5',
+        data: payload,
+      }});
     },
     *wsIrpdSimpleCallback(
       { payload }: { payload: WkModels.IrpdControllerActionV5 },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdSimpleCallbackSuccess', payload });
+      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+        type: 'action_v5',
+        data: payload,
+      }});
     },
     *wsIrpdScheduleCallback(
       { payload }: { payload: WkModels.IrpdControllerActionV5 },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdScheduleCallbackSuccess', payload });
+      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+        type: 'action_v5',
+        data: payload,
+      }});
     },
     *wsIrpdPeriodicCallback(
       { payload }: { payload: WkModels.IrpdControllerStreamV5 },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdPeriodicCallbackSuccess', payload });
+      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+        type: 'stream_v5',
+        data: payload,
+      }});
     },
     *wsFarmCentralCallback(
       { payload }: { payload: WkModels.IrpdControllerCentralStream },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsFarmCentralCallbackSuccess', payload });
+      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+        type: 'central_stream',
+        data: payload,
+      }});
     }
   },
 
@@ -288,18 +309,44 @@ export default {
         error: {},
       };
     },
-    updateIrpdHistory(
+    // Web socket callback reducers
+    wsUpdateIrpdHistoryAction(
       state: GetIrpdHistoryModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: {
+        type: string,
+        data: (
+          WkModels.IrpdControllerStream | 
+          WkModels.IrpdControllerStreamV5 | 
+          WkModels.IrpdControllerAction | 
+          WkModels.IrpdControllerActionV5 | 
+          WkModels.IrpdControllerCentralStream
+        )
+      } },
     ) {
       console.log('[update historic]', payload);
 
-      // No need to update history if is first page
-      if (state.current !== 1) return state;
+      // Verifying what type is incoming data
+      switch (payload.type) {
+        case 'action':
+          break;
+        
+        case 'action_v5':
+          break;
 
-      return state;
+        case 'stream':
+          break;
+        
+        case 'stream_v5':
+          break;
+
+        case 'central_stream':
+          break;
+
+        // In case data is none of the matching types it will just return state
+        default:
+          return state;
+      }
     },
-    // Web socket callback reducers
     wsIrpdPressureStreamCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WkModels.IrpdControllerPressureStream },
@@ -307,55 +354,5 @@ export default {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsIrpdStreamCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerStream },
-    ) {
-      console.log('[callback payload]', payload)
-      return state;
-    },
-    wsIrpdActionCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerAction  },
-    ) {
-      console.log('[callback payload]', payload)
-      return state;
-    },
-    wsIrpdEventCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerStreamV5 },
-    ) {
-      console.log('[callback payload]', payload)
-      return state;
-    },
-    wsIrpdSimpleCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerActionV5 },
-    ) {
-
-      console.log('[callback payload]', payload)
-      return state;
-    },
-    wsIrpdScheduleCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerActionV5 },
-    ) {
-      console.log('[callback payload]', payload)
-      return state;
-    },
-    wsIrpdPeriodicCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerStreamV5 },
-    ) {
-      console.log('[callback payload]', payload)
-      return state;
-    },
-    wsFarmCentralCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerCentralStream },
-    ) {
-      console.log('[callback payload]', payload)
-      return state;
-    }
   },
 };
