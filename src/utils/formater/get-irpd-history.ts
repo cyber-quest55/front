@@ -7,7 +7,12 @@ export const getIrpdBadgeStatus = (messageStatus: number) => {
 }
 
 // Get Irpd history based on socket return
-export const getIrpdHistoryFmt = (data: any) => {
+export const getIrpdHistoryFmt = (data: {
+  source: string,
+  payload: any,
+}) => {
   const intl = getIntl();
   console.log(data, intl);
+
+  return {}
 }

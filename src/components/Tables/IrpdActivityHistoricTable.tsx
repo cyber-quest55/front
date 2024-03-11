@@ -34,7 +34,7 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
   const { message } = App.useApp();
   const ref = useRef<ActionType>();
 
-  const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
+  const [dates, setDates] = useState<any>([dayjs().subtract(14, 'day'), dayjs()]);
   const reqData = useRequest(getIrpdHistory, { manual: true });
   const reqGetExcel = useRequest(getIrpdExcelReport, { manual: true });
 

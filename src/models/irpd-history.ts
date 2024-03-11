@@ -1,4 +1,4 @@
-import { getIrpdHistory } from '@/services/irpd';
+import { getIrpdHistoryFmt } from '@/utils/formater/get-irpd-history';
 import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
 import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import uniqid from 'uniqid';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 import { SelectedDeviceModelProps } from './selected-device';
+import { getIrpdHistory } from '@/services/irpd';
 
 export type GetIrpdHistoryModelProps = {
   result: any;
@@ -115,7 +116,7 @@ export default {
           ],
         },
         {
-          title: `d@farm${selectedDevice.farmId}`,
+          title: `d@farm@${selectedDevice.farmId}`,
           id: state.idFarm,
           binds: [
             {
@@ -336,7 +337,11 @@ export default {
       if (state.current !== 1) return state;
 
       // DEBUG
-      console.log('[WEBSOCKET RESPONSE]', payload);
+      const fmtData  = getIrpdHistoryFmt({
+        source: payload.source,
+        payload: payload.data,
+      });
+      console.log('[WEBSOCKET RESPONSE]', payload, fmtData);
 
       // Verifying what type is incoming data
       switch (payload.type) {

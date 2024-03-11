@@ -13,7 +13,7 @@ import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Button, Space, App, Pagination,  Flex, Badge } from 'antd';
 import dayjs from 'dayjs';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getPivotExcelReport } from '../../services/pivot';
 import { httpToExcel } from '../../utils/adapters/excel';
@@ -31,32 +31,33 @@ const PivotEventTable: React.FC<Props> = (props) => {
 
   const intl = useIntl();
   const { message } = App.useApp();
-  const { range, setRange, currentPage, setCurrentPage } = useTableHook(1);
+  const [dates, setDates] = useState<any>([dayjs().subtract(14, 'day'), dayjs()]);
+  const { currentPage, setCurrentPage } = useTableHook(1);
 
   useEffect(() => {
-    if(!props.queryPivotHistory?.loading){
-    const { deviceId, farmId } = props.selectedDevice
+    if(!props.pivotHistory?.loading){
+      const { deviceId, farmId } = props.selectedDevice
 
-    props.queryPivotHistory({
-      path: { deviceId, farmId },
-      params: {
-        gps: true,
-        central: true,
-        date_start: range[0].toISOString(),
-        date_end: range[1].toISOString(),
-        page: currentPage
-      }
-    })
-  }
-  }, [ currentPage, range ])
+      props.queryPivotHistory({
+        path: { deviceId, farmId },
+        params: {
+          gps: true,
+          central: true,
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
+          page: currentPage
+        }
+      })
+    }
+  }, [ currentPage, dates ])
 
 
   const handleExportReport = async  () => {
     try {
       const response = await reqGetExcel.runAsync({pivotId: props.selectedDevice.deviceId},
         {
-          date_start: range[0].toISOString(),
-          date_end: range[1].toISOString(),
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
           kwh_value_p : 1,
           kwh_value_hfp: 1,
           kwh_value_r: 1
@@ -96,12 +97,12 @@ const PivotEventTable: React.FC<Props> = (props) => {
 
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
-                      setRange(v)
-                      ref.current?.reload()
+                      setDates(v);
+                      ref.current?.reload();
                     };
                   },
                   allowClear: false,
-                  value: range,
+                  value: dates,
                 }}
               />
             </LightFilter>
@@ -264,7 +265,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
           size="small"
           onChange={(v) => {setCurrentPage(v)}}
           current={currentPage}
-          showTotal={false}
+          showTotal={() => false}
           showSizeChanger={false}
           total={props.pivotHistory?.result?.count}
         />
