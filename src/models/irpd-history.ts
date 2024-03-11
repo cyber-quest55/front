@@ -7,15 +7,23 @@ import uniqid from 'uniqid';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 import { SelectedDeviceModelProps } from './selected-device';
 
-export interface GetIrpdHistoryModelProps {
+export type GetIrpdHistoryModelProps = {
   result: any;
   loading: boolean;
   loaded: boolean;
   error: any;
+  current: number;
   total: number;
   idIrpd: string;
   idFarm: string;
 }
+
+export type IrpdHistoricModels =
+  | 'irpd_stream'
+  | 'irpd_action'
+  | 'irpd_stream_v5'
+  | 'irpd_action_v5'
+  | 'CentralStream';
 
 export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams) => {
   return {
@@ -32,6 +40,7 @@ export default {
     result: [],
     loaded: false,
     loading: true,
+    current: 1,
     error: {},
     idIrpd: uniqid('@IrpdHistory_irpd_'),
     idFarm: uniqid('@IrpdHistory_farm_'),
@@ -181,6 +190,55 @@ export default {
         },
       ];
       yield getSocketBinds(channels, put, 'unsubscribe');
+    },
+    // Web socket callbacks
+    *wsIrpdPressureStreamCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdPressureStreamCallbackSuccess', payload });
+    },
+    *wsIrpdStreamCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdStreamCallbackSuccess', payload });
+    },
+    *wsIrpdActionCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdActionCallbackSuccess', payload });
+    },
+    *wsIrpdEventCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdEventCallbackSuccess', payload });
+    },
+    *wsIrpdSimpleCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdSimpleCallbackSuccess', payload });
+    },
+    *wsIrpdScheduleCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdScheduleCallbackSuccess', payload });
+    },
+    *wsIrpdPeriodicCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdPeriodicCallbackSuccess', payload });
+    },
+    *wsFarmCentralCallback(
+      { payload }: { payload: any },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsFarmCentralCallbackSuccess', payload });
     }
   },
 
@@ -230,57 +288,68 @@ export default {
         error: {},
       };
     },
-    // Web socket reducers
-    wsIrpdPressureStreamCallback(
+    updateIrpdHistory(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[update historic]', payload);
+
+      // No need to update history if is first page
+      if (state.current !== 1) return state;
+
+      return state;
+    },
+    // Web socket callback reducers
+    wsIrpdPressureStreamCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsIrpdStreamCallback(
+    wsIrpdStreamCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsIrpdActionCallback(
+    wsIrpdActionCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsIrpdEventCallback(
+    wsIrpdEventCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsIrpdSimpleCallback(
+    wsIrpdSimpleCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsIrpdScheduleCallback(
+    wsIrpdScheduleCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsIrpdPeriodicCallback(
+    wsIrpdPeriodicCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {
       console.log('[callback payload]', payload)
       return state;
     },
-    wsFarmCentralCallback(
+    wsFarmCentralCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: any },
     ) {

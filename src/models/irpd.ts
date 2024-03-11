@@ -114,6 +114,19 @@ export default {
       yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
+    // Web socket calbacks
+    *wsIrpdStandardCallback(
+      { payload }: { payload: WkModels.IrpdStandardCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdStandardCallbackSuccess', payload });
+    },
+    *wsIrpdConfigCallback(
+      { payload }: { payload: WkModels.IrpdConfigCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdConfigCallbackSuccess', payload });
+    }
   },
 
   reducers: {
@@ -165,7 +178,7 @@ export default {
       };
     },
     // Web sockets reducers
-    wsIrpdStandardCallback(
+    wsIrpdStandardCallbackSuccess(
       state: GetIrpdModelProps,
       { payload }: { payload: WkModels.IrpdStandardCallbackPayload },
     ) {
@@ -201,7 +214,7 @@ export default {
         status: newStatus
       };
     },
-    wsIrpdConfigCallback(
+    wsIrpdConfigCallbackSuccess(
       state: GetIrpdModelProps,
       { payload }: { payload: WkModels.IrpdConfigCallbackPayload },
     ) {
