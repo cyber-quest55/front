@@ -2,6 +2,7 @@ import { getPivotHistory } from '@/services/pivot';
 import { AxiosError } from 'axios';
 
 import uniqid from 'uniqid';
+import { SelectedDeviceModelProps } from './selected-device';
 import { getPivotHistoryFmt, getPivotBadgeStatus } from '../utils/formater/get-pivot-history';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
@@ -32,12 +33,16 @@ export default {
     loading: true,
     error: {},
     id: uniqid('wsk-'),
-  },
+  } as GetPivotHistoryModelProps,
 
   effects: {
     *onInit({}, { put, select }: { put: any; select: any }) {
-      const selectedDevice = yield select((state) => state.selectedDevice);
-      const state = yield select((state) => state.pivotHistory);
+      const selectedDevice: SelectedDeviceModelProps = yield select(
+        (state: any) => state.selectedDevice
+      );
+      const state: GetPivotHistoryModelProps = yield select(
+        (state: any) => state.pivotHistory
+      );
 
       const channels = [
         {

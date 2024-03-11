@@ -26,6 +26,7 @@ export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams) => {
 
 export default {
   namespace: 'irpdHistory',
+
   state: {
     total: 1,
     result: [],
@@ -35,6 +36,7 @@ export default {
     idIrpd: uniqid('@IrpdHistory_irpd_'),
     idFarm: uniqid('@IrpdHistory_farm_'),
   } as GetIrpdHistoryModelProps,
+
   effects: {
     *queryIrpdHistory(
       { payload }: { payload: API.GetIrpdHistoryParams },
@@ -55,17 +57,50 @@ export default {
     },
     // Web sockets binding
     *onInit({}, { put, select }: { put: any; select: any }) {
-      const selectedDevice: SelectedDeviceModelProps = yield select((state: any) => state.selectedDevice);
-      const state: GetIrpdHistoryModelProps = yield select((state: any) => state.irpdHistory);
-      console.log(selectedDevice);
+      const selectedDevice: SelectedDeviceModelProps = yield select(
+        (state: any) => state.selectedDevice
+      );
+      const state: GetIrpdHistoryModelProps = yield select(
+        (state: any) => state.irpdHistory
+      );
       const channels = [
         {
           title: `d@irpd@${selectedDevice.deviceId}`,
           id: state.idIrpd,
           binds: [
             {
-              callback: ['pivot/wsPivotStandardCallback'],
-              event: 'ControllerConfig_standard',
+              callback: [],
+              event: 'irpd_pressure_stream',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'irpd_stream',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'irpd_action',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdStreamV5_event',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdActionV5_simple',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdActionV5_schedule',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdStreamV5_periodic',
               id: state.idIrpd,
             },
           ],
@@ -74,18 +109,81 @@ export default {
           title: `d@farm${selectedDevice.farmId}`,
           id: state.idFarm,
           binds: [
-
+            {
+              callback: [],
+              event: 'CentralStream',
+              id: state.idFarm
+            }
           ],
         },
       ];
       yield getSocketBinds(channels, put, 'subscribe');
     },
-    *onDestroy({ }, { put }: { put: any; select: any }) {
-      console.log('[irpd ws destroy]');
-      const channels = [];
+    *onDestroy({ }, { put, select }: { put: any; select: any }) {
+      const selectedDevice: SelectedDeviceModelProps = yield select(
+        (state: any) => state.selectedDevice
+      );
+      const state: GetIrpdHistoryModelProps = yield select(
+        (state: any) => state.irpdHistory
+      );
+      const channels = [
+        {
+          title: `d@irpd@${selectedDevice.deviceId}`,
+          id: state.idIrpd,
+          binds: [
+            {
+              callback: [],
+              event: 'irpd_pressure_stream',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'irpd_stream',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'irpd_action',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdStreamV5_event',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdActionV5_simple',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdActionV5_schedule',
+              id: state.idIrpd,
+            },
+            {
+              callback: [],
+              event: 'IrpdStreamV5_periodic',
+              id: state.idIrpd,
+            },
+          ],
+        },
+        {
+          title: `d@farm${selectedDevice.farmId}`,
+          id: state.idFarm,
+          binds: [
+            {
+              callback: [],
+              event: 'CentralStream',
+              id: state.idFarm
+            }
+          ],
+        },
+      ];
       yield getSocketBinds(channels, put, 'unsubscribe');
     }
   },
+
   reducers: {
     queryIrpdHistoryError(state: GetIrpdHistoryModelProps, { payload }: { payload: AxiosError }) {
       return {
@@ -132,5 +230,6 @@ export default {
         error: {},
       };
     },
+    // Web socket reducers
   },
 };
