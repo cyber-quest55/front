@@ -27,7 +27,7 @@ import * as yup from 'yup';
 
 interface AddIrpdAlarmFormProps {
   reasons: APIModels.NotificationReason[];
-  irpds: APIModels.IrpdDevice[];
+  irpds: APIModels.IrpdById[];
   queryIrpdNotifications: typeof queryIrpdNotifications;
 }
 
@@ -43,19 +43,21 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
   const { message } = App.useApp();
 
   const listOptions = () => {
-    return props.reasons.filter(r => r.protocol === 5).map((reason) => {
-      return {
-        title: reason.label,
-        name: ['options', 'reasons', reason.id.toString()],
-        critical: reason.critical
-          ? { name: ['options', 'critical_reasons', reason.id.toString()] }
-          : null,
-      };
-    });
+    return props.reasons
+      .filter((r) => r.protocol === 5)
+      .map((reason) => {
+        return {
+          title: reason.label,
+          name: ['options', 'reasons', reason.id.toString()],
+          critical: reason.critical
+            ? { name: ['options', 'critical_reasons', reason.id.toString()] }
+            : null,
+        };
+      });
   };
 
   const irpdOptions = () => {
-    return props.irpds.map((irpd) => {
+    return props.irpds.filter((r) => r.protocol === 5).map((irpd) => {
       return {
         value: irpd.id,
         label: irpd.name,
@@ -107,9 +109,12 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
 
   const schema2 = yup.object().shape({
     options: yup.object().shape({
-      devices: yup.array().min(1, intl.formatMessage({
-        id: 'validations.required',
-      })),
+      devices: yup.array().min(
+        1,
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
       reasons: yup
         .object()
         .test('is-jimmy', 'error', (value, testContext) =>
@@ -126,7 +131,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
       <Button
         onClick={() => setVisible(true)}
         size={lg ? 'large' : 'middle'}
-        disabled={props.irpds.length === 0}
+        disabled={props.irpds.filter((r) => r.protocol === 5 || r.protocol === 5.1).length === 0}
         type="primary"
         icon={<PlusCircleFilled />}
       >
@@ -143,11 +148,19 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
         modalProps={{
           destroyOnClose: true,
           onCancel: () => setVisible(false),
-          centered: true
+          centered: true,
         }}
         submitter={false}
       >
         <StepsForm
+          stepsProps={{
+            style: {
+              marginTop: 24,
+            },
+          }}
+          containerStyle={{
+            minWidth: 0,
+          }}
           stepsFormRender={(dom, submitter) => {
             return (
               <>
@@ -207,7 +220,6 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
               grid
               rowProps={{ gutter: [12, 12] }}
             >
-              <>
                 <ProFormText
                   rules={[yupSync1]}
                   colProps={{ xs: 24, md: 24 }}
@@ -228,7 +240,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                           <ProFormTimePicker
                             rules={[yupSync1]}
                             allowClear={false}
-                            colProps={{ xs: 12, md: 5 }}
+                            colProps={{ xs: 8, md: 5 }}
                             name={['information', 'start_at']}
                             dataFormat="HH:mm"
                             label={intl.formatMessage({
@@ -240,7 +252,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                           <ProFormTimePicker
                             rules={[yupSync1]}
                             allowClear={false}
-                            colProps={{ xs: 12, md: 5 }}
+                            colProps={{ xs: 8, md: 5 }}
                             name={['information', 'end_at']}
                             dataFormat="HH:mm"
                             label={intl.formatMessage({
@@ -257,18 +269,23 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                     rules={[yupSync1]}
                     fieldProps={{
                       onChange: () => {
-                        form1Ref.current?.setFieldValue(['information', 'start_at'], moment().startOf('day'));
-                        form1Ref.current?.setFieldValue(['information', 'end_at'], moment().endOf('day'));
+                        form1Ref.current?.setFieldValue(
+                          ['information', 'start_at'],
+                          moment().startOf('day'),
+                        );
+                        form1Ref.current?.setFieldValue(
+                          ['information', 'end_at'],
+                          moment().endOf('day'),
+                        );
                       },
                     }}
-                    colProps={{ xs: 24, md: 4 }}
+                    colProps={{ xs: 8, md: 4 }}
                     name={['information', 'all_day']}
                     label={intl.formatMessage({
                       id: 'component.addalarmform.modal.step1.allday.label',
                     })}
                   />
                 </ProFormGroup>
-              </>
             </StepsForm.StepForm>
             <StepsForm.StepForm
               title={intl.formatMessage({
@@ -296,9 +313,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                           id: 'component.addalarmform.modal.step2.devices.label',
                         })}
                         name={['options', 'devices']}
-                        options={irpdOptions(
-                          
-                        )}
+                        options={irpdOptions()}
                         fieldProps={{
                           mode: 'multiple',
                         }}
@@ -315,10 +330,9 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                           ghost
                           wrap
                           style={{
-                            maxHeight: 350,
+                            maxHeight: lg ? 350 : 250,
                             overflowY: 'auto',
                             overflowX: 'hidden',
-                            paddingRight: 4,
                           }}
                         >
                           <Typography.Text>
@@ -326,8 +340,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                               id: 'component.addalarmform.modal.step2.reasons.label',
                             })}
                           </Typography.Text>
-                          {listOptions(
-                          ).map((item) => (
+                          {listOptions().map((item) => (
                             <ProCard
                               collapsible={!!item.critical}
                               title={item.title}
@@ -358,8 +371,8 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                                 <>
                                   <Divider style={{ padding: 0, margin: '0 0 16px 0' }} />
                                   <Row justify="space-between" align={'middle'}>
-                                    <Col>
-                                      <Row align={'middle'}>
+                                    <Col style={{ flex: 4 }}>
+                                      <Row align={'middle'} style={{ flexWrap: 'nowrap' }}>
                                         <Tooltip
                                           title={intl.formatMessage({
                                             id: 'component.addalarmform.modal.step2.criticalreasons.tooltip',
@@ -393,7 +406,8 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                           ))}
                         </ProCard>
                         <Typography.Text type="danger" style={{ fontWeight: 'lighter' }}>
-                          {form2Ref.current?.getFieldsError()[1] && form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
+                          {form2Ref.current?.getFieldsError()[1] &&
+                          form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
                             ? intl.formatMessage({
                                 id: 'validations.required',
                               })

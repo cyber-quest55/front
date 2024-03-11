@@ -1,10 +1,16 @@
 import AddIrpdAlarmForm from '@/components/Forms/AddAlarmForm/Irpd';
 import EditIrpdAlarmForm from '@/components/Forms/EditAlarmForm/Irpd';
 import { useScreenHook } from '@/hooks/screen';
-import { queryIrpdNotifications, enableIrpdNotificationAction, deleteIrpdNotificationAction, NotificationMapped } from '@/models/irpd-notification';
+import {
+  deleteIrpdNotificationAction,
+  enableIrpdNotificationAction,
+  NotificationMapped,
+  queryIrpdNotifications,
+} from '@/models/irpd-notification';
 import { deleteIrpdNotification, enableIrpdNotification } from '@/services/notification';
 import { BellOutlined, DeleteFilled } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Button, Col, Empty, Modal, Row, Spin, Switch, Tag, Tooltip, Typography } from 'antd';
@@ -19,7 +25,7 @@ export type AlarmIrpdListProps = {
   notificationsFormatted: NotificationMapped[];
   reasons: APIModels.NotificationReason[];
   loading: boolean;
-  irpds: APIModels.IrpdDevice[];
+  irpds: APIModels.IrpdById[];
 };
 
 const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
@@ -64,8 +70,18 @@ const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
     props.queryIrpdNotifications({ farmId: params.farmId });
   }, []);
 
+  const className = useEmotionCss(() => {
+    return {
+      '.ant-pro-card-header': {
+        alignItems: 'baseline'
+      },
+    };
+  });
+
   return (
     <ProCard
+      ghost
+      className={className}
       title={props.title}
       loading={
         loading ? (
@@ -123,7 +139,11 @@ const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
               defaultCollapsed
               size="small"
               extra={
-                <Row gutter={[8, 8]} align="middle">
+                <Row
+                  gutter={[8, 8]}
+                  align="middle"
+                  style={{ flexDirection: lg ? 'row' : 'column' }}
+                >
                   <Col>
                     <EditIrpdAlarmForm
                       reasons={reasons}
@@ -157,13 +177,13 @@ const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
               }
             >
               <Row gutter={[8, 8]} style={{ flexDirection: 'column' }}>
-                <Row gutter={[4, 4]}>
+                <Row gutter={[0, 8]}>
                   {notification?.reasons?.map((reason: any, index: number) => (
                     <Col key={index}>
-                      <Tag>
-                        <Row align="middle">
-                          {reason.label}
-                          {notification.critical_reasons.includes(reason.id) ? (
+                      <Tag
+                        style={{ display: 'flex', alignItems: 'center' }}
+                        icon={
+                          notification.critical_reasons.includes(reason.id) ? (
                             <Tooltip
                               title={intl.formatMessage({
                                 id: 'component.alarmlist.critical.tooltip',
@@ -171,12 +191,14 @@ const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
                             >
                               <IoAlertCircleOutline
                                 color="#DA1D29"
-                                size={20}
-                                style={{ marginLeft: 8 }}
+                                size={18}
+                                style={{ marginRight: 7 }}
                               />
                             </Tooltip>
-                          ) : null}
-                        </Row>
+                          ) : null
+                        }
+                      >
+                        {reason.label}
                       </Tag>
                     </Col>
                   ))}
@@ -190,6 +212,7 @@ const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
         title={intl.formatMessage({
           id: 'component.alarmlist.deletemodal.title',
         })}
+        centered
         open={isModalOpen}
         onOk={handleDeleteNotification}
         onCancel={handleCancel}

@@ -39,27 +39,29 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
   const form1Ref = useRef<ProFormInstance<any> | undefined>();
   const form2Ref = useRef<ProFormInstance<any> | undefined>();
   const [visible, setVisible] = useState(false);
-  const updatePivotMonitorNotificationReq = useRequest(updatePivotMonitorNotification, { manual: true });
+  const updatePivotMonitorNotificationReq = useRequest(updatePivotMonitorNotification, {
+    manual: true,
+  });
   const { initialState } = useModel('@@initialState');
   const params = useParams();
   const { message } = App.useApp();
 
   const listOptions = () => {
-    return props.reasons.map((reason) => {
-      return {
-        title: reason.label,
-        name: ['options', 'reasons', reason.id.toString()],
-        critical: reason.critical
-          ? { name: ['options', 'critical_reasons', reason.id.toString()] }
-          : null,
-      };
-    });
+    return props.reasons
+      .filter((r) => r.protocol === 5)
+      .map((reason) => {
+        return {
+          title: reason.label,
+          name: ['options', 'reasons', reason.id.toString()],
+          critical: reason.critical
+            ? { name: ['options', 'critical_reasons', reason.id.toString()] }
+            : null,
+        };
+      });
   };
 
   const pivotOptions = () => {
-    const pivotMonitosFiltered = props.pivots.filter(
-      (pivot) => pivot.automation_type === 1,
-    );
+    const pivotMonitosFiltered = props.pivots.filter((pivot) => pivot.automation_type === 1);
 
     return pivotMonitosFiltered.map((pivot) => {
       return {
@@ -148,10 +150,19 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
         modalProps={{
           destroyOnClose: true,
           onCancel: () => setVisible(false),
+          centered: true,
         }}
         submitter={false}
       >
         <StepsForm
+          stepsProps={{
+            style: {
+              marginTop: 24,
+            },
+          }}
+          containerStyle={{
+            minWidth: 0,
+          }}
           stepsFormRender={(dom, submitter) => {
             return (
               <>
@@ -238,7 +249,7 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
                           <ProFormTimePicker
                             rules={[yupSync1]}
                             allowClear={false}
-                            colProps={{ xs: 12, md: 6 }}
+                            colProps={{ xs: 8, md: 5 }}
                             name={['information', 'start_at']}
                             dataFormat="HH:mm"
                             label={intl.formatMessage({
@@ -249,7 +260,7 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
                           <ProFormTimePicker
                             rules={[yupSync1]}
                             allowClear={false}
-                            colProps={{ xs: 12, md: 6 }}
+                            colProps={{ xs: 8, md: 5 }}
                             name={['information', 'end_at']}
                             dataFormat="HH:mm"
                             label={intl.formatMessage({
@@ -276,7 +287,7 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
                         );
                       },
                     }}
-                    colProps={{ xs: 24, md: 4 }}
+                    colProps={{ xs: 8, md: 4 }}
                     name={['information', 'all_day']}
                     label={intl.formatMessage({
                       id: 'component.editalarmform.modal.step1.allday.label',
@@ -340,10 +351,9 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
                           ghost
                           wrap
                           style={{
-                            maxHeight: 450,
+                            maxHeight: lg ? 350 : 250,
                             overflowY: 'auto',
                             overflowX: 'hidden',
-                            paddingRight: 4,
                           }}
                         >
                           {listOptions().map((item) => (
@@ -377,8 +387,8 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
                                 <>
                                   <Divider style={{ padding: 0, margin: '0 0 16px 0' }} />
                                   <Row justify="space-between" align={'middle'}>
-                                    <Col>
-                                      <Row align={'middle'}>
+                                    <Col style={{ flex: 4 }}>
+                                      <Row align={'middle'} style={{ flexWrap: 'nowrap' }}>
                                         <Tooltip
                                           title={intl.formatMessage({
                                             id: 'component.editalarmform.modal.step2.criticalreasons.tooltip',
@@ -412,7 +422,8 @@ const EditPivotMonitorAlarmForm = (props: EditPivotMonitorAlarmFormProps) => {
                           ))}
                         </ProCard>
                         <Typography.Text type="danger" style={{ fontWeight: 'lighter' }}>
-                          {form2Ref.current?.getFieldsError()[1] && form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
+                          {form2Ref.current?.getFieldsError()[1] &&
+                          form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
                             ? intl.formatMessage({
                                 id: 'validations.required',
                               })

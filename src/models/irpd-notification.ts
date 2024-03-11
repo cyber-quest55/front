@@ -7,7 +7,7 @@ import { NotificationRequestLanguage } from '@/utils/enum/language';
 export type NotificationMapped = {
   id: number;
   farm: number;
-  devices: APIModels.IrpdDevice[];
+  devices: APIModels.IrpdById[];
   enable: boolean;
   name: string;
   start: string;
@@ -23,7 +23,7 @@ export interface GetIrpdNotificationsModelProps {
   notifications: APIModels.Notification[];
   notificationsFormatted: NotificationMapped[];
   reasons: APIModels.NotificationReason[];
-  irpds: APIModels.IrpdDevice[];
+  irpds: APIModels.IrpdById[];
   loading: boolean;
   loaded: boolean;
   error: any;
@@ -130,7 +130,7 @@ export default {
         payload: {
           notifications: APIModels.Notification[];
           reasons: APIModels.NotificationReason[];
-          irpds: APIModels.IrpdDevice[];
+          irpds: APIModels.IrpdById[];
         };
       },
     ) {

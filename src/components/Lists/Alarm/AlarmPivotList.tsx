@@ -10,6 +10,7 @@ import {
 import { deletePivotNotification, enablePivotNotification } from '@/services/notification';
 import { BellOutlined, DeleteFilled } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Button, Col, Empty, Modal, Row, Spin, Switch, Tag, Tooltip, Typography } from 'antd';
@@ -68,9 +69,18 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
   useEffect(() => {
     props.queryPivotNotifications({ farmId: params.farmId });
   }, []);
+  
+  const className = useEmotionCss(() => {
+    return {
+      '.ant-pro-card-header': {
+        alignItems: 'baseline'
+      },
+    };
+  });
 
   return (
     <ProCard
+      ghost
       title={props.title}
       loading={
         loading ? (
@@ -97,6 +107,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
         notificationsFormatted.map((notification: any, index: number) => {
           return (
             <ProCard
+              className={className}
               key={notification.id}
               title={
                 <span>
@@ -128,7 +139,11 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
               defaultCollapsed
               size="small"
               extra={
-                <Row gutter={[8, 8]} align="middle">
+                <Row
+                  gutter={[8, 8]}
+                  align="middle"
+                  style={{ flexDirection: lg ? 'row' : 'column' }}
+                >
                   <Col>
                     <EditPivotAlarmForm
                       reasons={reasons}
@@ -162,11 +177,11 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
               }
             >
               <Row gutter={[8, 8]} style={{ flexDirection: 'column' }}>
-                <Row gutter={[4, 4]}>
+                <Row gutter={[0, 8]}>
                   {notification?.reasons?.map((reason: any, index: number) => (
                     <Col key={index}>
                       <Tag
-                      style={{ display: 'flex', alignItems: 'center'}}
+                        style={{ display: 'flex', alignItems: 'center' }}
                         icon={
                           notification.critical_reasons.includes(reason.id) ? (
                             <Tooltip
@@ -197,6 +212,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
         title={intl.formatMessage({
           id: 'component.alarmlist.deletemodal.title',
         })}
+        centered
         open={isModalOpen}
         onOk={handleDeleteNotification}
         onCancel={handleCancel}

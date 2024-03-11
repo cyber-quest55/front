@@ -43,6 +43,8 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
   const params = useParams();
   const { message } = App.useApp();
 
+  const hasMoreThanOneProtocol = Array.from(new Set(props.pivots.map((obj) => obj.protocol))).length > 1
+
   const listOptions = (version: string) => {
     const reasonsFilteredByVersion = props.reasons.filter(
       (reason) => reason.protocol === Number(version),
@@ -117,9 +119,12 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
 
   const schema2 = yup.object().shape({
     options: yup.object().shape({
-      devices: yup.array().min(1, intl.formatMessage({
-        id: 'validations.required',
-      })),
+      devices: yup.array().min(
+        1,
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
       reasons: yup
         .object()
         .test('is-jimmy', 'error', (value, testContext) =>
@@ -138,7 +143,7 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
         size={lg ? 'large' : 'middle'}
         type="primary"
         icon={<PlusCircleFilled />}
-        disabled={props.pivots.filter(p => p.automation_type === 0).length === 0}
+        disabled={props.pivots.filter((p) => p.automation_type === 0).length === 0}
       >
         {intl.formatMessage({
           id: 'component.addalarmform.button',
@@ -153,11 +158,19 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
         modalProps={{
           destroyOnClose: true,
           onCancel: () => setVisible(false),
-          centered: true
+          centered: true,
         }}
         submitter={false}
       >
         <StepsForm
+          stepsProps={{
+            style: {
+              marginTop: 24,
+            },
+          }}
+          containerStyle={{
+            minWidth: 0,
+          }}
           stepsFormRender={(dom, submitter) => {
             return (
               <>
@@ -218,92 +231,96 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
               grid
               rowProps={{ gutter: [12, 12] }}
             >
-              <>
-                <ProFormText
-                  rules={[yupSync1]}
-                  colProps={{ xs: 24, md: 24 }}
-                  name={['information', 'notification_group_name']}
-                  label={intl.formatMessage({
-                    id: 'component.addalarmform.modal.step1.name.label',
-                  })}
-                />
+              <ProFormText
+                rules={[yupSync1]}
+                colProps={{ xs: 24, md: 24 }}
+                name={['information', 'notification_group_name']}
+                label={intl.formatMessage({
+                  id: 'component.addalarmform.modal.step1.name.label',
+                })}
+              />
 
-                <ProFormRadio.Group
-                  name={['information', 'version']}
-                  layout="horizontal"
-                  label={intl.formatMessage({
-                    id: 'component.addalarmform.modal.step1.version.label',
-                  })}
+              {hasMoreThanOneProtocol ? <ProFormRadio.Group
+                name={['information', 'version']}
+                layout="horizontal"
+                label={intl.formatMessage({
+                  id: 'component.addalarmform.modal.step1.version.label',
+                })}
+                rules={[yupSync1]}
+                fieldProps={{
+                  onChange: () => {
+                    form2Ref.current?.resetFields();
+                  },
+                }}
+                options={[
+                  {
+                    label: 'G1',
+                    value: 4.1,
+                  },
+                  {
+                    label: 'G2',
+                    value: 5,
+                  },
+                ]}
+              /> : null}
+              <ProFormGroup
+                title={intl.formatMessage({
+                  id: 'component.addalarmform.modal.step1.date.title',
+                })}
+              >
+                <ProFormDependency name={['information']} colon style={{ width: '100%' }}>
+                  {({ information }) => {
+                    return (
+                      <>
+                        <ProFormTimePicker
+                          rules={[yupSync1]}
+                          allowClear={false}
+                          colProps={{ xs: 8, md: 5 }}
+                          name={['information', 'start_at']}
+                          dataFormat="HH:mm"
+                          label={intl.formatMessage({
+                            id: 'component.addalarmform.modal.step1.start.label',
+                          })}
+                          disabled={information.all_day}
+                        />
+
+                        <ProFormTimePicker
+                          rules={[yupSync1]}
+                          allowClear={false}
+                          colProps={{ xs: 8, md: 5 }}
+                          name={['information', 'end_at']}
+                          dataFormat="HH:mm"
+                          label={intl.formatMessage({
+                            id: 'component.addalarmform.modal.step1.end.label',
+                          })}
+                          disabled={information.all_day}
+                        />
+                      </>
+                    );
+                  }}
+                </ProFormDependency>
+
+                <ProFormCheckbox
                   rules={[yupSync1]}
                   fieldProps={{
                     onChange: () => {
-                      form2Ref.current?.resetFields();
+                      form1Ref.current?.setFieldValue(
+                        ['information', 'start_at'],
+                        moment().startOf('day'),
+                      );
+                      form1Ref.current?.setFieldValue(
+                        ['information', 'end_at'],
+                        moment().endOf('day'),
+                      );
                     },
                   }}
-                  options={[
-                    {
-                      label: 'G1',
-                      value: 4.1,
-                    },
-                    {
-                      label: 'G2',
-                      value: 5,
-                    },
-                  ]}
-                />
-                <ProFormGroup
-                  title={intl.formatMessage({
-                    id: 'component.addalarmform.modal.step1.date.title',
+                  colProps={{ xs: 8, md: 4 }}
+                  name={['information', 'all_day']}
+                  label={intl.formatMessage({
+                    id: 'component.addalarmform.modal.step1.allday.label',
                   })}
-                >
-                  <ProFormDependency name={['information']} colon style={{ width: '100%' }}>
-                    {({ information }) => {
-                      return (
-                        <>
-                          <ProFormTimePicker
-                            rules={[yupSync1]}
-                            allowClear={false}
-                            colProps={{ xs: 12, md: 5 }}
-                            name={['information', 'start_at']}
-                            dataFormat="HH:mm"
-                            label={intl.formatMessage({
-                              id: 'component.addalarmform.modal.step1.start.label',
-                            })}
-                            disabled={information.all_day}
-                          />
-
-                          <ProFormTimePicker
-                            rules={[yupSync1]}
-                            allowClear={false}
-                            colProps={{ xs: 12, md: 5 }}
-                            name={['information', 'end_at']}
-                            dataFormat="HH:mm"
-                            label={intl.formatMessage({
-                              id: 'component.addalarmform.modal.step1.end.label',
-                            })}
-                            disabled={information.all_day}
-                          />
-                        </>
-                      );
-                    }}
-                  </ProFormDependency>
-
-                  <ProFormCheckbox
-                    rules={[yupSync1]}
-                    fieldProps={{
-                      onChange: () => {
-                        form1Ref.current?.setFieldValue(['information', 'start_at'], moment().startOf('day'));
-                        form1Ref.current?.setFieldValue(['information', 'end_at'], moment().endOf('day'));
-                      },
-                    }}
-                    colProps={{ xs: 24, md: 4 }}
-                    name={['information', 'all_day']}
-                    label={intl.formatMessage({
-                      id: 'component.addalarmform.modal.step1.allday.label',
-                    })}
-                  />
-                </ProFormGroup>
-              </>
+                />
+              </ProFormGroup>
             </StepsForm.StepForm>
             <StepsForm.StepForm
               title={intl.formatMessage({
@@ -321,7 +338,7 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
                 });
               }}
             >
-              <Space direction="vertical"  size="small">
+              <Space direction="vertical" size="small">
                 <ProForm.Item noStyle shouldUpdate>
                   {() => {
                     return (
@@ -336,9 +353,6 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
                         )}
                         fieldProps={{
                           mode: 'multiple',
-                          onChange: () => {
-                            console.log(form2Ref.current?.getFieldValue(['options', 'devices']))
-                          }
                         }}
                       />
                     );
@@ -353,10 +367,9 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
                           ghost
                           wrap
                           style={{
-                            maxHeight: 350,
+                            maxHeight: lg ? 350 : 250,
                             overflowY: 'auto',
                             overflowX: 'hidden',
-                            paddingRight: 4,
                           }}
                         >
                           <Typography.Text>
@@ -397,8 +410,8 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
                                 <>
                                   <Divider style={{ padding: 0, margin: '0 0 16px 0' }} />
                                   <Row justify="space-between" align={'middle'}>
-                                    <Col>
-                                      <Row align={'middle'}>
+                                    <Col style={{ flex: 4 }}>
+                                      <Row align={'middle'} style={{ flexWrap: 'nowrap' }}>
                                         <Tooltip
                                           title={intl.formatMessage({
                                             id: 'component.addalarmform.modal.step2.criticalreasons.tooltip',
@@ -432,7 +445,8 @@ const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
                           ))}
                         </ProCard>
                         <Typography.Text type="danger" style={{ fontWeight: 'lighter' }}>
-                          {form2Ref.current?.getFieldsError()[1] && form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
+                          {form2Ref.current?.getFieldsError()[1] &&
+                          form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
                             ? intl.formatMessage({
                                 id: 'validations.required',
                               })
