@@ -106,7 +106,7 @@ export default {
     },
     // Web sockets callback
     *wsMeterSystemStandardCallback(
-      { payload }: { payload: WkModels.MeterSystemStandardCallbackPayload  },
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsMeterSystemStandardCallbackSuccess', payload });
@@ -168,7 +168,7 @@ export default {
     // Web sockets reducers
     wsMeterSystemStandardCallbackSuccess(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: WkModels.MeterSystemStandardCallbackPayload },
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload },
     ) {
       // Communication error status
       if (payload.message_error) {

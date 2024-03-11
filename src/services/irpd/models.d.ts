@@ -623,3 +623,181 @@ declare namespace APIModels {
     protocol: number;
   };
 }
+declare namespace WsIrpdModels {
+  /* Start of irpd history history WS */
+  type IrpdControllerPressureStream = {
+    id: number;
+    irpd: number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    payload: string;
+    pressure: number;
+    frame_id: number;
+    device: string;
+  };
+
+  type IrpdControllerCentralStream = {
+    uuid: string;
+    status: boolean;
+    created: Date;
+  };
+
+  type IrpdControllerAction = {
+    uuid: number;
+    user: number;
+    irpd: number;
+    mode: number;
+    start: any;
+    end: any;
+    created: string;
+    type: number;
+    username: string;
+    humanized: string;
+    sent: boolean;
+    delivered: number;
+  };
+
+  type IrpdControllerActionV5 = {
+    uuid: string;
+    next: string;
+    message_error?: any;
+    previous: string;
+    created_on_hardware: boolean;
+    created_at?: string;
+    username?: string;
+    created: string;
+    device: number;
+    arrived: string;
+    message_status: number;
+    message_subtype?: string;
+    gps_config?: number;
+    created_by: any;
+    pivot?: number;
+    content: any;
+    total_flow: number;
+  };
+
+  type IrpdControllerStream = {
+    uuid: number;
+    arrived: string;
+    created: string;
+    device: number;
+    payload: string;
+    irpd: number;
+    reason: number;
+    hourmeter: number;
+    frame_id: number;
+  };
+
+  type IrpdControllerStreamV5 = {
+    uuid: string;
+    next: string;
+    message_error?: any;
+    previous: string;
+    created_on_hardware: boolean;
+    created_at?: string;
+    username?: string;
+    created: string;
+    device: number;
+    arrived: string;
+    message_status: number;
+    message_subtype?: string;
+    gps_config?: number;
+    created_by: any;
+    pivot?: number;
+    content: any;
+    total_flow: number;
+  };
+  /* End of irpd history history WS */
+
+  /* Start of central radio update clock WS */
+  type IrpdStandardCallbackPayload  = {
+    id: number;
+    created_by: null | any;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      clock: {
+        day: number;
+        month: number;
+        year: number;
+        hour: number;
+        minute: number;
+        second: number;
+      };
+      holidays: {
+        day: number;
+        month: number;
+        number_editing: number;
+      }[];
+      peak_time: {
+        stop_hour_1: number;
+        stop_hour_2: number;
+        start_hour_1: number;
+        start_hour_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        stop_minute_1: number;
+        stop_minute_2: number;
+        sunday_enable: number;
+        start_minute_1: number;
+        start_minute_2: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      imanage_sensors: {
+        max_value: number;
+        min_value: number;
+        sensor_type: number;
+        number_editing: number;
+      }[];
+      pump_power_time: {
+        minutes: number;
+      };
+      enable_peak_time: {
+        enable: number;
+      };
+      datalogger_address: {
+        address: string;
+      };
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      event_stream_indexes: {
+        indexes: string;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+      periodic_stream_indexes: {
+        indexes: string;
+      };
+    };
+    monthly_water_limit: number;
+    has_pressure_sensor: boolean;
+    name_irpd_on_config: string;
+    flow: number;
+    position: null | any;
+    potency: number;
+    pinned: boolean;
+    name: string;
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    device: number;
+    irpd: number;
+  };
+
+  type IrpdConfigCallbackPayload  = any
+  /* End of central radio update clock WS */
+}

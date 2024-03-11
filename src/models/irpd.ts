@@ -116,13 +116,13 @@ export default {
     },
     // Web socket calbacks
     *wsIrpdStandardCallback(
-      { payload }: { payload: WkModels.IrpdStandardCallbackPayload  },
+      { payload }: { payload: WsIrpdModels.IrpdStandardCallbackPayload  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsIrpdStandardCallbackSuccess', payload });
     },
     *wsIrpdConfigCallback(
-      { payload }: { payload: WkModels.IrpdConfigCallbackPayload  },
+      { payload }: { payload: WsIrpdModels.IrpdConfigCallbackPayload  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsIrpdConfigCallbackSuccess', payload });
@@ -180,7 +180,7 @@ export default {
     // Web sockets reducers
     wsIrpdStandardCallbackSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: WkModels.IrpdStandardCallbackPayload },
+      { payload }: { payload: WsIrpdModels.IrpdStandardCallbackPayload },
     ) {
       // Communication error status
       if (payload.message_error) {
@@ -216,7 +216,7 @@ export default {
     },
     wsIrpdConfigCallbackSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: WkModels.IrpdConfigCallbackPayload },
+      { payload }: { payload: WsIrpdModels.IrpdConfigCallbackPayload },
     ) {
       // Delivery or Sent status
       const newStatus = state.status.map(s => {

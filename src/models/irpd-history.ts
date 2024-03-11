@@ -193,71 +193,78 @@ export default {
     },
     // Web socket callbacks
     *wsIrpdPressureStreamCallback(
-      { payload }: { payload: WkModels.IrpdControllerPressureStream },
+      { payload }: { payload: WsIrpdModels.IrpdControllerPressureStream },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsIrpdPressureStreamCallbackSuccess', payload });
     },
     *wsIrpdStreamCallback(
-      { payload }: { payload: WkModels.IrpdControllerStream },
+      { payload }: { payload: WsIrpdModels.IrpdControllerStream },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
         type: 'stream',
+        source: 'stream',
         data: payload,
       }});
     },
     *wsIrpdActionCallback(
-      { payload }: { payload: WkModels.IrpdControllerAction },
+      { payload }: { payload: WsIrpdModels.IrpdControllerAction },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
         type: 'action',
+        source: 'action',
         data: payload,
       }});
     },
     *wsIrpdEventCallback(
-      { payload }: { payload: WkModels.IrpdControllerStreamV5  },
+      { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
         type: 'stream_v5',
+        source: 'event',
         data: payload,
       }});
     },
     *wsIrpdSimpleCallback(
-      { payload }: { payload: WkModels.IrpdControllerActionV5 },
+      { payload }: { payload: WsIrpdModels.IrpdControllerActionV5 },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
         type: 'action_v5',
+        source: 'simple',
         data: payload,
       }});
     },
     *wsIrpdScheduleCallback(
-      { payload }: { payload: WkModels.IrpdControllerActionV5 },
+      { payload }: { payload: WsIrpdModels.IrpdControllerActionV5 },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
         type: 'action_v5',
+        source: 'schedule',
         data: payload,
       }});
     },
     *wsIrpdPeriodicCallback(
-      { payload }: { payload: WkModels.IrpdControllerStreamV5 },
+      { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5 },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
         type: 'stream_v5',
+        source: 'periodical',
         data: payload,
       }});
     },
     *wsFarmCentralCallback(
-      { payload }: { payload: WkModels.IrpdControllerCentralStream },
+      { payload }: { payload: WsIrpdModels.IrpdControllerCentralStream },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
         type: 'central_stream',
+        source: 'central_stream',
         data: payload,
       }});
     }
@@ -313,17 +320,23 @@ export default {
     wsUpdateIrpdHistoryAction(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: {
-        type: string,
+        type: string;
+        source: string;
         data: (
-          WkModels.IrpdControllerStream | 
-          WkModels.IrpdControllerStreamV5 | 
-          WkModels.IrpdControllerAction | 
-          WkModels.IrpdControllerActionV5 | 
-          WkModels.IrpdControllerCentralStream
-        )
-      } },
+          WsIrpdModels.IrpdControllerStream | 
+          WsIrpdModels.IrpdControllerStreamV5 | 
+          WsIrpdModels.IrpdControllerAction | 
+          WsIrpdModels.IrpdControllerActionV5 | 
+          WsIrpdModels.IrpdControllerCentralStream
+        );
+      }},
     ) {
-      console.log('[update historic]', payload);
+      /* Treating first page (on previous projet there is a rule that
+      prevents websocket for updating list if is not on first page) */
+      if (state.current !== 1) return state;
+
+      // DEBUG
+      console.log('[WEBSOCKET RESPONSE]', payload);
 
       // Verifying what type is incoming data
       switch (payload.type) {
@@ -349,7 +362,7 @@ export default {
     },
     wsIrpdPressureStreamCallbackSuccess(
       state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WkModels.IrpdControllerPressureStream },
+      { payload }: { payload: WsIrpdModels.IrpdControllerPressureStream },
     ) {
       console.log('[callback payload]', payload)
       return state;
