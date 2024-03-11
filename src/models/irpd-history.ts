@@ -3,7 +3,9 @@ import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
 import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
 import { AxiosError } from 'axios';
+import uniqid from 'uniqid';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
+import { SelectedDeviceModelProps } from './selected-device';
 
 export interface GetIrpdHistoryModelProps {
   result: any;
@@ -11,6 +13,8 @@ export interface GetIrpdHistoryModelProps {
   loaded: boolean;
   error: any;
   total: number;
+  idIrpd: string;
+  idFarm: string;
 }
 
 export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams) => {
@@ -22,15 +26,15 @@ export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams) => {
 
 export default {
   namespace: 'irpdHistory',
-
   state: {
     total: 1,
     result: [],
     loaded: false,
     loading: true,
     error: {},
-  },
-
+    idIrpd: uniqid('@IrpdHistory_irpd_'),
+    idFarm: uniqid('@IrpdHistory_farm_'),
+  } as GetIrpdHistoryModelProps,
   effects: {
     *queryIrpdHistory(
       { payload }: { payload: API.GetIrpdHistoryParams },
@@ -44,25 +48,36 @@ export default {
           { farmId, irpdId },
          );
         yield put({ type: 'queryIrpdHistorySuccess', payload: response });
-        //yield put({ type: 'onInit', payload: {} });
+        yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryIrpdHistoryError', payload: error });
       }
     },
     // Web sockets binding
-    *onInit({}, { put }: { put: any; select: any }) {
-      console.log('[irpd ws init]');
-      const channels = [{
-        title: `d@irpd@${319}`,
-        id: `@IrpdHistory_irpd${319}`,
-        binds: [
-          {
-            callback: ['pivot/wsPivotStandardCallback'],
-            event: 'ControllerConfig_standard',
-            id: `@EditFarm_pivot${319}`,
-          },
-        ],
-      }];
+    *onInit({}, { put, select }: { put: any; select: any }) {
+      const selectedDevice: SelectedDeviceModelProps = yield select((state: any) => state.selectedDevice);
+      const state: GetIrpdHistoryModelProps = yield select((state: any) => state.irpdHistory);
+      console.log(selectedDevice);
+      const channels = [
+        {
+          title: `d@irpd@${selectedDevice.deviceId}`,
+          id: state.idIrpd,
+          binds: [
+            {
+              callback: ['pivot/wsPivotStandardCallback'],
+              event: 'ControllerConfig_standard',
+              id: state.idIrpd,
+            },
+          ],
+        },
+        {
+          title: `d@farm${selectedDevice.farmId}`,
+          id: state.idFarm,
+          binds: [
+
+          ],
+        },
+      ];
       yield getSocketBinds(channels, put, 'subscribe');
     },
     *onDestroy({ }, { put }: { put: any; select: any }) {
@@ -71,7 +86,6 @@ export default {
       yield getSocketBinds(channels, put, 'unsubscribe');
     }
   },
-
   reducers: {
     queryIrpdHistoryError(state: GetIrpdHistoryModelProps, { payload }: { payload: AxiosError }) {
       return {
