@@ -80,21 +80,6 @@ export default {
           id: state.idIrpd,
           binds: [
             {
-              callback: ['irpdHistory/wsIrpdPressureStreamCallback'],
-              event: 'irpd_pressure_stream',
-              id: state.idIrpd,
-            },
-            {
-              callback: ['irpdHistory/wsIrpdStreamCallback'],
-              event: 'irpd_stream',
-              id: state.idIrpd,
-            },
-            {
-              callback: ['irpdHistory/wsIrpdActionCallback'],
-              event: 'irpd_action',
-              id: state.idIrpd,
-            },
-            {
               callback: ['irpdHistory/wsIrpdEventCallback'],
               event: 'IrpdStreamV5_event',
               id: state.idIrpd,
@@ -143,21 +128,6 @@ export default {
           id: state.idIrpd,
           binds: [
             {
-              callback: ['irpdHistory/wsIrpdPressureStreamCallback'],
-              event: 'irpd_pressure_stream',
-              id: state.idIrpd,
-            },
-            {
-              callback: ['irpdHistory/wsIrpdStreamCallback'],
-              event: 'irpd_stream',
-              id: state.idIrpd,
-            },
-            {
-              callback: ['irpdHistory/wsIrpdActionCallback'],
-              event: 'irpd_action',
-              id: state.idIrpd,
-            },
-            {
               callback: ['irpdHistory/wsIrpdEventCallback'],
               event: 'IrpdStreamV5_event',
               id: state.idIrpd,
@@ -194,32 +164,6 @@ export default {
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
     // Web socket callbacks
-    *wsIrpdPressureStreamCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerPressureStream },
-      { put }: { put: any; call: any; select: any },
-    ) {
-      yield put({ type: 'wsIrpdPressureStreamCallbackSuccess', payload });
-    },
-    *wsIrpdStreamCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerStream },
-      { put }: { put: any; call: any; select: any },
-    ) {
-      yield put({ type: 'wsIrpdStreamCallbackSuccess', payload: {
-        type: 'stream',
-        source: 'stream',
-        data: payload,
-      }});
-    },
-    *wsIrpdActionCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerAction },
-      { put }: { put: any; call: any; select: any },
-    ) {
-      yield put({ type: 'wsIrpdActionCallbackSuccess', payload: {
-        type: 'action',
-        source: 'action',
-        data: payload,
-      }});
-    },
     *wsIrpdEventCallback(
       { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5  },
       { put }: { put: any; call: any; select: any },
@@ -319,29 +263,6 @@ export default {
       };
     },
     // Web socket callback reducers
-    wsIrpdPressureStreamCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WsIrpdModels.IrpdControllerPressureStream },
-    ) {
-      console.log('[callback payload]', payload)
-      return state;
-    },
-    wsIrpdStreamCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WsIrpdModels.IrpdControllerStream },
-    ) {
-      const updatedHistory = getIrpdHistoryFmt({ WsStream: payload });
-      console.log('[callback payload]', payload, updatedHistory);
-      return state;
-    },
-    wsIrpdActionCallbackSuccess(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WsIrpdModels.IrpdControllerAction },
-    ) {
-      const updatedHistory = getIrpdHistoryFmt({ WsAction: payload });
-      console.log('[callback payload]', payload, updatedHistory);
-      return state;
-    },
     wsIrpdEventCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5 },

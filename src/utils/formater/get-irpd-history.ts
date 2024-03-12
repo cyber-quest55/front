@@ -8,12 +8,6 @@ export const getIrpdHistoryFmt = (
   payload: APIModels.IrpdHistoryEventPayload
 ): APIModels.IrpdHistoryListItem | null => {
 
-  //! Old events possobility to be removed from system
-  if (payload.WsStream !== undefined) {
-  }
-  if (payload.WsAction !== undefined) {
-  }
-
   // Event callback
   if (payload.WsEvent !== undefined) {
 
