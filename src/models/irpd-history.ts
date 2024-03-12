@@ -354,24 +354,81 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerSimple },
     ) {
-      const updatedHistory = getIrpdHistoryFmt({ WsSimple: payload });
-      console.log('[callback payload]', payload, updatedHistory);
+      const currentValues = [...state.result];
+      const formattedIncomingValue = getIrpdHistoryFmt({ WsSimple: payload });
+      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+
+      if (formattedIncomingValue) {
+        if (hasEntry) {
+          currentValues[hasEntry] = {
+            ...currentValues[hasEntry],
+            ...formattedIncomingValue,
+          };
+        } else {
+          currentValues.pop();
+          currentValues.unshift({
+            ...formattedIncomingValue,
+            key: `row-key-table-${hasEntry}`,
+            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          });
+        }
+      }
+
       return state;
     },
     wsIrpdScheduleCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerSchedule },
     ) {
-      const updatedHistory = getIrpdHistoryFmt({ WsSchedule: payload });
-      console.log('[callback payload]', payload, updatedHistory);
+      const currentValues = [...state.result];
+      const formattedIncomingValue = getIrpdHistoryFmt({ WsSchedule: payload });
+      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+
+      if (formattedIncomingValue) {
+        if (hasEntry) {
+          currentValues[hasEntry] = {
+            ...currentValues[hasEntry],
+            ...formattedIncomingValue,
+          };
+        } else {
+          currentValues.pop();
+          currentValues.unshift({
+            ...formattedIncomingValue,
+            key: `row-key-table-${hasEntry}`,
+            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          });
+        }
+      }
+
       return state;
     },
     wsIrpdPeriodicCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdCoontrollerPeriodic },
     ) {
-      const updatedHistory = getIrpdHistoryFmt({ WsPeriodic: payload });
-      console.log('[callback payload]', payload, updatedHistory);
+      const currentValues = [...state.result];
+      const formattedIncomingValue = getIrpdHistoryFmt({ WsPeriodic: payload });
+      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+
+      if (formattedIncomingValue) {
+        if (hasEntry) {
+          currentValues[hasEntry] = {
+            ...currentValues[hasEntry],
+            ...formattedIncomingValue,
+          };
+        } else {
+          currentValues.pop();
+          currentValues.unshift({
+            ...formattedIncomingValue,
+            key: `row-key-table-${hasEntry}`,
+            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          });
+        }
+      }
+
       return state;
     },
     wsFarmCentralCallbackSuccess(

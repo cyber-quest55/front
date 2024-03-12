@@ -1,7 +1,3 @@
-// Dependencies
-import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
-import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
-
 // Badge status
 export const getIrpdBadgeStatus = (messageStatus: number) => {
   return messageStatus === 2 ? "success": "processing"
@@ -12,24 +8,15 @@ export const getIrpdHistoryFmt = (
   payload: APIModels.IrpdHistoryEventPayload
 ): APIModels.IrpdHistoryListItem | null => {
 
-  // Stream callback
+  //! Old events possobility to be removed from system
   if (payload.WsStream !== undefined) {
-
   }
-
-  // Action callback
   if (payload.WsAction !== undefined) {
-    
   }
 
   // Event callback
   if (payload.WsEvent !== undefined) {
 
-  }
-
-  // Simple callback
-  if (payload.WsSimple !== undefined) {
-    return { ...payload.WsSimple }
   }
 
   // Schedule callback
@@ -84,7 +71,32 @@ export const getIrpdHistoryFmt = (
 
   // Central callback
   if (payload.WsCentral !== undefined) {
+    return {
+      arrived: '???',
+      content: {
+        pump_action: {
+          enable: 3,
+        },
+      },
+      created: payload.WsCentral.created,
+      created_by: 4242,
+      created_on_hardware: false,
+      device: '???',
+      id: payload.WsCentral.id,
+      irpd: 34,
+      message_error: '???',
+      message_packets: [3],
+      message_status: 3,
+      message_subtype: '???',
+      updated: payload.WsCentral.updated,
+      username: '???',
+      uuid: payload.WsCentral.uuid,
+    }
+  }
 
+  // Simple callback
+  if (payload.WsSimple !== undefined) {
+    return { ...payload.WsSimple }
   }
 
   return null;
