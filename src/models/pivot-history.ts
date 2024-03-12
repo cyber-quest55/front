@@ -347,7 +347,10 @@ export default {
       const indexFound = newValue.findIndex(item => item.id === payload.id)
 
       if(indexFound >= 0) {
-        newValue[indexFound] = {...newValue[indexFound], badgeStatus: getPivotBadgeStatus(payload.message_status)};
+        newValue[indexFound] = {
+          ...newValue[indexFound],
+          badgeStatus: getPivotBadgeStatus(payload.message_status)
+        };
       } else {
         newValue.pop();
         newValue.unshift({ ...newValueFmt[0] });

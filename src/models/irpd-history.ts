@@ -1,4 +1,4 @@
-import { getIrpdHistoryFmt } from '@/utils/formater/get-irpd-history';
+import { getIrpdHistoryArrayFmt } from '@/utils/formater/get-irpd-history';
 import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
 import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
@@ -165,7 +165,7 @@ export default {
     },
     // Web socket callbacks
     *wsIrpdEventCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5  },
+      { payload }: { payload: WsIrpdModels.IrpdControllerEvent  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsIrpdEventCallbackSuccess', payload: {
@@ -234,41 +234,44 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: API.GetIrpdHistoryResponse },
     ) {
+      const formattedItem = getIrpdHistoryArrayFmt(payload.results);
+
       return {
         ...state,
         loading: false,
         loaded: true,
         current: payload.current_page,
         total: payload.count,
-        result: payload.results.map((item, index: number) => {
-          if (item?.irpd_action_v5) {
-            return {
-              ...item.irpd_action_v5,
-              key: `row-key-table-${index}`,
-              origin: getIrpdOrigin(PumpHistoryOrigin.CentralUpdate),
-              command: getIrpdCommand(item.irpd_action_v5?.content?.pump_action?.enable as number),
-            };
-          }
-          if (item?.irpd_stream_v5) {
-            return {
-              ...item.irpd_stream_v5,
-              key: `row-key-table-${index}`,
-              origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-              command: getIrpdCommand(item.irpd_stream_v5?.content?.pump_action?.enable as number),
-            };
-          }
-          return {};
-        }),
+        result: formattedItem,
         error: {},
       };
     },
     // Web socket callback reducers
     wsIrpdEventCallbackSuccess(
       state: GetIrpdHistoryModelProps,
-      { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5 },
+      { payload }: { payload: WsIrpdModels.IrpdControllerEvent },
     ) {
-      const updatedHistory = getIrpdHistoryFmt({ WsEvent: payload });
-      console.log('[callback payload]', payload, updatedHistory);
+      const currentValues = [...state.result];
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_event: payload }]);
+      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+
+      if (formattedIncomingValue) {
+        if (hasEntry) {
+          currentValues[hasEntry] = {
+            ...currentValues[hasEntry],
+            ...formattedIncomingValue,
+          };
+        } else {
+          currentValues.pop();
+          currentValues.unshift({
+            ...formattedIncomingValue,
+            key: `row-key-table-${hasEntry}`,
+            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          });
+        }
+      }
+
       return state;
     },
     wsIrpdSimpleCallbackSuccess(
@@ -276,8 +279,10 @@ export default {
       { payload }: { payload: WsIrpdModels.IrpdControllerSimple },
     ) {
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryFmt({ WsSimple: payload });
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_simple: payload }]);
       const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+
+      console.log('[callback here]', formattedIncomingValue, hasEntry);
 
       if (formattedIncomingValue) {
         if (hasEntry) {
@@ -303,7 +308,7 @@ export default {
       { payload }: { payload: WsIrpdModels.IrpdControllerSchedule },
     ) {
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryFmt({ WsSchedule: payload });
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_schedule: payload }]);
       const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
 
       if (formattedIncomingValue) {
@@ -330,7 +335,7 @@ export default {
       { payload }: { payload: WsIrpdModels.IrpdCoontrollerPeriodic },
     ) {
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryFmt({ WsPeriodic: payload });
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_periodic: payload }]);
       const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
 
       if (formattedIncomingValue) {
@@ -356,7 +361,7 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerCentralStream },
     ) {
-      const updatedHistory = getIrpdHistoryFmt({ WsCentral: payload });
+      const updatedHistory = getIrpdHistoryArrayFmt([{ CentralStream: payload }]);
       console.log('[callback payload]', payload, updatedHistory);
       return state;
     }

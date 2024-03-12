@@ -704,7 +704,6 @@ declare namespace APIModels {
       equipment: number;
     };
     ControllerAction_segment?: any;
-    ControllerAction_simple?: any;
   };
 
   type PivotHistoryOperation = {
