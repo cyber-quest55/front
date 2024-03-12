@@ -9,7 +9,7 @@ import { SelectedDeviceModelProps } from './selected-device';
 import { getIrpdHistory } from '@/services/irpd';
 
 export type GetIrpdHistoryModelProps = {
-  result: any;
+  result: APIModels.IrpdHistoryListItem[];
   loading: boolean;
   loaded: boolean;
   error: any;
@@ -39,6 +39,7 @@ export default {
   state: {
     total: 1,
     result: [],
+    rawResults: {},
     loaded: false,
     loading: true,
     current: 1,
@@ -203,7 +204,7 @@ export default {
       { payload }: { payload: WsIrpdModels.IrpdControllerStream },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+      yield put({ type: 'wsIrpdStreamCallbackSuccess', payload: {
         type: 'stream',
         source: 'stream',
         data: payload,
@@ -213,7 +214,7 @@ export default {
       { payload }: { payload: WsIrpdModels.IrpdControllerAction },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+      yield put({ type: 'wsIrpdActionCallbackSuccess', payload: {
         type: 'action',
         source: 'action',
         data: payload,
@@ -223,37 +224,37 @@ export default {
       { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5  },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+      yield put({ type: 'wsIrpdEventCallbackSuccess', payload: {
         type: 'stream_v5',
         source: 'event',
         data: payload,
       }});
     },
     *wsIrpdSimpleCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerActionV5 },
+      { payload }: { payload: WsIrpdModels.IrpdControllerSimple },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+      yield put({ type: 'wsIrpdSimpleCallbackSuccess', payload: {
         type: 'action_v5',
         source: 'simple',
         data: payload,
       }});
     },
     *wsIrpdScheduleCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerActionV5 },
+      { payload }: { payload: WsIrpdModels.IrpdControllerSchedule },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+      yield put({ type: 'wsIrpdScheduleCallbackSuccess', payload: {
         type: 'action_v5',
         source: 'schedule',
         data: payload,
       }});
     },
     *wsIrpdPeriodicCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5 },
+      { payload }: { payload: WsIrpdModels.IrpdCoontrollerPeriodic },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+      yield put({ type: 'wsIrpdPeriodicCallbackSuccess', payload: {
         type: 'stream_v5',
         source: 'periodical',
         data: payload,
@@ -263,7 +264,7 @@ export default {
       { payload }: { payload: WsIrpdModels.IrpdControllerCentralStream },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsUpdateIrpdHistoryAction', payload: {
+      yield put({ type: 'wsFarmCentralCallbackSuccess', payload: {
         type: 'central_stream',
         source: 'central_stream',
         data: payload,
@@ -318,53 +319,6 @@ export default {
       };
     },
     // Web socket callback reducers
-    wsUpdateIrpdHistoryAction(
-      state: GetIrpdHistoryModelProps,
-      { payload }: { payload: {
-        type: string;
-        source: string;
-        data: (
-          WsIrpdModels.IrpdControllerStream | 
-          WsIrpdModels.IrpdControllerStreamV5 | 
-          WsIrpdModels.IrpdControllerAction | 
-          WsIrpdModels.IrpdControllerActionV5 | 
-          WsIrpdModels.IrpdControllerCentralStream
-        );
-      }},
-    ) {
-      /* Treating first page (on previous projet there is a rule that
-      prevents websocket for updating list if is not on first page) */
-      if (state.current !== 1) return state;
-
-      // DEBUG
-      const fmtData  = getIrpdHistoryFmt({
-        source: payload.source,
-        payload: payload.data,
-      });
-      console.log('[WEBSOCKET RESPONSE]', payload, fmtData);
-
-      // Verifying what type is incoming data
-      switch (payload.type) {
-        case 'action':
-          break;
-        
-        case 'action_v5':
-          break;
-
-        case 'stream':
-          break;
-        
-        case 'stream_v5':
-          break;
-
-        case 'central_stream':
-          break;
-
-        // In case data is none of the matching types it will just return state
-        default:
-          return state;
-      }
-    },
     wsIrpdPressureStreamCallbackSuccess(
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerPressureStream },
@@ -372,5 +326,61 @@ export default {
       console.log('[callback payload]', payload)
       return state;
     },
+    wsIrpdStreamCallbackSuccess(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: WsIrpdModels.IrpdControllerStream },
+    ) {
+      const updatedHistory = getIrpdHistoryFmt({ WsStream: payload });
+      console.log('[callback payload]', payload, updatedHistory);
+      return state;
+    },
+    wsIrpdActionCallbackSuccess(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: WsIrpdModels.IrpdControllerAction },
+    ) {
+      const updatedHistory = getIrpdHistoryFmt({ WsAction: payload });
+      console.log('[callback payload]', payload, updatedHistory);
+      return state;
+    },
+    wsIrpdEventCallbackSuccess(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: WsIrpdModels.IrpdControllerStreamV5 },
+    ) {
+      const updatedHistory = getIrpdHistoryFmt({ WsEvent: payload });
+      console.log('[callback payload]', payload, updatedHistory);
+      return state;
+    },
+    wsIrpdSimpleCallbackSuccess(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: WsIrpdModels.IrpdControllerSimple },
+    ) {
+      const updatedHistory = getIrpdHistoryFmt({ WsSimple: payload });
+      console.log('[callback payload]', payload, updatedHistory);
+      return state;
+    },
+    wsIrpdScheduleCallbackSuccess(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: WsIrpdModels.IrpdControllerSchedule },
+    ) {
+      const updatedHistory = getIrpdHistoryFmt({ WsSchedule: payload });
+      console.log('[callback payload]', payload, updatedHistory);
+      return state;
+    },
+    wsIrpdPeriodicCallbackSuccess(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: WsIrpdModels.IrpdCoontrollerPeriodic },
+    ) {
+      const updatedHistory = getIrpdHistoryFmt({ WsPeriodic: payload });
+      console.log('[callback payload]', payload, updatedHistory);
+      return state;
+    },
+    wsFarmCentralCallbackSuccess(
+      state: GetIrpdHistoryModelProps,
+      { payload }: { payload: WsIrpdModels.IrpdControllerCentralStream },
+    ) {
+      const updatedHistory = getIrpdHistoryFmt({ WsCentral: payload });
+      console.log('[callback payload]', payload, updatedHistory);
+      return state;
+    }
   },
 };
