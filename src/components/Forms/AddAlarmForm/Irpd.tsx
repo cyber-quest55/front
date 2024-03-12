@@ -186,8 +186,8 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                   : [],
                 devices: values.options.devices,
                 name: values.information.notification_group_name,
-                start: values.information.start_at,
-                end: values.information.end_at,
+                start: values.information.start_at + ':00',
+                end: values.information.end_at + ':59',
                 enable: true,
                 farm: Number(params.farmId),
                 user: initialState?.currentUser.id,
@@ -242,7 +242,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                             allowClear={false}
                             colProps={{ xs: 8, md: 5 }}
                             name={['information', 'start_at']}
-                            dataFormat="HH:mm"
+                            fieldProps={{  format: "HH:mm" }}
                             label={intl.formatMessage({
                               id: 'component.addalarmform.modal.step1.start.label',
                             })}
@@ -254,7 +254,7 @@ const AddIrpdAlarmForm = (props: AddIrpdAlarmFormProps) => {
                             allowClear={false}
                             colProps={{ xs: 8, md: 5 }}
                             name={['information', 'end_at']}
-                            dataFormat="HH:mm"
+                            fieldProps={{  format: "HH:mm" }}
                             label={intl.formatMessage({
                               id: 'component.addalarmform.modal.step1.end.label',
                             })}

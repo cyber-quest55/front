@@ -17,6 +17,7 @@ import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Button, Col, Empty, Modal, Row, Spin, Switch, Tag, Tooltip, Typography } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { IoAlertCircleOutline } from 'react-icons/io5';
 
@@ -130,7 +131,10 @@ const AlarmPivotMonitorList: React.FC<AlarmPivotMonitorListProps> = (props) => {
                         ? intl.formatMessage({
                             id: 'component.alarmlist.allday.text',
                           })
-                        : `${notification.start} > ${notification.end}`}
+                          : `${moment(notification.start, 'HH:mm:ss').format('HH:mm')} > ${moment(
+                            notification.end,
+                            'HH:mm:ss',
+                          ).format('HH:mm')}`}
                     </Typography.Text>
                     <div style={{ marginLeft: 22, marginTop: 8 }}>
                       {notification?.devices.map((it: any, index: number) => (
