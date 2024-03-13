@@ -4,7 +4,7 @@ import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
 import { getCentralEventStatus } from '@/utils/formater/get-irpd-event-status';
 import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
-import { getIrpdStatus } from '@/utils/formater/get-irpd-status';
+import { getIrpdStatus, getIrpdTurnedOnOrOffStatus } from '@/utils/formater/get-irpd-status';
 
 // Badge status
 export const getIrpdBadgeStatus = (messageStatus: number) => {
@@ -18,16 +18,31 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
   // Map API data
   return data.map((item: APIModels.IrpdHistoryCompleteListItem, key: number) => {
 
-    // Default action and stream
+    // Default action from endpoint (Ok)
     if (item.irpd_action_v5 !== undefined) {
+      let status = getIrpdStatus(item.irpd_action_v5.message_status);
+      if (item.irpd_action_v5.content.pump_action) {
+        status = getIrpdTurnedOnOrOffStatus(item.irpd_action_v5.content.pump_action.enable);
+      }
+      if (
+        item.irpd_action_v5.content.pump_schedule &&
+        item.irpd_action_v5.content.pump_schedule_enable &&
+        item.irpd_action_v5.content.pump_schedule_enable.enable === 1
+      ) {
+        status = getIrpdStatus(5);
+      }
+
       return {
         ...item.irpd_action_v5,
         key: `row-key-table-${key}`,
         customType: getIrpdOrigin(PumpHistoryOrigin.Command),
-        customStatus: getIrpdCommand(item.irpd_action_v5.content?.pump_schedule_enable?.enable),
+        customStatus: status,
+        badge: true,
+        badgeStatus: getIrpdBadgeStatus(item.irpd_action_v5.message_status),
       };
     }
 
+    // Default stream from endpoint (OK)
     if (item.irpd_stream_v5 !== undefined) {
       return {
         ...item.irpd_stream_v5,
@@ -42,7 +57,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
       return {
         ...item.CentralStream,
         key: `row-key-table-${key}`,
-        customType: 'CentralStream',
+        customType: getIrpdOrigin(PumpHistoryOrigin.CentralUpdate),
         customStatus: getCentralEventStatus(item.CentralStream.status),
       };
     }
@@ -66,8 +81,6 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         key: `row-key-table-${key}`,
         customType: 'IrpdActionV5_schedule',
         customStatus: getIrpdBadgeStatus(item.IrpdActionV5_schedule.message_status),
-        badgeStatus: getIrpdBadgeStatus(item.IrpdActionV5_schedule.message_status),
-        badge: true,
       };
     }
 
@@ -77,8 +90,6 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         ...item.IrpdStreamV5_event,
         key: `row-key-table-${key}`,
         customType: 'IrpdStreamV5_event',
-        badgeStatus: getIrpdBadgeStatus(item.IrpdStreamV5_event.message_status),
-        badge: true,
       };
     }
 

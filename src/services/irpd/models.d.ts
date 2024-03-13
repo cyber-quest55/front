@@ -374,37 +374,40 @@ declare namespace APIModels {
   // IRPD has 2 main flags (central and periodic) if informed it will return a complete list
   type IrpdHistoryCompleteListItem = {
     irpd_action_v5?: {
-      id: number
-      username: string
-      uuid: string
-      created_on_hardware: boolean
-      created: string
-      updated: string
-      arrived: string
-      message_status: number
-      message_error: string
-      message_packets: Array<number>
-      message_subtype: string
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
       content: {
-        pump_schedule: {
-          stop_day: number
-          start_day: number
-          stop_hour: number
-          stop_year: number
-          start_hour: number
-          start_year: number
-          stop_month: number
-          start_month: number
-          stop_minute: number
-          start_minute: number
-        }
-        pump_schedule_enable: {
-          enable: number
-        }
-      }
-      created_by: number
-      device: number
-      irpd: number
+        pump_action?: {
+          enable: number;
+        };
+        pump_schedule?: {
+          stop_day: number;
+          start_day: number;
+          stop_hour: number;
+          stop_year: number;
+          start_hour: number;
+          start_year: number;
+          stop_month: number;
+          start_month: number;
+          stop_minute: number;
+          start_minute: number;
+        };
+        pump_schedule_enable?: {
+          enable: number;
+        };
+      };
+      created_by: number;
+      device: number;
+      irpd: number;
     };
     irpd_stream_v5?: {
       id: number

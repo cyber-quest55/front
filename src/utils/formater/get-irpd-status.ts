@@ -1,5 +1,20 @@
 import { getIntl } from "@umijs/max";
 
+export function getIrpdTurnedOnOrOffStatus(status: number) {
+  const intl = getIntl();
+  switch (status) {
+    case 0: {
+      return  intl.formatMessage({id: 'component.irpd.tab.history.event.table.command.turnoff'}) ;
+    }
+    case 1: {
+      return  intl.formatMessage({id: 'component.irpd.tab.history.event.table.command.turnon'}) ;
+    }
+    default: {
+      return  intl.formatMessage({id: 'component.irpd.tab.history.event.table.command.turnoff'}) ;
+    }
+  }
+}
+
 export function getIrpdStatus(status: number): string {
   const intl = getIntl()
 
