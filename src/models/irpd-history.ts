@@ -276,7 +276,7 @@ export default {
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
-        if (hasEntry) {
+        if (hasEntry >= 0) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,
@@ -310,7 +310,7 @@ export default {
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
-        if (hasEntry) {
+        if (hasEntry >= 0) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,
@@ -345,8 +345,11 @@ export default {
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_schedule: payload }]);
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
+      console.log('[web callback here]', formattedIncomingValue);
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
-        if (hasEntry) {
+
+        console.log('[inner log]', hasEntry);
+        if (hasEntry >= 0) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,
@@ -382,7 +385,7 @@ export default {
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
-        if (hasEntry) {
+        if (hasEntry >= 0) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,
@@ -416,7 +419,7 @@ export default {
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
-        if (hasEntry) {
+        if (hasEntry >= 0) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,

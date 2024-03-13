@@ -158,7 +158,9 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
             }),
             dataIndex: 'created',
             render: (value, item) => {
-              return <>{formatDate(item?.created)}</>;
+              return item.created ? (
+                <>{formatDate(item?.created)}</>
+              ) : <></>;
             },
           },
           {
@@ -195,7 +197,6 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
                   {record.username}
                 </ProDescriptions.Item>
               ) : null}
-
               {record.origin === PumpHistoryOrigin.Command ? (
                 <ProDescriptions.Item
                   dataIndex="total_flow"
@@ -219,7 +220,7 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
               ) : null}
             </ProDescriptions>
           ),
-          rowExpandable: (record) => record.name !== 'Not Expandable',
+          rowExpandable: (record) => record.origin !== PumpHistoryOrigin.CentralUpdate,
         }}
       />
       <Flex justify="flex-end">

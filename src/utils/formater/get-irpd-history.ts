@@ -43,6 +43,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         customStatus: status,
         badge: true,
         badgeStatus: getIrpdBadgeStatus(item.irpd_action_v5.message_status),
+        origin: PumpHistoryOrigin.Command,
       };
     }
 
@@ -69,6 +70,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         customStatus: status,
         badge: false,
         badgeStatus: '',
+        origin: PumpHistoryOrigin.PumpUpdate,
       };
     }
 
@@ -81,6 +83,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         customStatus: getCentralEventStatus(item.CentralStream.status),
         badge: false,
         badgeStatus: '',
+        origin: PumpHistoryOrigin.CentralUpdate,
       };
     }
 
@@ -106,6 +109,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         customStatus: status,
         badge: false,
         badgeStatus: '',
+        origin: PumpHistoryOrigin.PumpUpdate,
       };
     }
 
@@ -125,6 +129,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         customStatus: status,
         badge: true,
         badgeStatus: getIrpdBadgeStatus(item.IrpdActionV5_schedule.message_status),
+        origin: PumpHistoryOrigin.Command,
       };
     }
 
@@ -137,6 +142,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         customStatus: getIrpdStatus(item.IrpdStreamV5_event?.content?.imanage_master_status.status),
         badge: false,
         badgeStatus: '',
+        origin: PumpHistoryOrigin.PumpUpdate,
       };
     }
 
@@ -161,6 +167,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         customStatus: status,
         badge: true,
         badgeStatus: getIrpdBadgeStatus(item.IrpdActionV5_simple.message_status),
+        origin: PumpHistoryOrigin.PumpUpdate,
       };
     }
 
