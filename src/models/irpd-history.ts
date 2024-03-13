@@ -275,10 +275,11 @@ export default {
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_event: payload }]);
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
-      if (formattedIncomingValue) {
+      if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
+            customStatus: formattedIncomingValue[0].customStatus,
           };
           return {
             ...state,
@@ -308,10 +309,13 @@ export default {
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_simple: payload }]);
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
-      if (formattedIncomingValue) {
+      if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
+            customStatus: formattedIncomingValue[0].customStatus,
+            badgeStatus: formattedIncomingValue[0].badgeStatus,
+            badge: formattedIncomingValue[0].badge,
           };
           return {
             ...state,
@@ -341,10 +345,13 @@ export default {
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_schedule: payload }]);
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
-      if (formattedIncomingValue) {
+      if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
+            customStatus: formattedIncomingValue[0].customStatus,
+            badgeStatus: formattedIncomingValue[0].badgeStatus,
+            badge: formattedIncomingValue[0].badge,
           };
           return {
             ...state,
@@ -374,10 +381,11 @@ export default {
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_periodic: payload }]);
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
-      if (formattedIncomingValue) {
+      if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
+            customStatus: formattedIncomingValue[0].customStatus,
           };
           return {
             ...state,
@@ -407,10 +415,11 @@ export default {
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ CentralStream: payload }]);
       const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
-      if (formattedIncomingValue) {
+      if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
+            customStatus: formattedIncomingValue[0].customStatus,
           };
           return {
             ...state,

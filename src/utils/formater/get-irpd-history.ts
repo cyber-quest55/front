@@ -1,7 +1,6 @@
 // Dependencies
 import { getIntl } from '@umijs/max';
 import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
-import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
 import { getCentralEventStatus } from '@/utils/formater/get-irpd-event-status';
 import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
 import { getIrpdStatus, getIrpdTurnedOnOrOffStatus } from '@/utils/formater/get-irpd-status';
@@ -68,6 +67,8 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         key: `row-key-table-${key}`,
         customType: getIrpdOrigin(PumpHistoryOrigin.PumpUpdate),
         customStatus: status,
+        badge: false,
+        badgeStatus: '',
       };
     }
 
@@ -78,51 +79,88 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         key: `row-key-table-${key}`,
         customType: getIrpdOrigin(PumpHistoryOrigin.CentralUpdate),
         customStatus: getCentralEventStatus(item.CentralStream.status),
+        badge: false,
+        badgeStatus: '',
       };
     }
 
-    // Irpd stream (Websocket)
+    // Irpd stream (Websocket) [OK]
     if (item.IrpdStreamV5_periodic) {
-      // periodic (bombeando)
+      // Pumping virtual status
+      let status = getIrpdStatus(item.IrpdStreamV5_periodic?.content?.imanage_master_status.status);
+      if (
+        item.IrpdStreamV5_periodic.message_subtype === 'periodic' &&
+        [1, 2, 3, 4, 7].includes(
+          item.IrpdStreamV5_periodic?.content?.imanage_master_status.status
+        )
+      ) {
+        status = intl.formatMessage({
+          id: 'component.irpd.tab.history.event.table.status.pumping',
+        });
+      }
+
       return {
-        ...item.IrpdActionV5_simple,
+        ...item.IrpdStreamV5_periodic,
         key: `row-key-table-${key}`,
-        customType: intl.formatMessage({
-          id: 'component.irpd.tab.history.event.table.command',
-        }),
-        badgeStatus: getIrpdBadgeStatus(item.IrpdStreamV5_periodic.content.imanage_master_status.status),
+        customType: getIrpdOrigin(PumpHistoryOrigin.PumpUpdate),
+        customStatus: status,
+        badge: false,
+        badgeStatus: '',
       };
     }
 
     // Schedule stream (Websocket)
     if (item.IrpdActionV5_schedule) {
-      // simple / schedule
+      
+      // Schedule status
+      let status = getIrpdStatus(item.IrpdActionV5_schedule.message_status);
+      if (item.IrpdActionV5_schedule.message_subtype === 'schedule') {
+        status = getIrpdStatus(5);
+      }
+
       return {
         ...item.IrpdActionV5_schedule,
         key: `row-key-table-${key}`,
-        customType: 'IrpdActionV5_schedule',
-        customStatus: getIrpdBadgeStatus(item.IrpdActionV5_schedule.message_status),
+        customType: getIrpdOrigin(PumpHistoryOrigin.Command),
+        customStatus: status,
+        badge: true,
+        badgeStatus: getIrpdBadgeStatus(item.IrpdActionV5_schedule.message_status),
       };
     }
 
     // Event stream (Websocket)
     if (item.IrpdStreamV5_event) {
-      // imanage_master_status
       return {
         ...item.IrpdStreamV5_event,
         key: `row-key-table-${key}`,
-        customType: 'IrpdStreamV5_event',
+        customType: getIrpdOrigin(PumpHistoryOrigin.PumpUpdate),
+        customStatus: getIrpdStatus(item.IrpdStreamV5_event?.content?.imanage_master_status.status),
+        badge: false,
+        badgeStatus: '',
       };
     }
 
     // Action stream (Websocket)
     if (item.IrpdActionV5_simple) {
-      // ligar / parar
+
+      // Pump is on/off
+      let status = getIrpdStatus(item.IrpdActionV5_simple.message_status);
+      if (
+        item.IrpdActionV5_simple.message_subtype === 'simple' &&
+        item.IrpdActionV5_simple.content.pump_action
+      ) {
+        status = getIrpdTurnedOnOrOffStatus(
+          item.IrpdActionV5_simple.content.pump_action.enable
+        );
+      }
+
       return {
         ...item.IrpdActionV5_simple,
-        customType: 'IrpdActionV5_simple',
-        customStatus: getIrpdCommand(item.IrpdActionV5_simple.content.pump_action.enable),
         key: `row-key-table-${key}`,
+        customType: getIrpdOrigin(PumpHistoryOrigin.Command),
+        customStatus: status,
+        badge: true,
+        badgeStatus: getIrpdBadgeStatus(item.IrpdActionV5_simple.message_status),
       };
     }
 
