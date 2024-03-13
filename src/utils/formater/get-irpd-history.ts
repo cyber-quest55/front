@@ -18,7 +18,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
   // Map API data
   return data.map((item: APIModels.IrpdHistoryCompleteListItem, key: number) => {
 
-    // Default action from endpoint (Ok)
+    // Default action from endpoint (list) [Ok]
     if (item.irpd_action_v5 !== undefined) {
       let status = getIrpdStatus(item.irpd_action_v5.message_status);
       if (item.irpd_action_v5.content.pump_action) {
@@ -42,7 +42,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
       };
     }
 
-    // Default stream from endpoint (OK)
+    // Default stream from endpoint (list) [OK]
     if (item.irpd_stream_v5 !== undefined) {
       return {
         ...item.irpd_stream_v5,
@@ -52,7 +52,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
       };
     }
 
-    // Central stream history (Websocket and list)
+    // Central stream history (Websocket and list) [OK]
     if (item.CentralStream !== undefined) {
       return {
         ...item.CentralStream,
