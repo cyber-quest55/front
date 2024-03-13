@@ -27,7 +27,7 @@ export const queryIrpdHistory = (
   payload: {
     path: API.GetIrpdHistoryParams;
     params: any;
-  }  
+  }
 ) => {
   return {
     type: 'irpdHistory/queryIrpdHistory',
@@ -52,7 +52,7 @@ export default {
 
   effects: {
     *queryIrpdHistory(
-      { payload }: { 
+      { payload }: {
         payload: {
           path: API.GetIrpdHistoryParams;
           params: any;
@@ -74,7 +74,7 @@ export default {
       }
     },
     // Web sockets binding
-    *onInit({}, { put, select }: { put: any; select: any }) {
+    *onInit({ }, { put, select }: { put: any; select: any }) {
       const selectedDevice: SelectedDeviceModelProps = yield select(
         (state: any) => state.selectedDevice
       );
@@ -172,54 +172,64 @@ export default {
     },
     // Web socket callbacks
     *wsIrpdEventCallback(
-      { payload }: { payload: WsIrpdModels.IrpdControllerEvent  },
+      { payload }: { payload: WsIrpdModels.IrpdControllerEvent },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdEventCallbackSuccess', payload: {
-        type: 'stream_v5',
-        source: 'event',
-        data: payload,
-      }});
+      yield put({
+        type: 'wsIrpdEventCallbackSuccess', payload: {
+          type: 'stream_v5',
+          source: 'event',
+          data: payload,
+        }
+      });
     },
     *wsIrpdSimpleCallback(
       { payload }: { payload: WsIrpdModels.IrpdControllerSimple },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdSimpleCallbackSuccess', payload: {
-        type: 'action_v5',
-        source: 'simple',
-        data: payload,
-      }});
+      yield put({
+        type: 'wsIrpdSimpleCallbackSuccess', payload: {
+          type: 'action_v5',
+          source: 'simple',
+          data: payload,
+        }
+      });
     },
     *wsIrpdScheduleCallback(
       { payload }: { payload: WsIrpdModels.IrpdControllerSchedule },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdScheduleCallbackSuccess', payload: {
-        type: 'action_v5',
-        source: 'schedule',
-        data: payload,
-      }});
+      yield put({
+        type: 'wsIrpdScheduleCallbackSuccess', payload: {
+          type: 'action_v5',
+          source: 'schedule',
+          data: payload,
+        }
+      });
     },
     *wsIrpdPeriodicCallback(
       { payload }: { payload: WsIrpdModels.IrpdCoontrollerPeriodic },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsIrpdPeriodicCallbackSuccess', payload: {
-        type: 'stream_v5',
-        source: 'periodical',
-        data: payload,
-      }});
+      yield put({
+        type: 'wsIrpdPeriodicCallbackSuccess', payload: {
+          type: 'stream_v5',
+          source: 'periodical',
+          data: payload,
+        }
+      });
     },
     *wsFarmCentralCallback(
       { payload }: { payload: WsIrpdModels.IrpdControllerCentralStream },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsFarmCentralCallbackSuccess', payload: {
-        type: 'central_stream',
-        source: 'central_stream',
-        data: payload,
-      }});
+      yield put({
+        type: 'wsFarmCentralCallbackSuccess', payload: {
+          type: 'central_stream',
+          source: 'central_stream',
+          data: payload,
+        }
+      });
     }
   },
 
@@ -263,22 +273,25 @@ export default {
 
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_event: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
-            ...formattedIncomingValue,
+          };
+          return {
+            ...state,
+            result: currentValues,
           };
         } else {
           currentValues.pop();
-          // currentValues.unshift({
-          //   ...formattedIncomingValue,
-          //   key: `row-key-table-${hasEntry}`,
-          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          // });
+          currentValues.unshift(formattedIncomingValue[0]);
+          return {
+            ...state,
+            total: state.total + 1,
+            result: currentValues,
+          };
         }
       }
 
@@ -293,24 +306,25 @@ export default {
 
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_simple: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
-
-      console.log('[callback here]', formattedIncomingValue, hasEntry);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
-            ...formattedIncomingValue,
+          };
+          return {
+            ...state,
+            result: currentValues,
           };
         } else {
           currentValues.pop();
-          // currentValues.unshift({
-          //   ...formattedIncomingValue,
-          //   key: `row-key-table-${hasEntry}`,
-          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          // });
+          currentValues.unshift(formattedIncomingValue[0]);
+          return {
+            ...state,
+            total: state.total + 1,
+            result: currentValues,
+          };
         }
       }
 
@@ -325,22 +339,25 @@ export default {
 
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_schedule: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
-            ...formattedIncomingValue,
+          };
+          return {
+            ...state,
+            result: currentValues,
           };
         } else {
           currentValues.pop();
-          // currentValues.unshift({
-          //   ...formattedIncomingValue,
-          //   key: `row-key-table-${hasEntry}`,
-          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          // });
+          currentValues.unshift(formattedIncomingValue[0]);
+          return {
+            ...state,
+            total: state.total + 1,
+            result: currentValues,
+          };
         }
       }
 
@@ -355,22 +372,25 @@ export default {
 
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_periodic: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
 
       if (formattedIncomingValue) {
         if (hasEntry) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
-            ...formattedIncomingValue,
+          };
+          return {
+            ...state,
+            result: currentValues,
           };
         } else {
           currentValues.pop();
-          // currentValues.unshift({
-          //   ...formattedIncomingValue,
-          //   key: `row-key-table-${hasEntry}`,
-          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          // });
+          currentValues.unshift(formattedIncomingValue[0]);
+          return {
+            ...state,
+            total: state.total + 1,
+            result: currentValues,
+          };
         }
       }
 
@@ -383,8 +403,30 @@ export default {
       // User must be on first page to sockets to update
       if (state.current !== 1) return state;
 
-      const updatedHistory = getIrpdHistoryArrayFmt([{ CentralStream: payload }]);
-      console.log('[callback payload]', payload, updatedHistory);
+      const currentValues = [...state.result];
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ CentralStream: payload }]);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
+
+      if (formattedIncomingValue) {
+        if (hasEntry) {
+          currentValues[hasEntry] = {
+            ...currentValues[hasEntry],
+          };
+          return {
+            ...state,
+            result: currentValues,
+          };
+        } else {
+          currentValues.pop();
+          currentValues.unshift(formattedIncomingValue[0]);
+          return {
+            ...state,
+            total: state.total + 1,
+            result: currentValues,
+          };
+        }
+      }
+
       return state;
     }
   },
