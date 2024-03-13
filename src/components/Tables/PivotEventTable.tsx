@@ -36,7 +36,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (!props.pivotHistory?.loading) {
-      const { deviceId, farmId } = props.selectedDevice
+      const { deviceId, farmId } = props.selectedDevice;
 
       props.queryPivotHistory({
         path: { deviceId, farmId },
@@ -45,11 +45,11 @@ const PivotEventTable: React.FC<Props> = (props) => {
           central: true,
           date_start: dates[0].toISOString(),
           date_end: dates[1].toISOString(),
-          page: currentPage
-        }
+          page: currentPage,
+        },
       })
-    }
-  }, [currentPage, dates])
+    };
+  }, [currentPage, dates]);
 
 
   const handleExportReport = async () => {

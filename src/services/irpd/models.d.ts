@@ -410,37 +410,37 @@ declare namespace APIModels {
       irpd: number;
     };
     irpd_stream_v5?: {
-      id: number
-      total_flow: number
-      uuid: string
-      created_on_hardware: boolean
-      created: string
-      updated: string
-      arrived: string
-      message_status: number
-      message_error: string
-      message_packets: Array<number>
-      message_subtype: string
+      id: number;
+      total_flow: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
       content: {
         pump_last_start_time: {
-          start_day: number
-          start_hour: number
-          start_year: number
-          start_month: number
-          start_minutes: number
-        }
+          start_day: number;
+          start_hour: number;
+          start_year: number;
+          start_month: number;
+          start_minutes: number;
+        };
         imanage_master_status: {
-          status: number
-        }
+          status: number;
+        };
         imanage_sensor_measure_value: Array<{
-          value: number
-          number_editing: number
-        }>
-      }
-      content_hash: number
-      created_by: any
-      device: number
-      irpd: number
+          value: number;
+          number_editing: number;
+        }>;
+      };
+      content_hash: number;
+      created_by: any;
+      device: number;
+      irpd: number;
     };
     CentralStream?: {
       id: number;

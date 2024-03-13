@@ -20,15 +20,20 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
 
     // Default action from endpoint (list) [Ok]
     if (item.irpd_action_v5 !== undefined) {
+
+      // Pump is on/off
       let status = getIrpdStatus(item.irpd_action_v5.message_status);
-      if (item.irpd_action_v5.content.pump_action) {
-        status = getIrpdTurnedOnOrOffStatus(item.irpd_action_v5.content.pump_action.enable);
-      }
       if (
-        item.irpd_action_v5.content.pump_schedule &&
-        item.irpd_action_v5.content.pump_schedule_enable &&
-        item.irpd_action_v5.content.pump_schedule_enable.enable === 1
+        item.irpd_action_v5.message_subtype === 'simple' &&
+        item.irpd_action_v5.content.pump_action
       ) {
+        status = getIrpdTurnedOnOrOffStatus(
+          item.irpd_action_v5.content.pump_action.enable
+        );
+      }
+
+      // Schedule forced status
+      if (item.irpd_action_v5.message_subtype === 'schedule') {
         status = getIrpdStatus(5);
       }
 
@@ -44,11 +49,25 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
 
     // Default stream from endpoint (list) [OK]
     if (item.irpd_stream_v5 !== undefined) {
+
+      // Pumping virtual status
+      let status = getIrpdStatus(item.irpd_stream_v5?.content?.imanage_master_status.status);
+      if (
+        item.irpd_stream_v5.message_subtype === 'periodic' &&
+        [1, 2, 3, 4, 7].includes(
+          item.irpd_stream_v5?.content?.imanage_master_status.status
+        )
+      ) {
+        status = intl.formatMessage({
+          id: 'component.irpd.tab.history.event.table.status.pumping',
+        });
+      }
+
       return {
         ...item.irpd_stream_v5,
         key: `row-key-table-${key}`,
         customType: getIrpdOrigin(PumpHistoryOrigin.PumpUpdate),
-        customStatus: getIrpdStatus(item.irpd_stream_v5?.content?.imanage_master_status.status),
+        customStatus: status,
       };
     }
 
@@ -64,6 +83,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
 
     // Irpd stream (Websocket)
     if (item.IrpdStreamV5_periodic) {
+      // periodic (bombeando)
       return {
         ...item.IrpdActionV5_simple,
         key: `row-key-table-${key}`,
@@ -76,6 +96,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
 
     // Schedule stream (Websocket)
     if (item.IrpdActionV5_schedule) {
+      // simple / schedule
       return {
         ...item.IrpdActionV5_schedule,
         key: `row-key-table-${key}`,
@@ -86,6 +107,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
 
     // Event stream (Websocket)
     if (item.IrpdStreamV5_event) {
+      // imanage_master_status
       return {
         ...item.IrpdStreamV5_event,
         key: `row-key-table-${key}`,
@@ -95,6 +117,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
 
     // Action stream (Websocket)
     if (item.IrpdActionV5_simple) {
+      // ligar / parar
       return {
         ...item.IrpdActionV5_simple,
         customType: 'IrpdActionV5_simple',

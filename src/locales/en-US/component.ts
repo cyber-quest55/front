@@ -759,6 +759,7 @@ export default {
   'component.irpd.tab.history.event.table.scheduled': 'Programmed',
   'component.irpd.tab.history.event.table.command.turnon': 'Turn on',
   'component.irpd.tab.history.event.table.command.turnoff': 'Turn off',
+  'component.irpd.tab.history.event.table.status.pumping': 'Pumping',
   // Update base radio
   'component.radio.modal.base.title': 'Update base radio',
   'component.radio.modal.base.fields.device.label': 'Send radio update to',
