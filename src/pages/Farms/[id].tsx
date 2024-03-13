@@ -54,39 +54,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
   const { md } = useScreenHook();
   const params = useParams();
 
-  //const [isConnected, setIsConnected] = useState(false);
-
-  /**
-  useMount(() => {
-    socket.connect();
-
-    function onConnect() {}
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
-    socket.on('msg', (data: any) => {
-      props.dispatch({
-        type: 'pivotInformation/setNewPivotInformation',
-        payload: data,
-      });
-    });
-
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
-
-    socket.on('disconnect', onDisconnect);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('msg');
-    };
-  });
- */
-
   const getDeviceBySelected = (selected: string) => {
     switch (selected) {
       case DeviceType.Pivot: {
@@ -101,17 +68,20 @@ const Welcome: FunctionComponent<Props> = (props) => {
     }
   };
 
-  //useEffect(() => {
-  //  if ( params.id === ':id' && props.selectedFarm.id !== 0) {
-  //    history.push(`${props.selectedFarm.id}`);
-  //    return;
-  //  }
-  //}, [params, props.selectedFarm]);
+  useEffect(() => {
+   if ( params.id === ':id' && props.selectedFarm.id !== 0) {
+     history.push(`${props.selectedFarm.id}`);
+     return;
+   }
+  }, [params, props.selectedFarm]);
 
   useMount(() => {
     if (!props.farm.loaded) {
-      console.log('entrando aqui')
-      props.queryFarm({});
+      if (params.id !== ':id') {
+        props.queryFarm({ id: Number(params.id) });
+      } else {
+        props.queryFarm({});
+      }
     }
   });
 
@@ -325,8 +295,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryIrpd: (props: any) => dispatch(queryIrpd(props)),
   queryRepeater: (props: any) => dispatch(queryRepeater(props)),
   queryPivot: (props: any) => dispatch(queryPivot(props)),
-
-
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Welcome);

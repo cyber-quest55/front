@@ -11,7 +11,7 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space, App, Pagination,  Flex, Badge } from 'antd';
+import { Button, Space, App, Pagination, Flex, Badge } from 'antd';
 import dayjs from 'dayjs';
 import { useRef, useEffect, useState } from 'react';
 import { connect } from 'umi';
@@ -35,7 +35,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
   const { currentPage, setCurrentPage } = useTableHook(1);
 
   useEffect(() => {
-    if(!props.pivotHistory?.loading){
+    if (!props.pivotHistory?.loading) {
       const { deviceId, farmId } = props.selectedDevice
 
       props.queryPivotHistory({
@@ -49,16 +49,16 @@ const PivotEventTable: React.FC<Props> = (props) => {
         }
       })
     }
-  }, [ currentPage, dates ])
+  }, [currentPage, dates])
 
 
-  const handleExportReport = async  () => {
+  const handleExportReport = async () => {
     try {
-      const response = await reqGetExcel.runAsync({pivotId: props.selectedDevice.deviceId},
+      const response = await reqGetExcel.runAsync({ pivotId: props.selectedDevice.deviceId },
         {
           date_start: dates[0].toISOString(),
           date_end: dates[1].toISOString(),
-          kwh_value_p : 1,
+          kwh_value_p: 1,
           kwh_value_hfp: 1,
           kwh_value_r: 1
         }
@@ -109,9 +109,9 @@ const PivotEventTable: React.FC<Props> = (props) => {
           ),
           filter: (
             <Button
-            loading={reqGetExcel.loading || props.pivotHistory?.loading}
-            onClick={handleExportReport}
-            icon={<DownloadOutlined />}>
+              loading={reqGetExcel.loading || props.pivotHistory?.loading}
+              onClick={handleExportReport}
+              icon={<DownloadOutlined />}>
               {intl.formatMessage({
                 id: 'component.export',
               })}
@@ -137,9 +137,9 @@ const PivotEventTable: React.FC<Props> = (props) => {
             responsive: ['lg'],
             render: (item, entity) => {
 
-              return entity.badge? <Space>
-                  <Badge  status={entity.badgeStatus} text={entity.customType}/>
-                </Space> : entity.customType
+              return entity.badge ? <Space>
+                <Badge status={entity.badgeStatus} text={entity.customType} />
+              </Space> : entity.customType
             },
           },
           {
@@ -149,7 +149,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
             dataIndex: 'customStatus',
           },
         ]}
-        dataSource= {props.pivotHistory?.result?.data}
+        dataSource={props.pivotHistory?.result?.data}
         rowKey="key"
         options={false}
         search={false}
@@ -255,21 +255,21 @@ const PivotEventTable: React.FC<Props> = (props) => {
         }}
         loading={props.pivotHistory?.loading}
         actionRef={ref}
-        pagination={ false }
+        pagination={false}
       />
 
       <Flex justify="flex-end">
-      <Pagination
+        <Pagination
           disabled={props.pivotHistory?.loading}
           responsive
           size="small"
-          onChange={(v) => {setCurrentPage(v)}}
+          onChange={(v) => { setCurrentPage(v) }}
           current={currentPage}
           showTotal={() => false}
           showSizeChanger={false}
           total={props.pivotHistory?.result?.count}
         />
-         </Flex>
+      </Flex>
 
     </Space>
   );

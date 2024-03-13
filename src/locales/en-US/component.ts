@@ -744,6 +744,7 @@ export default {
   'component.irpd.command.opt.2': 'Possibly stopped',
   'component.irpd.command.origin.opt.1': 'Command',
   'component.irpd.command.origin.opt.2': 'Central Update',
+  'component.irpd.command.origin.opt.3': 'Pump Update',
   'component.irpd.operationalpanel.button.start': 'Start Pump',
   'component.irpd.operationalpanel.button.stop': 'Stop Pump',
   'component.irpd.alert.without': 'Pump without internet',
@@ -752,6 +753,10 @@ export default {
   'component.irpd.scheduleirr.type.opt.2': "Don't stop",
   'component.irpd.scheduleirr.label.opt.1': 'Start in',
   'component.irpd.scheduleirr.label.opt.2': 'Stop in',
+  // Irpd event history table
+  'component.irpd.tab.history.event.table.irpdupdate': 'Central Update',
+  'component.irpd.tab.history.event.table.command': 'Command',
+  'component.irpd.tab.history.event.table.scheduled': 'Programmed',
   // Update base radio
   'component.radio.modal.base.title': 'Update base radio',
   'component.radio.modal.base.fields.device.label': 'Send radio update to',

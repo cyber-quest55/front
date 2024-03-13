@@ -17,7 +17,6 @@ import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
 import { httpToExcel } from '../../utils/adapters/excel';
-import TableSkeleton from '../Skeletons/Table';
 
 type Props = {
   irpdEvents: GetIrpdEventsModelProps;

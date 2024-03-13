@@ -26,11 +26,7 @@ export async function getIrpdHistory(
     data: API.GetIrpdHistoryResponse;
   }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/history`, {
     method: 'GET',
-    params: { 
-      ...options,
-      central: true,
-      periodic: true,
-    },
+    params: {  ...options },
   });
 }
 

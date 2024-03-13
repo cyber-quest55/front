@@ -1,7 +1,4 @@
 import { getIrpdHistoryArrayFmt } from '@/utils/formater/get-irpd-history';
-import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
-import { getIrpdCommand } from '@/utils/formater/get-irpd-command';
-import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
 import { AxiosError } from 'axios';
 import uniqid from 'uniqid';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
@@ -9,7 +6,7 @@ import { SelectedDeviceModelProps } from './selected-device';
 import { getIrpdHistory } from '@/services/irpd';
 
 export type GetIrpdHistoryModelProps = {
-  result: APIModels.IrpdHistoryListItem[];
+  result: any;
   loading: boolean;
   loaded: boolean;
   error: any;
@@ -26,7 +23,12 @@ export type IrpdHistoricModels =
   | 'irpd_action_v5'
   | 'CentralStream';
 
-export const queryIrpdHistory = (payload: API.GetIrpdHistoryParams) => {
+export const queryIrpdHistory = (
+  payload: {
+    path: API.GetIrpdHistoryParams;
+    params: any;
+  }  
+) => {
   return {
     type: 'irpdHistory/queryIrpdHistory',
     payload: payload,
@@ -50,16 +52,21 @@ export default {
 
   effects: {
     *queryIrpdHistory(
-      { payload }: { payload: API.GetIrpdHistoryParams },
+      { payload }: { 
+        payload: {
+          path: API.GetIrpdHistoryParams;
+          params: any;
+        }
+      },
       { call, put }: { call: any; put: any },
     ) {
-      const { farmId, irpdId,   } = payload;
       yield put({ type: 'queryIrpdHistoryStart' });
       try {
         const response: API.GetIrpdHistoryResponse = yield call(
           getIrpdHistory,
-          { farmId, irpdId },
-         );
+          payload.path,
+          payload.params,
+        );
         yield put({ type: 'queryIrpdHistorySuccess', payload: response });
         yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
@@ -251,6 +258,9 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerEvent },
     ) {
+      // User must be on first page to sockets to update
+      if (state.current !== 1) return state;
+
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_event: payload }]);
       const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
@@ -263,12 +273,12 @@ export default {
           };
         } else {
           currentValues.pop();
-          currentValues.unshift({
-            ...formattedIncomingValue,
-            key: `row-key-table-${hasEntry}`,
-            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          });
+          // currentValues.unshift({
+          //   ...formattedIncomingValue,
+          //   key: `row-key-table-${hasEntry}`,
+          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          // });
         }
       }
 
@@ -278,6 +288,9 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerSimple },
     ) {
+      // User must be on first page to sockets to update
+      if (state.current !== 1) return state;
+
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_simple: payload }]);
       const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
@@ -292,12 +305,12 @@ export default {
           };
         } else {
           currentValues.pop();
-          currentValues.unshift({
-            ...formattedIncomingValue,
-            key: `row-key-table-${hasEntry}`,
-            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          });
+          // currentValues.unshift({
+          //   ...formattedIncomingValue,
+          //   key: `row-key-table-${hasEntry}`,
+          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          // });
         }
       }
 
@@ -307,6 +320,9 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerSchedule },
     ) {
+      // User must be on first page to sockets to update
+      if (state.current !== 1) return state;
+
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_schedule: payload }]);
       const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
@@ -319,12 +335,12 @@ export default {
           };
         } else {
           currentValues.pop();
-          currentValues.unshift({
-            ...formattedIncomingValue,
-            key: `row-key-table-${hasEntry}`,
-            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          });
+          // currentValues.unshift({
+          //   ...formattedIncomingValue,
+          //   key: `row-key-table-${hasEntry}`,
+          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          // });
         }
       }
 
@@ -334,6 +350,9 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdCoontrollerPeriodic },
     ) {
+      // User must be on first page to sockets to update
+      if (state.current !== 1) return state;
+
       const currentValues = [...state.result];
       const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_periodic: payload }]);
       const hasEntry = currentValues.findIndex(item => item.uuid === payload.uuid);
@@ -346,12 +365,12 @@ export default {
           };
         } else {
           currentValues.pop();
-          currentValues.unshift({
-            ...formattedIncomingValue,
-            key: `row-key-table-${hasEntry}`,
-            origin: getIrpdOrigin(PumpHistoryOrigin.Command),
-            command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
-          });
+          // currentValues.unshift({
+          //   ...formattedIncomingValue,
+          //   key: `row-key-table-${hasEntry}`,
+          //   origin: getIrpdOrigin(PumpHistoryOrigin.Command),
+          //   command: getIrpdCommand(formattedIncomingValue.content.pump_action.enable),
+          // });
         }
       }
 
@@ -361,6 +380,9 @@ export default {
       state: GetIrpdHistoryModelProps,
       { payload }: { payload: WsIrpdModels.IrpdControllerCentralStream },
     ) {
+      // User must be on first page to sockets to update
+      if (state.current !== 1) return state;
+
       const updatedHistory = getIrpdHistoryArrayFmt([{ CentralStream: payload }]);
       console.log('[callback payload]', payload, updatedHistory);
       return state;
