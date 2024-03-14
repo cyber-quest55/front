@@ -1,10 +1,9 @@
 import { useScreenHook } from '@/hooks/screen';
 import * as React from 'react';
 import CreateFarmFormComponent from './CreateFarmComponent';
-import CreateFarmFormMobile from './CreateFarmMobile';
 import CreateFarmFormSkeleton from './CreateFarmSkeleton';
 
-const CreateFarmFormContainer: React.FunctionComponent = (props) => {
+const CreateFarmFormContainer: React.FunctionComponent = () => {
   const { xs } = useScreenHook();
 
   return (

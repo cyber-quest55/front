@@ -917,4 +917,11 @@ export default {
   'component.edit.farm.users.edit.permissions.save.admin': 'Save as Admin',
   'component.edit.farm.users.permissions.custom': 'Custom',
   'component.edit.farm.users.messages.nosuchuser': 'There is no user matching the inputed username or E-mail!',
+  // Device list component
+  'component.farm.devices.type.pivot': 'Pivôs',
+  'component.farm.devices.type.irpd': 'Bombas',
+  'component.farm.devices.type.repeaters': 'Repetidores',
+  'component.farm.devices.type.metersystem': 'Medidores',
+  'component.farm.devices.actions.edit.title': 'Edit farm',
+  'component.farm.devices.label.angle': 'Angle',
 };
