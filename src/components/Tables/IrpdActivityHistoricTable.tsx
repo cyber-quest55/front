@@ -12,7 +12,11 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
-import { useMount, useRequest } from 'ahooks';
+import {
+  useMount,
+  useRequest,
+  useUnmount,
+} from 'ahooks';
 import {
   Badge,
   Button,
@@ -32,6 +36,7 @@ type Props = {
   irpdHistory: GetIrpdHistoryModelProps;
   selectedDevice: SelectedDeviceModelProps;
   queryIrpdHistory: typeof queryIrpdHistory;
+  unbindWebsockets: () => void;
 };
 
 const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
@@ -93,6 +98,10 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
         page: currentPage,
       },
     });
+  });
+
+  useUnmount(() => {
+    props.unbindWebsockets();
   });
 
   const ExportButton = (
@@ -244,6 +253,7 @@ const mapStateToProps = ({ irpdHistory, selectedDevice }: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryIrpdHistory: (props: any) => dispatch(queryIrpdHistory(props)),
+  unbindWebsockets: () => dispatch({ type: 'irpdHistory/onDestroy', payload: {} }),
 });
 
 export default connect(
