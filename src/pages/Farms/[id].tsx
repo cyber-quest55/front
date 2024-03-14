@@ -69,10 +69,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
   };
 
   useEffect(() => {
-   if ( params.id === ':id' && props.selectedFarm.id !== 0) {
-     history.push(`${props.selectedFarm.id}`);
-     return;
-   }
+    if (params.id === ':id' && props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
   }, [params, props.selectedFarm]);
 
   useMount(() => {
@@ -86,7 +86,12 @@ const Welcome: FunctionComponent<Props> = (props) => {
   });
 
   useEffect(() => {
-    if (props.selectedFarm.id !== 0) {
+    if (
+        props.selectedFarm.id !== 0 && (
+          params.id !== ':id' &&
+          props.selectedFarm.id !==  Number(params.id)
+        )        
+    ) {
       history.push(`${props.selectedFarm.id}`);
       return;
     }
