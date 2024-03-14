@@ -156,8 +156,8 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
             }),
             dataIndex: 'created',
             render: (value, item) => {
-              return item.created ? (
-                <>{formatDate(item?.created)}</>
+              return item?.created ? (
+                <>{formatDate(item.created)}</>
               ) : <></>;
             },
           },

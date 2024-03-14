@@ -815,134 +815,144 @@ declare namespace APIModels {
 declare namespace WsIrpdModels {
   /* Start of irpd history history WS */
   type IrpdControllerEvent = {
-    id: number;
-    uuid: string;
-    arrived: string;
-    device: any;
-    created_on_hardware: boolean;
-    message_status: number;
-    message_subtype?: string;
-    message_packets: Array<number>;
-    message_error: string;
-    content: {
-      pump_hourmeter: {
-        hours: number;
-        minutes: number;
+    data: {
+      id: number;
+      uuid: string;
+      arrived: string;
+      device: any;
+      created_on_hardware: boolean;
+      message_status: number;
+      message_subtype?: string;
+      message_packets: Array<number>;
+      message_error: string;
+      content: {
+        pump_hourmeter: {
+          hours: number;
+          minutes: number;
+        };
+        pump_last_start_time: {
+          start_day: number;
+          start_hour: number;
+          start_year: number;
+          start_month: number;
+          start_minutes: number;
+        };
+        imanage_master_status: {
+          status: number;
+        };
       };
-      pump_last_start_time: {
-        start_day: number;
-        start_hour: number;
-        start_year: number;
-        start_month: number;
-        start_minutes: number;
-      };
-      imanage_master_status: {
-        status: number;
-      };
+      irpd: number;
+      created: string;
+      updated: string;
+      created_by?: number;
     };
-    irpd: number;
-    created: string;
-    updated: string;
-    created_by?: number;
   };
 
   type IrpdControllerSchedule = {
-    id: number;
-    username: string;
-    uuid: string;
-    created_on_hardware: boolean;
-    created: string;
-    updated: string;
-    arrived: string;
-    message_status: number;
-    message_error: string;
-    message_packets: Array<number>;
-    message_subtype: string;
-    content: {
-      pump_schedule_enable: {
-        enable: number;
-      };
-      pump_schedule: {
-        start_year: number;
-        start_month: number;
-        start_day: number;
-        start_hour: number;
-        start_minute: number;
-        stop_year: number;
-        stop_month: number;
-        stop_day: number;
-        stop_hour: number;
-        stop_minute: number;
+    data: {
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_schedule_enable: {
+          enable: number;
+        };
+        pump_schedule: {
+          start_year: number;
+          start_month: number;
+          start_day: number;
+          start_hour: number;
+          start_minute: number;
+          stop_year: number;
+          stop_month: number;
+          stop_day: number;
+          stop_hour: number;
+          stop_minute: number;
+        }
       }
+      created_by: number;
+      device: number;
+      irpd: number;
     }
-    created_by: number;
-    device: number;
-    irpd: number;
   };
   
   type IrpdControllerSimple = {
-    id: number;
-    username: string;
-    uuid: string;
-    created_on_hardware: boolean;
-    created: string;
-    updated: string;
-    arrived: string;
-    message_status: number;
-    message_error: string;
-    message_packets: Array<number>;
-    message_subtype: string;
-    content: {
-      pump_action: {
-        enable: number;
+    data: {
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_action: {
+          enable: number;
+        }
       }
-    }
-    created_by: number;
-    device: number;
-    irpd: number;
+      created_by: number;
+      device: number;
+      irpd: number;
+    };
   };
   
   type IrpdControllerCentralStream = {
-    id: number;
-    created: string;
-    updated: string;
-    status: number;
-    uuid: string;
-    farm: number;
+    data: {
+      id: number;
+      created: string;
+      updated: string;
+      status: number;
+      uuid: string;
+      farm: number;
+    };
   };
 
   type IrpdCoontrollerPeriodic = {
-    id: number;
-    total_flow: number;
-    uuid: string;
-    created_on_hardware: boolean;
-    created: string;
-    updated: string;
-    arrived: string;
-    message_status: number;
-    message_error: string;
-    message_packets: Array<number>;
-    message_subtype: string;
-    content: {
-      pump_last_start_time: {
-        start_hour: number;
-        start_minutes: number;
-        start_day: number;
-        start_month: number;
-        start_year: number;
+    data: {
+      id: number;
+      total_flow: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_last_start_time: {
+          start_hour: number;
+          start_minutes: number;
+          start_day: number;
+          start_month: number;
+          start_year: number;
+        };
+        imanage_master_status: {
+          status: number;
+        };
+        imanage_sensor_measure_value: Array<{
+          number_editing: number;
+          value: number;
+        }>;
       };
-      imanage_master_status: {
-        status: number;
-      };
-      imanage_sensor_measure_value: Array<{
-        number_editing: number;
-        value: number;
-      }>;
+      content_hash: number;
+      created_by: any;
+      device: number;
+      irpd: number;
     };
-    content_hash: number;
-    created_by: any;
-    device: number;
-    irpd: number;
   };
   /* End of irpd history history WS */
 

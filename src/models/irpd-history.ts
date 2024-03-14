@@ -272,8 +272,8 @@ export default {
       if (state.current !== 1) return state;
 
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_event: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_event: payload.data  }]);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.data.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry >= 0) {
@@ -306,8 +306,8 @@ export default {
       if (state.current !== 1) return state;
 
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_simple: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_simple: payload.data }]);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.data.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry >= 0) {
@@ -342,13 +342,10 @@ export default {
       if (state.current !== 1) return state;
 
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_schedule: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdActionV5_schedule: payload.data }]);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.data.id);
 
-      console.log('[web callback here]', formattedIncomingValue);
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
-
-        console.log('[inner log]', hasEntry);
         if (hasEntry >= 0) {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
@@ -381,8 +378,8 @@ export default {
       if (state.current !== 1) return state;
 
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_periodic: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ IrpdStreamV5_periodic: payload.data }]);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.data.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry >= 0) {
@@ -415,8 +412,8 @@ export default {
       if (state.current !== 1) return state;
 
       const currentValues = [...state.result];
-      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ CentralStream: payload }]);
-      const hasEntry = currentValues.findIndex(item => item.id === payload.id);
+      const formattedIncomingValue = getIrpdHistoryArrayFmt([{ CentralStream: payload.data }]);
+      const hasEntry = currentValues.findIndex(item => item.id === payload.data.id);
 
       if (formattedIncomingValue && formattedIncomingValue[0] !== null) {
         if (hasEntry >= 0) {
