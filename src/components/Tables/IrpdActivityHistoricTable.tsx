@@ -22,8 +22,7 @@ import {
   Tag,
   App
 } from 'antd';
-import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { connect } from 'umi';
 import { useTableHook } from '@/hooks/table';
 import { getIrpdExcelReport } from '../../services/irpd';
@@ -39,20 +38,18 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
   const intl = useIntl();
   const { message } = App.useApp();
   const ref = useRef<ActionType>();
-
-  const [dates, setDates] = useState<any>([dayjs().subtract(14, 'day'), dayjs()]);
   const reqGetExcel = useRequest(getIrpdExcelReport, { manual: true });
-  const { currentPage, setCurrentPage } = useTableHook(1);
+  const { range, setRange, currentPage, setCurrentPage } = useTableHook(1);
 
   const handleExportReport = async () => {
     try {
       const response = await reqGetExcel.runAsync({ deviceId: props.selectedDevice.deviceId },
         {
-          date_start: dates[0].toISOString(),
-          date_end: dates[1].toISOString(),
+          date_start: range[0].toISOString(),
+          date_end: range[1].toISOString(),
         }
       )
-      httpToExcel(response, `relatório-irpd-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      httpToExcel(response, `relatório-irpd-${range[0].toISOString()}-${range[1].toISOString()}`)
       message.success({
         duration: 7,
         content: intl.formatMessage({
@@ -75,13 +72,13 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
         params: {
           central: true,
           periodic: true,
-          date_start: dates[0].toISOString(),
-          date_end: dates[1].toISOString(),
+          date_start: range[0].toISOString(),
+          date_end: range[1].toISOString(),
           page: currentPage,
         },
       });
     }
-  }, [currentPage, dates]);
+  }, [currentPage, range]);
 
   // First loading irpd history
   useMount(() => {
@@ -91,8 +88,8 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
       params: {
         central: true,
         periodic: true,
-        date_start: dates[0].toISOString(),
-        date_end: dates[1].toISOString(),
+        date_start: range[0].toISOString(),
+        date_end: range[1].toISOString(),
         page: currentPage,
       },
     });
@@ -137,12 +134,13 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
                   presets: rangePresets,
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
-                      setDates(v);
+                      setRange(v);
+                      setCurrentPage(1);
                       ref.current?.reload();
                     }
                   },
 
-                  value: dates,
+                  value: range,
                 }}
               />
             </LightFilter>
