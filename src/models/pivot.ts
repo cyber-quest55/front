@@ -37,6 +37,7 @@ export const destroyPivotWs = () => {
 
 export default {
   namespace: 'pivot',
+  
   state: {
     result: [],
     status: [],
@@ -45,6 +46,7 @@ export default {
     selectedPivot: {},
     error: {},
   } as GetPivotModelProps,
+
   effects: {
     *queryPivot(
       { payload }: { payload: API.GetPivotByFarmParam },
@@ -109,12 +111,12 @@ export default {
         id: `@EditFarm_pivot${r.id}`,
         binds: [
           {
-            callback: ['wsPivotStandardCallback'],
+            callback: ['pivot/wsPivotStandardCallback'],
             event: 'ControllerConfig_standard',
             id: `@EditFarm_pivot${r.id}`,
           },
           {
-            callback: ['wsPivotConfigCallback'],
+            callback: ['pivot/wsPivotConfigCallback'],
             event: 'pivot_config',
             id: `@EditFarm_pivot${r.id}`,
           },
@@ -123,7 +125,21 @@ export default {
       yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
+    // Web socket callbacks
+    *wsPivotStandardCallback(
+      { payload }: { payload: WkModels.PivotStandardCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotStandardCallbackSuccess', payload });
+    },
+    *wsPivotConfigCallback(
+      { payload }: { payload: WkModels.PivotConfigCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotConfigCallbackSuccess', payload });
+    }
   },
+
   reducers: {
     queryPivotError(state: GetPivotModelProps, { payload }: { payload: AxiosError }) {
       return {
@@ -159,7 +175,7 @@ export default {
       };
     },
     // Web sockets reducers
-    wsPivotStandardCallback(
+    wsPivotStandardCallbackSuccess(
       state: GetPivotModelProps,
       { payload }: { payload: WkModels.PivotStandardCallbackPayload },
     ) {
@@ -201,7 +217,7 @@ export default {
       // Default return
       return state;
     },
-    wsPivotConfigCallback(
+    wsPivotConfigCallbackSuccess(
       state: GetPivotModelProps,
       { payload }: { payload: WkModels.PivotConfigCallbackPayload },
     ) {

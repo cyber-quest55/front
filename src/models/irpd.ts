@@ -114,6 +114,19 @@ export default {
       yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
+    // Web socket calbacks
+    *wsIrpdStandardCallback(
+      { payload }: { payload: WsIrpdModels.IrpdStandardCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdStandardCallbackSuccess', payload });
+    },
+    *wsIrpdConfigCallback(
+      { payload }: { payload: WsIrpdModels.IrpdConfigCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdConfigCallbackSuccess', payload });
+    }
   },
 
   reducers: {
@@ -165,9 +178,9 @@ export default {
       };
     },
     // Web sockets reducers
-    wsIrpdStandardCallback(
+    wsIrpdStandardCallbackSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: WkModels.IrpdStandardCallbackPayload },
+      { payload }: { payload: WsIrpdModels.IrpdStandardCallbackPayload },
     ) {
       // Communication error status
       if (payload.message_error) {
@@ -201,9 +214,9 @@ export default {
         status: newStatus
       };
     },
-    wsIrpdConfigCallback(
+    wsIrpdConfigCallbackSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: WkModels.IrpdConfigCallbackPayload },
+      { payload }: { payload: WsIrpdModels.IrpdConfigCallbackPayload },
     ) {
       // Delivery or Sent status
       const newStatus = state.status.map(s => {

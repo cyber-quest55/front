@@ -11,9 +11,9 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space, App, Pagination,  Flex, Badge } from 'antd';
+import { Button, Space, App, Pagination, Flex, Badge } from 'antd';
 import dayjs from 'dayjs';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { getPivotExcelReport } from '../../services/pivot';
 import { httpToExcel } from '../../utils/adapters/excel';
@@ -31,33 +31,34 @@ const PivotEventTable: React.FC<Props> = (props) => {
 
   const intl = useIntl();
   const { message } = App.useApp();
-  const { range, setRange, currentPage, setCurrentPage } = useTableHook(1);
+  const [dates, setDates] = useState<any>([dayjs().subtract(14, 'day'), dayjs()]);
+  const { currentPage, setCurrentPage } = useTableHook(1);
 
   useEffect(() => {
-    if(!props.queryPivotHistory?.loading){
-    const { deviceId, farmId } = props.selectedDevice
+    if (!props.pivotHistory?.loading) {
+      const { deviceId, farmId } = props.selectedDevice;
 
-    props.queryPivotHistory({
-      path: { deviceId, farmId },
-      params: {
-        gps: true,
-        central: true,
-        date_start: range[0].toISOString(),
-        date_end: range[1].toISOString(),
-        page: currentPage
-      }
-    })
-  }
-  }, [ currentPage, range ])
+      props.queryPivotHistory({
+        path: { deviceId, farmId },
+        params: {
+          gps: true,
+          central: true,
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
+          page: currentPage,
+        },
+      })
+    };
+  }, [currentPage, dates]);
 
 
-  const handleExportReport = async  () => {
+  const handleExportReport = async () => {
     try {
-      const response = await reqGetExcel.runAsync({pivotId: props.selectedDevice.deviceId},
+      const response = await reqGetExcel.runAsync({ pivotId: props.selectedDevice.deviceId },
         {
-          date_start: range[0].toISOString(),
-          date_end: range[1].toISOString(),
-          kwh_value_p : 1,
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
+          kwh_value_p: 1,
           kwh_value_hfp: 1,
           kwh_value_r: 1
         }
@@ -96,21 +97,21 @@ const PivotEventTable: React.FC<Props> = (props) => {
 
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
-                      setRange(v)
-                      ref.current?.reload()
+                      setDates(v);
+                      ref.current?.reload();
                     };
                   },
                   allowClear: false,
-                  value: range,
+                  value: dates,
                 }}
               />
             </LightFilter>
           ),
           filter: (
             <Button
-            loading={reqGetExcel.loading || props.pivotHistory?.loading}
-            onClick={handleExportReport}
-            icon={<DownloadOutlined />}>
+              loading={reqGetExcel.loading || props.pivotHistory?.loading}
+              onClick={handleExportReport}
+              icon={<DownloadOutlined />}>
               {intl.formatMessage({
                 id: 'component.export',
               })}
@@ -136,9 +137,9 @@ const PivotEventTable: React.FC<Props> = (props) => {
             responsive: ['lg'],
             render: (item, entity) => {
 
-              return entity.badge? <Space>
-                  <Badge  status={entity.badgeStatus} text={entity.customType}/>
-                </Space> : entity.customType
+              return entity.badge ? <Space>
+                <Badge status={entity.badgeStatus} text={entity.customType} />
+              </Space> : entity.customType
             },
           },
           {
@@ -148,7 +149,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
             dataIndex: 'customStatus',
           },
         ]}
-        dataSource= {props.pivotHistory?.result?.data}
+        dataSource={props.pivotHistory?.result?.data}
         rowKey="key"
         options={false}
         search={false}
@@ -254,21 +255,21 @@ const PivotEventTable: React.FC<Props> = (props) => {
         }}
         loading={props.pivotHistory?.loading}
         actionRef={ref}
-        pagination={ false }
+        pagination={false}
       />
 
       <Flex justify="flex-end">
-      <Pagination
+        <Pagination
           disabled={props.pivotHistory?.loading}
           responsive
           size="small"
-          onChange={(v) => {setCurrentPage(v)}}
+          onChange={(v) => { setCurrentPage(v) }}
           current={currentPage}
-          showTotal={false}
+          showTotal={() => false}
           showSizeChanger={false}
           total={props.pivotHistory?.result?.count}
         />
-         </Flex>
+      </Flex>
 
     </Space>
   );

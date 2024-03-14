@@ -104,6 +104,13 @@ export default {
       yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
+    // Web sockets callback
+    *wsMeterSystemStandardCallback(
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsMeterSystemStandardCallbackSuccess', payload });
+    }
   },
 
   reducers: {
@@ -159,9 +166,9 @@ export default {
       };
     },
     // Web sockets reducers
-    wsMeterSystemStandardCallback(
+    wsMeterSystemStandardCallbackSuccess(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: WkModels.MeterSystemStandardCallbackPayload },
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload },
     ) {
       // Communication error status
       if (payload.message_error) {
