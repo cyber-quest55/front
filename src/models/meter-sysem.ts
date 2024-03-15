@@ -54,11 +54,11 @@ export default {
       try {
         const response: API.GetMeterSystemResponse = yield call(getMeterSystem, payload);
         yield put({ type: 'queryMeterSystemSuccess', payload: response });
+        yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
     },
-    // Web socket effects
     *queryMeterSystemWs({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryMeterSystemStart' });
       try {
@@ -73,6 +73,7 @@ export default {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
     },
+    // Web socket subscribers
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
       const channels = state.result.map(r => ({
@@ -102,6 +103,46 @@ export default {
         ],
       }));
       yield put({ type: 'setWsStatus', payload: [] });
+      yield getSocketBinds(channels, put, 'unsubscribe');
+    },
+    *onInitDeviceBox({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      const channels = state.result.map(r => ({
+          title: `d@imeter@${r.id}`,
+          id: `@DeviceBox_imeter${r.id}`,
+          binds: [
+            {
+              callback: [],
+              event: 'IMeterStream_event',
+              id: `@DeviceBox_imeter${r.id}`,
+            },
+            {
+              callback: [],
+              event: 'IMeterStream_periodic',
+              id: `@DeviceBox_imeter${r.id}`,
+            },
+          ],
+      }));
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroyDeviceBox({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      const channels = state.result.map(r => ({
+        title: `d@imeter@${r.id}`,
+        id: `@DeviceBox_imeter${r.id}`,
+        binds: [
+          {
+            callback: [],
+            event: 'IMeterStream_event',
+            id: `@DeviceBox_imeter${r.id}`,
+          },
+          {
+            callback: [],
+            event: 'IMeterStream_periodic',
+            id: `@DeviceBox_imeter${r.id}`,
+          },
+        ],
+      }));
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
     // Web sockets callback

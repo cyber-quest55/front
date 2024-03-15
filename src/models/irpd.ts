@@ -54,11 +54,11 @@ export default {
       try {
         const response: API.GetIrpdResponse = yield call(getIrpds, payload);
         yield put({ type: 'queryIrpdSuccess', payload: response });
+        yield put({ type: 'irpd/onInitDeviceBox', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryIrpdError', payload: error });
       }
     },
-    // Web socket effects
     *queryIrpdWs({ payload }: { payload: API.GetIrpdParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryIrpdStart' });
       try {
@@ -73,6 +73,7 @@ export default {
         yield put({ type: 'queryIrpdError', payload: error });
       }
     },
+    // Web socket subscribers
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
       const channels = state.result.map(r => ({
@@ -112,6 +113,58 @@ export default {
         ],
       }));
       yield put({ type: 'setWsStatus', payload: [] });
+      yield getSocketBinds(channels, put, 'unsubscribe');
+    },
+    *onInitDeviceBox({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.irpd);
+      console.log('[onInitDeviceBox]', state);
+      const channels = state.result.map(r => ({
+          title: `d@irpd@${r.id}`,
+          id: `@DeviceBox_irpd${r.id}`,
+          binds: [
+            {
+              callback: [],
+              event: 'irpd_pressure_stream',
+              id: `@DeviceBox_irpd${r.id}`,
+            },
+            {
+              callback: [],
+              event: 'IrpdStreamV5_event',
+              id: `@DeviceBox_irpd${r.id}`,
+            },
+            {
+              callback: [],
+              event: 'IrpdStreamV5_periodic',
+              id: `@DeviceBox_irpd${r.id}`,
+            },
+          ],
+      }));
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroyDeviceBox({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.irpd);
+      console.log('[onInitDeviceBox]', state);
+      const channels = state.result.map(r => ({
+        title: `d@irpd@${r.id}`,
+        id: `@DeviceBox_irpd${r.id}`,
+        binds: [
+          {
+            callback: [],
+            event: 'irpd_pressure_stream',
+            id: `@DeviceBox_irpd${r.id}`,
+          },
+          {
+            callback: [],
+            event: 'IrpdStreamV5_event',
+            id: `@DeviceBox_irpd${r.id}`,
+          },
+          {
+            callback: [],
+            event: 'IrpdStreamV5_periodic',
+            id: `@DeviceBox_irpd${r.id}`,
+          },
+        ],
+      }));
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
     // Web socket calbacks
@@ -192,7 +245,7 @@ export default {
             }
           }
           return s;
-        })
+        });
         return { 
           ...state, 
           status: newStatus

@@ -60,7 +60,7 @@ const scrollToBottom = () => {
   }, 500);
 };
 
-const PivotList: React.FC<Props> = (props) => {
+const DeviceBox: React.FC<Props> = (props) => {
   const params = useParams();
   const intl = useIntl();
   const { md } = useScreenHook();
@@ -114,12 +114,6 @@ const PivotList: React.FC<Props> = (props) => {
     };
   });
 
-  /**
-   useEffect(() => {
-     props.queryPivot({ id: parseInt(params.id as string) });
-     props.queryRepeater({ id: parseInt(params.id as string) });
-   }, [params]);
- */
   const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
     const farmId = parseInt(params.id as string);
     if (farmId)
@@ -346,22 +340,20 @@ const PivotList: React.FC<Props> = (props) => {
 
   const getList = (dataSource: any) => {
     return (
-      <>
-        <ProList<any>
-          itemLayout="vertical"
-          rowKey="id"
-          style={{
-            paddingBottom: 0,
-            marginBottom: 0
-          }}
-          dataSource={dataSource}
-          metas={{
-            title: {},
-            content: {},
-            extra: {},
-          }}
-        />
-      </>
+      <ProList<any>
+        itemLayout="vertical"
+        rowKey="id"
+        style={{
+          paddingBottom: 0,
+          marginBottom: 0
+        }}
+        dataSource={dataSource}
+        metas={{
+          title: {},
+          content: {},
+          extra: {},
+        }}
+      />
     );
   };
 
@@ -429,6 +421,7 @@ const PivotList: React.FC<Props> = (props) => {
       </Row>
       <Divider style={{ marginBottom: 0 }} />
       <div className={classNameScrollable} style={{ width: '100%' }}>
+       
         {props.pivot.result.length > 0 ? (
           <>
             <Typography.Title
@@ -442,6 +435,7 @@ const PivotList: React.FC<Props> = (props) => {
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
           </>
         ) : null}
+        
         {props.repeater.result.length > 0 ? (
           <>
             <Typography.Title
@@ -482,6 +476,7 @@ const PivotList: React.FC<Props> = (props) => {
             {getList(dataSource4)}
           </>
         ) : null}
+        
       </div>
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>
@@ -493,8 +488,6 @@ const PivotList: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-
 
 const mapStateToProps = ({
   pivot,
@@ -523,4 +516,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PivotList);
+)(DeviceBox);

@@ -3,12 +3,15 @@ import { getPivotsWithInformations } from '@/services/pivot';
 import { getPivotColor } from '@/utils/formater/get-pivot-color';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { AxiosError } from 'axios';
+import uniqid from 'uniqid';
+import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
-export interface GetPivotInformationModelProps {
+export type GetPivotInformationModelProps = {
   result: CirclePivotProps[];
   loading: boolean;
   loaded: boolean;
   error: any;
+  id: string;
 }
 
 export const queryPivotInformation = (payload: API.GetPivotsInformationParam) => {
@@ -26,7 +29,8 @@ export default {
     loaded: false,
     loading: true,
     error: {},
-  },
+    id: uniqid('@PivotInformation_'),
+  } as GetPivotInformationModelProps,
 
   effects: {
     *queryPivotInformation(
@@ -41,11 +45,11 @@ export default {
           payload.params,
         );
         yield put({ type: 'queryPivotInformationSuccess', payload: response });
+        yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryPivotInformationError', payload: error });
       }
     },
-
     *setNewPivotInformation(
       { payload }: { payload: any },
       { put, select }: { put: any; select: any },
@@ -68,6 +72,58 @@ export default {
 
       yield put({ type: 'setNewPivotInformationSuccess', payload: newResult });
     },
+    // Web socket subscribers
+    *onInit({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.pivotInformation);
+      const channels = state.result.map(r => ({
+        title: `d@pivot@${r.id}`,
+        id: state.id,
+        binds: [
+          {
+            callback: [],
+            event: 'ControllerStream_panel',
+            id: state.id,
+          },
+          {
+            callback: [],
+            event: 'irpd_cControllerStream_gpsonfig',
+            id: state.id,
+          },
+          {
+            callback: [],
+            event: 'ControllerStream_periodic',
+            id: state.id,
+          },
+        ],
+      }));
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.pivotInformation);
+      const channels = state.result.map(r => ({
+        title: `d@pivot@${r.id}`,
+        id: state.id,
+        binds: [
+          {
+            callback: [],
+            event: 'ControllerStream_panel',
+            id: state.id,
+          },
+          {
+            callback: [],
+            event: 'irpd_cControllerStream_gpsonfig',
+            id: state.id,
+          },
+          {
+            callback: [],
+            event: 'ControllerStream_periodic',
+            id: state.id,
+          },
+        ],
+      }));
+      yield getSocketBinds(channels, put, 'unsubscribe');
+    },
+    // Web socket callbacks
   },
 
   reducers: {
@@ -81,14 +137,12 @@ export default {
         loading: false,
       };
     },
-
     queryPivotInformationStart(state: GetPivotInformationModelProps) {
       return {
         ...state,
         loading: true,
       };
     },
-
     queryPivotInformationSuccess(
       state: GetPivotInformationModelProps,
       { payload }: { payload: API.GetPivotsInformationResponse },
@@ -244,7 +298,6 @@ export default {
         error: {},
       };
     },
-
     setNewPivotInformationSuccess(
       state: GetPivotInformationModelProps,
       { payload }: { payload: any[] },
