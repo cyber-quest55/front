@@ -123,17 +123,17 @@ export default {
           id: `@DeviceBox_irpd${r.id}`,
           binds: [
             {
-              callback: [],
+              callback: ['irpd/wsIrpdPressureStreamCallback'],
               event: 'irpd_pressure_stream',
               id: `@DeviceBox_irpd${r.id}`,
             },
             {
-              callback: [],
+              callback: ['irpd/wsIrpdStreamV5EventCallback'],
               event: 'IrpdStreamV5_event',
               id: `@DeviceBox_irpd${r.id}`,
             },
             {
-              callback: [],
+              callback: ['irpd/wsIrpdStreamV5PeriodicCallback'],
               event: 'IrpdStreamV5_periodic',
               id: `@DeviceBox_irpd${r.id}`,
             },
@@ -149,17 +149,17 @@ export default {
         id: `@DeviceBox_irpd${r.id}`,
         binds: [
           {
-            callback: [],
+            callback: ['irpd/wsIrpdPressureStreamCallback'],
             event: 'irpd_pressure_stream',
             id: `@DeviceBox_irpd${r.id}`,
           },
           {
-            callback: [],
+            callback: ['irpd/wsIrpdStreamV5EventCallback'],
             event: 'IrpdStreamV5_event',
             id: `@DeviceBox_irpd${r.id}`,
           },
           {
-            callback: [],
+            callback: ['irpd/wsIrpdStreamV5PeriodicCallback'],
             event: 'IrpdStreamV5_periodic',
             id: `@DeviceBox_irpd${r.id}`,
           },
@@ -179,6 +179,24 @@ export default {
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsIrpdConfigCallbackSuccess', payload });
+    },
+    *wsIrpdPressureStreamCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdPressureStreamSuccess', payload });
+    },
+    *wsIrpdStreamV5EventCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdStreamV5EventSuccess', payload });
+    },
+    *wsIrpdStreamV5PeriodicCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsIrpdStreamV5PeriodicSuccess', payload });
     }
   },
 
@@ -229,6 +247,43 @@ export default {
         result: mapper,
         error: {},
       };
+    },
+    setWsStatus(
+      state: GetIrpdModelProps,
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    },
+    setWsLoadingStatus(
+      state: GetIrpdModelProps,
+      { payload }: { payload: { id?: number } }
+    ) {
+      if (payload.id) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.id) {
+            return {
+              id: s.id,
+              status: -1,
+            }
+          }
+          return s
+        });
+        return {
+          ...state,
+          status: newStatus
+        }
+      }
+      
+      return {
+        ...state,
+        status: state.status.map(s => ({
+          id: s.id,
+          status: -1,
+        }))
+      }
     },
     // Web sockets reducers
     wsIrpdStandardCallbackSuccess(
@@ -288,42 +343,26 @@ export default {
         status: newStatus
       };
     },
-    setWsStatus(
+    wsIrpdPressureStreamSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: { id: number; status: number; }[] }
+      { payload }: { payload: any },
     ) {
-      return {
-        ...state,
-        status: payload,
-      }
+      console.log('[wsIrpdPressureStreamSuccess]', payload);
+      return state;
     },
-    setWsLoadingStatus(
+    wsIrpdStreamV5EventSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: { id?: number } }
+      { payload }: { payload: any },
     ) {
-      if (payload.id) {
-        const newStatus = state.status.map(s => {
-          if (s.id === payload.id) {
-            return {
-              id: s.id,
-              status: -1,
-            }
-          }
-          return s
-        });
-        return {
-          ...state,
-          status: newStatus
-        }
-      }
-      
-      return {
-        ...state,
-        status: state.status.map(s => ({
-          id: s.id,
-          status: -1,
-        }))
-      }
+      console.log('[wsIrpdStreamV5EventSuccess]',payload);
+      return state;
+    },
+    wsIrpdStreamV5PeriodicSuccess(
+      state: GetIrpdModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[wsIrpdStreamV5PeriodicSuccess]',payload);
+      return state;
     }
   },
 };

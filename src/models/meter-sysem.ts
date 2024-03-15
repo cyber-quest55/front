@@ -112,12 +112,12 @@ export default {
           id: `@DeviceBox_imeter${r.id}`,
           binds: [
             {
-              callback: [],
+              callback: ['meterSystem/wsMeterSystemStreamEventCallback'],
               event: 'IMeterStream_event',
               id: `@DeviceBox_imeter${r.id}`,
             },
             {
-              callback: [],
+              callback: ['meterSystem/wsMeterSystemStreamPeriodicCallback'],
               event: 'IMeterStream_periodic',
               id: `@DeviceBox_imeter${r.id}`,
             },
@@ -132,12 +132,12 @@ export default {
         id: `@DeviceBox_imeter${r.id}`,
         binds: [
           {
-            callback: [],
+            callback: ['meterSystem/wsMeterSystemStreamEventCallback'],
             event: 'IMeterStream_event',
             id: `@DeviceBox_imeter${r.id}`,
           },
           {
-            callback: [],
+            callback: ['meterSystem/wsMeterSystemStreamPeriodicCallback'],
             event: 'IMeterStream_periodic',
             id: `@DeviceBox_imeter${r.id}`,
           },
@@ -151,6 +151,18 @@ export default {
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsMeterSystemStandardCallbackSuccess', payload });
+    },
+    *wsMeterSystemStreamEventCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsMeterSystemStreamEventSuccess', payload });
+    },
+    *wsMeterSystemStreamPeriodicCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsMeterSystemStreamPeriodicSuccess', payload });
     }
   },
 
@@ -206,6 +218,43 @@ export default {
         error: {},
       };
     },
+    setWsStatus(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    },
+    setWsLoadingStatus(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: { id?: number } }
+    ) {
+      if (payload.id) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.id) {
+            return {
+              id: s.id,
+              status: -1,
+            }
+          }
+          return s
+        });
+        return {
+          ...state,
+          status: newStatus
+        }
+      }
+      
+      return {
+        ...state,
+        status: state.status.map(s => ({
+          id: s.id,
+          status: -1,
+        }))
+      }
+    },
     // Web sockets reducers
     wsMeterSystemStandardCallbackSuccess(
       state: GetMeterSystemModelProps,
@@ -249,42 +298,19 @@ export default {
       // Default return
       return state;
     },
-    setWsStatus(
+    wsMeterSystemStreamEventSuccess(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: { id: number; status: number; }[] }
+      { payload }: { payload: any },
     ) {
-      return {
-        ...state,
-        status: payload,
-      }
+      console.log('[wsMeterSystemStreamEventSuccess]', payload);
+      return state;
     },
-    setWsLoadingStatus(
+    wsMeterSystemStreamPeriodicSuccess(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: { id?: number } }
+      { payload }: { payload: any },
     ) {
-      if (payload.id) {
-        const newStatus = state.status.map(s => {
-          if (s.id === payload.id) {
-            return {
-              id: s.id,
-              status: -1,
-            }
-          }
-          return s
-        });
-        return {
-          ...state,
-          status: newStatus
-        }
-      }
-      
-      return {
-        ...state,
-        status: state.status.map(s => ({
-          id: s.id,
-          status: -1,
-        }))
-      }
-    }
+      console.log('[wsMeterSystemStreamPeriodicSuccess]', payload);
+      return state;
+    },
   },
 };

@@ -80,17 +80,17 @@ export default {
         id: state.id,
         binds: [
           {
-            callback: [],
+            callback: ['pivotInformation/wsPivotControllerStreamPanelCallback'],
             event: 'ControllerStream_panel',
             id: state.id,
           },
           {
-            callback: [],
-            event: 'irpd_cControllerStream_gpsonfig',
+            callback: ['pivotInformation/wsPivotControllerStreamGpsCallback'],
+            event: 'ControllerStream_gps',
             id: state.id,
           },
           {
-            callback: [],
+            callback: ['pivotInformation/wsPivotControllerStreamPeriodicCallback'],
             event: 'ControllerStream_periodic',
             id: state.id,
           },
@@ -105,17 +105,17 @@ export default {
         id: state.id,
         binds: [
           {
-            callback: [],
+            callback: ['pivotInformation/wsPivotControllerStreamPanelCallback'],
             event: 'ControllerStream_panel',
             id: state.id,
           },
           {
-            callback: [],
+            callback: ['pivotInformation/wsPivotControllerStreamGpsCallback'],
             event: 'irpd_cControllerStream_gpsonfig',
             id: state.id,
           },
           {
-            callback: [],
+            callback: ['pivotInformation/wsPivotControllerStreamPeriodicCallback'],
             event: 'ControllerStream_periodic',
             id: state.id,
           },
@@ -124,6 +124,24 @@ export default {
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
     // Web socket callbacks
+    *wsPivotControllerStreamPanelCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotControllerStreamPanelSuccess', payload });
+    },
+    *wsPivotControllerStreamGpsCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotControllerStreamGpsSuccess', payload });
+    },
+    *wsPivotControllerStreamPeriodicCallback(
+      { payload }: { payload: any  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotControllerStreamPeriodicSuccess', payload });
+    }
   },
 
   reducers: {
@@ -307,5 +325,27 @@ export default {
         result: payload,
       };
     },
+    // Websocket reducers
+    wsPivotControllerStreamPanelSuccess(
+      state: GetPivotInformationModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[wsPivotControllerStreamPanelSuccess]', payload);
+      return state;
+    },
+    wsPivotControllerStreamGpsSuccess(
+      state: GetPivotInformationModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[wsPivotControllerStreamGpsSuccess]', payload);
+      return state;
+    },
+    wsPivotControllerStreamPeriodicSuccess(
+      state: GetPivotInformationModelProps,
+      { payload }: { payload: any },
+    ) {
+      console.log('[wsPivotControllerStreamPeriodicSuccess]', payload);
+      return state;
+    }
   },
 };
