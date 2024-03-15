@@ -125,19 +125,19 @@ export default {
     },
     // Web socket callbacks
     *wsPivotControllerStreamPanelCallback(
-      { payload }: { payload: any  },
+      { payload }: { payload: WkModels.PivotControllerStreamPanel },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsPivotControllerStreamPanelSuccess', payload });
     },
     *wsPivotControllerStreamGpsCallback(
-      { payload }: { payload: any  },
+      { payload }: { payload: WkModels.PivotControllerActionGps },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsPivotControllerStreamGpsSuccess', payload });
     },
     *wsPivotControllerStreamPeriodicCallback(
-      { payload }: { payload: any  },
+      { payload }: { payload: WkModels.PivotControllerStreamPeriodic  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsPivotControllerStreamPeriodicSuccess', payload });
@@ -328,21 +328,21 @@ export default {
     // Websocket reducers
     wsPivotControllerStreamPanelSuccess(
       state: GetPivotInformationModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WkModels.PivotControllerStreamPanel },
     ) {
       console.log('[wsPivotControllerStreamPanelSuccess]', payload);
       return state;
     },
     wsPivotControllerStreamGpsSuccess(
       state: GetPivotInformationModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WkModels.PivotControllerActionGps },
     ) {
       console.log('[wsPivotControllerStreamGpsSuccess]', payload);
       return state;
     },
     wsPivotControllerStreamPeriodicSuccess(
       state: GetPivotInformationModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WkModels.PivotControllerStreamPeriodic },
     ) {
       console.log('[wsPivotControllerStreamPeriodicSuccess]', payload);
       return state;

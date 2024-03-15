@@ -187,13 +187,13 @@ export default {
       yield put({ type: 'wsIrpdPressureStreamSuccess', payload });
     },
     *wsIrpdStreamV5EventCallback(
-      { payload }: { payload: any  },
+      { payload }: { payload: WsIrpdModels.IrpdControllerEvent  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsIrpdStreamV5EventSuccess', payload });
     },
     *wsIrpdStreamV5PeriodicCallback(
-      { payload }: { payload: any  },
+      { payload }: { payload: WsIrpdModels.IrpdCoontrollerPeriodic  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsIrpdStreamV5PeriodicSuccess', payload });
