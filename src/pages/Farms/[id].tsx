@@ -18,13 +18,15 @@ import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { DeviceType } from '@/utils/enum/device-type';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { history, useParams } from '@umijs/max';
+import { history, useLocation, useParams } from '@umijs/max';
 import { useMount } from 'ahooks';
-import { Col, Row, Spin, Tabs } from 'antd';
+import { Col, Row, Spin, Switch, Tabs } from 'antd';
 import { connect } from 'dva';
-import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { FC, FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { queryRepeater } from '../../models/repeaters';
 import { queryPivot } from '../../models/pivot';
+import { AppOutline, MessageFill, MessageOutline, UnorderedListOutline, UserOutline } from 'antd-mobile-icons';
+import { Badge, TabBar } from 'antd-mobile'
 
 type Props = {
   dispatch?: any;
@@ -48,6 +50,43 @@ type Props = {
   connectWebsocket: any;
 
 };
+
+const Bottom: FC = () => {
+  const setRouteActive = (value: string) => {
+    history.push(value)
+  }
+
+  const tabs = [
+    {
+      key: '/home',
+      title: '首页',
+      icon: <AppOutline />,
+    },
+    {
+      key: '/todo',
+      title: '待办',
+      icon: <UnorderedListOutline />,
+    },
+    {
+      key: '/message',
+      title: '消息',
+      icon: <MessageOutline />,
+    },
+    {
+      key: '/me',
+      title: '我的',
+      icon: <UserOutline />,
+    },
+  ]
+
+  return (
+    <TabBar activeKey={'/home'} onChange={value => setRouteActive(value)}>
+      {tabs.map(item => (
+        <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+      ))}
+    </TabBar>
+  )
+}
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const [activeKey, setActiveKey] = useState('1');
@@ -125,11 +164,11 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     if (params.id !== ':id') {
-      props.queryMeterSystem({id: parseInt(params.id as string),});
-      props.queryIrpd({id: parseInt(params.id as string),});
+      props.queryMeterSystem({ id: parseInt(params.id as string), });
+      props.queryIrpd({ id: parseInt(params.id as string), });
       props.queryPivot({ id: parseInt(params.id as string) });
       props.queryRepeater({ id: parseInt(params.id as string) });
-      props.queryPivotInformation({id: parseInt(params.id as string), params: {},});
+      props.queryPivotInformation({ id: parseInt(params.id as string), params: {}, });
     }
   }, [params]);
 
@@ -143,29 +182,29 @@ const Welcome: FunctionComponent<Props> = (props) => {
     props.connectWebsocket()
   })
 
-  const className = useEmotionCss(({}) => {
+  const className = useEmotionCss(({ }) => {
     return md
       ? {
-          position: 'absolute',
-          width: 400,
-          top: 10,
-          left: 45,
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        }
+        position: 'absolute',
+        width: 400,
+        top: 10,
+        left: 45,
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      }
       : {
-          width: '100%',
-          minHeight: '150px',
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        };
+        width: '100%',
+        minHeight: '150px',
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      };
   });
 
-  const classNameFixedMobile = useEmotionCss(({}) => {
+  const classNameFixedMobile = useEmotionCss(({ }) => {
     return {
       height: 65,
       width: '100%',
@@ -228,71 +267,23 @@ const Welcome: FunctionComponent<Props> = (props) => {
   }));
 
   return (
-    <div className={classNamts}>
+    <section className={classNamts}>
       <PageContainer
         header={{ children: <div style={{ display: 'none' }}>asd</div> }}
         ghost
         breadcrumb={{}}
-        title={' '}
+        title={''}
       >
-        <Row>
-          <Col
-            xs={24}
-            style={{
-              height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
-              marginTop: md? -23: 0,
-              position: 'relative',
-            }}
-          >
-            <>
-              {md ? (
-                <Spin
-                  spinning={
-                    props.pivot.loading ||
-                    props.farm.loading ||
-                    props.irpd.loading ||
-                    props.meterSystem.loading ||
-                    props.pivotInformation.loading
-                  }
-                >
-                  <div style={{ width: '100%', height: '100vh' }}>
-                    <RenderPivots />
-                  </div>
-                  <ProCard className={className}>
-                    <PivotList />
-                  </ProCard>
-                </Spin>
-              ) : null}
-
-              {!md ? (
-                <div className={classNameFixedMobile}>
-                  <Tabs
-                    defaultActiveKey="1"
-                    activeKey={activeKey}
-                    onChange={(key) => setActiveKey(key)}
-                    items={items}
-                    tabPosition="bottom"
-                  />
-                </div>
-              ) : null}
-            </>
-          </Col>
-          {props.selectedDevice.open ? (
-            md ? (
-              <Col
-                xs={24}
-                style={{
-                  padding: '15px 15px',
-                  minHeight: 'calc(100vh - 116px)',
-                }}
-              >
-                {getDeviceBySelected(props.selectedDevice.type)}
-              </Col>
-            ) : null
-          ) : null}
-        </Row>
+        <div className={'app'}>
+          <div className={'body'}>
+             qeqwe
+          </div>
+          <div className={'bottom'}>
+            <Bottom />
+          </div>
+        </div>
       </PageContainer>
-    </div>
+    </section>
   );
 };
 
@@ -317,7 +308,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  connectWebsocket: () => dispatch({type: "socket/connect", payload: {}} ),
+  connectWebsocket: () => dispatch({ type: "socket/connect", payload: {} }),
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
   queryFarm: (props: any) => dispatch(queryFarm(props)),
   queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
@@ -325,8 +316,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryIrpd: (props: any) => dispatch(queryIrpd(props)),
   queryRepeater: (props: any) => dispatch(queryRepeater(props)),
   queryPivot: (props: any) => dispatch(queryPivot(props)),
-
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Welcome);

@@ -12,7 +12,29 @@ body,
 .colorWeak {
   filter: invert(80%);
 }
- 
+
+.app {
+  height: calc(100vh - 56px);;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  flex: 0;
+  border-bottom: solid 1px var(--adm-color-border);
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom {
+  flex: 0;
+  border-top: solid 0.5px var(--adm-color-text-secondary);
+}
 
 .ant-layout {
   min-height: 100vh;

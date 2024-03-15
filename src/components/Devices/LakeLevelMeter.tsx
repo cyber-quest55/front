@@ -1,8 +1,7 @@
+import React, { useCallback, } from 'react';
+import { Liquid, } from '@ant-design/charts';
 import { DeviceType } from '@/utils/enum/device-type';
-import { Liquid } from '@ant-design/charts';
-import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
-import { Space, Tag, Typography } from 'antd';
-import React, { useState } from 'react';
+import { Marker, OverlayView, OverlayViewF } from '@react-google-maps/api';
 
 export type LakeLevelMeterProps = {
   id: number;
@@ -18,70 +17,95 @@ export type LakeLevelMeterProps = {
   infoWindow?: boolean;
   statusText?: string;
   imeterSetId?: number;
+  infoWindowRef: any;
+  zoom?: number;
+
 };
 
-const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {
-  /** Props */
-  const { centerLat, centerLng } = props;
-  const [infoWindowVisible, setInfoWindowVisible] = useState(false);
+const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = React.memo((props) => {
+  const { centerLat, centerLng, infoWindowRef } = props;
 
-  if (!centerLat || !centerLng ) {
-    return <></>;
+
+  const handleMouseEnter = useCallback(() => {
+    if (props.infoWindow) {
+      infoWindowRef?.current?.setContentAndOpen({
+        name: props.name, statusText: props.statusText, deviceColor: props.deviceColor,
+        updated: props.updated
+      }, { lat: centerLat, lng: centerLng })
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (props.infoWindow) {
+      infoWindowRef?.current?.close()
+    }
+  }, []);
+
+  if (!centerLat || !centerLng) {
+    return null;
   }
 
+  const liquidChartOptions = {
+    width: props.width ? props.width : 75,
+    height: props.height ? props.height : 75,
+    percent: 0.25,
+    style: {
+      marginTop: props.height ? -(props.height / 2) : -37.5,
+      marginLeft: props.width ? -(props.width / 2) : -37.5,
+    },
+    statistic: { content: { style: { color: 'white', fontSize: '12px' } } },
+    outline: { border: 1, distance: 3 },
+    wave: { length: 67 },
+  };
 
   return (
     <>
-      <OverlayViewF
-        position={{ lat: centerLat, lng: centerLng }}
-        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-      >
-        <div
-          onClick={() =>
-            props?.onSelect(DeviceType.Meter, props.id, { imeterSetId: props.imeterSetId })
-          }
-          onMouseLeave={() => setInfoWindowVisible(false)}
-          onMouseEnter={() => setInfoWindowVisible(true)}
-        >
-          <Liquid
-            width={props.width ? props.width : 75}
-            height={props.width ? props.width : 75}
-            percent={0.25}
-            style={{
-              marginTop: props.height ? -(props.height / 2) : -37.5,
-              marginLeft: props.width ? -(props.width / 2) : -37.5,
-            }}
-            statistic={{ content: { style: { color: 'white', fontSize: '12px' } } }}
-            outline={{
-              border: 1,
-              distance: 3,
-            }}
-            wave={{
-              length: 67,
-            }}
-          />
-        </div>
-      </OverlayViewF>
-      {infoWindowVisible && props.infoWindow ? (
-        <InfoWindowF
+      {props.zoom && props.zoom <= 11 ? (
+        <Marker
           position={{
-            lat: centerLat,
-            lng: centerLng,
+            lat: props.centerLat,
+            lng: props.centerLng,
           }}
-          options={{
-            zIndex: 12,
-          }}
-          zIndex={12}
-        >
-          <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
-            <Typography.Title level={5}>{props.name}</Typography.Title>
-            <Tag color={props.deviceColor}>{props.statusText}</Tag>
-            <Typography.Text>{props.updated}</Typography.Text>
-          </Space>
-        </InfoWindowF>
+          zIndex={13}
+          onMouseOver={handleMouseEnter}
+          onMouseOut={handleMouseLeave}
+          visible={true}
+        />
       ) : null}
+      {props.zoom && props.zoom > 11 ? (
+
+        <OverlayViewF
+          position={{ lat: centerLat, lng: centerLng }}
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+        >
+          <div
+            onClick={() =>
+              props?.onSelect(DeviceType.Meter, props.id, { imeterSetId: props.imeterSetId })
+            }
+            onMouseLeave={handleMouseLeave}
+            onMouseEnter={handleMouseEnter}
+          >
+            <Liquid {...liquidChartOptions} />
+          </div>
+        </OverlayViewF>
+      ) : null}
+
+
     </>
   );
-};
+}, (prevProps, nextProps) => {
+  // A função de comparação abaixo garante que o componente só seja renderizado novamente se suas propriedades mudarem
+  return (
+    prevProps.centerLat === nextProps.centerLat &&
+    prevProps.centerLng === nextProps.centerLng &&
+    prevProps.name === nextProps.name &&
+    prevProps.statusText === nextProps.statusText &&
+    prevProps.updated === nextProps.updated &&
+    prevProps.deviceColor === nextProps.deviceColor &&
+    prevProps.infoWindow === nextProps.infoWindow &&
+    prevProps.zoom === nextProps.zoom  
+
+  );
+});
 
 export default LakeLevelMeterDevice;

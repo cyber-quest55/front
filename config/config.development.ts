@@ -10,7 +10,7 @@ export default defineConfig({
     SOCKET_SUFFIX: 'd@',
     SOCKET_DEVICE_SUFFIX: 'd/',
  
-    API_URL: 'https://dev-app.irricontrol.net',
+    API_URL: 'https://app.irricontrol.net',
 
   },
 });

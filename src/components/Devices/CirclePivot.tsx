@@ -1,7 +1,6 @@
 import { DeviceType } from '@/utils/enum/device-type';
-import { Circle, InfoWindowF, Marker, Polygon, Polyline } from '@react-google-maps/api';
-import { Space, Tag, Typography } from 'antd';
-import React, { useState } from 'react';
+import { Circle, Marker, Polygon, Polyline } from '@react-google-maps/api';
+import React, { useCallback } from 'react';
 import {
   computeDistanceBetween,
   computeHeading,
@@ -41,17 +40,7 @@ export type CirclePivotProps = {
   onSelect: any;
   infoWindow?: boolean;
   mapHistory: number[];
-};
-
-const circleOptions = {
-  strokeOpacity: 1,
-  strokeWeight: 3,
-  fillOpacity: 0.5,
-  clickable: false,
-  draggable: false,
-  editable: false,
-  visible: true,
-  zIndex: 1,
+  infoWindowRef: any;
 };
 
 const lineOptions = {
@@ -68,7 +57,7 @@ function circlePath(
   points: number,
   angle: number,
 ): LatLngLiteral[] {
-  const a = [];
+  const a: { lat: number, lng: number }[] = [];
   const p = angle / points; // Variação do angulo baseado no numero de pontos
   let d = computeHeading(
     // Angulo que começa o desenho
@@ -83,6 +72,14 @@ function circlePath(
   a.unshift(center);
 
   return a;
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const toHex = (value: number) => {
+    const hex = value.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
 function interpolateColors(number: number, color1: string, color2: string): string {
@@ -104,17 +101,9 @@ function interpolateColors(number: number, color1: string, color2: string): stri
   return rgbToHex(r, g, b);
 }
 
-function rgbToHex(r: number, g: number, b: number): string {
-  const toHex = (value: number) => {
-    const hex = value.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  };
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-
 const RenderSegment: React.FC<any> = (props) => {
   /** Props */
-  const points = [];
+  const points: { lat: number, lng: number }[] = [];
   const centerLat = props.center.lat; // Latitud;
   const centerLng = props.center.lng; // Longitude
 
@@ -137,7 +126,7 @@ const RenderSegment: React.FC<any> = (props) => {
     const newLng =
       centerLng +
       (radiusMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)))) *
-        Math.sin(angularDifferenceRadians);
+      Math.sin(angularDifferenceRadians);
 
     const newLat2 =
       centerLat + ((radiusMeters - radiusMeters / 8) / 111320) * Math.cos(angularDifferenceRadians);
@@ -145,7 +134,7 @@ const RenderSegment: React.FC<any> = (props) => {
     const newLng2 =
       centerLng +
       ((radiusMeters - radiusMeters / 8) / (111320 * Math.cos(centerLat * (Math.PI / 180)))) *
-        Math.sin(angularDifferenceRadians);
+      Math.sin(angularDifferenceRadians);
 
     if (i === startAngle) {
       points.push({ lat: newLat, lng: newLng });
@@ -166,7 +155,7 @@ const RenderSegment: React.FC<any> = (props) => {
     const newLng =
       centerLng +
       (radiusMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)))) *
-        Math.sin(angularDifferenceRadians);
+      Math.sin(angularDifferenceRadians);
 
     points.push({ lat: newLat, lng: newLng });
   }
@@ -196,7 +185,7 @@ const formatMapHistoryInSegments = (mapHistory: number[]) => {
   const colors = ['#2218cb', '#ffa200'];
 
   mapHistory?.forEach((item, index) => {
-    if (item === 2) {
+    if (item > 0) {
       segments.push({
         begin: segments.length === 0 ? index : index - 1,
         end: index + 1,
@@ -205,26 +194,64 @@ const formatMapHistoryInSegments = (mapHistory: number[]) => {
     }
   });
 
-  return segments.map((item, index) => {
-    console.log('item begin', item.begin)
-       const color = interpolateColors(item.begin/ 360, colors[0], colors[1]);
-      item.color = color;
-  
- 
+
+
+  return segments.sort((a, b) => {
+    return a.begin - b.begin
+  }).map((item, index) => {
+    const color = interpolateColors(index, colors[0], colors[1]);
+    item.color = color;
 
     return item;
+  }).sort((a, b) => {
+    return a.begin - b.begin
   });
 };
 
-const CirclePivot: React.FC<CirclePivotProps> = (props) => {
-  /** States*/
-  const [infoWindowVisible, setInfoWindowVisible] = useState(false);
-
-  /** Props */
+const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
   const { centerLat, centerLng, referencedLat, referencedLng, gpsLat, gpsLong } = props;
-
   const deviceColor = props.deviceColor ? props.deviceColor : '#000';
   const lineColor = props.lineColor ? props.lineColor : '#fff';
+
+  const handleMouseEnter = useCallback(() => {
+    if (props.infoWindow) {
+      props.infoWindowRef?.current?.setContentAndOpen(
+        { 
+          name: props.name, statusText: props.statusText, deviceColor: props.deviceColor, 
+          status: props.irrigationStatus, updated: props.updated 
+        },
+        { lat: props.centerLat, lng: props.centerLng });
+    }
+  }, [props.centerLat, props.centerLng, props.infoWindow, props.infoWindowRef]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (props.infoWindow) {
+      props.infoWindowRef?.current?.close();
+    }
+  }, [props.infoWindow, props.infoWindowRef]);
+
+  const radius = React.useMemo(() => {
+    const centerPositionGMaps = new LatLng(centerLat, centerLng);
+    const referencePositionGMaps = new LatLng(referencedLat, referencedLng);
+    return computeDistanceBetween(centerPositionGMaps, referencePositionGMaps);
+  }, [centerLat, centerLng, referencedLat, referencedLng])
+
+  const circleOptions = React.useMemo(
+    () => ({
+      strokeOpacity: 1,
+      strokeWeight: 3,
+      fillOpacity: 0.5,
+      clickable: false,
+      draggable: false,
+      editable: false,
+      visible: true,
+      zIndex: 1,
+      strokeColor: deviceColor,
+      fillColor: deviceColor,
+      radius
+    }),
+    [deviceColor, centerLat, centerLng, referencedLat, referencedLng, radius]
+  );
 
   if (!centerLat || !centerLng || !referencedLat || !referencedLng) {
     return <></>;
@@ -240,7 +267,7 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
 
   const lineAngle = computeHeading(centerPositionGMaps, gpsPositionGMaps);
 
-  const linePoints = [];
+  const linePoints: { lat: number, lng: number }[] = [];
 
   /** It is the calc to set the line in the center of circle */
   if (lineRadius < referenceRadius) {
@@ -318,11 +345,11 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
     marginalPositionGMaps,
     referenceRadius / 5,
     lineAngle +
-      (props.protocol === 'v5'
-        ? props.irrigationDirection === 1
-          ? -45
-          : 45
-        : props.irrigationDirection === 1
+    (props.protocol === 'v5'
+      ? props.irrigationDirection === 1
+        ? -45
+        : 45
+      : props.irrigationDirection === 1
         ? 45
         : -45),
   );
@@ -334,10 +361,10 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
   const lineUpArrow =
     props.protocol === 'v5'
       ? [
-          { lat: dotUpArrow.lat(), lng: dotUpArrow.lng() },
-          { lat: dotArrowPositionGMaps?.lat() as any, lng: dotArrowPositionGMaps?.lng() as any },
-          { lat: dotDownArrow.lat(), lng: dotDownArrow.lng() },
-        ]
+        { lat: dotUpArrow.lat(), lng: dotUpArrow.lng() },
+        { lat: dotArrowPositionGMaps?.lat() as any, lng: dotArrowPositionGMaps?.lng() as any },
+        { lat: dotDownArrow.lat(), lng: dotDownArrow.lng() },
+      ]
       : [];
 
   /** For dashed line */
@@ -346,9 +373,9 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
     strokeOpacity: 1,
     scale: 2,
   };
- 
+
   const endIrrigationDashedLine = centerPositionGMaps && referenceRadius && props.stopAngle ? computeOffset(
- 
+
     centerPositionGMaps,
     referenceRadius,
     props.stopAngle,
@@ -374,30 +401,12 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
             lng: props.centerLng,
           }}
           zIndex={13}
-          onMouseOver={() => setInfoWindowVisible(true)}
-          onMouseOut={() => setInfoWindowVisible(false)}
+          onMouseOver={handleMouseEnter}
+          onMouseOut={handleMouseLeave}
           visible={true}
         />
       ) : null}
       {/** Draw Info Window */}
-      {infoWindowVisible && props.infoWindow ? (
-        <InfoWindowF
-          position={{
-            lat: centerLat,
-            lng: centerLng,
-          }}
-          options={{
-            zIndex: 12,
-          }}
-          zIndex={12}
-        >
-          <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
-            <Typography.Title level={5}>{props.name}</Typography.Title>
-            <Tag color={props.deviceColor}>{props.statusText}</Tag>
-            <Typography.Text>{props.updated}</Typography.Text>
-          </Space>
-        </InfoWindowF>
-      ) : null}
 
       {formatMapHistoryInSegments(props.mapHistory)?.map((item, index) => (
         <RenderSegment
@@ -421,8 +430,8 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
                 radius: referenceRadius,
                 clickable: true,
               }}
-              onMouseOver={() => setInfoWindowVisible(true)}
-              onMouseOut={() => setInfoWindowVisible(false)}
+              onMouseOver={handleMouseEnter}
+              onMouseOut={handleMouseLeave}
             />
           ) : (
             <>
@@ -438,8 +447,8 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
                   strokeWeight: 0.5,
                   fillOpacity: 0,
                 }}
-                onMouseOver={() => setInfoWindowVisible(true)}
-                onMouseOut={() => setInfoWindowVisible(false)}
+                onMouseOver={handleMouseEnter}
+                onMouseOut={handleMouseLeave}
               />
               {/** Cut the circle */}
               <Polygon
@@ -520,20 +529,20 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
           {/** Draw angles lines */}
           {props.dashed
             ? getPolylines().map((item) => (
-                <Polyline
-                  key={`line-${Math.random()}`}
-                  path={[
-                    { lat: item.x.lat(), lng: item.x.lng() },
-                    { lat: item.y.lat(), lng: item.y.lng() },
-                  ]}
-                  options={{
-                    strokeColor: lineColor,
-                    strokeOpacity: 1,
-                    strokeWeight: 1,
-                    zIndex: 999,
-                  }}
-                />
-              ))
+              <Polyline
+                key={`line-${Math.random()}`}
+                path={[
+                  { lat: item.x.lat(), lng: item.x.lng() },
+                  { lat: item.y.lat(), lng: item.y.lng() },
+                ]}
+                options={{
+                  strokeColor: lineColor,
+                  strokeOpacity: 1,
+                  strokeWeight: 1,
+                  zIndex: 999,
+                }}
+              />
+            ))
             : null}
           {/** Case is V4 */}
           {props.protocol === 'v4' ? (
@@ -553,6 +562,34 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
       ) : null}
     </>
   );
-};
-
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.centerLat === nextProps.centerLat &&
+    prevProps.centerLng === nextProps.centerLng &&
+    prevProps.referencedLat === nextProps.referencedLat &&
+    prevProps.referencedLng === nextProps.referencedLng &&
+    prevProps.gpsLat === nextProps.gpsLat &&
+    prevProps.gpsLong === nextProps.gpsLong &&
+    prevProps.deviceColor === nextProps.deviceColor &&
+    prevProps.lineColor === nextProps.lineColor &&
+    prevProps.dashed === nextProps.dashed &&
+    prevProps.referenceAngle === nextProps.referenceAngle &&
+    prevProps.irrigationDirection === nextProps.irrigationDirection &&
+    prevProps.lpmGpsStreamLat === nextProps.lpmGpsStreamLat &&
+    prevProps.lpmGpsStreamLng === nextProps.lpmGpsStreamLng &&
+    prevProps.stopAngle === nextProps.stopAngle &&
+    prevProps.endAngle === nextProps.endAngle &&
+    prevProps.sectorAngle === nextProps.sectorAngle &&
+    prevProps.zoom === nextProps.zoom,
+    prevProps.hasMarker === nextProps.hasMarker &&
+    prevProps.irrigationStatus === nextProps.irrigationStatus &&
+    prevProps.updated === nextProps.updated &&
+    prevProps.name === nextProps.name &&
+    prevProps.statusText === nextProps.statusText &&
+    prevProps.onSelect === nextProps.onSelect &&
+    prevProps.infoWindow === nextProps.infoWindow &&
+    prevProps.mapHistory === nextProps.mapHistory &&
+    prevProps.infoWindowRef === nextProps.infoWindowRef
+  );
+});
 export default CirclePivot;

@@ -127,7 +127,7 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
             type: DeviceType.Meter,
             deviceId: device.id,
             farmId,
-            otherProps: device.imeterSetId,
+            otherProps: {imeterSetId: device.imeterSetId},
           });
         break;
       }

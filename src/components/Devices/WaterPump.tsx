@@ -1,8 +1,7 @@
+import React, { useCallback, useEffect } from 'react';
+import { Marker, OverlayView, OverlayViewF, } from '@react-google-maps/api';
 import { DeviceType } from '@/utils/enum/device-type';
 import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
-import { InfoWindowF, OverlayView, OverlayViewF } from '@react-google-maps/api';
-import { Space, Tag, Typography } from 'antd';
-import React, { useState } from 'react';
 import Image from '../../../public/images/devices/water-pump.png';
 
 export type WaterPumpProps = {
@@ -18,56 +17,69 @@ export type WaterPumpProps = {
   infoWindow?: boolean;
   waterId?: number;
   protocol?: number;
+  infoWindowRef: any;
+  zoom?: number;
+
 };
 
 const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
-  /** Props */
-  const { centerLat, centerLng } = props;
-  const [infoWindowVisible, setInfoWindowVisible] = useState(false);
+  const { centerLat, centerLng, name, statusText, updated, deviceColor = '#000', onSelect, waterId, infoWindowRef, zoom } = props;
+
+  const handleMouseEnter = useCallback(() => {
+    if (props.infoWindow) {
+      infoWindowRef?.current?.setContentAndOpen({ name, statusText, updated, deviceColor }, { lat: centerLat, lng: centerLng })
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (props.infoWindow) {
+      infoWindowRef?.current?.close()
+    }
+  }, []);
 
   if (!centerLat || !centerLng) {
     return <></>;
   }
 
+
   return (
     <>
-      <OverlayViewF
-        position={{ lat: centerLat, lng: centerLng }}
-        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-      >
-        <div
-          onClick={() =>
-            props?.onSelect(DeviceType.Pump, props.id, {
-              params: getCommonDateParam(true),
-              waterId: props.waterId,
-            })
-          }
-          onMouseLeave={() => setInfoWindowVisible(false)}
-          onMouseEnter={() => setInfoWindowVisible(true)}
-        >
-          <img src={Image} style={{ width: 44, height: 44 }} />
-        </div>
-      </OverlayViewF>
-      {infoWindowVisible && props.infoWindow ? (
-        <InfoWindowF
+      {zoom && zoom <= 11 ? (
+        <Marker
           position={{
-            lat: centerLat,
-            lng: centerLng,
+            lat: props.centerLat,
+            lng: props.centerLng,
           }}
-          options={{
-            zIndex: 12,
-          }}
-          zIndex={12}
-        >
-          <Space direction="vertical" onMouseLeave={() => setInfoWindowVisible(false)}>
-            <Typography.Title level={5}>{props.name}</Typography.Title>
-            <Tag color={props.deviceColor}>{props.statusText}</Tag>
-            <Typography.Text>{props.updated}</Typography.Text>
-          </Space>
-        </InfoWindowF>
+          zIndex={13}
+          onMouseOver={handleMouseEnter}
+          onMouseOut={handleMouseLeave}
+          visible={true}
+        />
       ) : null}
+      {zoom && zoom > 11 ? (
+        <OverlayViewF
+          position={{ lat: centerLat, lng: centerLng }}
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+        >
+          <div
+            onClick={() =>
+              onSelect(DeviceType.Pump, props.id, {
+                params: getCommonDateParam(true),
+                waterId: waterId,
+              })
+            }
+            style={{ width: 44, height: 44 }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <img src={Image} style={{ width: 44, height: 44 }} />
+          </div>
+        </OverlayViewF>
+      ) : null}
+
     </>
+
   );
-};
+}
 
 export default WaterPumpDevice;
