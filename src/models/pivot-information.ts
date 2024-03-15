@@ -330,14 +330,50 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerStreamPanel },
     ) {
-      console.log('[wsPivotControllerStreamPanelSuccess]', payload);
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
+      
+      if (pivotIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === pivotIndex) return {
+            ...r,
+            statusText: getPivotStatus(
+              payload.content.irrigation_status.irrigation_status
+            ),
+          }
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     },
     wsPivotControllerStreamGpsSuccess(
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerActionGps },
     ) {
-      console.log('[wsPivotControllerStreamGpsSuccess]', payload);
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
+      
+      if (pivotIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === pivotIndex) return {
+            ...r,
+            statusText: getPivotStatus(
+              payload.content.irrigation_status.irrigation_status
+            ),
+          }
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     },
     wsPivotControllerStreamPeriodicSuccess(
