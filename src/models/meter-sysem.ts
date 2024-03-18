@@ -77,7 +77,7 @@ export default {
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
       const channels = state.result.map(r => ({
-        title: `d@imeter@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
         id: `@EditFarm_metersystem${r.id}`,
         binds: [
           {
@@ -92,7 +92,7 @@ export default {
     *onDestroy({ }, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
       const channels = state.result.map(r => ({
-        title: `d@imeter@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
         id: `@EditFarm_metersystem${r.id}`,
         binds: [
           {
@@ -108,7 +108,7 @@ export default {
     *onInitDeviceBox({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
       const channels = state.result.map(r => ({
-          title: `d@imeter@${r.id}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
           id: `@DeviceBox_imeter${r.id}`,
           binds: [
             {
@@ -128,7 +128,7 @@ export default {
     *onDestroyDeviceBox({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
       const channels = state.result.map(r => ({
-        title: `d@imeter@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
         id: `@DeviceBox_imeter${r.id}`,
         binds: [
           {

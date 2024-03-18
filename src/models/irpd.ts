@@ -77,7 +77,7 @@ export default {
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
       const channels = state.result.map(r => ({
-        title: `d@irpd@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${r.id}`,
         id: `@EditFarm_irpd${r.id}`,
         binds: [
           {
@@ -97,7 +97,7 @@ export default {
     *onDestroy({ }, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
       const channels = state.result.map(r => ({
-        title: `d@irpd@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${r.id}`,
         id: `@EditFarm_irpd${r.id}`,
         binds: [
           {
@@ -119,7 +119,7 @@ export default {
       const state = yield select((state) => state.irpd);
       console.log('[onInitDeviceBox]', state);
       const channels = state.result.map(r => ({
-          title: `d@irpd@${r.id}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${r.id}`,
           id: `@DeviceBox_irpd${r.id}`,
           binds: [
             {
@@ -143,9 +143,9 @@ export default {
     },
     *onDestroyDeviceBox({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
-      console.log('[onInitDeviceBox]', state);
+      console.log('[onDestroyDeviceBox]', state);
       const channels = state.result.map(r => ({
-        title: `d@irpd@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${r.id}`,
         id: `@DeviceBox_irpd${r.id}`,
         binds: [
           {
@@ -227,14 +227,17 @@ export default {
         const item = payload[index];
         const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status;
         const latLng = item.position.split(',');
+        const deviceColor = getIrpdColor(status);
+        const statusText = getIrpdStatus(status);
+        
         mapper.push({
           id: item.id,
           centerLat: parseFloat(latLng[0]),
           centerLng: parseFloat(latLng[1]),
           name: payload[index].name,
           updated: new Date(payload[index].updated).toLocaleString(),
-          deviceColor: getIrpdColor(status),
-          statusText: getIrpdStatus(status),
+          deviceColor: deviceColor,
+          statusText: statusText,
           waterId: item?.latest_irpd_config_v5?.flow,
           protocol: item.protocol
         });
@@ -352,16 +355,58 @@ export default {
     },
     wsIrpdStreamV5EventSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WsIrpdModels.RawIrpdControllerEvent },
     ) {
-      console.log('[wsIrpdStreamV5EventSuccess]',payload);
+      const irpdIndex = state.result.findIndex(r => r.id === payload.irpd);
+      
+      if (irpdIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === irpdIndex) {
+            const deviceColor = getIrpdColor(payload.content.imanage_master_status.status);
+            const statusText = getIrpdStatus(payload.content.imanage_master_status.status);
+            return {
+              ...r,
+              deviceColor,
+              statusText,
+            }
+          } 
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     },
     wsIrpdStreamV5PeriodicSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WsIrpdModels.RawIrpdCoontrollerPeriodic },
     ) {
-      console.log('[wsIrpdStreamV5PeriodicSuccess]',payload);
+      const irpdIndex = state.result.findIndex(r => r.id === payload.irpd);
+      
+      if (irpdIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === irpdIndex) {
+            const deviceColor = getIrpdColor(payload.content.imanage_master_status.status);
+            const statusText = getIrpdStatus(payload.content.imanage_master_status.status);
+            return {
+              ...r,
+              deviceColor,
+              statusText,
+            }
+          } 
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     }
   },

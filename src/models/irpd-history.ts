@@ -83,7 +83,7 @@ export default {
       );
       const channels = [
         {
-          title: `d@irpd@${selectedDevice.deviceId}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${selectedDevice.deviceId}`,
           id: state.idIrpd,
           binds: [
             {
@@ -109,7 +109,7 @@ export default {
           ],
         },
         {
-          title: `d@farm@${selectedDevice.farmId}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@farm@${selectedDevice.farmId}`,
           id: state.idFarm,
           binds: [
             {
@@ -131,7 +131,7 @@ export default {
       );
       const channels = [
         {
-          title: `d@irpd@${selectedDevice.deviceId}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${selectedDevice.deviceId}`,
           id: state.idIrpd,
           binds: [
             {
@@ -157,7 +157,7 @@ export default {
           ],
         },
         {
-          title: `d@farm${selectedDevice.farmId}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@farm${selectedDevice.farmId}`,
           id: state.idFarm,
           binds: [
             {

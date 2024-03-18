@@ -76,7 +76,7 @@ export default {
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.pivotInformation);
       const channels = state.result.map(r => ({
-        title: `d@pivot@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@pivot@${r.id}`,
         id: state.id,
         binds: [
           {
@@ -101,7 +101,7 @@ export default {
     *onDestroy({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.pivotInformation);
       const channels = state.result.map(r => ({
-        title: `d@pivot@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@pivot@${r.id}`,
         id: state.id,
         binds: [
           {
@@ -330,7 +330,9 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerStreamPanel },
     ) {
-      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
+      const pivotIndex = state.result.findIndex(
+        r => r.id === payload.equipment
+      );
       
       if (pivotIndex >= 0) {
         const newResults = state.result.map((r, i) => {
@@ -355,7 +357,9 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerActionGps },
     ) {
-      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
+      const pivotIndex = state.result.findIndex(
+        r => r.id === payload.equipment
+      );
       
       if (pivotIndex >= 0) {
         const newResults = state.result.map((r, i) => {
