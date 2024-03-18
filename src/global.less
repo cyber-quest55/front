@@ -29,7 +29,8 @@ body,
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .bottom {
@@ -47,7 +48,17 @@ body,
 }
 
 .ant-pro-page-container-children-container{
-  padding-block-start: 0px !important;
+  @media (max-width: 768px) {
+    padding-inline: 8px !important;
+  }
+}
+
+.ant-pro-page-container .ant-pro-page-container-warp-page-header{
+  @media (max-width: 768px) {
+    padding-inline-start: 8px;
+    padding-inline-end: 8px;
+  }
+
 }
 
 .ant-menu-item-group-title {

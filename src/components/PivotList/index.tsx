@@ -3,9 +3,9 @@ import { GetCentralModelProps } from '@/models/central';
 import { GetFarmModelProps } from '@/models/farm';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetMeterSystemModelProps } from '@/models/meter-sysem';
-import { GetPivotModelProps, queryPivot } from '@/models/pivot';
+import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
-import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
+import { GetRepeaterModelProps } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { DeviceType } from '@/utils/enum/device-type';
@@ -48,10 +48,8 @@ type Props = {
   repeater: GetRepeaterModelProps;
   selectedFarm: SelectedFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
-  queryPivot: typeof queryPivot;
   setSelectedDevice: typeof setSelectedDevice;
-  queryRepeater: typeof queryRepeater;
-};
+ };
 
 const scrollToBottom = () => {
   setTimeout(() => {

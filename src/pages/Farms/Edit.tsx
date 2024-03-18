@@ -17,7 +17,7 @@ import { history } from '@umijs/max';
 import { useMount } from 'ahooks'
 import { connect } from 'dva';
 import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
-
+ 
 // Component props
 type Props = {
   farm: GetFarmByIdModelProps;
@@ -28,11 +28,11 @@ type Props = {
 
 // Component
 export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
-	// Hooks
+  // Hooks
   const params = useParams();
   const intl = useIntl();
   const { xs } = useScreenHook();
-  const [ tab, setTab ] = useState('tab1');
+  const [tab, setTab] = useState('tab1');
 
   // Effects
   useMount(() => {
@@ -49,21 +49,23 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
       return;
     }
   }, [props.selectedFarm]);
-  
+
+
+
   // Main TSX
   return (
-		<PageContainer>
+    <PageContainer  >
       <ProCard
         split="vertical"
         tabs={{
-          tabPosition: xs ? 'top': 'left',
+          tabPosition: xs ? 'top' : 'left',
           activeKey: tab,
           destroyInactiveTabPane: true,
           onChange: (key) => setTab(key),
           items: [
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.general',
                   })}
@@ -74,7 +76,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.location',
                   })}
@@ -85,7 +87,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.billing',
                   })}
@@ -96,7 +98,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.contact',
                   })}
@@ -107,7 +109,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.pivotreports',
                   })}
@@ -118,7 +120,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.pumpreports',
                   })}
@@ -129,7 +131,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.powerranges',
                   })}
@@ -140,7 +142,7 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div style={{ minWidth: xs? '' : 135, textAlign: 'left' }}>
+                <div style={{ minWidth: xs ? '' : 135, textAlign: 'left' }}>
                   {intl.formatMessage({
                     id: 'pages.edit.farm.tab.options.holidays',
                   })}
@@ -151,9 +153,9 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
             },
             {
               label: (
-                <div 
+                <div
                   style={{
-                    minWidth: xs? '' : 135,
+                    minWidth: xs ? '' : 135,
                     textAlign: 'left',
                     paddingBottom: 16
                   }}
@@ -169,7 +171,8 @@ export const EditFarm: FunctionComponent<Props> = (props): ReactElement => {
           ]
         }}
       />
-		</PageContainer>
+    </PageContainer>
+
   );
 };
 

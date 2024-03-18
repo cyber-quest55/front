@@ -55,14 +55,13 @@ type Props = {
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const [activeKey, setActiveKey] = useState('1');
-  const { md } = useScreenHook();
+  const { md, xs} = useScreenHook();
   const params = useParams();
 
   //const [isConnected, setIsConnected] = useState(false);
 
   const Bottom: FC = () => {
     const disabled = !props.selectedDevice.open;
-    console.log(disabled, props.selectedDevice.open)
 
     const setRouteActive = (value: string) => {
       /** Caso nosso dispositivo ainda não esteja selecionado */
@@ -222,7 +221,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
       paddingBlockStart: '0px !important',
     },
   }));
-
+  
   return (
     <section className={classNamts}>
       <PageContainer
@@ -231,7 +230,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
         breadcrumb={{}}
         title={''}
       >
-        {md && <Row>
+        {md ? <Row>
           <Col
             xs={24}
             style={{
@@ -275,12 +274,18 @@ const Welcome: FunctionComponent<Props> = (props) => {
               </Col>
             ) : null
           ) : null}
-        </Row>}
+        </Row>: null}
 
-        <div className={'app'}>
+          {xs?<div className={'app'}>
           <div className={'body'}>
             {activeKey === '1' &&
-              <Spin spinning={false}>
+              <Spin spinning={
+                props.pivot.loading ||
+                props.farm.loading ||
+                props.irpd.loading ||
+                props.meterSystem.loading ||
+                props.pivotInformation.loading
+              }>
                 <div style={{ width: '100vw', }}>
                   <RenderPivots />
                 </div>
@@ -295,7 +300,8 @@ const Welcome: FunctionComponent<Props> = (props) => {
           <div className={'bottom'}>
             <Bottom />
           </div>
-        </div>
+        </div>: null}
+        
       </PageContainer>
     </section>
   );
