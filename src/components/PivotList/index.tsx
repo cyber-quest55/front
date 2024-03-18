@@ -116,14 +116,14 @@ const PivotList: React.FC<Props> = (props) => {
   });
  /**
   useEffect(() => {
-    props.queryPivot({ id: parseInt(params.id as string) });
-    props.queryRepeater({ id: parseInt(params.id as string) });
+    props?.queryPivot({ id: parseInt(params.id as string) });
+    props?.queryRepeater({ id: parseInt(params.id as string) });
   }, [params]);
 */
   const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
     const farmId = parseInt(params.id as string);
     if (farmId)
-      props.setSelectedDevice({
+      props?.setSelectedDevice({
         type: type,
         deviceId: deviceId,
         farmId,
@@ -131,7 +131,7 @@ const PivotList: React.FC<Props> = (props) => {
       });
   };
 
-  const dataSource = props.pivotInformation.result?.map((item) => ({
+  const dataSource = props?.pivotInformation?.result?.map((item) => ({
     title: (
       <Row
         onClick={() => {
@@ -143,7 +143,7 @@ const PivotList: React.FC<Props> = (props) => {
         style={{ width: '100%' }}
       >
         <Col>
-          <span>{props.pivot.result?.find((subItem) => subItem.id === item.id)?.name}</span>
+          <span>{props?.pivot.result?.find((subItem) => subItem.id === item.id)?.name}</span>
         </Col>
         <Col>
           <Tag color={item.deviceColor}>{item.statusText}</Tag>
@@ -183,7 +183,7 @@ const PivotList: React.FC<Props> = (props) => {
     ),
   }));
 
-  const dataSource2 = props.repeater.result?.map((item) => ({
+  const dataSource2 = props?.repeater.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
@@ -212,7 +212,7 @@ const PivotList: React.FC<Props> = (props) => {
     ),
   }));
 
-  const dataSource3 = props.irpd.result?.map((item) => ({
+  const dataSource3 = props?.irpd.result?.map((item) => ({
     title: (
       <Row
         onClick={() => {
@@ -257,7 +257,7 @@ const PivotList: React.FC<Props> = (props) => {
     ),
   }));
 
-  const dataSource4 = props.meterSystem.result?.map((item) => ({
+  const dataSource4 = props?.meterSystem.result?.map((item) => ({
     title: (
       <Row
         onClick={() => {
@@ -338,7 +338,7 @@ const PivotList: React.FC<Props> = (props) => {
         <Col>
           <Space size="small">
             <WithConnection />
-            <Typography.Title level={4} className={classNameSelect}>{props.selectedFarm?.name?.toString()}</Typography.Title>
+            <Typography.Title level={4} className={classNameSelect}>{props?.selectedFarm?.name?.toString()}</Typography.Title>
           </Space>
         </Col>
         <Col>
@@ -358,7 +358,7 @@ const PivotList: React.FC<Props> = (props) => {
       </Row>
       <Divider style={{ marginBottom: 0 }} />
       <div className={classNameScrollable} style={{ width: '100%' }}>
-        {props.pivot.result.length > 0 ? (
+        {props?.pivot?.result.length > 0 ? (
           <>
             <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
               Pivôs
@@ -368,7 +368,7 @@ const PivotList: React.FC<Props> = (props) => {
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
           </>
         ) : null}
-        {props.repeater.result.length > 0 ? (
+        {props?.repeater?.result.length > 0 ? (
           <>
             <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
               Repetidores
@@ -379,7 +379,7 @@ const PivotList: React.FC<Props> = (props) => {
           </>
         ) : null}
 
-        {props.irpd.result.length > 0 ? (
+        {props?.irpd.result.length > 0 ? (
           <>
             <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
               Bombas
@@ -390,7 +390,7 @@ const PivotList: React.FC<Props> = (props) => {
           </>
         ) : null}
 
-        {props.meterSystem.result.length > 0 ? (
+        {props?.meterSystem.result.length > 0 ? (
           <>
             <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
               Medidores
@@ -402,7 +402,7 @@ const PivotList: React.FC<Props> = (props) => {
       </div>
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>
-          <AddDeviceFormContainer base={(props.selectedFarm as any)?.base?.radio_id} />
+          <AddDeviceFormContainer base={(props?.selectedFarm as any)?.base?.radio_id} />
         </Col>
       </Row>
     </div>

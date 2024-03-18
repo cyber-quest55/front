@@ -147,7 +147,8 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   };
 
   useUnmount(() => {
-    setDeviceClose()
+    if(!xs)
+      setDeviceClose()
   })
 
   return (

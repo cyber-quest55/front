@@ -8,8 +8,7 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
-import Field from '@ant-design/pro-field';
-import { GoogleMap } from '@react-google-maps/api';
+ import { GoogleMap } from '@react-google-maps/api';
 import { Dispatch, useParams } from '@umijs/max';
 import { Flex, Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
@@ -56,7 +55,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
 
   const containerStyle = {
     width: '100%',
-    height: md ? '100vh' : 'calc(100vh -  102px)',
+    height: md ? '100vh' : 'calc(100vh - 108px)',
   };
 
   useEffect(() => {
