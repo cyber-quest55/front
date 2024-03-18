@@ -43,6 +43,7 @@ export type CirclePivotProps = {
   mapHistory: number[];
   pluviometerMeasure?: number;
   isRaining?: boolean;
+  currentAngle?: number;
 };
 
 const circleOptions = {

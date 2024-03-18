@@ -3,6 +3,7 @@ import { getPivotsWithInformations } from '@/services/pivot';
 import { getPivotColor } from '@/utils/formater/get-pivot-color';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { AxiosError } from 'axios';
+//import dayjs from 'dayjs';
 import uniqid from 'uniqid';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
@@ -285,6 +286,13 @@ export default {
           isRaining = true;
         }
 
+        // Calc current pivot angle
+        // const gpsDate = dayjs(item.controllerstream_gps.created);
+        // const panelDate = dayjs(item.controllerstream_panel.created);
+        // const currentAngle = panelDate.isAfter(gpsDate)
+        //   ? item.controllerstream_panel.current_angle
+        //   : item.controllerstream_gps.current_angle;
+
         // Computed information about pivots
         mapper.push({
           id: item.id,
@@ -316,6 +324,7 @@ export default {
           mapHistory: item.map_history,
           pluviometerMeasure,
           isRaining,
+          //currentAngle,
         });
       }
 
@@ -341,9 +350,7 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerStreamPanel },
     ) {
-      const pivotIndex = state.result.findIndex(
-        r => r.id === payload.equipment
-      );
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
 
       if (pivotIndex >= 0) {
         const newResults = state.result.map((r, i) => {
@@ -368,9 +375,7 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerActionGps },
     ) {
-      const pivotIndex = state.result.findIndex(
-        r => r.id === payload.equipment
-      );
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
       
       if (pivotIndex >= 0) {
         const newResults = state.result.map((r, i) => {
@@ -378,7 +383,7 @@ export default {
             ...r,
             deviceColor: getPivotColor(payload.content.irrigation_status.irrigation_status),
             statusText: getPivotStatus(payload.content.irrigation_status.irrigation_status),
-            referenceAngle: payload.content.current_angle.current_angle,
+            currentAngle: payload.content.current_angle.current_angle,
             updated: new Date(payload.updated).toLocaleString(),
           }
           return r;
@@ -396,9 +401,7 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerStreamPeriodic },
     ) {
-      const pivotIndex = state.result.findIndex(
-        r => r.id === payload.equipment
-      );
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
 
       if (pivotIndex >= 0) {
         const newResults = state.result.map((r, i) => {
