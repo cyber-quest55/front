@@ -32,11 +32,6 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       ? meter?.imeter_set[0]?.latest_config?.content?.imanage_sensors[0]?.max_value
       : 1;
 
-  const minValue =
-    meter.imeter_set?.length > 0
-      ? meter?.imeter_set[0]?.latest_config?.content?.imanage_sensors[0]?.min_value
-      : 1;
-
   const minLimit =
     meter.imeter_set?.length > 0 ? meter?.imeter_set[0]?.latest_config?.min_limit : undefined;
   const maxLimit =
@@ -215,6 +210,6 @@ const mapStateToProps = ({ meterSystemById, selectedDevice }: any) => ({
   meterSystemById,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({});
+const mapDispatchToProps = () => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeterWaterLevelChart);

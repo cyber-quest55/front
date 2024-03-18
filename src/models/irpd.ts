@@ -225,11 +225,19 @@ export default {
 
       for (let index = 0; index < payload.length; index++) {
         const item = payload[index];
-        const status = item.latest_irpd_stream_v5_event?.content?.imanage_master_status?.status;
+        const status = item.latest_irpd_stream_v5_event
+          ? item.latest_irpd_stream_v5_event.content?.imanage_master_status?.status
+          : item.latest_irpd_stream_v5_periodic?.content?.imanage_master_status.status;
         const latLng = item.position.split(',');
+        
+        // Retrieve labels
         const deviceColor = getIrpdColor(status);
         const statusText = getIrpdStatus(status);
         
+        // Get irpd pressure
+        let irpdPressure = null;
+
+        // Computed irpd data
         mapper.push({
           id: item.id,
           centerLat: parseFloat(latLng[0]),
@@ -239,7 +247,8 @@ export default {
           deviceColor: deviceColor,
           statusText: statusText,
           waterId: item?.latest_irpd_config_v5?.flow,
-          protocol: item.protocol
+          protocol: item.protocol,
+          pumpPressure: irpdPressure,
         });
       }
 
@@ -348,9 +357,28 @@ export default {
     },
     wsIrpdPressureStreamSuccess(
       state: GetIrpdModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WsIrpdModels.RawIrpdPressureStream },
     ) {
-      console.log('[wsIrpdPressureStreamSuccess]', payload);
+      const irpdIndex = state.result.findIndex(r => r.id === payload.irpd);
+      
+      if (irpdIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === irpdIndex) {
+            return {
+              ...r,
+              pumpPressure: payload.pressure,
+              updated: new Date(payload.created).toLocaleString(),
+            }
+          } 
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     },
     wsIrpdStreamV5EventSuccess(

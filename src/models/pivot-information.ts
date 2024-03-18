@@ -277,6 +277,15 @@ export default {
           );
         }
 
+        // This section calculates the pluviometer measure to display on device box
+        let pluviometerMeasure = 0;
+        let isRaining = false;
+        if (item.controllerstream_periodic) {
+          pluviometerMeasure = item.controllerstream_periodic.content?.pluviometer_daily_measure?.daily_measure;
+          isRaining = true;
+        }
+
+        // Computed information about pivots
         mapper.push({
           id: item.id,
           irrigationDirection,
@@ -305,6 +314,8 @@ export default {
           statusText: statusText,
           onSelect: () => null,
           mapHistory: item.map_history,
+          pluviometerMeasure,
+          isRaining,
         });
       }
 
@@ -333,14 +344,14 @@ export default {
       const pivotIndex = state.result.findIndex(
         r => r.id === payload.equipment
       );
-      
+
       if (pivotIndex >= 0) {
         const newResults = state.result.map((r, i) => {
           if (i === pivotIndex) return {
             ...r,
-            statusText: getPivotStatus(
-              payload.content.irrigation_status.irrigation_status
-            ),
+            deviceColor: getPivotColor(payload.content.irrigation_status.irrigation_status),
+            statusText: getPivotStatus(payload.content.irrigation_status.irrigation_status),
+            updated: new Date(payload.updated).toLocaleString(),
           }
           return r;
         });
@@ -365,9 +376,10 @@ export default {
         const newResults = state.result.map((r, i) => {
           if (i === pivotIndex) return {
             ...r,
-            statusText: getPivotStatus(
-              payload.content.irrigation_status.irrigation_status
-            ),
+            deviceColor: getPivotColor(payload.content.irrigation_status.irrigation_status),
+            statusText: getPivotStatus(payload.content.irrigation_status.irrigation_status),
+            referenceAngle: payload.content.current_angle.current_angle,
+            updated: new Date(payload.updated).toLocaleString(),
           }
           return r;
         });
@@ -384,7 +396,26 @@ export default {
       state: GetPivotInformationModelProps,
       { payload }: { payload: WkModels.PivotControllerStreamPeriodic },
     ) {
-      console.log('[wsPivotControllerStreamPeriodicSuccess]', payload);
+      const pivotIndex = state.result.findIndex(
+        r => r.id === payload.equipment
+      );
+
+      if (pivotIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === pivotIndex) return {
+            ...r,
+            pluviometerMeasure: payload.content.pluviometer_daily_measure.daily_measure,
+            updated: new Date(payload.updated).toLocaleString(),
+          }
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     }
   },

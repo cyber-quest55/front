@@ -846,6 +846,18 @@ declare namespace WsIrpdModels {
     created_by?: number;  
   };
 
+  type RawIrpdPressureStream = {
+    id: number;
+    irpd: number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    payload: string;
+    pressure: number;
+    frame_id: number;
+    device: string;
+  };
+
   type IrpdControllerEvent = {
     data: RawIrpdControllerEvent;
   };

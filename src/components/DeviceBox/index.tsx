@@ -168,7 +168,7 @@ const DeviceBox: React.FC<Props> = (props) => {
           <Tooltip title="Pluviometro">
             <BsCloudRainFill style={{ fontSize: 20 }} />
           </Tooltip>{' '}
-          - mm
+          {item.pluviometerMeasure || '-'} mm
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Tooltip title="Ângulo">
