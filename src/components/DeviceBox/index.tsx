@@ -174,7 +174,13 @@ const DeviceBox: React.FC<Props> = (props) => {
           <Tooltip title="Ângulo">
             <RedoOutlined style={{ fontSize: 20 }} />
           </Tooltip>{' '}
-          {/*Math.round(item.currentAngle)*/}ss°
+          {
+            item.currentAngle < 0
+            ? item.currentAngle * -1
+            : item.currentAngle === 0 
+              ? '-' 
+              : item.currentAngle
+          } °
         </span>
         <Typography.Text type="secondary">
           {item.updated}

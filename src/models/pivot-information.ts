@@ -3,7 +3,7 @@ import { getPivotsWithInformations } from '@/services/pivot';
 import { getPivotColor } from '@/utils/formater/get-pivot-color';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { AxiosError } from 'axios';
-//import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import uniqid from 'uniqid';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
@@ -287,12 +287,15 @@ export default {
         }
 
         // Calc current pivot angle
-        // const gpsDate = dayjs(item.controllerstream_gps.created);
-        // const panelDate = dayjs(item.controllerstream_panel.created);
-        // const currentAngle = panelDate.isAfter(gpsDate)
-        //   ? item.controllerstream_panel.current_angle
-        //   : item.controllerstream_gps.current_angle;
-
+        let currentAngle = 0;
+        try {
+          const gpsDate = dayjs(item.controllerstream_gps.created);
+          const panelDate = dayjs(item.controllerstream_panel.created);
+          currentAngle = panelDate.isAfter(gpsDate)
+            ? item.controllerstream_panel.current_angle
+            : item.controllerstream_gps.current_angle;
+        } catch (err) {}
+       
         // Computed information about pivots
         mapper.push({
           id: item.id,
@@ -324,7 +327,7 @@ export default {
           mapHistory: item.map_history,
           pluviometerMeasure,
           isRaining,
-          //currentAngle,
+          currentAngle: Math.round(currentAngle),
         });
       }
 
@@ -383,7 +386,7 @@ export default {
             ...r,
             deviceColor: getPivotColor(payload.content.irrigation_status.irrigation_status),
             statusText: getPivotStatus(payload.content.irrigation_status.irrigation_status),
-            currentAngle: payload.content.current_angle.current_angle,
+            currentAngle: Math.round(payload.content.current_angle.current_angle),
             updated: new Date(payload.updated).toLocaleString(),
           }
           return r;
