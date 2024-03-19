@@ -165,7 +165,7 @@ const DeviceBox: React.FC<Props> = (props) => {
     content: (
       <Space key={`row-pivot-information-space-${item.id}`} direction="vertical">
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Tooltip title="Pluviometro">
+          <Tooltip title={item.isRaining ? 'Chovendo' : 'Pluviometro'}>
             <BsCloudRainFill style={{ fontSize: 20 }} />
           </Tooltip>{' '}
           {item.pluviometerMeasure || '-'} mm

@@ -282,8 +282,13 @@ export default {
         let pluviometerMeasure = 0;
         let isRaining = false;
         if (item.controllerstream_periodic) {
+          if (
+            item.controllerstream_periodic.content?.pluviometer_daily_measure.daily_measure > 0 &&
+            dayjs().diff(dayjs(item.controllerstream_periodic.created), 'minutes') <= 70
+          ) {
+            isRaining = true;
+          }
           pluviometerMeasure = item.controllerstream_periodic.content?.pluviometer_daily_measure?.daily_measure;
-          isRaining = true;
         }
 
         // Calc current pivot angle
@@ -407,12 +412,25 @@ export default {
       const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
 
       if (pivotIndex >= 0) {
-        const newResults = state.result.map((r, i) => {
-          if (i === pivotIndex) return {
-            ...r,
-            pluviometerMeasure: payload.content.pluviometer_daily_measure.daily_measure,
-            updated: new Date(payload.updated).toLocaleString(),
+        const newResults = state.result.map((r, i) => {    
+          if (i === pivotIndex) {
+            // This section calculates the pluviometer measure to display on device box
+            let isRaining = false;
+            if (
+              payload.content?.pluviometer_daily_measure.daily_measure > 0 &&
+              dayjs().diff(dayjs(payload.created), 'minutes') <= 70
+            ) {
+              isRaining = true;
+            }
+
+            return {
+              ...r,
+              isRaining,
+              pluviometerMeasure: payload.content.pluviometer_daily_measure.daily_measure,
+              updated: new Date(payload.updated).toLocaleString(),
+            }
           }
+
           return r;
         });
     
