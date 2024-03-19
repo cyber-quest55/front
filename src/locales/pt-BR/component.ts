@@ -12,4 +12,16 @@ export default {
   'component.form.PasswordReset.input.confirmPassword.placeholder': 'Confirme sua Senha',
   'component.form.PasswordReset.input.confirmPassword.label': 'Confirmar Senha',
   'component.PasswordReset.forms.fail': 'Problema na troca de senha',
+  // Imeter status
+  'component.imeter.status.1': 'Monitorando um sensor',
+  'component.imeter.status.2': 'Ligado após queda de energia',
+  'component.imeter.status.3': 'Monitorando um sensor',
+  'component.imeter.status.176': 'Bomba desligada',
+  'component.imeter.status.177': 'Bomba ligada',
+  'component.imeter.status.208': 'Bomba não atracou',
+  'component.imeter.status.209': 'Em horário de pico',
+  'component.imeter.status.211': 'Desligado após queda de energia',
+  'component.imeter.status.212': 'Nivel de batería inferior a 10V',
+  'component.imeter.status.213': 'Status desconhecido',
+  'component.imeter.status.none': 'Status desconhecido',
 };
