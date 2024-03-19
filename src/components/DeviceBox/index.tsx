@@ -309,6 +309,11 @@ const DeviceBox: React.FC<Props> = (props) => {
         <Col>
           <span>{item.name}</span>
         </Col>
+        <Col>
+          <Tag color={item.deviceColor}>
+            {item.statusText}
+          </Tag>
+        </Col>
       </Row>
     ),
     extra: !md ? (
@@ -340,7 +345,7 @@ const DeviceBox: React.FC<Props> = (props) => {
               style={{ fontSize: 20 }}
             />
           </Tooltip>{' '}
-          220% (0.50)
+          {item.percentage}% ({item.meterLevel})
         </span>
         <Typography.Text type="secondary">
           {item.updated}

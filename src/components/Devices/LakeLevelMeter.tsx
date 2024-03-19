@@ -18,6 +18,8 @@ export type LakeLevelMeterProps = {
   infoWindow?: boolean;
   statusText?: string;
   imeterSetId?: number;
+  percentage?: number;
+  meterLevel?: number | null;
 };
 
 const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = (props) => {

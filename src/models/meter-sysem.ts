@@ -194,10 +194,15 @@ export default {
 
       for (let index = 0; index < payload.length; index++) {
         const item = payload[index];
-        const status =
-          item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status;
-
+        const status = item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status;
         const latLng = item.position.split(',');
+
+        // Retrieve meter system values
+        const imeterValue = item.imeter_set[0].latest_periodic_stream.content.imanage_sensor_measure_value[0].value;
+        const maxValue = item.imeter_set[0].latest_config.graphic_max_value;
+        const imeterSensorValue = item.imeter_set[0].latest_periodic_stream.content.imanage_sensor_measure_value[0].value / 100;
+    
+        // Mapped payload
         mapper.push({
           id: item.id,
           centerLat: parseFloat(latLng[0]),
@@ -207,6 +212,8 @@ export default {
           deviceColor: getIrpdColor(status),
           statusText: getMeterStatus(status),
           imeterSetId: item?.imeter_set[0]?.id,
+          percentage: Number(((imeterValue / 100 / maxValue) * 100).toFixed(1)),
+          meterLevel: imeterSensorValue,
         });
       }
 
