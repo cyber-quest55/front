@@ -19,6 +19,7 @@ import {
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl, useParams, useNavigate } from '@umijs/max';
+import { useUnmount } from 'ahooks';
 import {
   Col,
   Divider,
@@ -49,6 +50,9 @@ type Props = {
   selectedFarm: SelectedFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
   setSelectedDevice: typeof setSelectedDevice;
+  destroyPivotWs: () => void,
+  destroyIrpdWs: () => void,
+  destroyMeterSystemWs: () => void,
 };
 
 const scrollToBottom = () => {
@@ -394,6 +398,13 @@ const DeviceBox: React.FC<Props> = (props) => {
     },
   ];
 
+  // Destroy WS connections
+  useUnmount(() => {
+    props.destroyPivotWs();
+    props.destroyIrpdWs();
+    props.destroyMeterSystemWs();
+  });
+
   return (
     <div className={className}>
       <Row
@@ -527,6 +538,9 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  destroyPivotWs: () => dispatch({ type: 'pivotInformation/onDestroy', payload: {} }),
+  destroyIrpdWs: () => dispatch({ type: 'irpd/onDestroyDeviceBox', payload: {} }),
+  destroyMeterSystemWs: () => dispatch({ type: 'meterSystem/onDestroyDeviceBox', payload: {} }),
 });
 
 export default connect(

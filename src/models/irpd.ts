@@ -117,7 +117,6 @@ export default {
     },
     *onInitDeviceBox({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
-      console.log('[onInitDeviceBox]', state);
       const channels = state.result.map(r => ({
           title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${r.id}`,
           id: `@DeviceBox_irpd${r.id}`,
@@ -143,7 +142,6 @@ export default {
     },
     *onDestroyDeviceBox({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.irpd);
-      console.log('[onDestroyDeviceBox]', state);
       const channels = state.result.map(r => ({
         title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@irpd@${r.id}`,
         id: `@DeviceBox_irpd${r.id}`,
