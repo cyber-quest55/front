@@ -396,6 +396,7 @@ export default {
               ...r,
               deviceColor,
               statusText,
+              updated: new Date(payload.created).toLocaleString(),
             }
           } 
           return r;
@@ -424,6 +425,7 @@ export default {
               ...r,
               deviceColor,
               statusText,
+              updated: new Date(payload.created).toLocaleString(),
             }
           } 
           return r;

@@ -153,13 +153,13 @@ export default {
       yield put({ type: 'wsMeterSystemStandardCallbackSuccess', payload });
     },
     *wsMeterSystemStreamEventCallback(
-      { payload }: { payload: any  },
+      { payload }: { payload: WsMeterSystemModels.MeterSystemEventCallbackPayload  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsMeterSystemStreamEventSuccess', payload });
     },
     *wsMeterSystemStreamPeriodicCallback(
-      { payload }: { payload: any  },
+      { payload }: { payload: WsMeterSystemModels.MeterSystemPeriodicStreamCallbackPayload  },
       { put }: { put: any; call: any; select: any },
     ) {
       yield put({ type: 'wsMeterSystemStreamPeriodicSuccess', payload });
@@ -300,16 +300,60 @@ export default {
     },
     wsMeterSystemStreamEventSuccess(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WsMeterSystemModels.MeterSystemEventCallbackPayload },
     ) {
-      console.log('[wsMeterSystemStreamEventSuccess]', payload);
+      const meterIndex = state.result.findIndex(r => r.id === payload.equipment);
+      
+      if (meterIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === meterIndex) {
+            const deviceColor = getIrpdColor(payload.content.imanage_master_status.status);
+            const statusText = getMeterStatus(payload.content.imanage_master_status.status);
+            return {
+              ...r,
+              deviceColor,
+              statusText,
+              updated: new Date(payload.created).toLocaleString(),
+            }
+          } 
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     },
     wsMeterSystemStreamPeriodicSuccess(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: any },
+      { payload }: { payload: WsMeterSystemModels.MeterSystemPeriodicStreamCallbackPayload },
     ) {
-      console.log('[wsMeterSystemStreamPeriodicSuccess]', payload);
+      const meterIndex = state.result.findIndex(r => r.id === payload.equipment);
+      
+      if (meterIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === meterIndex) {
+            const deviceColor = getIrpdColor(payload.content.imanage_master_status.status);
+            const statusText = getMeterStatus(payload.content.imanage_master_status.status);
+            return {
+              ...r,
+              deviceColor,
+              statusText,
+              updated: new Date(payload.created).toLocaleString(),
+            }
+          } 
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
       return state;
     },
   },

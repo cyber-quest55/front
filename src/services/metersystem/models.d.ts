@@ -863,6 +863,62 @@ declare namespace APIModels {
 }
 
 declare namespace WsMeterSystemModels {
+  /* Start of device box WS */
+  type MeterSystemEventCallbackPayload = {
+    id: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    created_by?: number;
+    device: number;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    equipment: number;
+    flow: number;
+    offset_applied: boolean;
+    content: {
+      imanage_sensor_measure_value: {
+        value: number;
+        number_editing: number;
+      }
+      imanage_master_status: {
+        status: number;
+      }
+    };
+  };
+
+  type MeterSystemPeriodicStreamCallbackPayload = {
+    id: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    created_by?: number;
+    device: number;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    equipment: number;
+    flow: number;
+    offset_applied: boolean;
+    content: {
+      pump_hourmeter: {
+        hours: number;
+        minutes: number;
+      }
+      imanage_master_status: {
+        status: number;
+      }
+    };
+  };
+  /* End of device box WS */
+
   /* Start of central radio update clock WS */  
   type MeterSystemStandardCallbackPayload  = {
     id: number;
