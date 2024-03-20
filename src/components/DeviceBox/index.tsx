@@ -391,6 +391,7 @@ const DeviceBox: React.FC<Props> = (props) => {
 
   // Destroy WS connections
   useUnmount(() => {
+    console.log('[unmount ws here]');
     props.destroyPivotWs();
     props.destroyIrpdWs();
     props.destroyMeterSystemWs();

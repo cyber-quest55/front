@@ -281,16 +281,18 @@ export default {
         // This section calculates the pluviometer measure to display on device box
         let pluviometerMeasure = 0;
         let isRaining = false;
-        if (item.controllerstream_periodic) {
-          if (
-            item.controllerstream_periodic.content?.pluviometer_daily_measure.daily_measure > 0 &&
-            dayjs().diff(dayjs(item.controllerstream_periodic.created), 'minutes') <= 70
-          ) {
-            isRaining = true;
+        try {
+          if (item.controllerstream_periodic) {
+            if (
+              item.controllerstream_periodic.content?.pluviometer_daily_measure.daily_measure > 0 &&
+              dayjs().diff(dayjs(item.controllerstream_periodic?.created), 'minutes') <= 70
+            ) {
+              isRaining = true;
+            }
+            pluviometerMeasure = item.controllerstream_periodic?.content?.pluviometer_daily_measure?.daily_measure;
           }
-          pluviometerMeasure = item.controllerstream_periodic.content?.pluviometer_daily_measure?.daily_measure;
-        }
-
+        } catch (err) {}
+        
         // Calc current pivot angle
         let currentAngle = 0;
         try {
@@ -416,17 +418,19 @@ export default {
           if (i === pivotIndex) {
             // This section calculates the pluviometer measure to display on device box
             let isRaining = false;
-            if (
-              payload.content?.pluviometer_daily_measure.daily_measure > 0 &&
-              dayjs().diff(dayjs(payload.created), 'minutes') <= 70
-            ) {
-              isRaining = true;
-            }
-
+            try {
+              if (
+                payload.content?.pluviometer_daily_measure?.daily_measure > 0 &&
+                dayjs().diff(dayjs(payload.created), 'minutes') <= 70
+              ) {
+                isRaining = true;
+              }
+            } catch (err) {}
+            
             return {
               ...r,
               isRaining,
-              pluviometerMeasure: payload.content.pluviometer_daily_measure.daily_measure,
+              pluviometerMeasure: payload.content?.pluviometer_daily_measure?.daily_measure,
               updated: new Date(payload.updated).toLocaleString(),
             }
           }
