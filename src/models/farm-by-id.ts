@@ -15,6 +15,13 @@ export const queryFarmById = (payload: { id: number }) => {
   };
 };
 
+type IState = {
+  result: API.GetFarmFullResponse;
+  loaded: boolean;
+  loading: boolean;
+  error: any;
+}
+
 export default {
   namespace: 'farmById',
   state: {
@@ -22,7 +29,7 @@ export default {
     loaded: false,
     loading: true,
     error: {},
-  },
+  } as IState,
 
   effects: {
     *queryFarmById({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {

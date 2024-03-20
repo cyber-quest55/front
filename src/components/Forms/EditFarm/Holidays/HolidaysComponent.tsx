@@ -55,6 +55,7 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 	] = useState<{ day: number, month: number }[]>(farm?.holidays_list || []);
 	const [value, setValue] = useState(() => dayjs());
 	const [ selectedValue, setSelectedValue ] = useState(() => dayjs());
+	const [ isYearView, setYearView ] = useState<boolean>(false);
 	const { message } = App.useApp();
 	const { lg, xl, xxl } = useScreenHook();
 
@@ -71,6 +72,37 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
       );
     });
 
+		const hasMonthHolidays = holidayList.some((holiday) => {
+			return value.month() === holiday.month - 1
+		})
+
+		// year view mode
+    if (isYearView && hasMonthHolidays) {
+      return (
+        <div className="events">
+          <Flex 
+						style={{ marginTop: 8 }}
+						justify="flex-start"
+						align="center"
+						wrap="wrap"
+					>
+						<Tag
+							color="processing"
+							style={{
+								textAlign: 'center',
+								margin: 0
+							}}
+						>
+							{intl.formatMessage({
+								id: 'component.edit.farm.holiday.year.hasholiday',
+							})}
+						</Tag>
+					</Flex>
+        </div>
+      );
+    }
+
+		// Month view mode
 		if (isHoliday && isLargeScreen) {
 			return (
 				<div className="events">
@@ -108,7 +140,12 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 		}
 
     return null;
-	}, [holidayList, intl, isLargeScreen]);
+	}, [
+		holidayList,
+		intl,
+		isLargeScreen,
+		isYearView
+	]);
 
 	// Calendar cell for mobile
 	const calendarFullRenderer = useCallback((value: Dayjs) => {
@@ -151,8 +188,9 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
     setSelectedValue(newValue);
   };
 
-  const onPanelChange = (newValue: Dayjs) => {
+  const onPanelChange = (newValue: Dayjs, mode: string) => {
     setValue(newValue);
+		setYearView((mode === 'year'));
   };
 
 	const onFinish = async () => {
@@ -296,7 +334,6 @@ const EditFarmHolidaysComponent: FunctionComponent<Props> = ({
 						value={value}
 						onSelect={onSelect}
 						onPanelChange={onPanelChange}
-						mode="month"
 					/>
 				) : (
 					<Calendar

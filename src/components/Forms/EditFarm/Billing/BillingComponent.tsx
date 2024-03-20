@@ -72,7 +72,11 @@ const EditFarmBillingComponent: FunctionComponent<Props> = ({
           id: 'validations.required',
         }),
       ),
-			email: yup.string().required(
+			email: yup.string().email(
+				intl.formatMessage({
+          id: 'validations.email',
+        }),
+			).required(
         intl.formatMessage({
           id: 'validations.required',
         }),

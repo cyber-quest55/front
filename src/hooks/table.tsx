@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 import { SetStateAction, useState } from 'react';
 
-interface Range {
-  startDate: dayjs.Dayjs;
-  endDate: dayjs.Dayjs;
-}
+type Range = [
+  startDate: dayjs.Dayjs,
+  endDate: dayjs.Dayjs
+]
 const useTableHook: (pSize: number) => {
   pageSize: number;
   range: Range;

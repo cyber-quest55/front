@@ -703,6 +703,7 @@ declare namespace APIModels {
       device: number;
       equipment: number;
     };
+    ControllerAction_segment?: any;
   };
 
   type PivotHistoryOperation = {
@@ -1036,6 +1037,120 @@ declare namespace APIModels {
 }
 
 declare namespace WkModels {
+  /* Start of central radio update clock WS */  
+  type PivotStandardCallbackPayload  = {
+    id: number;
+    gps_config: number;
+    pump_config: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      autoreversion_command: {
+        command: number;
+      };
+      simple_irrigation_index_vector: {
+        vector: string;
+      };
+      schedule_irrigation_index_vector: {
+        vector: string;
+      };
+      segment_irrigation_index_vector: {
+        vector: string;
+      };
+      pivot_config_index_vector: {
+        vector: string;
+      };
+      panel_stream_index_vector: {
+        vector: string;
+      };
+      gps_stream_index_vector: {
+        vector: string;
+      };
+      periodic_stream_index_vector: {
+        vector: string;
+      };
+      periodic_timer: {
+        minutes: number;
+      };
+      periodic_offset: {
+        seconds: number;
+      };
+      radio_addresses: {
+        datalogger_address: string;
+        gps_address: string;
+        pump_address: string;
+        pluviometer_address: string;
+      };
+    };
+    pinned: boolean;
+    name: string;
+    group_uuid: string;
+    segments_crop: any[];
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    injection_pump: boolean;
+    name_pivot_on_config: string;
+    brand_model: string;
+    panel_type: number;
+    potency: number;
+    created_by: null | any;
+    device: number;
+    equipment: number;
+  };
+
+  type PivotConfigCallbackPayload  = {
+    id: number;
+    username: string;
+    sector_angle: null | number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    updated: string;
+    manual: boolean;
+    radius: number;
+    flow: number;
+    speed: number;
+    total_radius: number;
+    area: number;
+    center: string;
+    reference: string;
+    setorial: boolean;
+    end_reference: string;
+    image_maps_url: string;
+    reversion: boolean;
+    endgun: number;
+    extra: boolean;
+    rtc: string;
+    pump_time: number;
+    power_time: number;
+    power_range_max: number;
+    power_range_min: number;
+    hour_range_max: string;
+    hour_range_min: string;
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    sent: boolean;
+    delivered: boolean;
+    received: boolean;
+    pump_delivered: boolean;
+    gps_delivered: boolean;
+    image_url: null | string;
+    pinned: boolean;
+    name: string;
+    user: number;
+    pivot: number;
+  };
+  /* End of central radio update clock WS */
+
   type PivotControllerActionStop = {
     id: number;
     username: string;

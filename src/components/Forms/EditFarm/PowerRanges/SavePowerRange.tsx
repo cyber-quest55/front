@@ -101,8 +101,8 @@ const SavePowerRange = ({
   const validateEnd = (rule, value, callback) => {
     const startValue = form.getFieldValue('start');
     if (value && startValue) {
-      const startDayJs = dayjs(startValue, 'HH:mm:ss');
-      const endDayJs = dayjs(value, 'HH:mm:ss');
+      const startDayJs = dayjs(startValue, 'HH:mm');
+      const endDayJs = dayjs(value, 'HH:mm');
       if (endDayJs.isBefore(startDayJs)) {
         callback(new Error(intl.formatMessage({
           id: 'component.edit.farm.powerranges.end.field.error',
@@ -139,10 +139,10 @@ const SavePowerRange = ({
       const daysValue = powerRange.daysOfWeek.map(d => d.value);
       const rangeValues = powerRange.timeRanges;
       const lastTime = rangeValues[rangeValues.length - 1].end;
-      const lastDayJs = dayjs(lastTime, 'HH:mm:ss');
-      const startValue = lastTime === '23:59:59'
-        ? lastTime
-        : lastDayJs.add(1, 'second');
+      const lastDayJs = dayjs(lastTime, 'HH:mm');
+      const startValue = lastDayJs.format('HH:mm') === '23:59'
+        ? lastDayJs.format('HH:mm')
+        : lastDayJs.add(1, 'minute');
       form.setFieldValue('days', daysValue);
       form.setFieldValue('start', startValue);
       setRanges(rangeValues);
@@ -161,7 +161,7 @@ const SavePowerRange = ({
       }
       open={open}
       onCancel={() => {
-        form.setFieldValue('start', '00:00:00');
+        form.setFieldValue('start', '00:00');
         setRanges([]);
         onCancel();
         setPowerRange(null);
@@ -181,7 +181,7 @@ const SavePowerRange = ({
             timeRanges: ranges,
           }
         });
-        form.setFieldValue('start', '00:00:00');
+        form.setFieldValue('start', '00:00');
         setRanges([]);
         setPowerRange(null);
         onCancel();
@@ -193,16 +193,16 @@ const SavePowerRange = ({
           form={form}
           submitter={false}
           initialValues={{
-            start: '00:00:00'
+            start: '00:00'
           }}
           onFinish={async (values) => {
             if (values.start !== values.end) {
               // Increment date
-              const startDayJs = dayjs(values.end, 'HH:mm:ss');
-              if (values.end !== '23:59:59') {
-                form.setFieldValue('start', startDayJs.add(1, 'second'));
+              const startDayJs = dayjs(values.end, 'HH:mm');
+              if (values.end !== '23:59') {
+                form.setFieldValue('start', startDayJs.add(1, 'minute'));
               } else {
-                form.setFieldValue('start', '23:59:59');
+                form.setFieldValue('start', '23:59');
               }
               
               // Update ranges
@@ -303,18 +303,24 @@ const SavePowerRange = ({
             </Col>
             <Col xs={24} md={8} xl={8}>   
               <ProFormTimePicker
-                fieldProps={{ style: { width: '100%' } }}
                 name={["start"]}
+                fieldProps={{ 
+                  style: { width: '100%' },
+                  format: "HH:mm"
+                }}
                 label={intl.formatMessage({
                   id: 'component.edit.farm.powerranges.form.start.label',
                 })}
                 disabled
               />
             </Col>
-            <Col xs={24} md={8} xl={8}>   
+            <Col xs={24}  md={8} xl={8}>   
               <ProFormTimePicker
-                fieldProps={{ style: { width: '100%' } }}
                 name={["end"]}
+                fieldProps={{ 
+                  style: { width: '100%' },
+                  format: "HH:mm"
+                }}
                 rules={[
                   yupSync,
                   { validator: validateEnd },
@@ -379,10 +385,10 @@ const SavePowerRange = ({
 								onClick={() => {
                   const prev = index !== 0 ? ranges[index - 1] : null
                   if (!prev) {
-                    form.setFieldValue('start', '00:00:00');
+                    form.setFieldValue('start', '00:00');
                   } else {
-                    const startDayJs = dayjs(prev.end, 'HH:mm:ss');
-                    form.setFieldValue('start', startDayJs.add(1, 'second'));
+                    const startDayJs = dayjs(prev.end, 'HH:mm');
+                    form.setFieldValue('start', startDayJs.add(1, 'minute'));
                   }
                   const filtered = ranges.filter((r, i) => i !== index);
                   setRanges(filtered);
@@ -394,7 +400,7 @@ const SavePowerRange = ({
 							title={(
 								<>
 									<Typography.Text style={{ marginRight: 8 }}>
-										{`${item.start} - ${item.end}`}
+										{`${dayjs(item.start, 'HH:mm').format('HH:mm')} - ${dayjs(item.end, 'HH:mm').format('HH:mm')}`}
 									</Typography.Text>
 									<Tag color="processing">
                     {energyProfiles[item.type]}

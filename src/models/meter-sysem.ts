@@ -3,8 +3,13 @@ import { getMeterSystem } from '@/services/metersystem';
 import { getIrpdColor } from '@/utils/formater/get-irpd-color';
 import { getMeterStatus } from '@/utils/formater/get-meter-status';
 import { AxiosError } from 'axios';
+import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
 export interface GetMeterSystemModelProps {
+  status: {
+    id: number;
+    status: number;
+  }[];
   result: LakeLevelMeterProps[];
   loading: boolean;
   loaded: boolean;
@@ -18,15 +23,30 @@ export const queryMeterSystem = (payload: API.GetMeterSystemParams) => {
   };
 };
 
+export const queryMeterSystemWs = (payload: API.GetMeterSystemParams) => {
+  return {
+    type: 'meterSystem/queryMeterSystemWs',
+    payload: payload,
+  };
+};
+
+export const destroyMeterSystemWs = () => {
+  return {
+    type: 'meterSystem/onDestroy',
+    payload: {},
+  };
+};
+
 export default {
   namespace: 'meterSystem',
 
   state: {
+    status: [],
     result: [],
     loaded: false,
     loading: true,
     error: {},
-  },
+  } as GetMeterSystemModelProps,
 
   effects: {
     *queryMeterSystem({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
@@ -38,6 +58,59 @@ export default {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
     },
+    // Web socket effects
+    *queryMeterSystemWs({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
+      yield put({ type: 'queryMeterSystemStart' });
+      try {
+        const response: API.GetMeterSystemResponse = yield call(getMeterSystem, payload);
+        yield put({ type: 'queryMeterSystemSuccess', payload: response });
+        yield put({ type: 'meterSystem/onInit', payload: {} });
+        yield put({ type: 'setWsStatus', payload: response.map(r => ({
+          id: r.id,
+          status: 0,
+        }))});
+      } catch (error: any) {
+        yield put({ type: 'queryMeterSystemError', payload: error });
+      }
+    },
+    *onInit({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      const channels = state.result.map(r => ({
+        title: `d@imeter@${r.id}`,
+        id: `@EditFarm_metersystem${r.id}`,
+        binds: [
+          {
+            callback: ['meterSystem/wsMeterSystemStandardCallback'],
+            event: 'IMeterConfig_standard',
+            id: `@EditFarm_metersystem${r.id}`,
+          },
+        ],
+      }));
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({ }, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      const channels = state.result.map(r => ({
+        title: `d@imeter@${r.id}`,
+        id: `@EditFarm_metersystem${r.id}`,
+        binds: [
+          {
+            callback: ['meterSystem/wsMeterSystemStandardCallback'],
+            event: 'IMeterConfig_standard',
+            id: `@EditFarm_metersystem${r.id}`,
+          },
+        ],
+      }));
+      yield put({ type: 'setWsStatus', payload: [] });
+      yield getSocketBinds(channels, put, 'unsubscribe');
+    },
+    // Web sockets callback
+    *wsMeterSystemStandardCallback(
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsMeterSystemStandardCallbackSuccess', payload });
+    }
   },
 
   reducers: {
@@ -92,5 +165,85 @@ export default {
         error: {},
       };
     },
+    // Web sockets reducers
+    wsMeterSystemStandardCallbackSuccess(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload },
+    ) {
+      // Communication error status
+      if (payload.message_error) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.equipment) {
+            return {
+              id: s.id,
+              status: 3,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+
+      // Web socket incoming status
+      const item = state.status.find(s => s.id = payload.equipment);
+      if (item && item.status <= payload.message_status) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.equipment) {
+            return {
+              id: s.id,
+              status: payload.message_status,
+            }
+          }
+          return s;
+        })
+        return { 
+          ...state, 
+          status: newStatus
+        };
+      }
+      
+      // Default return
+      return state;
+    },
+    setWsStatus(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    },
+    setWsLoadingStatus(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: { id?: number } }
+    ) {
+      if (payload.id) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.id) {
+            return {
+              id: s.id,
+              status: -1,
+            }
+          }
+          return s
+        });
+        return {
+          ...state,
+          status: newStatus
+        }
+      }
+      
+      return {
+        ...state,
+        status: state.status.map(s => ({
+          id: s.id,
+          status: -1,
+        }))
+      }
+    }
   },
 };

@@ -38,8 +38,6 @@ const PumpReport: React.FC = () => {
     };
   });
 
-
-
   return (
     <>
       <ProCard
@@ -76,7 +74,7 @@ const PumpReport: React.FC = () => {
                 {
                   label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.1' }),
                   key: 'tab1',
-                  children: <IrpdActivityHistoricTable  />,
+                  children: <IrpdActivityHistoricTable />,
                 },
                 {
                   label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.2' }),

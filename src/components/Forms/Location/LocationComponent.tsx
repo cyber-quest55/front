@@ -184,7 +184,15 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
                 position={item.value}
                 draggable
                 onDragEnd={(event) => {
-                  handleMarkerDragEnd(index, event.latLng?.toJSON());
+                  if (event.latLng?.lat() && event.latLng.lng()) {
+                    const formattedJson = {
+                      lat: parseFloat(event.latLng?.lat().toFixed(6)),
+                      lng: parseFloat(event.latLng?.lng().toFixed(6)),
+                    };
+                    handleMarkerDragEnd(index, formattedJson);
+                  } else {
+                    handleMarkerDragEnd(index, event.latLng?.toJSON());
+                  }
                 }}
               />
             ))}
