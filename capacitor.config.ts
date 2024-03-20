@@ -1,11 +1,31 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'com.example.app',
-  appName: 'ant-design-pro',
-  webDir: 'dist',
+  appId: "br.com.irricontrol",
+  appName: "Irricontrol",
+  webDir: "build",
+
   server: {
-    androidScheme: 'https',
+    androidScheme: "https",
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 3000,
+      launchAutoHide: true,
+      backgroundColor: "#ffffffff",
+      androidSplashResourceName: "splash",
+      androidScaleType: "CENTER_CROP",
+      androidSpinnerStyle: "large",
+      iosSpinnerStyle: "small",
+      spinnerColor: "rgba(0,0,0,0)",
+      showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: true,
+    },
+
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
   },
 };
 

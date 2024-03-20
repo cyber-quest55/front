@@ -30,6 +30,7 @@ interface ILocationFormComponentProps {
   defaultLocation?: boolean;
   layout?: 'vertical' | 'horizontal';
   extra?: any;
+  autoUpdateCenter?: boolean;
 }
 
 const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps> = (props) => {
@@ -49,7 +50,15 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
   const intl = useIntl();
   const { xl, xs } = useScreenHook();
 
-  const { zoom, setZoom, map, setMap, mapCenter, loading } = useMapHook(
+  const {
+    zoom,
+    setZoom,
+    map,
+    setMap,
+    mapCenter,
+    setMapCenter,
+    loading,
+  } = useMapHook(
     16,
     {
       lat: lat,
@@ -57,6 +66,20 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
     },
     defaultLocation,
   );
+
+  // Making map center when coordinates change
+  React.useEffect(() => {
+    if (props.autoUpdateCenter) {
+      setMapCenter({
+        lat: props.lat,
+        lng: props.lng,
+      });
+    }
+  }, [
+    props.lat,
+    props.lng,
+    props.autoUpdateCenter
+  ]);
 
   //* hooks for the marks */
   const [location, setLocation] = React.useState(locations);
@@ -71,8 +94,11 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
 
     const newLocations = [...locations];
     newLocations[index].value = location.pure;
+
     setLocation(newLocations);
-    newLocations[index].onChange(location.str);
+
+    // location.str was causing the map not to center
+    newLocations[index].onChange(location.pure);
   };
 
   const handleMarkerDragEnd = (index: number, value: any) => {
@@ -94,7 +120,7 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
                 colProps={{ xs: 24, md: 24 }}
                 label={item.name}
                 name={item.name as string}
-                width={xs ? ('100%' as 'sm') : ('450px' as 'sm')}
+                width={xs ? ('100%' as 'xs') : ('450px' as 'sm')}
                 fieldProps={{
                   width: xs ? '100%' : '450px',
                   value: `${item.value.lat},${item.value.lng}`,
@@ -158,7 +184,15 @@ const LocationFormComponent: React.FunctionComponent<ILocationFormComponentProps
                 position={item.value}
                 draggable
                 onDragEnd={(event) => {
-                  handleMarkerDragEnd(index, event.latLng?.toJSON());
+                  if (event.latLng?.lat() && event.latLng.lng()) {
+                    const formattedJson = {
+                      lat: parseFloat(event.latLng?.lat().toFixed(6)),
+                      lng: parseFloat(event.latLng?.lng().toFixed(6)),
+                    };
+                    handleMarkerDragEnd(index, formattedJson);
+                  } else {
+                    handleMarkerDragEnd(index, event.latLng?.toJSON());
+                  }
                 }}
               />
             ))}

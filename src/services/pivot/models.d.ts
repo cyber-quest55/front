@@ -408,7 +408,7 @@ declare namespace APIModels {
     pump: any;
   };
 
-  type PivotHistory =  {
+  type PivotHistory = {
     CentralStream?: {
       id: number;
       created: string;
@@ -624,189 +624,190 @@ declare namespace APIModels {
       equipment: number;
     };
     ControllerAction_schedule?: {
-      id: number
-      username: string
-      current_angle: number
-      uuid: string
-      created_on_hardware: boolean
-      created: string
-      updated: string
-      arrived: string
-      message_status: number
-      message_error: string
-      message_packets: Array<number>
-      message_subtype: string
+      id: number;
+      username: string;
+      current_angle: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
       content: {
         irrigation_status: {
-          irrigation_type: number
-          irrigation_status: number
-        }
+          irrigation_type: number;
+          irrigation_status: number;
+        };
         autoreversion_command: {
-          command: number
-        }
+          command: number;
+        };
         injection_pump_command: {
-          note: string
-          command: number
-        }
+          note: string;
+          command: number;
+        };
         schedule_irrigation_parameters: Array<{
-          mode: number
-          end_day: number
-          percent: number
-          end_hour: number
-          end_year: number
-          direction: number
-          end_month: number
-          start_day: number
-          start_now: boolean
-          stop_mode: number
-          end_minute: number
-          start_hour: number
-          start_year: number
-          stop_angle: number
-          start_month: number
-          start_minute: number
-          number_editing: number
-          schedule_rounds: number
-          start_on_a_date: boolean
-        }>
-      }
-      end_date_forecast: any
-      operation_duration_forecast: any
-      angle_V5: boolean
-      created_by: number
-      device: number
-      equipment: number
+          mode: number;
+          end_day: number;
+          percent: number;
+          end_hour: number;
+          end_year: number;
+          direction: number;
+          end_month: number;
+          start_day: number;
+          start_now: boolean;
+          stop_mode: number;
+          end_minute: number;
+          start_hour: number;
+          start_year: number;
+          stop_angle: number;
+          start_month: number;
+          start_minute: number;
+          number_editing: number;
+          schedule_rounds: number;
+          start_on_a_date: boolean;
+        }>;
+      };
+      end_date_forecast: any;
+      operation_duration_forecast: any;
+      angle_V5: boolean;
+      created_by: number;
+      device: number;
+      equipment: number;
     };
     ControllerAction_stop?: {
-      id: number
-      username: string
-      current_angle: number
-      uuid: string
-      created_on_hardware: boolean
-      created: string
-      updated: string
-      arrived: string
-      message_status: number
-      message_error: string
-      message_packets: Array<number>
-      message_subtype: string
+      id: number;
+      username: string;
+      current_angle: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
       content: {
         irrigation_status: {
-          irrigation_type: number
-          irrigation_status: number
-        }
-      }
-      end_date_forecast: any
-      operation_duration_forecast: any
-      angle_V5: boolean
-      created_by: number
-      device: number
-      equipment: number
-    }
+          irrigation_type: number;
+          irrigation_status: number;
+        };
+      };
+      end_date_forecast: any;
+      operation_duration_forecast: any;
+      angle_V5: boolean;
+      created_by: number;
+      device: number;
+      equipment: number;
+    };
+    ControllerAction_segment?: any;
   };
 
   type PivotHistoryOperation = {
-    id: number
-    start_angle: number
-    end_angle: number
-    operation_note?: string
-    irrigation_mode: number
-    start_date: string
-    end_date: string
-    hour_p: number
-    hour_hfp: number
-    hour_r: number
-    hour_total: number
-    water_blade: number
-    created: string
-    updated: string
-    pivot: number
-  }
+    id: number;
+    start_angle: number;
+    end_angle: number;
+    operation_note?: string;
+    irrigation_mode: number;
+    start_date: string;
+    end_date: string;
+    hour_p: number;
+    hour_hfp: number;
+    hour_r: number;
+    hour_total: number;
+    water_blade: number;
+    created: string;
+    updated: string;
+    pivot: number;
+  };
 
   type PivotListGpsStream = {
-    id: number
-    current_angle: number
-    end_tower_pressure: number
+    id: number;
+    current_angle: number;
+    end_tower_pressure: number;
     content: {
       current_angle: {
-        current_angle: number
-      }
+        current_angle: number;
+      };
       operation_time: {
-        wet_hour: number
-        pump_hour: number
-        total_hour: number
-        wet_minute: number
-        endgun_hour: number
-        pump_minute: number
-        total_minute: number
-        endgun_minute: number
-        injection_pump_hour: number
-        injection_pump_minutes: number
-      }
+        wet_hour: number;
+        pump_hour: number;
+        total_hour: number;
+        wet_minute: number;
+        endgun_hour: number;
+        pump_minute: number;
+        total_minute: number;
+        endgun_minute: number;
+        injection_pump_hour: number;
+        injection_pump_minutes: number;
+      };
       center_pressure: {
-        center_pressure: number
-      }
+        center_pressure: number;
+      };
       current_segment: {
-        current_segment: number
-      }
+        current_segment: number;
+      };
       voltage_measure: {
-        voltage_measure: number
-      }
+        voltage_measure: number;
+      };
       current_schedule: {
-        current_schedule: number
-      }
+        current_schedule: number;
+      };
       irrigation_status: {
-        irrigation_type: number
-        irrigation_status: number
-      }
+        irrigation_type: number;
+        irrigation_status: number;
+      };
       pluviometer_total: {
-        total_measure: number
-      }
+        total_measure: number;
+      };
       end_tower_pressure: {
-        end_tower_pressure: number
-      }
+        end_tower_pressure: number;
+      };
       devices_current_status: {
-        pump: number
-        motor: number
-        endgun: number
-        irripump: number
-        injection_pump: number
-      }
+        pump: number;
+        motor: number;
+        endgun: number;
+        irripump: number;
+        injection_pump: number;
+      };
       latitude_longitude_gps: {
-        altitude: number
-        latitude_gps: number
-        longitude_gps: number
-      }
+        altitude: number;
+        latitude_gps: number;
+        longitude_gps: number;
+      };
       irrigation_remaining_time: {
-        hours: number
-        minutes: number
-      }
+        hours: number;
+        minutes: number;
+      };
       current_irrigation_information: {
-        mode: number
-        direction: number
-        stop_mode: number
-        stop_angle: number
-        total_round: number
-        current_round: number
-        irrigation_percent: number
-        rain_meter_percent: number
-      }
-    }
-    uuid: string
-    created_on_hardware: boolean
-    created: string
-    updated: string
-    arrived: string
-    message_status: number
-    message_error: string
-    message_packets: Array<number>
-    message_subtype: string
-    content_hash: number
-    created_by: any
-    device: number
-    equipment: number
-  }
-  
+        mode: number;
+        direction: number;
+        stop_mode: number;
+        stop_angle: number;
+        total_round: number;
+        current_round: number;
+        irrigation_percent: number;
+        rain_meter_percent: number;
+      };
+    };
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content_hash: number;
+    created_by: any;
+    device: number;
+    equipment: number;
+  };
+
   type PivotReport = {
     pivot_id: number;
     start_date: string;
@@ -1030,8 +1031,590 @@ declare namespace APIModels {
     protocol: string;
   };
   type WaterBySegment = Array<{
-    segment: number
-    water_blade: number
-  }>
-  
+    segment: number;
+    water_blade: number;
+  }>;
+}
+
+declare namespace WkModels {
+  /* Start of device panel WS */
+  type PivotControllerActionGps = {
+    id: number;
+    current_angle: number;
+    end_tower_pressure: number;
+    content: {
+      latitude_longitude_gps: {
+        latitude_gps: number;
+        longitude_gps: number;
+        altitude: number;
+      };
+      current_angle: {
+        current_angle: number;
+      };
+      center_pressure: {
+        center_pressure: number;
+      };
+      current_irrigation_information: {
+        rain_meter_percent: number;
+        irrigation_percent: number;
+        mode: number;
+        direction: number;
+        stop_mode: number;
+        stop_angle: number;
+        current_round: number;
+        total_round: number;
+      };
+      irrigation_remaining_time: {
+        hours: number;
+        minutes: number;
+      };
+      voltage_measure: {
+        voltage_measure: number;
+      };
+      end_tower_pressure: {
+        end_tower_pressure: number;
+      };
+      irrigation_status: {
+        irrigation_type: number;
+        irrigation_status: number;
+      };
+      operation_time: {
+        total_hour: number;
+        total_minute: number;
+        wet_hour: number;
+        wet_minute: number;
+        endgun_hour: number;
+        endgun_minute: number;
+        pump_hour: number;
+        pump_minute: number;
+        injection_pump_hour: number;
+        injection_pump_minutes: number;
+      };
+      current_schedule: {
+        current_schedule: number;
+      };
+      current_segment: {
+        current_segment: number;
+      };
+      pluviometer_total: {
+        total_measure: number;
+      };
+      devices_current_status: {
+        motor: number;
+        pump: number;
+        endgun: number;
+        injection_pump: number;
+        irripump: number;
+      };
+    };
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content_hash: number;
+    created_by: any;
+    device: number;
+    equipment: number;
+  };
+
+  type PivotControllerStreamPanel = {
+    id: number;
+    current_angle: number;
+    end_tower_pressure: number;
+    content: {
+      operation_time: {
+        total_hour: number;
+        total_minute: number;
+        wet_hour: number;
+        wet_minute: number;
+        endgun_hour: number;
+        endgun_minute: number;
+        pump_hour: number;
+        pump_minute: number;
+        injection_pump_hour: number;
+        injection_pump_minutes: number;
+      };
+      time_range_data: Array<{
+        number_editing: number;
+        total_hour: number;
+        total_minute: number;
+        wet_hour: number;
+        wet_minute: number;
+        endgun_hour: number;
+        endgun_minute: number;
+        pump_hour: number;
+        pump_minute: number;
+        injection_pump_hour: number;
+        injection_pump_minute: number;
+      }>;
+      irrigation_status: {
+        irrigation_type: number;
+        irrigation_status: number;
+      };
+      current_irrigation_information: {
+        rain_meter_percent: number;
+        irrigation_percent: number;
+        mode: number;
+        direction: number;
+        stop_mode: number;
+        stop_angle: number;
+        current_round: number;
+        total_round: number;
+      };
+      devices_current_status: {
+        motor: number;
+        pump: number;
+        endgun: number;
+        injection_pump: number;
+        irripump: number;
+      };
+      center_pressure: {
+        center_pressure: number;
+      };
+      current_segment: {
+        current_segment: number;
+      };
+      current_schedule: {
+        current_schedule: number;
+      };
+      voltage_measure: {
+        voltage_measure: number;
+      };
+    };
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content_hash: number;
+    created_by: any;
+    device: number;
+    equipment: number;
+  };
+
+  type PivotControllerStreamPeriodic = {
+    id: number;
+    current_angle: number;
+    end_tower_pressure: number;
+    content: {
+      pluviometer_daily_measure: {
+        daily_measure: number;
+      };
+      pluviometer_month_measure: {
+        month_measure: number;
+      };
+      pluviometer_total: {
+        total_measure: number;
+      };
+    };
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content_hash: number;
+    created_by: any;
+    device: number;
+    equipment: number;
+  };  
+  /* End of device panel WS  */
+
+  /* Start of central radio update clock WS */  
+  type PivotStandardCallbackPayload  = {
+    id: number;
+    gps_config: number;
+    pump_config: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      autoreversion_command: {
+        command: number;
+      };
+      simple_irrigation_index_vector: {
+        vector: string;
+      };
+      schedule_irrigation_index_vector: {
+        vector: string;
+      };
+      segment_irrigation_index_vector: {
+        vector: string;
+      };
+      pivot_config_index_vector: {
+        vector: string;
+      };
+      panel_stream_index_vector: {
+        vector: string;
+      };
+      gps_stream_index_vector: {
+        vector: string;
+      };
+      periodic_stream_index_vector: {
+        vector: string;
+      };
+      periodic_timer: {
+        minutes: number;
+      };
+      periodic_offset: {
+        seconds: number;
+      };
+      radio_addresses: {
+        datalogger_address: string;
+        gps_address: string;
+        pump_address: string;
+        pluviometer_address: string;
+      };
+    };
+    pinned: boolean;
+    name: string;
+    group_uuid: string;
+    segments_crop: any[];
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    injection_pump: boolean;
+    name_pivot_on_config: string;
+    brand_model: string;
+    panel_type: number;
+    potency: number;
+    created_by: null | any;
+    device: number;
+    equipment: number;
+  };
+
+  type PivotConfigCallbackPayload  = {
+    id: number;
+    username: string;
+    sector_angle: null | number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    updated: string;
+    manual: boolean;
+    radius: number;
+    flow: number;
+    speed: number;
+    total_radius: number;
+    area: number;
+    center: string;
+    reference: string;
+    setorial: boolean;
+    end_reference: string;
+    image_maps_url: string;
+    reversion: boolean;
+    endgun: number;
+    extra: boolean;
+    rtc: string;
+    pump_time: number;
+    power_time: number;
+    power_range_max: number;
+    power_range_min: number;
+    hour_range_max: string;
+    hour_range_min: string;
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    sent: boolean;
+    delivered: boolean;
+    received: boolean;
+    pump_delivered: boolean;
+    gps_delivered: boolean;
+    image_url: null | string;
+    pinned: boolean;
+    name: string;
+    user: number;
+    pivot: number;
+  };
+  /* End of central radio update clock WS */
+
+  type PivotControllerActionStop = {
+    id: number;
+    username: string;
+    current_angle: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content: {
+      irrigation_status: {
+        irrigation_type: number;
+        irrigation_status: number;
+      };
+    };
+    end_date_forecast: any;
+    operation_duration_forecast: any;
+    angle_V5: boolean;
+    created_by: number;
+    device: number;
+    equipment: number;
+  };
+
+  type PivotControllerActionPanel = {
+    id: number;
+    current_angle: number;
+    end_tower_pressure: number;
+    content: {
+      latitude_longitude_gps: {
+        latitude_gps: number;
+        longitude_gps: number;
+        altitude: number;
+      };
+      current_angle: {
+        current_angle: number;
+      };
+      center_pressure: {
+        center_pressure: number;
+      };
+      current_irrigation_information: {
+        rain_meter_percent: number;
+        irrigation_percent: number;
+        mode: number;
+        direction: number;
+        stop_mode: number;
+        stop_angle: number;
+        current_round: number;
+        total_round: number;
+      };
+      irrigation_remaining_time: {
+        hours: number;
+        minutes: number;
+      };
+      voltage_measure: {
+        voltage_measure: number;
+      };
+      end_tower_pressure: {
+        end_tower_pressure: number;
+      };
+      irrigation_status: {
+        irrigation_type: number;
+        irrigation_status: number;
+      };
+      operation_time: {
+        total_hour: number;
+        total_minute: number;
+        wet_hour: number;
+        wet_minute: number;
+        endgun_hour: number;
+        endgun_minute: number;
+        pump_hour: number;
+        pump_minute: number;
+        injection_pump_hour: number;
+        injection_pump_minutes: number;
+      };
+      current_schedule: {
+        current_schedule: number;
+      };
+      current_segment: {
+        current_segment: number;
+      };
+      pluviometer_total: {
+        total_measure: number;
+      };
+      devices_current_status: {
+        motor: number;
+        pump: number;
+        endgun: number;
+        injection_pump: number;
+        irripump: number;
+      };
+    };
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content_hash: number;
+    created_by: any;
+    device: number;
+    equipment: number;
+  };
+
+  type PivotControllerActionSchedule = {
+    id: number
+    username: string
+    current_angle: number
+    uuid: string
+    created_on_hardware: boolean
+    created: string
+    updated: string
+    arrived: string
+    message_status: number
+    message_error: string
+    message_packets: Array<number>
+    message_subtype: string
+    content: {
+      injection_pump_command: {
+        command: number
+        note: string
+      }
+      autoreversion_command: {
+        command: number
+      }
+      schedule_irrigation_parameters: Array<{
+        number_editing: number
+        mode: number
+        percent: number
+        millimeter: number
+        start_now: boolean
+        start_on_a_date: boolean
+        start_day: number
+        start_month: number
+        start_year: number
+        start_hour: number
+        start_minute: number
+        end_day: number
+        end_month: number
+        end_year: number
+        end_hour: number
+        end_minute: number
+        direction: number
+        stop_mode: number
+        stop_angle: number
+        schedule_rounds: number
+      }>
+      irrigation_status: {
+        irrigation_type: number
+        irrigation_status: number
+      }
+    }
+    end_date_forecast: any
+    operation_duration_forecast: any
+    angle_V5: boolean
+    created_by: number
+    device: number
+    equipment: number
+  }
+
+  type PivotControllerActionSimple = {
+    id: number
+    username: string
+    current_angle: number
+    uuid: string
+    created_on_hardware: boolean
+    created: string
+    updated: string
+    arrived: string
+    message_status: number
+    message_error: string
+    message_packets: Array<number>
+    message_subtype: string
+    content: {
+      injection_pump_command: {
+        command: number
+        note: string
+      }
+      autoreversion_command: {
+        command: number
+      }
+      simple_irrigation_parameters: {
+        mode: number
+        percent: number
+        stop_mode: number
+        stop_angle: number
+        rounds: number
+        start_mode: number
+        start_year: number
+        start_month: number
+        start_day: number
+        start_hour: number
+        start_minute: number
+      }
+      irrigation_status: {
+        irrigation_status: number
+        irrigation_type: number
+      }
+    }
+    end_date_forecast: string
+    operation_duration_forecast: number
+    angle_V5: boolean
+    created_by: number
+    device: number
+    equipment: number
+  }
+
+  type PivotControllerActionSegment = {
+    id: number
+    username: string
+    current_angle: number
+    uuid: string
+    created_on_hardware: boolean
+    created: string
+    updated: string
+    arrived: string
+    message_status: number
+    message_error: string
+    message_packets: Array<number>
+    message_subtype: string
+    content: {
+      injection_pump_command: {
+        command: number
+        note: string
+      }
+      autoreversion_command: {
+        command: number
+      }
+      segment_irrigation_parameters: {
+        start_mode: number
+        end_mode: number
+        rounds: number
+        start_time_day: number
+        start_time_month: number
+        start_time_year: number
+        start_time_hour: number
+        start_time_minute: number
+        end_time_day: number
+        end_time_month: number
+        end_time_year: number
+        end_time_hour: number
+        end_time_minute: number
+        stop_angle: number
+      }
+      segment_modes: Array<{
+        number_editing: number
+        percent_forward: number
+        percent_reverse: number
+        mode_forward: number
+        mode_reverse: number
+      }>
+      irrigation_status: {
+        irrigation_type: number
+        irrigation_status: number
+      }
+    }
+    end_date_forecast: any
+    operation_duration_forecast: any
+    angle_V5: boolean
+    created_by: number
+    device: number
+    equipment: number
+  }
+
 }

@@ -1,11 +1,6 @@
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { getPivotHistory } from '@/services/pivot';
-import {
-  getPivotEventCentralStatus,
-  getPivotEventUpdateStatus,
-} from '@/utils/formater/get-pivot-event-status';
-import { getPivotStatus } from '@/utils/formater/get-pivot-status';
+import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -16,20 +11,71 @@ import {
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Space } from 'antd';
+import { Button, Space, App, Pagination, Flex, Badge } from 'antd';
 import dayjs from 'dayjs';
-import { useRef, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { getPivotExcelReport } from '../../services/pivot';
+import { httpToExcel } from '../../utils/adapters/excel';
+import { useTableHook } from '@/hooks/table';
+import { queryPivotHistory } from '../../models/pivot-history';
 
 type Props = {
   pivotHistory: GetPivotHistoryModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  queryPivotHistory: typeof queryPivotHistory;
 };
 
 const PivotEventTable: React.FC<Props> = (props) => {
-  const reqGetData = useRequest(getPivotHistory, { manual: true });
-   const [dates, setDates] = useState<any>([dayjs(), dayjs()]);
+  const reqGetExcel = useRequest(getPivotExcelReport, { manual: true });
+
   const intl = useIntl();
+  const { message } = App.useApp();
+  const [dates, setDates] = useState<any>([dayjs().subtract(14, 'day'), dayjs()]);
+  const { currentPage, setCurrentPage } = useTableHook(1);
+
+  useEffect(() => {
+    if (!props.pivotHistory?.loading) {
+      const { deviceId, farmId } = props.selectedDevice;
+
+      props.queryPivotHistory({
+        path: { deviceId, farmId },
+        params: {
+          gps: true,
+          central: true,
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
+          page: currentPage,
+        },
+      })
+    };
+  }, [currentPage, dates]);
+
+
+  const handleExportReport = async () => {
+    try {
+      const response = await reqGetExcel.runAsync({ pivotId: props.selectedDevice.deviceId },
+        {
+          date_start: dates[0].toISOString(),
+          date_end: dates[1].toISOString(),
+          kwh_value_p: 1,
+          kwh_value_hfp: 1,
+          kwh_value_r: 1
+        }
+      )
+      httpToExcel(response, `relatório-pivo-${dates[0].toISOString()}-${dates[1].toISOString()}`)
+      message.success({
+        duration: 7,
+        content: intl.formatMessage({
+          id: 'component.pivot.download.report.success',
+        })
+      });
+    } catch (error) {
+      message.error(intl.formatMessage({
+        id: 'component.pivot.download.report.fail',
+      }));
+    }
+  }
 
   const ref = useRef<ActionType>();
 
@@ -40,17 +86,19 @@ const PivotEventTable: React.FC<Props> = (props) => {
           title: (
             <LightFilter>
               <ProFormDateRangePicker
-                disabled={props.pivotHistory.loading}
+                disabled={props.pivotHistory?.loading}
                 name="startdate"
                 label={intl.formatMessage({
                   id: 'component.pivot.tab.history.rangepicker.label',
                 })}
-                
+
                 fieldProps={{
+                  presets: rangePresets,
+
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
-                      setDates(v)
-                      ref.current?.reload()
+                      setDates(v);
+                      ref.current?.reload();
                     };
                   },
                   allowClear: false,
@@ -60,110 +108,15 @@ const PivotEventTable: React.FC<Props> = (props) => {
             </LightFilter>
           ),
           filter: (
-            <Space>
-              <Button icon={<DownloadOutlined />}>
-                {intl.formatMessage({
-                  id: 'component.export',
-                })}
-              </Button>
-            </Space>
+            <Button
+              loading={reqGetExcel.loading || props.pivotHistory?.loading}
+              onClick={handleExportReport}
+              icon={<DownloadOutlined />}>
+              {intl.formatMessage({
+                id: 'component.export',
+              })}
+            </Button>
           ),
-        }}
-        request={async (p, sort, filter): Promise<any> => {
-          const result: API.GetPivotHistoryResponse = (await reqGetData.runAsync(
-            {
-              farmId: props.selectedDevice.farmId as any,
-              pivotId: props.selectedDevice.deviceId as any,
-            },
-            {
-              gps: true,
-              central: true,
-              page: p.current,
-              date_start: dates[0].toISOString(),
-              date_end: dates[1].toISOString(),
-            },
-          )) as any;
-
-          const mapped = result.results.map((item, key) => {
-            if (item.CentralStream !== undefined) {
-              return {
-                ...item.CentralStream,
-                customType: intl.formatMessage({
-                  id: 'component.pivot.tab.history.event.table.col.2.value.1',
-                }),
-                customStatus: getPivotEventCentralStatus(item.CentralStream.status),
-                key,
-              };
-            }
-            if (item.ControllerStream_panel !== undefined) {
-              const content = item?.ControllerStream_panel?.content;
-              return {
-                ...item.ControllerStream_panel,
-                customType: intl.formatMessage({
-                  id: 'component.pivot.tab.history.event.table.col.2.value.2',
-                }),
-                customStatus: getPivotEventUpdateStatus(
-                  content?.irrigation_status?.irrigation_status,
-                  content?.current_irrigation_information?.direction,
-                  content?.current_irrigation_information?.mode,
-                  content?.current_irrigation_information?.irrigation_percent,
-                ),
-                key,
-              };
-            }
-            if (item.ControllerStream_gps !== undefined) {
-              const content = item?.ControllerStream_gps?.content;
-              return {
-                ...item.ControllerStream_gps,
-                customType: intl.formatMessage({
-                  id: 'component.pivot.tab.history.event.table.col.2.value.3',
-                }),
-                customStatus: `${content?.current_angle?.current_angle}° 
-                | ${content?.current_irrigation_information?.irrigation_percent}% 
-                | ${content?.center_pressure?.center_pressure} bar 
-                | ${content?.voltage_measure?.voltage_measure} V`,
-                key,
-              };
-            }
-            if (item.ControllerAction_schedule !== undefined) {
-              return {
-                ...item.ControllerAction_schedule,
-                customType: intl.formatMessage({
-                  id: 'component.pivot.tab.history.event.table.col.2.value.5',
-                }),
-                key,
-              };
-            }
-            if (item.ControllerAction_stop !== undefined) {
-              return {
-                ...item.ControllerAction_stop,
-                customType: intl.formatMessage({
-                  id: 'component.pivot.tab.history.event.table.col.2.value.4',
-                }),
-                customStatus: intl.formatMessage({
-                  id: 'component.pivot.tab.history.event.table.col.3.value.1',
-                }),
-                key,
-              };
-            }
-            const content = item?.ControllerAction_simple?.content;
-
-            return {
-              ...item.ControllerAction_simple,
-              customType: intl.formatMessage({
-                id: 'component.pivot.tab.history.event.table.col.2.value.4',
-              }),
-              customStatus: getPivotStatus(content?.irrigation_status?.irrigation_status as number),
-              key,
-            };
-          });
-
-          return {
-            data: mapped,
-            success: true,
-            total: result.count,
-            page: result.current_page,
-          };
         }}
         columns={[
           {
@@ -183,7 +136,10 @@ const PivotEventTable: React.FC<Props> = (props) => {
             dataIndex: 'customType',
             responsive: ['lg'],
             render: (item, entity) => {
-              return entity.customType;
+
+              return entity.badge ? <Space>
+                <Badge status={entity.badgeStatus} text={entity.customType} />
+              </Space> : entity.customType
             },
           },
           {
@@ -193,6 +149,7 @@ const PivotEventTable: React.FC<Props> = (props) => {
             dataIndex: 'customStatus',
           },
         ]}
+        dataSource={props.pivotHistory?.result?.data}
         rowKey="key"
         options={false}
         search={false}
@@ -296,8 +253,24 @@ const PivotEventTable: React.FC<Props> = (props) => {
             );
           },
         }}
+        loading={props.pivotHistory?.loading}
         actionRef={ref}
+        pagination={false}
       />
+
+      <Flex justify="flex-end">
+        <Pagination
+          disabled={props.pivotHistory?.loading}
+          responsive
+          size="small"
+          onChange={(v) => { setCurrentPage(v) }}
+          current={currentPage}
+          showTotal={() => false}
+          showSizeChanger={false}
+          total={props.pivotHistory?.result?.count}
+        />
+      </Flex>
+
     </Space>
   );
 };
@@ -313,6 +286,7 @@ const mapStateToProps = ({
   selectedDevice,
 });
 
-const mapDispatchToProps = () => ({});
-
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryPivotHistory: (props: any) => dispatch(queryPivotHistory(props)),
+});
 export default connect(mapStateToProps, mapDispatchToProps)(PivotEventTable);

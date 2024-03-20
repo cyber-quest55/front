@@ -1,182 +1,467 @@
 import { useScreenHook } from '@/hooks/screen';
-import { useStepHook } from '@/hooks/step';
+import { queryPivotNotifications } from '@/models/pivot-notification';
+import { postPivotNotification } from '@/services/notification';
+import { yupValidator } from '@/utils/adapters/yup';
 import { PlusCircleFilled } from '@ant-design/icons';
 import {
   ModalForm,
   ProCard,
   ProForm,
   ProFormCheckbox,
-  ProFormList,
+  ProFormDependency,
+  ProFormGroup,
+  ProFormInstance,
+  ProFormRadio,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
   ProFormTimePicker,
+  StepsForm,
 } from '@ant-design/pro-components';
-import { Button, Col, Form, Row, Space, Steps } from 'antd';
+import { useIntl, useModel, useParams } from '@umijs/max';
+import { useRequest } from 'ahooks';
+import { App, Button, Col, Divider, Row, Space, Tooltip, Typography } from 'antd';
+import moment from 'moment';
+import { useRef, useState } from 'react';
+import { IoAlertCircleOutline } from 'react-icons/io5';
+import * as yup from 'yup';
 
-const AddPivotAlarmForm = () => {
-  const [form] = Form.useForm<any>();
+interface AddPivotAlarmFormProps {
+  reasons: APIModels.NotificationReason[];
+  pivots: APIModels.PivotByFarm[];
+  queryPivotNotifications: typeof queryPivotNotifications;
+}
+
+const AddPivotAlarmForm = (props: AddPivotAlarmFormProps) => {
+  const intl = useIntl();
   const { lg } = useScreenHook();
-  const {step, setStep} = useStepHook(0);
+  const form1Ref = useRef<ProFormInstance<any> | undefined>();
+  const form2Ref = useRef<ProFormInstance<any> | undefined>();
+  const [visible, setVisible] = useState(false);
+  const postPivotNotificationReq = useRequest(postPivotNotification, { manual: true });
+  const { initialState } = useModel('@@initialState');
+  const params = useParams();
+  const { message } = App.useApp();
 
-  const listOptions = [
-    { title: 'Panel On', name: 'p1', children: undefined },
-    { title: 'Moving in dry mode', name: 'p2', children: undefined },
-    { title: 'Wet mode after pressurized', name: 'p3', children: undefined },
-    { title: 'Dry mode after power fault', name: 'p4', children: undefined },
-    { title: 'Powered on after power fault', name: 'p5', children: undefined },
-    { title: 'Wet mode after pause time', name: 'p6', children: undefined },
-    { title: 'Dry mode after pause time', name: 'p7', children: undefined },
-    { title: 'Wet mode after pause time', name: 'p8', children: undefined },
-  ];
+  const hasMoreThanOneProtocol = Array.from(new Set(props.pivots.map((obj) => obj.protocol))).length > 1
+
+  const listOptions = (version: string) => {
+    const reasonsFilteredByVersion = props.reasons.filter(
+      (reason) => reason.protocol === Number(version),
+    );
+
+    return reasonsFilteredByVersion.map((reason) => {
+      return {
+        title: reason.label,
+        name: ['options', 'reasons', reason.id.toString()],
+        critical: reason.critical
+          ? { name: ['options', 'critical_reasons', reason.id.toString()] }
+          : null,
+      };
+    });
+  };
+
+  const pivotOptions = (version: string) => {
+    const pivotsFilteredByVersion = props.pivots.filter(
+      (pivot) => pivot.automation_type === 0 && pivot.protocol === Number(version),
+    );
+
+    return pivotsFilteredByVersion.map((pivot) => {
+      return {
+        value: pivot.id,
+        label: pivot.name,
+      };
+    });
+  };
+
+  const schema1 = yup.object().shape({
+    information: yup.object().shape({
+      notification_group_name: yup
+        .string()
+        .max(
+          30,
+          intl.formatMessage(
+            {
+              id: 'validations.max',
+            },
+            { value: 30 },
+          ),
+        )
+        .required(
+          intl.formatMessage({
+            id: 'validations.required',
+          }),
+        ),
+      version: yup.string(),
+      all_day: yup.boolean(),
+      start_at: yup.string().when('all_day', {
+        is: false,
+        then(schema) {
+          return schema.required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          );
+        },
+      }),
+      end_at: yup.string().when('all_day', {
+        is: false,
+        then(schema) {
+          return schema.required(
+            intl.formatMessage({
+              id: 'validations.required',
+            }),
+          );
+        },
+      }),
+    }),
+  });
+
+  const schema2 = yup.object().shape({
+    options: yup.object().shape({
+      devices: yup.array().min(
+        1,
+        intl.formatMessage({
+          id: 'validations.required',
+        }),
+      ),
+      reasons: yup
+        .object()
+        .test('is-jimmy', 'error', (value, testContext) =>
+          Object.values(testContext.parent.reasons).some((v) => v === true),
+        ),
+    }),
+  });
+
+  const yupSync1 = yupValidator(schema1, () => form1Ref.current?.getFieldsValue() ?? {});
+  const yupSync2 = yupValidator(schema2, () => form2Ref.current?.getFieldsValue() ?? {});
 
   return (
-    <ModalForm<any>
-      title="Novos Alarmes"
-      submitter={{
-        submitButtonProps: {
-          type: 'primary',
-          ghost: step < 1 ? true : false,
-        },
-        searchConfig: {
-          submitText: step < 1 ? 'Próximo' : 'Cadastrar',
-        },
-      }}
-      trigger={
-        <Button size={lg ? 'large' : 'middle'} type="primary" icon={<PlusCircleFilled />}>
-          Adicionar Alarme
-        </Button>
-      }
-      form={form}
-      autoFocusFirstInput
-      onOpenChange={() => setStep(0)}
-      submitTimeout={2000}
-      onFinish={async () => {
-        setStep(step + 1);
-      }}
-      modalProps={{
-        destroyOnClose: true,
-      }}
-      grid
-      rowProps={{ gutter: [12, 12] }}
-    >
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <Steps
-          direction="horizontal"
-          style={{ margin: '24px 0px', width: '80%' }}
-          onChange={(s) => setStep(s)}
-          current={step}
-          items={[
-            {
-              title: 'Informações',
+    <>
+      <Button
+        onClick={() => setVisible(true)}
+        size={lg ? 'large' : 'middle'}
+        type="primary"
+        icon={<PlusCircleFilled />}
+        disabled={props.pivots.filter((p) => p.automation_type === 0).length === 0}
+      >
+        {intl.formatMessage({
+          id: 'component.addalarmform.button',
+        })}
+      </Button>
+      <ModalForm
+        title={intl.formatMessage({
+          id: 'component.addalarmform.modal.title',
+        })}
+        width={800}
+        open={visible}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => setVisible(false),
+          centered: true,
+        }}
+        submitter={false}
+      >
+        <StepsForm
+          stepsProps={{
+            style: {
+              marginTop: 24,
             },
-            {
-              title: 'Opções',
-            },
-          ]}
-        />
-      </div>
-      {step === 0 ? (
-        <>
-          <ProFormText
-            colProps={{ xs: 24, md: 24 }}
-            name="company"
-            label="Nome do equipamento"
-            placeholder="Dispositivo..."
-            required
-            rules={[{ required: true }]}
-          />
-          <ProFormTimePicker
-            colProps={{ xs: 12, md: 5 }}
-            name="started_at"
-            label="Horário de início"
-            placeholder="Dispositivo..."
-          />
+          }}
+          containerStyle={{
+            minWidth: 0,
+          }}
+          stepsFormRender={(dom, submitter) => {
+            return (
+              <>
+                {dom}
+                <Row justify="end" style={{ gap: 12, paddingTop: 20 }}>
+                  {submitter}
+                </Row>
+              </>
+            );
+          }}
+          onFinish={async (values) => {
+            try {
+              const data = {
+                critical_reasons: values.options.critical_reasons
+                  ? Object.keys(values.options.critical_reasons)
+                      .filter((key) => values.options.critical_reasons[key])
+                      .map((v) => Number(v))
+                  : [],
+                reasons: values.options.reasons
+                  ? Object.keys(values.options.reasons)
+                      .filter((key) => values.options.reasons[key])
+                      .map((v) => Number(v))
+                  : [],
+                devices: values.options.devices,
+                name: values.information.notification_group_name,
+                start: values.information.start_at + ':00',
+                end: values.information.end_at + ':59',
+                enable: true,
+                farm: Number(params.farmId),
+                user: initialState?.currentUser.id,
+              };
+              await postPivotNotificationReq.runAsync(data);
+              message.success('Notificação criada com sucesso');
+              props.queryPivotNotifications({ farmId: params.farmId });
+              setVisible(false);
+            } catch (err) {
+              console.log(err);
+              message.error('Fail');
+            }
+          }}
+        >
+          <>
+            <StepsForm.StepForm
+              title={intl.formatMessage({
+                id: 'component.addalarmform.modal.step1.title',
+              })}
+              name="information"
+              formRef={form1Ref}
+              initialValues={{
+                information: {
+                  notification_group_name: '',
+                  all_day: true,
+                  start_at: moment().startOf('day'),
+                  end_at: moment().endOf('day'),
+                  version: 5,
+                },
+              }}
+              grid
+              rowProps={{ gutter: [12, 12] }}
+            >
+              <ProFormText
+                rules={[yupSync1]}
+                colProps={{ xs: 24, md: 24 }}
+                name={['information', 'notification_group_name']}
+                label={intl.formatMessage({
+                  id: 'component.addalarmform.modal.step1.name.label',
+                })}
+              />
 
-          <ProFormTimePicker
-            colProps={{ xs: 12, md: 5 }}
-            name="started_at"
-            label="Horário de fim"
-            placeholder="Dispositivo..."
-          />
+              {hasMoreThanOneProtocol ? <ProFormRadio.Group
+                name={['information', 'version']}
+                layout="horizontal"
+                label={intl.formatMessage({
+                  id: 'component.addalarmform.modal.step1.version.label',
+                })}
+                rules={[yupSync1]}
+                fieldProps={{
+                  onChange: () => {
+                    form2Ref.current?.resetFields();
+                  },
+                }}
+                options={[
+                  {
+                    label: 'G1',
+                    value: 4.1,
+                  },
+                  {
+                    label: 'G2',
+                    value: 5,
+                  },
+                ]}
+              /> : null}
+              <ProFormGroup
+                title={intl.formatMessage({
+                  id: 'component.addalarmform.modal.step1.date.title',
+                })}
+              >
+                <ProFormDependency name={['information']} colon style={{ width: '100%' }}>
+                  {({ information }) => {
+                    return (
+                      <>
+                        <ProFormTimePicker
+                          rules={[yupSync1]}
+                          allowClear={false}
+                          colProps={{ xs: 8, md: 5 }}
+                          name={['information', 'start_at']}
+                          fieldProps={{  format: "HH:mm" }}
+                          label={intl.formatMessage({
+                            id: 'component.addalarmform.modal.step1.start.label',
+                          })}
+                          disabled={information.all_day}
+                        />
 
-          <ProFormCheckbox
-            colProps={{ xs: 24, md: 4 }}
-            name="allDay"
-            label="Dia todo?"
-            placeholder="Dispositivo..."
-          />
-        </>
-      ) : (
-        <Space direction="vertical" style={{ width: '100%' }} size="small">
-          <ProFormSelect
-            name="select-multiple"
-            label="Pivôs"
-            valueEnum={{
-              red: 'Red',
-              green: 'Green',
-              blue: 'Blue',
-            }}
-            fieldProps={{
-              mode: 'multiple',
-            }}
-            placeholder="Please select favorite colors"
-            rules={[
-              { required: true, message: 'Please select your favorite colors!', type: 'array' },
-            ]}
-          />
-          <ProCard
-            gutter={[0, 8]}
-            ghost
-            wrap
-            style={{
-              maxHeight: 450,
-              overflowY: 'auto',
-              overflowX: 'hidden',
-              paddingRight: 4,
-            }}
-          >
-            {listOptions.map((item) => (
-              <ProCard bordered colSpan={24} key={`list-${item.name}`} style={{ padding: 12 }}>
-                <Space direction="vertical" style={{ width: '100%' }} size="large">
-                  <Row justify="space-between" align={'middle'}>
-                    <Col>{item.title}</Col>
-                    <Col>
-                      <ProFormSwitch noStyle name={item.name} style={{ margin: 0 }} />
-                    </Col>
-                  </Row>
-                  <ProForm.Item noStyle shouldUpdate>
-                    {(form) => {
-                      const value = form.getFieldValue(item.name);
-                      return item.children && value ? (
-                        <ProFormList
-                          style={{ padding: 0 }}
-                          name={`${item.name}.values`}
-                          initialValue={[{ date: '2022-10-12 10:00:00' }]}
-                        >
-                          {() => {
-                            return (
-                              <ProFormText
-                                colProps={{ xs: 24, md: 12 }}
-                                name="test"
-                                label={`Defina o valor`}
-                                placeholder="Dispositivo..."
-                                required
-                                rules={[{ required: true }]}
-                              />
-                            );
+                        <ProFormTimePicker
+                          rules={[yupSync1]}
+                          allowClear={false}
+                          colProps={{ xs: 8, md: 5 }}
+                          name={['information', 'end_at']}
+                          fieldProps={{  format: "HH:mm" }}
+                          label={intl.formatMessage({
+                            id: 'component.addalarmform.modal.step1.end.label',
+                          })}
+                          disabled={information.all_day}
+                        />
+                      </>
+                    );
+                  }}
+                </ProFormDependency>
+
+                <ProFormCheckbox
+                  rules={[yupSync1]}
+                  fieldProps={{
+                    onChange: () => {
+                      form1Ref.current?.setFieldValue(
+                        ['information', 'start_at'],
+                        moment().startOf('day'),
+                      );
+                      form1Ref.current?.setFieldValue(
+                        ['information', 'end_at'],
+                        moment().endOf('day'),
+                      );
+                    },
+                  }}
+                  colProps={{ xs: 8, md: 4 }}
+                  name={['information', 'all_day']}
+                  label={intl.formatMessage({
+                    id: 'component.addalarmform.modal.step1.allday.label',
+                  })}
+                />
+              </ProFormGroup>
+            </StepsForm.StepForm>
+            <StepsForm.StepForm
+              title={intl.formatMessage({
+                id: 'component.addalarmform.modal.step2.title',
+              })}
+              name="options"
+              formRef={form2Ref}
+              onInit={() => {
+                const reasonsObj: any = {};
+                for (let reason of props.reasons) {
+                  reasonsObj[reason.id.toString()] = false;
+                }
+                form2Ref.current?.setFieldsValue({
+                  options: { reasons: reasonsObj, critical_reasons: {}, devices: [] },
+                });
+              }}
+            >
+              <Space direction="vertical" size="small">
+                <ProForm.Item noStyle shouldUpdate>
+                  {() => {
+                    return (
+                      <ProFormSelect
+                        rules={[yupSync2]}
+                        label={intl.formatMessage({
+                          id: 'component.addalarmform.modal.step2.devices.label',
+                        })}
+                        name={['options', 'devices']}
+                        options={pivotOptions(
+                          form1Ref.current?.getFieldValue(['information', 'version']),
+                        )}
+                        fieldProps={{
+                          mode: 'multiple',
+                        }}
+                      />
+                    );
+                  }}
+                </ProForm.Item>
+                <ProForm.Item noStyle shouldUpdate>
+                  {(form) => {
+                    return (
+                      <>
+                        <ProCard
+                          gutter={[0, 8]}
+                          ghost
+                          wrap
+                          style={{
+                            maxHeight: lg ? 350 : 250,
+                            overflowY: 'auto',
+                            overflowX: 'hidden',
                           }}
-                        </ProFormList>
-                      ) : null;
-                    }}
-                  </ProForm.Item>
-                </Space>
-              </ProCard>
-            ))}
-          </ProCard>
-        </Space>
-      )}
-    </ModalForm>
+                        >
+                          <Typography.Text>
+                            {intl.formatMessage({
+                              id: 'component.addalarmform.modal.step2.reasons.label',
+                            })}
+                          </Typography.Text>
+                          {listOptions(
+                            form1Ref.current?.getFieldValue(['information', 'version']),
+                          ).map((item) => (
+                            <ProCard
+                              collapsible={!!item.critical}
+                              title={item.title}
+                              bodyStyle={{ margin: 0, paddingBlock: item.critical ? 16 : '0 16px' }}
+                              extra={
+                                <Row justify="space-between" align={'middle'}>
+                                  <Col>
+                                    <ProFormSwitch
+                                      fieldProps={{
+                                        onChange: (checked) => {
+                                          if (item.critical && !checked) {
+                                            form.setFieldValue(item.critical.name, false);
+                                          }
+                                        },
+                                      }}
+                                      noStyle
+                                      rules={[yupSync2]}
+                                      name={item.name}
+                                      style={{ margin: 0 }}
+                                    />
+                                  </Col>
+                                </Row>
+                              }
+                              bordered
+                              key={`list-${item.name}`}
+                            >
+                              {item.critical ? (
+                                <>
+                                  <Divider style={{ padding: 0, margin: '0 0 16px 0' }} />
+                                  <Row justify="space-between" align={'middle'}>
+                                    <Col style={{ flex: 4 }}>
+                                      <Row align={'middle'} style={{ flexWrap: 'nowrap' }}>
+                                        <Tooltip
+                                          title={intl.formatMessage({
+                                            id: 'component.addalarmform.modal.step2.criticalreasons.tooltip',
+                                          })}
+                                        >
+                                          <IoAlertCircleOutline color="#DA1D29" size={20} />
+                                        </Tooltip>
+                                        <div style={{ paddingLeft: 8 }}>
+                                          {intl.formatMessage({
+                                            id: 'component.addalarmform.modal.step2.criticalreasons.enable',
+                                          })}
+                                        </div>
+                                      </Row>
+                                    </Col>
+                                    <Col>
+                                      <ProFormSwitch
+                                        noStyle
+                                        fieldProps={{
+                                          onChange: () => {
+                                            form.setFieldValue(item.name, true);
+                                          },
+                                        }}
+                                        name={item.critical.name}
+                                        style={{ margin: 0 }}
+                                      />
+                                    </Col>
+                                  </Row>
+                                </>
+                              ) : null}
+                            </ProCard>
+                          ))}
+                        </ProCard>
+                        <Typography.Text type="danger" style={{ fontWeight: 'lighter' }}>
+                          {form2Ref.current?.getFieldsError()[1] &&
+                          form2Ref.current?.getFieldsError()[1]?.errors?.length > 0
+                            ? intl.formatMessage({
+                                id: 'validations.required',
+                              })
+                            : ''}
+                        </Typography.Text>
+                      </>
+                    );
+                  }}
+                </ProForm.Item>
+              </Space>
+            </StepsForm.StepForm>
+          </>
+        </StepsForm>
+      </ModalForm>
+    </>
   );
 };
 

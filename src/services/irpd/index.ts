@@ -26,7 +26,7 @@ export async function getIrpdHistory(
     data: API.GetIrpdHistoryResponse;
   }>(`/v3/farms/${props.farmId}/irpds/${props.irpdId}/history`, {
     method: 'GET',
-    params: options,
+    params: {  ...options },
   });
 }
 
@@ -149,5 +149,21 @@ export async function createIrpd(
     method: 'POST',
     data: options,
   });
-}
- 
+} 
+
+export async function getIrpdExcelReport(
+  props: { deviceId: number },
+  options: {
+    date_start: string;
+    date_end: string; 
+  },
+) {
+  return request<any>(`/v3/reports/irpds/${props.deviceId}/excel/`, {
+    method: 'GET',
+    params: options,
+    headers: {
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Tipo de conteúdo do Excel
+    },
+    responseType: 'blob'
+  })
+}; 

@@ -3,12 +3,16 @@ import { getPivotsWithInformations } from '@/services/pivot';
 import { getPivotColor } from '@/utils/formater/get-pivot-color';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
 import { AxiosError } from 'axios';
+import dayjs from 'dayjs';
+import uniqid from 'uniqid';
+import { getSocketBinds } from '../utils/formater/get-socket-binds';
 
-export interface GetPivotInformationModelProps {
+export type GetPivotInformationModelProps = {
   result: CirclePivotProps[];
   loading: boolean;
   loaded: boolean;
   error: any;
+  id: string;
 }
 
 export const queryPivotInformation = (payload: API.GetPivotsInformationParam) => {
@@ -26,7 +30,8 @@ export default {
     loaded: false,
     loading: true,
     error: {},
-  },
+    id: uniqid('@PivotInformation_'),
+  } as GetPivotInformationModelProps,
 
   effects: {
     *queryPivotInformation(
@@ -41,11 +46,11 @@ export default {
           payload.params,
         );
         yield put({ type: 'queryPivotInformationSuccess', payload: response });
+        yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryPivotInformationError', payload: error });
       }
     },
-
     *setNewPivotInformation(
       { payload }: { payload: any },
       { put, select }: { put: any; select: any },
@@ -68,6 +73,76 @@ export default {
 
       yield put({ type: 'setNewPivotInformationSuccess', payload: newResult });
     },
+    // Web socket subscribers
+    *onInit({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.pivotInformation);
+      const channels = state.result.map(r => ({
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@pivot@${r.id}`,
+        id: state.id,
+        binds: [
+          {
+            callback: ['pivotInformation/wsPivotControllerStreamPanelCallback'],
+            event: 'ControllerStream_panel',
+            id: state.id,
+          },
+          {
+            callback: ['pivotInformation/wsPivotControllerStreamGpsCallback'],
+            event: 'ControllerStream_gps',
+            id: state.id,
+          },
+          {
+            callback: ['pivotInformation/wsPivotControllerStreamPeriodicCallback'],
+            event: 'ControllerStream_periodic',
+            id: state.id,
+          },
+        ],
+      }));
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroy({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.pivotInformation);
+      const channels = state.result.map(r => ({
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@pivot@${r.id}`,
+        id: state.id,
+        binds: [
+          {
+            callback: ['pivotInformation/wsPivotControllerStreamPanelCallback'],
+            event: 'ControllerStream_panel',
+            id: state.id,
+          },
+          {
+            callback: ['pivotInformation/wsPivotControllerStreamGpsCallback'],
+            event: 'irpd_cControllerStream_gpsonfig',
+            id: state.id,
+          },
+          {
+            callback: ['pivotInformation/wsPivotControllerStreamPeriodicCallback'],
+            event: 'ControllerStream_periodic',
+            id: state.id,
+          },
+        ],
+      }));
+      yield getSocketBinds(channels, put, 'unsubscribe');
+    },
+    // Web socket callbacks
+    *wsPivotControllerStreamPanelCallback(
+      { payload }: { payload: WkModels.PivotControllerStreamPanel },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotControllerStreamPanelSuccess', payload });
+    },
+    *wsPivotControllerStreamGpsCallback(
+      { payload }: { payload: WkModels.PivotControllerActionGps },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotControllerStreamGpsSuccess', payload });
+    },
+    *wsPivotControllerStreamPeriodicCallback(
+      { payload }: { payload: WkModels.PivotControllerStreamPeriodic  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsPivotControllerStreamPeriodicSuccess', payload });
+    }
   },
 
   reducers: {
@@ -81,19 +156,17 @@ export default {
         loading: false,
       };
     },
-
     queryPivotInformationStart(state: GetPivotInformationModelProps) {
       return {
         ...state,
         loading: true,
       };
     },
-
     queryPivotInformationSuccess(
       state: GetPivotInformationModelProps,
       { payload }: { payload: API.GetPivotsInformationResponse },
     ) {
-      const mapper: CirclePivotProps[] = [];
+      const mapper: any[] = [];
 
       /**
        * Observações:
@@ -205,6 +278,30 @@ export default {
           );
         }
 
+        // This section calculates the pluviometer measure to display on device box
+        let pluviometerMeasure = 0;
+        let isRaining = false;
+        if (item.controllerstream_periodic) {
+          if (
+            item.controllerstream_periodic.content?.pluviometer_daily_measure.daily_measure > 0 &&
+            dayjs().diff(dayjs(item.controllerstream_periodic.created), 'minutes') <= 70
+          ) {
+            isRaining = true;
+          }
+          pluviometerMeasure = item.controllerstream_periodic.content?.pluviometer_daily_measure?.daily_measure;
+        }
+
+        // Calc current pivot angle
+        let currentAngle = 0;
+        try {
+          const gpsDate = dayjs(item.controllerstream_gps.created);
+          const panelDate = dayjs(item.controllerstream_panel.created);
+          currentAngle = panelDate.isAfter(gpsDate)
+            ? item.controllerstream_panel.current_angle
+            : item.controllerstream_gps.current_angle;
+        } catch (err) {}
+       
+        // Computed information about pivots
         mapper.push({
           id: item.id,
           irrigationDirection,
@@ -232,6 +329,10 @@ export default {
           name: item.name,
           statusText: statusText,
           onSelect: () => null,
+          mapHistory: item.map_history,
+          pluviometerMeasure,
+          isRaining,
+          currentAngle: Math.round(currentAngle),
         });
       }
 
@@ -243,7 +344,6 @@ export default {
         error: {},
       };
     },
-
     setNewPivotInformationSuccess(
       state: GetPivotInformationModelProps,
       { payload }: { payload: any[] },
@@ -253,5 +353,94 @@ export default {
         result: payload,
       };
     },
+    // Websocket reducers
+    wsPivotControllerStreamPanelSuccess(
+      state: GetPivotInformationModelProps,
+      { payload }: { payload: WkModels.PivotControllerStreamPanel },
+    ) {
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
+
+      if (pivotIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === pivotIndex) return {
+            ...r,
+            deviceColor: getPivotColor(payload.content.irrigation_status.irrigation_status),
+            statusText: getPivotStatus(payload.content.irrigation_status.irrigation_status),
+            updated: new Date(payload.updated).toLocaleString(),
+          }
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
+      return state;
+    },
+    wsPivotControllerStreamGpsSuccess(
+      state: GetPivotInformationModelProps,
+      { payload }: { payload: WkModels.PivotControllerActionGps },
+    ) {
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
+      
+      if (pivotIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === pivotIndex) return {
+            ...r,
+            deviceColor: getPivotColor(payload.content.irrigation_status.irrigation_status),
+            statusText: getPivotStatus(payload.content.irrigation_status.irrigation_status),
+            currentAngle: Math.round(payload.content.current_angle.current_angle),
+            updated: new Date(payload.updated).toLocaleString(),
+          }
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
+      return state;
+    },
+    wsPivotControllerStreamPeriodicSuccess(
+      state: GetPivotInformationModelProps,
+      { payload }: { payload: WkModels.PivotControllerStreamPeriodic },
+    ) {
+      const pivotIndex = state.result.findIndex(r => r.id === payload.equipment);
+
+      if (pivotIndex >= 0) {
+        const newResults = state.result.map((r, i) => {    
+          if (i === pivotIndex) {
+            // This section calculates the pluviometer measure to display on device box
+            let isRaining = false;
+            if (
+              payload.content?.pluviometer_daily_measure.daily_measure > 0 &&
+              dayjs().diff(dayjs(payload.created), 'minutes') <= 70
+            ) {
+              isRaining = true;
+            }
+
+            return {
+              ...r,
+              isRaining,
+              pluviometerMeasure: payload.content.pluviometer_daily_measure.daily_measure,
+              updated: new Date(payload.updated).toLocaleString(),
+            }
+          }
+
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
+      }
+
+      return state;
+    }
   },
 };

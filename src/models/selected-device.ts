@@ -1,5 +1,7 @@
 import { DeviceType } from '@/utils/enum/device-type';
-import { queryIrpdWater } from './irpd-water-consumption';
+import dayjs from 'dayjs';
+
+const takeLatest = { type: 'takeLatest' };
 
 export interface SelectedDeviceModelProps {
   type: string;
@@ -44,8 +46,22 @@ export default {
   },
 
   effects: {
-    *setSelectedDevice({ payload }: { payload: SelectedType }, { put }: { put: any }) {
+    *setSelectedDevice(
+      { payload }: { payload: SelectedType },
+      { put, select }: { put: any; select: any },
+    ) {
       const { type, farmId, deviceId, otherProps } = payload;
+
+      const selectedDevice = yield select((state) => state.selectedDevice);
+      if (selectedDevice.open && selectedDevice.type === DeviceType.Pivot) {
+        yield put({ type: 'devicePanel/onDestroy', payload: selectedDevice });
+      }
+
+      // Irpd history destroy if select device change
+      if (selectedDevice.open && selectedDevice.type === DeviceType.Pump) {
+        yield put({ type: 'irpdHistory/onDestroy', payload: selectedDevice });
+      }
+
       yield put({
         type: 'setSelectedDeviceDefinition',
         payload: { type, farmId, deviceId, otherProps },
@@ -59,11 +75,29 @@ export default {
           });
           yield put({
             type: 'pivotHistory/queryPivotHistory',
-            payload: { farmId, pivotId: deviceId, params: {} },
+            payload: {
+              farmId,
+              pivotId: deviceId,
+              params: {
+                gps: true,
+                central: true,
+                page: 0,
+                date_start: dayjs().subtract(1, 'month'),
+                date_end: dayjs(),
+              },
+            },
           });
           yield put({
             type: 'pivotById/queryPivotById',
             payload: { farmId, pivotId: deviceId, params: {} },
+          });
+          yield put({
+            type: 'devicePanel/onInit',
+            payload: {},
+          });
+          yield put({
+            type: 'pivotHistory/onInit',
+            payload: {},
           });
           break;
         }
@@ -82,11 +116,38 @@ export default {
           yield put({
             type: 'meterSystemById/queryMeterSystemById',
             payload: { farmId, meterId: deviceId, params: {} },
-          });  
+          });
           break;
         }
       }
     },
+
+    setDeviceClose: [
+      function* ({}, { put, select }: { put: any; select: any }) {
+        const selectedDevice = yield select((state) => state.selectedDevice);
+        const { type } = selectedDevice;
+
+        if (selectedDevice.open === false) {
+          return;
+        }
+
+        switch (type) {
+          case DeviceType.Pivot: {
+            yield put({ type: 'devicePanel/onDestroy', payload: selectedDevice });
+            break;
+          }
+          case DeviceType.Pump: {
+            break;
+          }
+          case DeviceType.Meter: {
+            break;
+          }
+        }
+
+        yield put({ type: 'selectedDevice/setDeviceCloseSuccess', payload: {} });
+      },
+      takeLatest,
+    ],
   },
 
   reducers: {
@@ -106,7 +167,7 @@ export default {
       };
     },
 
-    setDeviceClose() {
+    setDeviceCloseSuccess() {
       return {
         type: '',
         farmId: '',

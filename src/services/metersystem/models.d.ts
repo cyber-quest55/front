@@ -861,3 +861,163 @@ declare namespace APIModels {
     sensor_id: number;
   };
 }
+
+declare namespace WsMeterSystemModels {
+  /* Start of device box WS */
+  type MeterSystemEventCallbackPayload = {
+    id: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    created_by?: number;
+    device: number;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    equipment: number;
+    flow: number;
+    offset_applied: boolean;
+    content: {
+      imanage_sensor_measure_value: {
+        value: number;
+        number_editing: number;
+      }
+      imanage_master_status: {
+        status: number;
+      }
+    };
+  };
+
+  type MeterSystemPeriodicStreamCallbackPayload = {
+    id: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    created_by?: number;
+    device: number;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    equipment: number;
+    flow: number;
+    offset_applied: boolean;
+    content: {
+      pump_hourmeter: {
+        hours: number;
+        minutes: number;
+      }
+      imanage_master_status: {
+        status: number;
+      }
+    };
+  };
+  /* End of device box WS */
+
+  /* Start of central radio update clock WS */  
+  type MeterSystemStandardCallbackPayload  = {
+    id: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      clock: {
+        year: number;
+        month: number;
+        day: number;
+        hour: number;
+        minute: number;
+        second: number;
+      };
+      holidays: [];
+      peak_time: {
+        stop_hour_1: number;
+        stop_hour_2: number;
+        start_hour_1: number;
+        start_hour_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        stop_minute_1: number;
+        stop_minute_2: number;
+        sunday_enable: number;
+        start_minute_1: number;
+        start_minute_2: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      pump_action: {
+        enable: number;
+      };
+      imanage_sensors: {
+        max_value: number;
+        min_value: number;
+        sensor_type: number;
+        number_editing: number;
+      }[];
+      enable_peak_time: {
+        enable: number;
+      };
+      rs485_data_write: {
+        data: string;
+        baud_rate: number;
+        registers: string;
+        slave_address: number;
+        number_editing: number;
+      }[];
+      rs485_read_config: {
+        protocol: number;
+        baud_rate: number;
+        registers: string;
+        size_of_bytes: number;
+        slave_address: number;
+        function_field: number;
+        number_editing: number;
+      }[];
+      datalogger_address: {
+        address: string;
+      };
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      event_stream_indexes: {
+        indexes: string;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+      periodic_stream_indexes: {
+        indexes: string;
+      };
+    };
+    graphic_max_value: number;
+    flow_curve_equation: number[];
+    sensor_offset: number;
+    measure_scale: number;
+    measure_unit: string;
+    min_limit: number;
+    max_limit: number;
+    metersystem_name: string;
+    imeter_name: string;
+    position_imeter: string;
+    pinned: boolean;
+    name: string;
+    created_by: null | any;
+    device: number;
+    equipment: number;
+    sensor_process_controller_pair: number;
+  };
+  /* End of central radio update clock WS */  
+}

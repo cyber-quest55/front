@@ -34,11 +34,10 @@ const PressureComparativeComponent: React.FunctionComponent<IPressureComparative
         <LightFilter>
           <ProFormDateTimeRangePicker
             initialValue={props.dateRange}
-            formItemProps={{ noStyle: true, style: { width: '350px' } }}
+            formItemProps={{ noStyle: true, style: { } }}
             fieldProps={{
               value: props.dateRange as any,
-              presets: rangePresets,
-              style: { width: '350px' },
+              presets: rangePresets, 
               onChange: handleChangeRange,
               allowClear: false,
               defaultValue:  props.dateRange as any

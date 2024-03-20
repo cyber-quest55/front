@@ -18,6 +18,7 @@ export type WaterPumpProps = {
   infoWindow?: boolean;
   waterId?: number;
   protocol?: number;
+  pumpPressure?: number | null;
 };
 
 const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {

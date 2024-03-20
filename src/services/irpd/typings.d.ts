@@ -20,7 +20,7 @@ declare namespace API {
     irpdId: number;
    };
 
-  type GetIrpdHistoryResponse = APIModels.IrpdHistory;
+  type GetIrpdHistoryResponse = APIModels.IrpdCompleteHistory;
 
   type GetIrpdWaterConsumptionParams = {
     farmId: number;
@@ -78,8 +78,8 @@ declare namespace API {
     count: number;
     current_page: number;
     next: string;
-    previous: any;
-    results: Array<APIModels.IrpdHistory>;
+    previous: string;
+    results: APIModels.IrpdHistoryCompleteListItem[];
   };
 
   type FavoriteIrpdConfigParams = {

@@ -1,7 +1,7 @@
 import MeterReport from '@/components/DeviceReport/Meter';
 import PivotReport from '@/components/DeviceReport/Pivot';
 import PumpReport from '@/components/DeviceReport/Pump';
-import PivotList from '@/components/PivotList';
+import PivotList from '@/components/DeviceBox';
 import RenderPivots from '@/components/RenderPivots';
 import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps, queryFarm } from '@/models/farm';
@@ -12,7 +12,6 @@ import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/p
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import {
   SelectedDeviceModelProps,
-  setDeviceClose,
   setSelectedDevice,
 } from '@/models/selected-device';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
@@ -20,10 +19,12 @@ import { DeviceType } from '@/utils/enum/device-type';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';
-import { useMount, useUnmount } from 'ahooks';
+import { useMount } from 'ahooks';
 import { Col, Row, Spin, Tabs } from 'antd';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { queryRepeater } from '../../models/repeaters';
+import { queryPivot } from '../../models/pivot';
 
 type Props = {
   dispatch?: any;
@@ -38,50 +39,20 @@ type Props = {
   pivotInformation: GetPivotInformationModelProps;
   irpd: GetIrpdModelProps;
   setSelectedDevice: typeof setSelectedDevice;
-  setDeviceClose: typeof setDeviceClose;
   queryFarm: typeof queryFarm;
   queryPivotInformation: typeof queryPivotInformation;
   queryMeterSystem: typeof queryMeterSystem;
   queryIrpd: typeof queryIrpd;
+  queryPivot: typeof queryPivot;
+  queryRepeater: typeof queryRepeater;
+  connectWebsocket: any;
+
 };
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const { md } = useScreenHook();
   const params = useParams();
-
-  //const [isConnected, setIsConnected] = useState(false);
-
-  /**
-  useMount(() => {
-    socket.connect();
-
-    function onConnect() {}
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
-    socket.on('msg', (data: any) => {
-      props.dispatch({
-        type: 'pivotInformation/setNewPivotInformation',
-        payload: data,
-      });
-    });
-
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
-
-    socket.on('disconnect', onDisconnect);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('msg');
-    };
-  });
- */
 
   const getDeviceBySelected = (selected: string) => {
     switch (selected) {
@@ -97,45 +68,43 @@ const Welcome: FunctionComponent<Props> = (props) => {
     }
   };
 
-  //useEffect(() => {
-  //  if ( params.id === ':id' && props.selectedFarm.id !== 0) {
-  //    history.push(`${props.selectedFarm.id}`);
-  //    return;
-  //  }
-  //}, [params, props.selectedFarm]);
+  useEffect(() => {
+    if (params.id === ':id' && props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [params, props.selectedFarm]);
 
   useMount(() => {
     if (!props.farm.loaded) {
-      const id = parseInt(params.id as string);
-      props.queryFarm({ id });
+      if (params.id !== ':id') {
+        props.queryFarm({ id: Number(params.id) });
+      } else {
+        props.queryFarm({});
+      }
     }
   });
 
   useEffect(() => {
-    if (props.selectedFarm.id !== 0) {
+    if (
+        props.selectedFarm.id !== 0 && (
+          params.id !== ':id' &&
+          props.selectedFarm.id !==  Number(params.id)
+        )        
+    ) {
       history.push(`${props.selectedFarm.id}`);
       return;
     }
   }, [props.selectedFarm]);
 
-  useUnmount(() => {
-    props.setDeviceClose();
-  });
 
   useEffect(() => {
     if (params.id !== ':id') {
-      props.queryPivotInformation({
-        id: parseInt(params.id as string),
-        params: {},
-      });
-
-      props.queryMeterSystem({
-        id: parseInt(params.id as string),
-      });
-
-      props.queryIrpd({
-        id: parseInt(params.id as string),
-      });
+      props.queryMeterSystem({id: parseInt(params.id as string),});
+      props.queryIrpd({id: parseInt(params.id as string),});
+      props.queryPivot({ id: parseInt(params.id as string) });
+      props.queryRepeater({ id: parseInt(params.id as string) });
+      props.queryPivotInformation({id: parseInt(params.id as string), params: {},});
     }
   }, [params]);
 
@@ -144,6 +113,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
       setActiveKey('3');
     }
   }, [props.selectedDevice]);
+
+  useMount(async () => {
+    props.connectWebsocket()
+  })
 
   const className = useEmotionCss(({}) => {
     return md
@@ -220,10 +193,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
       paddingBlock: 0,
       paddingBlockStart: '0px !important',
     },
-    '.ant-pro-page-container-warp-page-header': { 
+    '.ant-pro-page-container-warp-page-header': {
       display: 'none'
     },
-  
+
     '.ant-page-header-heading': {
       paddingBlockStart: '0px !important',
     },
@@ -319,12 +292,17 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  connectWebsocket: () => dispatch({type: "socket/connect", payload: {}} ),
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
-  setDeviceClose: () => dispatch(setDeviceClose()),
   queryFarm: (props: any) => dispatch(queryFarm(props)),
   queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
   queryMeterSystem: (props: any) => dispatch(queryMeterSystem(props)),
   queryIrpd: (props: any) => dispatch(queryIrpd(props)),
+  queryRepeater: (props: any) => dispatch(queryRepeater(props)),
+  queryPivot: (props: any) => dispatch(queryPivot(props)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Welcome);

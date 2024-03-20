@@ -6,13 +6,16 @@ export function getIrpdOrigin(status: PumpHistoryOrigin): string {
 
   switch (status) {
     case PumpHistoryOrigin.Command: {
-      return intl.formatMessage({id: 'component.irpd.command.origin.opt.1'})  ;
+      return intl.formatMessage({id: 'component.irpd.command.origin.opt.1'});
     }
     case PumpHistoryOrigin.CentralUpdate: {
-      return  intl.formatMessage({id: 'component.irpd.command.origin.opt.2'})  
+      return intl.formatMessage({id: 'component.irpd.command.origin.opt.2'});  
+    }
+    case PumpHistoryOrigin.PumpUpdate: {
+      return intl.formatMessage({id: 'component.irpd.command.origin.opt.3'});  
     }
     default: {
-      return  intl.formatMessage({id: 'component.irpd.command.origin.opt.2'})   
+      return  intl.formatMessage({id: 'component.irpd.command.origin.opt.1'})   
     }
   }
 }

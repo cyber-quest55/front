@@ -40,6 +40,10 @@ export type CirclePivotProps = {
   statusText: string;
   onSelect: any;
   infoWindow?: boolean;
+  mapHistory: number[];
+  pluviometerMeasure?: number;
+  isRaining?: boolean;
+  currentAngle: number;
 };
 
 const circleOptions = {
@@ -83,6 +87,137 @@ function circlePath(
 
   return a;
 }
+
+function interpolateColors(number: number, color1: string, color2: string): string {
+  const normalizedNumber = number / 360;
+
+  // Interpola entre as duas cores com base na posição do número
+  const r1 = parseInt(color1.substring(1, 3), 16);
+  const g1 = parseInt(color1.substring(3, 5), 16);
+  const b1 = parseInt(color1.substring(5, 7), 16);
+
+  const r2 = parseInt(color2.substring(1, 3), 16);
+  const g2 = parseInt(color2.substring(3, 5), 16);
+  const b2 = parseInt(color2.substring(5, 7), 16);
+
+  const r = Math.round(r1 + (r2 - r1) * normalizedNumber);
+  const g = Math.round(g1 + (g2 - g1) * normalizedNumber);
+  const b = Math.round(b1 + (b2 - b1) * normalizedNumber);
+
+  return rgbToHex(r, g, b);
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const toHex = (value: number) => {
+    const hex = value.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+const RenderSegment: React.FC<any> = (props) => {
+  /** Props */
+  const points = [];
+  const centerLat = props.center.lat; // Latitud;
+  const centerLng = props.center.lng; // Longitude
+
+  // Raio em metros
+  const radiusMeters = props.radius;
+
+  // Diferença angular em graus que você deseja mover
+  const startAngle = props.segment.begin;
+  const numberOfSides = props.segment.end;
+
+  for (let i = startAngle; i <= numberOfSides; i++) {
+    const angularDifferenceDegrees = i;
+
+    // Converta a diferença angular de graus para radianos
+    const angularDifferenceRadians = angularDifferenceDegrees * (Math.PI / 180);
+
+    // Calcule as novas coordenadas
+    const newLat = centerLat + (radiusMeters / 111320) * Math.cos(angularDifferenceRadians);
+
+    const newLng =
+      centerLng +
+      (radiusMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)))) *
+        Math.sin(angularDifferenceRadians);
+
+    const newLat2 =
+      centerLat + ((radiusMeters - radiusMeters / 8) / 111320) * Math.cos(angularDifferenceRadians);
+
+    const newLng2 =
+      centerLng +
+      ((radiusMeters - radiusMeters / 8) / (111320 * Math.cos(centerLat * (Math.PI / 180)))) *
+        Math.sin(angularDifferenceRadians);
+
+    if (i === startAngle) {
+      points.push({ lat: newLat, lng: newLng });
+    }
+
+    points.push({ lat: newLat2, lng: newLng2 });
+  }
+
+  for (let i = numberOfSides; i >= startAngle; i--) {
+    const angularDifferenceDegrees = i;
+
+    // Converta a diferença angular de graus para radianos
+    const angularDifferenceRadians = angularDifferenceDegrees * (Math.PI / 180);
+
+    // Calcule as novas coordenadas
+    const newLat = centerLat + (radiusMeters / 111320) * Math.cos(angularDifferenceRadians);
+
+    const newLng =
+      centerLng +
+      (radiusMeters / (111320 * Math.cos(centerLat * (Math.PI / 180)))) *
+        Math.sin(angularDifferenceRadians);
+
+    points.push({ lat: newLat, lng: newLng });
+  }
+
+  return (
+    <Polygon
+      paths={points}
+      options={{
+        zIndex: 999,
+        strokeColor: 'transparent',
+        strokeOpacity: 0,
+        strokeWeight: 0,
+        fillColor: props.segment.color,
+        fillOpacity: 0.75,
+      }}
+    />
+  );
+};
+
+const formatMapHistoryInSegments = (mapHistory: number[]) => {
+  const segments: {
+    begin: number;
+    end: number;
+    color: string;
+  }[] = [];
+
+  const colors = ['#2218cb', '#ffa200'];
+
+  mapHistory?.forEach((item, index) => {
+    if (item === 2) {
+      segments.push({
+        begin: segments.length === 0 ? index : index - 1,
+        end: index + 1,
+        color: '',
+      });
+    }
+  });
+
+  return segments.map((item, index) => {
+    console.log('item begin', item.begin)
+       const color = interpolateColors(item.begin/ 360, colors[0], colors[1]);
+      item.color = color;
+  
+ 
+
+    return item;
+  });
+};
 
 const CirclePivot: React.FC<CirclePivotProps> = (props) => {
   /** States*/
@@ -216,10 +351,21 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
   };
  
   const endIrrigationDashedLine = centerPositionGMaps && referenceRadius && props.stopAngle ? computeOffset(
+ 
     centerPositionGMaps,
     referenceRadius,
     props.stopAngle,
   ) : new LatLng(0, 0);
+
+  // Coordenadas do ponto na circunferência que você deseja calcular o ângulo
+  const pointLat = props.referencedLat; // Latitude do ponto
+  const pointLng = props.referencedLng; // Longitude do ponto
+
+  // Calcula o ângulo em relação ao ponto central
+  const angleDegrees = computeHeading(
+    new LatLng(centerLat, centerLng),
+    new LatLng(pointLat, pointLng),
+  );
 
   return (
     <>
@@ -256,6 +402,14 @@ const CirclePivot: React.FC<CirclePivotProps> = (props) => {
         </InfoWindowF>
       ) : null}
 
+      {formatMapHistoryInSegments(props.mapHistory)?.map((item, index) => (
+        <RenderSegment
+          key={`segment-${index}`}
+          center={{ lat: props.centerLat, lng: props.centerLng }}
+          segment={{ ...item, begin: item.begin + angleDegrees, end: item.end + angleDegrees }}
+          radius={referenceRadius}
+        />
+      ))}
       {props.zoom > 11 ? (
         <>
           {/** Draw circle */}

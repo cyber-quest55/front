@@ -14,9 +14,10 @@ import { Dispatch, useParams } from '@umijs/max';
 import { connect } from 'dva';
 import { useEffect, useState } from 'react';
 import { DevicePanelComponent } from './DevicePanelComponent';
-import DevicePanelMobile from './DevicePanelMobile';
 import { DevicePanelSkeleton } from './DevicePanelSkeleton';
-import meterById, { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
+import  { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
+import { useUnmount} from 'ahooks'
+import { DevicePanelModelProps, togglePivotMaintenance } from '../../models/device-panel';
 
 type Props = {
   type: DeviceType;
@@ -26,6 +27,8 @@ type Props = {
   meterSystem: GetMeterSystemModelProps;
   meterSystemById: GetMeterSystemByIdModelProps;
   selectedDevice: SelectedDeviceModelProps;
+  devicePanel:  DevicePanelModelProps;
+  togglePivotMaintenance: typeof togglePivotMaintenance;
   setSelectedDevice: typeof setSelectedDevice;
   setDeviceClose: typeof setDeviceClose;
 };
@@ -37,15 +40,9 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   const [options, setOptions] = useState<Array<{ value: number; label: string }>>([]);
 
   const {
-    irpd,
-    pivot,
-    pivotById,
-    meterSystem,
-    meterSystemById,
-    type,
-    selectedDevice,
-    setSelectedDevice,
-    setDeviceClose,
+    irpd, pivot, pivotById,  meterSystem,
+    meterSystemById,  type,  selectedDevice, setSelectedDevice,
+    setDeviceClose, devicePanel, togglePivotMaintenance,
   } = props;
 
   const loading = pivot.loading || irpd.loading || meterSystem.loading;
@@ -149,17 +146,24 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
     }
   };
 
+  useUnmount(() => {
+    setDeviceClose()
+  })
+
   return (
     <>
       {loading ? (
         <DevicePanelSkeleton type={type} />
       ) : xs ? (
-        <DevicePanelMobile
-          options={options}
-          type={type}
-          onChangeDevice={onChangeDevice}
-          device={device}
-        />
+        <DevicePanelComponent
+        options={options}
+        type={type}
+        onChangeDevice={onChangeDevice}
+        device={device}
+        setDeviceClose={setDeviceClose}
+        devicePanel={devicePanel}
+        togglePivotMaintenance = {togglePivotMaintenance}
+       />
       ) : (
         <DevicePanelComponent
           options={options}
@@ -167,7 +171,9 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
           onChangeDevice={onChangeDevice}
           device={device}
           setDeviceClose={setDeviceClose}
-        />
+          devicePanel={devicePanel}
+          togglePivotMaintenance = {togglePivotMaintenance}
+         />
       )}
     </>
   );
@@ -180,6 +186,7 @@ const mapStateToProps = ({
   meterSystem,
   irpd,
   meterSystemById,
+  devicePanel
 }: any) => ({
   irpd,
   pivot,
@@ -187,11 +194,13 @@ const mapStateToProps = ({
   meterSystem,
   meterSystemById,
   selectedDevice,
+  devicePanel
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
   setDeviceClose: () => dispatch(setDeviceClose()),
+  togglePivotMaintenance: (props: any) => dispatch(togglePivotMaintenance(props)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DevicePanelContainer);

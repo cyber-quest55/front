@@ -11,17 +11,19 @@ declare namespace APIModels {
     is_online: boolean;
   }
 
+  type FarmUser = {
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    id: number;
+    profile_id: number;
+    pending: boolean;
+  }
+
   type FarmFull = {
     id: number;
-    users: {
-      username: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      id: number;
-      profile_id: number;
-      pending: boolean;
-    }[];
+    users: FarmUser[];
     is_administrator: boolean;
     administrators: {
       id: number;
@@ -84,5 +86,40 @@ declare namespace APIModels {
     write_users: number[];
     sms_users: any[];
   };
-  
+
+  type PowerRange = {
+    end: string;
+    type: number;
+    start: string;
+  };
+
+  type PowerRanges = {
+    [index: number]: PowerRange[];
+  };
+
+  type UpdateFarmPayload = {
+    // General tab
+    billing_date?: number;
+    name?: string;
+    timezone?: string;
+    water_billing_date?: number;
+    // Location tab
+    location?: string;
+    // Contact tab
+    address?: string;
+    city?: string;
+    country?: string;
+    phone?: string;
+    postal_code?: string;
+    state?: string;
+    // Power ranges tab
+    power_ranges?: {
+      [index: number]: PowerRange[];
+    };
+    // Holidays tab
+    holidays_list?: {
+      month: number;
+      day: number;
+    }[],
+  } 
 }
