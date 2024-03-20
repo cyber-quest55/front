@@ -1,13 +1,13 @@
-import AddPivotAlarmForm from '@/components/Forms/AddAlarmForm/Pivot';
-import EditPivotAlarmForm from '@/components/Forms/EditAlarmForm/Pivot';
+import AddIrpdAlarmForm from '@/components/Forms/AddAlarmForm/Irpd';
+import EditIrpdAlarmForm from '@/components/Forms/EditAlarmForm/Irpd';
 import { useScreenHook } from '@/hooks/screen';
 import {
-  deletePivotNotificationAction,
-  enablePivotNotificationAction,
+  deleteIrpdNotificationAction,
+  enableIrpdNotificationAction,
   NotificationMapped,
-  queryPivotNotifications,
-} from '@/models/pivot-notification';
-import { deletePivotNotification, enablePivotNotification } from '@/services/notification';
+  queryIrpdNotifications,
+} from '@/models/irpd-notification';
+import { deleteIrpdNotification, enableIrpdNotification } from '@/services/notification';
 import { BellOutlined, DeleteFilled } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -18,23 +18,23 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { IoAlertCircleOutline } from 'react-icons/io5';
 
-export type AlarmPivotListProps = {
+export type AlarmIrpdListProps = {
   title: string;
-  queryPivotNotifications: typeof queryPivotNotifications;
-  enablePivotNotificationAction: typeof enablePivotNotificationAction;
-  deletePivotNotificationAction: typeof deletePivotNotificationAction;
+  queryIrpdNotifications: typeof queryIrpdNotifications;
+  enableIrpdNotificationAction: typeof enableIrpdNotificationAction;
+  deleteIrpdNotificationAction: typeof deleteIrpdNotificationAction;
   notificationsFormatted: NotificationMapped[];
   reasons: APIModels.NotificationReason[];
   loading: boolean;
-  pivots: APIModels.PivotByFarm[];
+  irpds: APIModels.IrpdById[];
 };
 
-const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
+const AlarmIrpdList: React.FC<AlarmIrpdListProps> = (props) => {
   const { lg } = useScreenHook();
   const intl = useIntl();
-  const { reasons, pivots, loading, notificationsFormatted } = props;
-  const deletePivotNotificationReq = useRequest(deletePivotNotification, { manual: true });
-  const enablePivotNotificationReq = useRequest(enablePivotNotification, { manual: true });
+  const { reasons, irpds, loading, notificationsFormatted } = props;
+  const deleteIrpdNotificationReq = useRequest(deleteIrpdNotification, { manual: true });
+  const enableIrpdNotificationReq = useRequest(enableIrpdNotification, { manual: true });
   const { message } = App.useApp();
   const params = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,8 +50,8 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
 
   const handleDeleteNotification = async () => {
     try {
-      await deletePivotNotificationReq.runAsync({ notificationId: itemToDeleteId });
-      props.deletePivotNotificationAction(itemToDeleteId);
+      await deleteIrpdNotificationReq.runAsync({ notificationId: itemToDeleteId });
+      props.deleteIrpdNotificationAction(itemToDeleteId);
       setIsModalOpen(false);
     } catch (err) {
       message.error('Fail');
@@ -60,15 +60,15 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
 
   const handleEnableNotification = async (id: number, checked: boolean, index: number) => {
     try {
-      await enablePivotNotificationReq.runAsync({ notificationId: id }, { enable: checked });
-      props.enablePivotNotificationAction({ enable: checked, index });
+      await enableIrpdNotificationReq.runAsync({ notificationId: id }, { enable: checked });
+      props.enableIrpdNotificationAction({ enable: checked, index });
     } catch (err) {
       message.error('Fail');
     }
   };
 
   useEffect(() => {
-    props.queryPivotNotifications({ farmId: params.farmId });
+    props.queryIrpdNotifications({ farmId: params.farmId });
   }, []);
 
   const className = useEmotionCss(() => {
@@ -82,6 +82,7 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
   return (
     <ProCard
       ghost
+      className={className}
       title={props.title}
       loading={
         loading ? (
@@ -95,10 +96,10 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
       direction="column"
       gutter={[0, 16]}
       extra={
-        <AddPivotAlarmForm
+        <AddIrpdAlarmForm
           reasons={reasons}
-          pivots={pivots}
-          queryPivotNotifications={props.queryPivotNotifications}
+          irpds={irpds}
+          queryIrpdNotifications={props.queryIrpdNotifications}
         />
       }
     >
@@ -108,7 +109,6 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
         notificationsFormatted.map((notification: any, index: number) => {
           return (
             <ProCard
-              className={className}
               key={notification.id}
               title={
                 <span>
@@ -149,10 +149,10 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
                   style={{ flexDirection: lg ? 'row' : 'column' }}
                 >
                   <Col>
-                    <EditPivotAlarmForm
+                    <EditIrpdAlarmForm
                       reasons={reasons}
-                      pivots={pivots}
-                      queryPivotNotifications={props.queryPivotNotifications}
+                      irpds={irpds}
+                      queryIrpdNotifications={props.queryIrpdNotifications}
                       notification={notification}
                     />
                   </Col>
@@ -231,4 +231,4 @@ const AlarmPivotList: React.FC<AlarmPivotListProps> = (props) => {
   );
 };
 
-export default AlarmPivotList;
+export default AlarmIrpdList;

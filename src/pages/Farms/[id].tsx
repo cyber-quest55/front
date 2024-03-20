@@ -1,7 +1,7 @@
 import MeterReport from '@/components/DeviceReport/Meter';
 import PivotReport from '@/components/DeviceReport/Pivot';
 import PumpReport from '@/components/DeviceReport/Pump';
-import PivotList from '@/components/PivotList';
+import PivotList from '@/components/DeviceBox';
 import RenderPivots from '@/components/RenderPivots';
 import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps, queryFarm } from '@/models/farm';
@@ -144,22 +144,30 @@ const Welcome: FunctionComponent<Props> = (props) => {
     }
   };
 
-  //useEffect(() => {
-  //  if ( params.id === ':id' && props.selectedFarm.id !== 0) {
-  //    history.push(`${props.selectedFarm.id}`);
-  //    return;
-  //  }
-  //}, [params, props.selectedFarm]);
+  useEffect(() => {
+    if (params.id === ':id' && props.selectedFarm.id !== 0) {
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [params, props.selectedFarm]);
 
   useMount(() => {
     if (!props.farm.loaded) {
-      console.log('entrando aqui')
-      props.queryFarm({});
+      if (params.id !== ':id') {
+        props.queryFarm({ id: Number(params.id) });
+      } else {
+        props.queryFarm({});
+      }
     }
   });
 
   useEffect(() => {
-    if (props.selectedFarm.id !== 0) {
+    if (
+        props.selectedFarm.id !== 0 && (
+          params.id !== ':id' &&
+          props.selectedFarm.id !==  Number(params.id)
+        )        
+    ) {
       history.push(`${props.selectedFarm.id}`);
       return;
     }
@@ -338,4 +346,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryPivot: (props: any) => dispatch(queryPivot(props)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Welcome);

@@ -59,6 +59,11 @@ export default {
         yield put({ type: 'devicePanel/onDestroy', payload: selectedDevice });
       }
 
+      // Irpd history destroy if select device change
+      if (selectedDevice.open && selectedDevice.type === DeviceType.Pump) {
+        yield put({ type: 'irpdHistory/onDestroy', payload: selectedDevice });
+      }
+
       yield put({
         type: 'setSelectedDeviceDefinition',
         payload: { type, farmId, deviceId, otherProps },

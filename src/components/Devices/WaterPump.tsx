@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { Marker, OverlayView, OverlayViewF, } from '@react-google-maps/api';
 import { DeviceType } from '@/utils/enum/device-type';
 import { getCommonDateParam } from '@/utils/formater/get-common-date-param';
@@ -20,6 +20,7 @@ export type WaterPumpProps = {
   infoWindowRef: any;
   zoom?: number;
 
+  pumpPressure?: number | null;
 };
 
 const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {

@@ -54,11 +54,11 @@ export default {
       try {
         const response: API.GetMeterSystemResponse = yield call(getMeterSystem, payload);
         yield put({ type: 'queryMeterSystemSuccess', payload: response });
+        yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
     },
-    // Web socket effects
     *queryMeterSystemWs({ payload }: { payload: API.GetMeterSystemParams }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryMeterSystemStart' });
       try {
@@ -73,10 +73,11 @@ export default {
         yield put({ type: 'queryMeterSystemError', payload: error });
       }
     },
+    // Web socket subscribers
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
       const channels = state.result.map(r => ({
-        title: `d@imeter@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
         id: `@EditFarm_metersystem${r.id}`,
         binds: [
           {
@@ -91,7 +92,7 @@ export default {
     *onDestroy({ }, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.meterSystem);
       const channels = state.result.map(r => ({
-        title: `d@imeter@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
         id: `@EditFarm_metersystem${r.id}`,
         binds: [
           {
@@ -104,6 +105,65 @@ export default {
       yield put({ type: 'setWsStatus', payload: [] });
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
+    *onInitDeviceBox({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      const channels = state.result.map(r => ({
+          title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
+          id: `@DeviceBox_imeter${r.id}`,
+          binds: [
+            {
+              callback: ['meterSystem/wsMeterSystemStreamEventCallback'],
+              event: 'IMeterStream_event',
+              id: `@DeviceBox_imeter${r.id}`,
+            },
+            {
+              callback: ['meterSystem/wsMeterSystemStreamPeriodicCallback'],
+              event: 'IMeterStream_periodic',
+              id: `@DeviceBox_imeter${r.id}`,
+            },
+          ],
+      }));
+      yield getSocketBinds(channels, put, 'subscribe');
+    },
+    *onDestroyDeviceBox({}, { put, select }: { put: any; select: any }) {
+      const state = yield select((state) => state.meterSystem);
+      const channels = state.result.map(r => ({
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@imeter@${r.id}`,
+        id: `@DeviceBox_imeter${r.id}`,
+        binds: [
+          {
+            callback: ['meterSystem/wsMeterSystemStreamEventCallback'],
+            event: 'IMeterStream_event',
+            id: `@DeviceBox_imeter${r.id}`,
+          },
+          {
+            callback: ['meterSystem/wsMeterSystemStreamPeriodicCallback'],
+            event: 'IMeterStream_periodic',
+            id: `@DeviceBox_imeter${r.id}`,
+          },
+        ],
+      }));
+      yield getSocketBinds(channels, put, 'unsubscribe');
+    },
+    // Web sockets callback
+    *wsMeterSystemStandardCallback(
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsMeterSystemStandardCallbackSuccess', payload });
+    },
+    *wsMeterSystemStreamEventCallback(
+      { payload }: { payload: WsMeterSystemModels.MeterSystemEventCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsMeterSystemStreamEventSuccess', payload });
+    },
+    *wsMeterSystemStreamPeriodicCallback(
+      { payload }: { payload: WsMeterSystemModels.MeterSystemPeriodicStreamCallbackPayload  },
+      { put }: { put: any; call: any; select: any },
+    ) {
+      yield put({ type: 'wsMeterSystemStreamPeriodicSuccess', payload });
+    }
   },
 
   reducers: {
@@ -134,10 +194,15 @@ export default {
 
       for (let index = 0; index < payload.length; index++) {
         const item = payload[index];
-        const status =
-          item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status;
-
+        const status = item.imeter_set[0]?.latest_event_stream.content?.imanage_master_status.status;
         const latLng = item.position.split(',');
+
+        // Retrieve meter system values
+        const imeterValue = item.imeter_set[0].latest_periodic_stream.content.imanage_sensor_measure_value[0].value;
+        const maxValue = item.imeter_set[0].latest_config.graphic_max_value;
+        const imeterSensorValue = item.imeter_set[0].latest_periodic_stream.content.imanage_sensor_measure_value[0].value / 100;
+    
+        // Mapped payload
         mapper.push({
           id: item.id,
           centerLat: parseFloat(latLng[0]),
@@ -147,6 +212,8 @@ export default {
           deviceColor: getIrpdColor(status),
           statusText: getMeterStatus(status),
           imeterSetId: item?.imeter_set[0]?.id,
+          percentage: Number(((imeterValue / 100 / maxValue) * 100).toFixed(1)),
+          meterLevel: imeterSensorValue,
         });
       }
 
@@ -158,10 +225,47 @@ export default {
         error: {},
       };
     },
-    // Web sockets reducers
-    wsMeterSystemStandardCallback(
+    setWsStatus(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: WkModels.MeterSystemStandardCallbackPayload },
+      { payload }: { payload: { id: number; status: number; }[] }
+    ) {
+      return {
+        ...state,
+        status: payload,
+      }
+    },
+    setWsLoadingStatus(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: { id?: number } }
+    ) {
+      if (payload.id) {
+        const newStatus = state.status.map(s => {
+          if (s.id === payload.id) {
+            return {
+              id: s.id,
+              status: -1,
+            }
+          }
+          return s
+        });
+        return {
+          ...state,
+          status: newStatus
+        }
+      }
+      
+      return {
+        ...state,
+        status: state.status.map(s => ({
+          id: s.id,
+          status: -1,
+        }))
+      }
+    },
+    // Web sockets reducers
+    wsMeterSystemStandardCallbackSuccess(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: WsMeterSystemModels.MeterSystemStandardCallbackPayload },
     ) {
       // Communication error status
       if (payload.message_error) {
@@ -201,42 +305,63 @@ export default {
       // Default return
       return state;
     },
-    setWsStatus(
+    wsMeterSystemStreamEventSuccess(
       state: GetMeterSystemModelProps,
-      { payload }: { payload: { id: number; status: number; }[] }
+      { payload }: { payload: WsMeterSystemModels.MeterSystemEventCallbackPayload },
     ) {
-      return {
-        ...state,
-        status: payload,
-      }
-    },
-    setWsLoadingStatus(
-      state: GetMeterSystemModelProps,
-      { payload }: { payload: { id?: number } }
-    ) {
-      if (payload.id) {
-        const newStatus = state.status.map(s => {
-          if (s.id === payload.id) {
+      const meterIndex = state.result.findIndex(r => r.id === payload.equipment);
+      
+      if (meterIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === meterIndex) {
+            const deviceColor = getIrpdColor(payload.content.imanage_master_status.status);
+            const statusText = getMeterStatus(payload.content.imanage_master_status.status);
             return {
-              id: s.id,
-              status: -1,
+              ...r,
+              deviceColor,
+              statusText,
+              updated: new Date(payload.created).toLocaleString(),
             }
-          }
-          return s
+          } 
+          return r;
         });
+    
         return {
           ...state,
-          status: newStatus
-        }
+          result: newResults,
+        };
       }
+
+      return state;
+    },
+    wsMeterSystemStreamPeriodicSuccess(
+      state: GetMeterSystemModelProps,
+      { payload }: { payload: WsMeterSystemModels.MeterSystemPeriodicStreamCallbackPayload },
+    ) {
+      const meterIndex = state.result.findIndex(r => r.id === payload.equipment);
       
-      return {
-        ...state,
-        status: state.status.map(s => ({
-          id: s.id,
-          status: -1,
-        }))
+      if (meterIndex >= 0) {
+        const newResults = state.result.map((r, i) => {
+          if (i === meterIndex) {
+            const deviceColor = getIrpdColor(payload.content.imanage_master_status.status);
+            const statusText = getMeterStatus(payload.content.imanage_master_status.status);
+            return {
+              ...r,
+              deviceColor,
+              statusText,
+              updated: new Date(payload.created).toLocaleString(),
+            }
+          } 
+          return r;
+        });
+    
+        return {
+          ...state,
+          result: newResults,
+        };
       }
-    }
+
+      return state;
+    },
   },
 };

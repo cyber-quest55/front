@@ -20,6 +20,8 @@ export type LakeLevelMeterProps = {
   infoWindowRef: any;
   zoom?: number;
 
+  percentage?: number;
+  meterLevel?: number | null;
 };
 
 const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = React.memo((props) => {

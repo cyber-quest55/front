@@ -338,55 +338,244 @@ declare namespace APIModels {
     farm: number;
   };
 
-  type IrpdHistory = {
+  type IrpdHistoryEventPayload = {
+    WsEvent?: WsIrpdModels.IrpdControllerEvent;
+    WsSchedule?: WsIrpdModels.IrpdControllerSchedule;
+    WsPeriodic?: WsIrpdModels.IrpdCoontrollerPeriodic;
+    WsSimple?: WsIrpdModels.IrpdControllerSimple;
+    WsCentral?: WsIrpdModels.IrpdControllerCentralStream;
+  }
+
+  type IrpdHistoryListItem = {
+    id: number;
+    username: string;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content: {
+      pump_action: {
+        enable: number; // 0, 1
+      };
+    };
+    created_by?: number | null;
+    device: any;
+    irpd: number;
+    key?: string;
+    origin?: string;
+    command?: string;
+  }
+
+  // IRPD has 2 main flags (central and periodic) if informed it will return a complete list
+  type IrpdHistoryCompleteListItem = {
+    irpd_action_v5?: {
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_action?: {
+          enable: number;
+        };
+        pump_schedule?: {
+          stop_day: number;
+          start_day: number;
+          stop_hour: number;
+          stop_year: number;
+          start_hour: number;
+          start_year: number;
+          stop_month: number;
+          start_month: number;
+          stop_minute: number;
+          start_minute: number;
+        };
+        pump_schedule_enable?: {
+          enable: number;
+        };
+      };
+      created_by: number;
+      device: number;
+      irpd: number;
+    };
+    irpd_stream_v5?: {
+      id: number;
+      total_flow: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_last_start_time: {
+          start_day: number;
+          start_hour: number;
+          start_year: number;
+          start_month: number;
+          start_minutes: number;
+        };
+        imanage_master_status: {
+          status: number;
+        };
+        imanage_sensor_measure_value: Array<{
+          value: number;
+          number_editing: number;
+        }>;
+      };
+      content_hash: number;
+      created_by: any;
+      device: number;
+      irpd: number;
+    };
+    CentralStream?: {
+      id: number;
+      created: string;
+      updated: string;
+      status: number;
+      uuid: string;
+      farm: number;
+    };
+    IrpdStreamV5_periodic?: {
+      id: number;
+      total_flow: number;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_last_start_time: {
+          start_hour: number;
+          start_minutes: number;
+          start_day: number;
+          start_month: number;
+          start_year: number;
+        };
+        imanage_master_status: {
+          status: number;
+        };
+        imanage_sensor_measure_value: Array<{
+          number_editing: number;
+          value: number;
+        }>;
+      };
+      content_hash: number;
+      created_by: any;
+      device: number;
+      irpd: number;
+    };
+    IrpdActionV5_schedule?: {
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_schedule_enable: {
+          enable: number;
+        };
+        pump_schedule: {
+          start_year: number;
+          start_month: number;
+          start_day: number;
+          start_hour: number;
+          start_minute: number;
+          stop_year: number;
+          stop_month: number;
+          stop_day: number;
+          stop_hour: number;
+          stop_minute: number;
+        }
+      }
+      created_by: number;
+      device: number;
+      irpd: number;
+    };
+    IrpdStreamV5_event?: {
+      id: number;
+      uuid: string;
+      arrived: string;
+      device: any;
+      created_on_hardware: boolean;
+      message_status: number;
+      message_subtype?: string;
+      message_packets: Array<number>;
+      message_error: string;
+      content: {
+        pump_hourmeter: {
+          hours: number;
+          minutes: number;
+        };
+        pump_last_start_time: {
+          start_day: number;
+          start_hour: number;
+          start_year: number;
+          start_month: number;
+          start_minutes: number;
+        };
+        imanage_master_status: {
+          status: number;
+        };
+      };
+      irpd: number;
+      created: string;
+      updated: string;
+      created_by?: number;
+    };
+    IrpdActionV5_simple?: {
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_action: {
+          enable: number;
+        }
+      }
+      created_by: number;
+      device: number;
+      irpd: number;
+    };
+  };
+
+  type IrpdCompleteHistory = {
     count: number;
     current_page: number;
     next: string;
-    previous: any;
-    results: Array<{
-      irpd_action_v5?: {
-        id: number;
-        username: string;
-        uuid: string;
-        created_on_hardware: boolean;
-        created: string;
-        updated: string;
-        arrived: string;
-        message_status: number;
-        message_error: string;
-        message_packets: Array<number>;
-        message_subtype: string;
-        content: {
-          pump_action: {
-            enable: number;
-          };
-        };
-        created_by: number;
-        device: any;
-        irpd: number;
-      };
-      irpd_stream_v5?: {
-        id: number;
-        username: string;
-        uuid: string;
-        created_on_hardware: boolean;
-        created: string;
-        updated: string;
-        arrived: string;
-        message_status: number;
-        message_error: string;
-        message_packets: Array<number>;
-        message_subtype: string;
-        content: {
-          pump_action: {
-            enable: number;
-          };
-        };
-        created_by: number;
-        device: any;
-        irpd: number;
-      };
-    }>;
+    previous: string;
+    results: IrpdHistoryCompleteListItem[];
   };
 
   type IrpdWaterConsumption = {
@@ -394,7 +583,7 @@ declare namespace APIModels {
     to: string;
     value: number;
     type: number;
-  }
+  };
 
   type IrpdEventsResponse = {
     count: number;
@@ -622,4 +811,254 @@ declare namespace APIModels {
     position: string;
     protocol: number;
   };
+}
+declare namespace WsIrpdModels {
+  /* Start of irpd history history WS */
+  type RawIrpdControllerEvent = {
+    id: number;
+    uuid: string;
+    arrived: string;
+    device: any;
+    created_on_hardware: boolean;
+    message_status: number;
+    message_subtype?: string;
+    message_packets: Array<number>;
+    message_error: string;
+    content: {
+      pump_hourmeter: {
+        hours: number;
+        minutes: number;
+      };
+      pump_last_start_time: {
+        start_day: number;
+        start_hour: number;
+        start_year: number;
+        start_month: number;
+        start_minutes: number;
+      };
+      imanage_master_status: {
+        status: number;
+      };
+    };
+    irpd: number;
+    created: string;
+    updated: string;
+    created_by?: number;  
+  };
+
+  type RawIrpdPressureStream = {
+    id: number;
+    irpd: number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    payload: string;
+    pressure: number;
+    frame_id: number;
+    device: string;
+  };
+
+  type IrpdControllerEvent = {
+    data: RawIrpdControllerEvent;
+  };
+
+  type IrpdControllerSchedule = {
+    data: {
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_schedule_enable: {
+          enable: number;
+        };
+        pump_schedule: {
+          start_year: number;
+          start_month: number;
+          start_day: number;
+          start_hour: number;
+          start_minute: number;
+          stop_year: number;
+          stop_month: number;
+          stop_day: number;
+          stop_hour: number;
+          stop_minute: number;
+        }
+      }
+      created_by: number;
+      device: number;
+      irpd: number;
+    }
+  };
+  
+  type IrpdControllerSimple = {
+    data: {
+      id: number;
+      username: string;
+      uuid: string;
+      created_on_hardware: boolean;
+      created: string;
+      updated: string;
+      arrived: string;
+      message_status: number;
+      message_error: string;
+      message_packets: Array<number>;
+      message_subtype: string;
+      content: {
+        pump_action: {
+          enable: number;
+        }
+      }
+      created_by: number;
+      device: number;
+      irpd: number;
+    };
+  };
+  
+  type IrpdControllerCentralStream = {
+    data: {
+      id: number;
+      created: string;
+      updated: string;
+      status: number;
+      uuid: string;
+      farm: number;
+    };
+  };
+
+  type RawIrpdCoontrollerPeriodic = {
+    id: number;
+    total_flow: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content: {
+      pump_last_start_time: {
+        start_hour: number;
+        start_minutes: number;
+        start_day: number;
+        start_month: number;
+        start_year: number;
+      };
+      imanage_master_status: {
+        status: number;
+      };
+      imanage_sensor_measure_value: Array<{
+        number_editing: number;
+        value: number;
+      }>;
+    };
+    content_hash: number;
+    created_by: any;
+    device: number;
+    irpd: number;
+  };
+
+  type IrpdCoontrollerPeriodic = {
+    data: RawIrpdCoontrollerPeriodic;
+  };
+  /* End of irpd history history WS */
+
+  /* Start of central radio update clock WS */
+  type IrpdStandardCallbackPayload  = {
+    id: number;
+    created_by: null | any;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: number[];
+    message_subtype: string;
+    content: {
+      clock: {
+        day: number;
+        month: number;
+        year: number;
+        hour: number;
+        minute: number;
+        second: number;
+      };
+      holidays: {
+        day: number;
+        month: number;
+        number_editing: number;
+      }[];
+      peak_time: {
+        stop_hour_1: number;
+        stop_hour_2: number;
+        start_hour_1: number;
+        start_hour_2: number;
+        friday_enable: number;
+        monday_enable: number;
+        stop_minute_1: number;
+        stop_minute_2: number;
+        sunday_enable: number;
+        start_minute_1: number;
+        start_minute_2: number;
+        tuesday_enable: number;
+        saturday_enable: number;
+        thursday_enable: number;
+        wednesday_enable: number;
+      };
+      imanage_sensors: {
+        max_value: number;
+        min_value: number;
+        sensor_type: number;
+        number_editing: number;
+      }[];
+      pump_power_time: {
+        minutes: number;
+      };
+      enable_peak_time: {
+        enable: number;
+      };
+      datalogger_address: {
+        address: string;
+      };
+      clear_device_memory: {
+        clear_device_memory: number;
+      };
+      event_stream_indexes: {
+        indexes: string;
+      };
+      periodic_stream_timer: {
+        time: number;
+      };
+      periodic_stream_indexes: {
+        indexes: string;
+      };
+    };
+    monthly_water_limit: number;
+    has_pressure_sensor: boolean;
+    name_irpd_on_config: string;
+    flow: number;
+    position: null | any;
+    potency: number;
+    pinned: boolean;
+    name: string;
+    kwh_peak: string;
+    kwh_out_of_peak: string;
+    kwh_reduced: string;
+    device: number;
+    irpd: number;
+  };
+
+  type IrpdConfigCallbackPayload  = any
+  /* End of central radio update clock WS */
 }

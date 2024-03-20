@@ -41,6 +41,20 @@ export type CirclePivotProps = {
   infoWindow?: boolean;
   mapHistory: number[];
   infoWindowRef: any;
+  pluviometerMeasure?: number;
+  isRaining?: boolean;
+  currentAngle: number;
+};
+
+const circleOptions = {
+  strokeOpacity: 1,
+  strokeWeight: 3,
+  fillOpacity: 0.5,
+  clickable: false,
+  draggable: false,
+  editable: false,
+  visible: true,
+  zIndex: 1,
 };
 
 const lineOptions = {
