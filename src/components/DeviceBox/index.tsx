@@ -253,6 +253,11 @@ const DeviceBox: React.FC<Props> = (props) => {
         <Col>
           <span>{item.name}</span>
         </Col>
+        <Col>
+          <Tag color={item.deviceColor}>
+            {item.statusText}
+          </Tag>
+        </Col>
       </Row>
     ),
     extra: !md ? (
@@ -278,63 +283,6 @@ const DeviceBox: React.FC<Props> = (props) => {
           - bar
         </span>
         <Typography.Text type="secondary">{item.updated}</Typography.Text>
-      </Space>
-    ),
-  }));
-
-  const dataSource4 = props?.meterSystem.result?.map((item) => ({
-    title: (
-      <Row
-        onClick={() => {
-          onSetDevice(DeviceType.Meter, item.id, { imeterSetId: item.imeterSetId });
-          scrollToBottom();
-        }}
-        justify="space-between"
-        style={{ width: '100%' }}
-      >
-        <Col>
-          <Tag color={item.deviceColor}>
-            {item.statusText}
-          </Tag>
-        </Col>
-      </Row>
-    ),
-    extra: !md ? (
-      <div style={{ marginRight: 12 }}>
-        <StaticGoogleMap
-          size="100x100"
-          className="img-fluid"
-          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-          maptype="satellite"
-          zoom={13}
-          center={`${item.centerLat},${item.centerLng}`}
-        >
-          <Marker
-            location={`${item.centerLat},${item.centerLng}`}
-            color="blue"
-          />
-        </StaticGoogleMap>
-      </div>
-    ) : null,
-    content: (
-      <Space direction="vertical">
-        <span style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12
-        }}>
-          <Tooltip
-            title={intl.formatMessage({
-              id: 'component.farm.devices.label.angle',
-            })}
-          >
-            <ClockCircleOutlined style={{ fontSize: 20 }} />
-          </Tooltip>{' '}
-          {item.pumpPressure !== null ? item.pumpPressure : '-'} bar
-        </span>
-        <Typography.Text type="secondary">
-          {item.updated}
-        </Typography.Text>
       </Space>
     ),
   }));
@@ -392,7 +340,7 @@ const DeviceBox: React.FC<Props> = (props) => {
               style={{ fontSize: 20 }}
             />
           </Tooltip>{' '}
-          {item.percentage}% ({item.meterLevel})
+          {item.percentage}% ({item.meterLevel}m)
         </span>
         <Typography.Text type="secondary">
           {item.updated}

@@ -17,9 +17,8 @@ export type WaterPumpProps = {
   infoWindow?: boolean;
   waterId?: number;
   protocol?: number;
-  infoWindowRef: any;
+  infoWindowRef?: any;
   zoom?: number;
-
   pumpPressure?: number | null;
 };
 

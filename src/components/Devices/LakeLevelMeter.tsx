@@ -17,7 +17,7 @@ export type LakeLevelMeterProps = {
   infoWindow?: boolean;
   statusText?: string;
   imeterSetId?: number;
-  infoWindowRef: any;
+  infoWindowRef?: any;
   zoom?: number;
 
   percentage?: number;

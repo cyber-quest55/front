@@ -249,6 +249,7 @@ export default {
           waterId: item?.latest_irpd_config_v5?.flow,
           protocol: item.protocol,
           pumpPressure: irpdPressure,
+          infoWindowRef: null,
         });
       }
 
