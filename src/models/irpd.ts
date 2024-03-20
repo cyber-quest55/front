@@ -233,7 +233,9 @@ export default {
         const statusText = getIrpdStatus(status);
         
         // Get irpd pressure
-        let irpdPressure = null;
+        let irpdPressure = (
+          item.latest_irpd_stream_v5_periodic?.content.imanage_sensor_measure_value?.[0]?.value / 10
+        ) || null;
 
         // Computed irpd data
         mapper.push({
@@ -364,7 +366,7 @@ export default {
           if (i === irpdIndex) {
             return {
               ...r,
-              pumpPressure: payload.pressure,
+              pumpPressure: payload.pressure / 10,
               updated: new Date(payload.created).toLocaleString(),
             }
           } 

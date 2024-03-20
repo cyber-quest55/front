@@ -292,7 +292,7 @@ const DeviceBox: React.FC<Props> = (props) => {
           >
             <ClockCircleOutlined style={{ fontSize: 20 }} />
           </Tooltip>{' '}
-          - bar
+          {item.pumpPressure !== null ? item.pumpPressure : '-'} bar
         </span>
         <Typography.Text type="secondary">
           {item.updated}
