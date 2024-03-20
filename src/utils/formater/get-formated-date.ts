@@ -3,29 +3,24 @@ import dayjs from 'dayjs';
 export const formatDate = (date: string) => {
   const dateF = new Date(date);
 
-  const newDate = new Intl.DateTimeFormat('pt', {
-    hour12: true,
-    day: 'numeric',
-    month: 'long',
-    minute: 'numeric',
-    second: 'numeric',
-  }).format(dateF);
+  const day = dateF.getDate();
+  const month = dateF.toLocaleString('pt', { month: 'long' });
+  const hours = dateF.getHours().toString().padStart(2, '0');
+  const minutes = dateF.getMinutes().toString().padStart(2, '0');
 
-  return newDate;
+  return `${day} de ${month} às ${hours}:${minutes}`;
 };
 
 export const formatDateTime = (date: string) => {
   const dateF = new Date(date);
 
-  const newDate = new Intl.DateTimeFormat('pt', {
-    day: 'numeric',
-    month: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-  }).format(dateF);
+  const day = dateF.getDate();
+  const month = dateF.getMonth() + 1; // Month is zero-based, so add 1
+  const hours = dateF.getHours().toString().padStart(2, '0');
+  const minutes = dateF.getMinutes().toString().padStart(2, '0');
+  const seconds = dateF.getSeconds().toString().padStart(2, '0');
 
-  return newDate;
+  return `${day}/${month}/${dateF.getFullYear()} ${hours}:${minutes}:${seconds}`;
 };
 
 export function formatDayJsDate(
