@@ -814,38 +814,52 @@ declare namespace APIModels {
 }
 declare namespace WsIrpdModels {
   /* Start of irpd history history WS */
-  type IrpdControllerEvent = {
-    data: {
-      id: number;
-      uuid: string;
-      arrived: string;
-      device: any;
-      created_on_hardware: boolean;
-      message_status: number;
-      message_subtype?: string;
-      message_packets: Array<number>;
-      message_error: string;
-      content: {
-        pump_hourmeter: {
-          hours: number;
-          minutes: number;
-        };
-        pump_last_start_time: {
-          start_day: number;
-          start_hour: number;
-          start_year: number;
-          start_month: number;
-          start_minutes: number;
-        };
-        imanage_master_status: {
-          status: number;
-        };
+  type RawIrpdControllerEvent = {
+    id: number;
+    uuid: string;
+    arrived: string;
+    device: any;
+    created_on_hardware: boolean;
+    message_status: number;
+    message_subtype?: string;
+    message_packets: Array<number>;
+    message_error: string;
+    content: {
+      pump_hourmeter: {
+        hours: number;
+        minutes: number;
       };
-      irpd: number;
-      created: string;
-      updated: string;
-      created_by?: number;
+      pump_last_start_time: {
+        start_day: number;
+        start_hour: number;
+        start_year: number;
+        start_month: number;
+        start_minutes: number;
+      };
+      imanage_master_status: {
+        status: number;
+      };
     };
+    irpd: number;
+    created: string;
+    updated: string;
+    created_by?: number;  
+  };
+
+  type RawIrpdPressureStream = {
+    id: number;
+    irpd: number;
+    uuid: string;
+    arrived: string;
+    created: string;
+    payload: string;
+    pressure: number;
+    frame_id: number;
+    device: string;
+  };
+
+  type IrpdControllerEvent = {
+    data: RawIrpdControllerEvent;
   };
 
   type IrpdControllerSchedule = {
@@ -919,40 +933,42 @@ declare namespace WsIrpdModels {
     };
   };
 
-  type IrpdCoontrollerPeriodic = {
-    data: {
-      id: number;
-      total_flow: number;
-      uuid: string;
-      created_on_hardware: boolean;
-      created: string;
-      updated: string;
-      arrived: string;
-      message_status: number;
-      message_error: string;
-      message_packets: Array<number>;
-      message_subtype: string;
-      content: {
-        pump_last_start_time: {
-          start_hour: number;
-          start_minutes: number;
-          start_day: number;
-          start_month: number;
-          start_year: number;
-        };
-        imanage_master_status: {
-          status: number;
-        };
-        imanage_sensor_measure_value: Array<{
-          number_editing: number;
-          value: number;
-        }>;
+  type RawIrpdCoontrollerPeriodic = {
+    id: number;
+    total_flow: number;
+    uuid: string;
+    created_on_hardware: boolean;
+    created: string;
+    updated: string;
+    arrived: string;
+    message_status: number;
+    message_error: string;
+    message_packets: Array<number>;
+    message_subtype: string;
+    content: {
+      pump_last_start_time: {
+        start_hour: number;
+        start_minutes: number;
+        start_day: number;
+        start_month: number;
+        start_year: number;
       };
-      content_hash: number;
-      created_by: any;
-      device: number;
-      irpd: number;
+      imanage_master_status: {
+        status: number;
+      };
+      imanage_sensor_measure_value: Array<{
+        number_editing: number;
+        value: number;
+      }>;
     };
+    content_hash: number;
+    created_by: any;
+    device: number;
+    irpd: number;
+  };
+
+  type IrpdCoontrollerPeriodic = {
+    data: RawIrpdCoontrollerPeriodic;
   };
   /* End of irpd history history WS */
 

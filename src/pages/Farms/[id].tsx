@@ -1,7 +1,7 @@
 import MeterReport from '@/components/DeviceReport/Meter';
 import PivotReport from '@/components/DeviceReport/Pivot';
 import PumpReport from '@/components/DeviceReport/Pump';
-import PivotList from '@/components/PivotList';
+import PivotList from '@/components/DeviceBox';
 import RenderPivots from '@/components/RenderPivots';
 import { useScreenHook } from '@/hooks/screen';
 import { GetFarmModelProps, queryFarm } from '@/models/farm';

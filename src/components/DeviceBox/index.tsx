@@ -18,7 +18,8 @@ import {
 } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useParams, useNavigate } from '@umijs/max';
+import { useIntl, useParams, useNavigate } from '@umijs/max';
+import { useUnmount } from 'ahooks';
 import {
   Col,
   Divider,
@@ -49,6 +50,9 @@ type Props = {
   selectedFarm: SelectedFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
   setSelectedDevice: typeof setSelectedDevice;
+  destroyPivotWs: () => void,
+  destroyIrpdWs: () => void,
+  destroyMeterSystemWs: () => void,
 };
 
 const scrollToBottom = () => {
@@ -60,12 +64,13 @@ const scrollToBottom = () => {
   }, 500);
 };
 
-const PivotList: React.FC<Props> = (props) => {
+const DeviceBox: React.FC<Props> = (props) => {
   const params = useParams();
+  const intl = useIntl();
   const { md } = useScreenHook();
   const navigate = useNavigate();
 
-  const classNameScrollable = useEmotionCss(({}) => {
+  const classNameScrollable = useEmotionCss(({ }) => {
     return {
       maxHeight: 'calc(100vh - 350px)',
       [`@media screen and (max-width: 762px)`]: {
@@ -99,7 +104,7 @@ const PivotList: React.FC<Props> = (props) => {
     };
   });
 
-  const className = useEmotionCss(({}) => {
+  const className = useEmotionCss(({ }) => {
     return {
       [`.ant-pro-card-body`]: {
         paddingInline: '0px !important',
@@ -112,12 +117,7 @@ const PivotList: React.FC<Props> = (props) => {
       },
     };
   });
- /**
-  useEffect(() => {
-    props.queryPivot({ id: parseInt(params.id as string) });
-    props.queryRepeater({ id: parseInt(params.id as string) });
-  }, [params]);
-*/
+
   const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
     const farmId = parseInt(params.id as string);
     if (farmId)
@@ -141,10 +141,14 @@ const PivotList: React.FC<Props> = (props) => {
         style={{ width: '100%' }}
       >
         <Col>
-          <span>{props.pivot.result?.find((subItem) => subItem.id === item.id)?.name}</span>
+          <span>
+            {props.pivot.result?.find((subItem) => subItem.id === item.id)?.name}
+          </span>
         </Col>
         <Col>
-          <Tag color={item.deviceColor}>{item.statusText}</Tag>
+          <Tag color={item.deviceColor}>
+            {item.statusText}
+          </Tag>
         </Col>
       </Row>
     ),
@@ -165,18 +169,31 @@ const PivotList: React.FC<Props> = (props) => {
     content: (
       <Space key={`row-pivot-information-space-${item.id}`} direction="vertical">
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Tooltip title="Pluviometro">
+          <Tooltip title={
+            item.isRaining 
+              ? intl.formatMessage({ id: 'component.farm.devices.pivot.raining' }) 
+              : intl.formatMessage({ id: 'component.farm.devices.pivot.pluviometer' }) 
+            }
+          >
             <BsCloudRainFill style={{ fontSize: 20 }} />
           </Tooltip>{' '}
-          - mm
+          {item.pluviometerMeasure || '-'} mm
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Tooltip title="Ângulo">
             <RedoOutlined style={{ fontSize: 20 }} />
           </Tooltip>{' '}
-          {Math.round(item.referenceAngle)}°
+          {
+            item.currentAngle < 0
+            ? item.currentAngle * -1
+            : item.currentAngle === 0 
+              ? '-' 
+              : item.currentAngle
+          } °
         </span>
-        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+        <Typography.Text type="secondary">
+          {item.updated}
+        </Typography.Text>
       </Space>
     ),
   }));
@@ -185,7 +202,13 @@ const PivotList: React.FC<Props> = (props) => {
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
-          <span onClick={() => { navigate(`/farms/${params.id}/repeater/${item.id}/edit`) }}>{item.name}</span>
+          <span
+            onClick={() => {
+              navigate(`/farms/${params.id}/repeater/${item.id}/edit`) 
+            }}
+          >
+            {item.name}
+          </span>
         </Col>
       </Row>
     ),
@@ -199,13 +222,18 @@ const PivotList: React.FC<Props> = (props) => {
           zoom={13}
           center={`${item.centerLat},${item.centerLng}`}
         >
-          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
+          <Marker
+            location={`${item.centerLat},${item.centerLng}`}
+            color="blue"
+          />
         </StaticGoogleMap>
       </div>
     ) : null,
     content: (
       <Space direction="vertical">
-        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+        <Typography.Text type="secondary">
+          {item.updated}
+        </Typography.Text>
       </Space>
     ),
   }));
@@ -226,47 +254,10 @@ const PivotList: React.FC<Props> = (props) => {
         <Col>
           <span>{item.name}</span>
         </Col>
-      </Row>
-    ),
-    extra: !md ? (
-      <div style={{ marginRight: 12 }}>
-        <StaticGoogleMap
-          size="100x100"
-          className="img-fluid"
-          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
-          maptype="satellite"
-          zoom={13}
-          center={`${item.centerLat},${item.centerLng}`}
-        >
-          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
-        </StaticGoogleMap>
-      </div>
-    ) : null,
-    content: (
-      <Space direction="vertical">
-        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Tooltip title="Ângulo">
-            <ClockCircleOutlined style={{ fontSize: 20 }} />
-          </Tooltip>{' '}
-          - bar
-        </span>
-        <Typography.Text type="secondary">{item.updated}</Typography.Text>
-      </Space>
-    ),
-  }));
-
-  const dataSource4 = props.meterSystem.result?.map((item) => ({
-    title: (
-      <Row
-        onClick={() => {
-          onSetDevice(DeviceType.Meter, item.id, { imeterSetId: item.imeterSetId });
-          scrollToBottom();
-        }}
-        justify="space-between"
-        style={{ width: '100%' }}
-      >
         <Col>
-          <span>{item.name}</span>
+          <Tag color={item.deviceColor}>
+            {item.statusText}
+          </Tag>
         </Col>
       </Row>
     ),
@@ -280,38 +271,114 @@ const PivotList: React.FC<Props> = (props) => {
           zoom={13}
           center={`${item.centerLat},${item.centerLng}`}
         >
-          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
+          <Marker
+            location={`${item.centerLat},${item.centerLng}`}
+            color="blue"
+          />
         </StaticGoogleMap>
       </div>
     ) : null,
     content: (
       <Space direction="vertical">
-        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Tooltip title="Ângulo">
-            <InsertRowRightOutlined style={{ fontSize: 20 }} />
+        <span style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12
+        }}>
+          <Tooltip
+            title={intl.formatMessage({
+              id: 'component.farm.devices.label.angle',
+            })}
+          >
+            <ClockCircleOutlined style={{ fontSize: 20 }} />
           </Tooltip>{' '}
-          220% (0.50)
+          {item.pumpPressure !== null ? item.pumpPressure : '-'} bar
         </span>
-        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+        <Typography.Text type="secondary">
+          {item.updated}
+        </Typography.Text>
+      </Space>
+    ),
+  }));
+
+  const dataSource4 = props.meterSystem.result?.map((item) => ({
+    title: (
+      <Row
+        onClick={() => {
+          onSetDevice(
+            DeviceType.Meter,
+            item.id,
+            { imeterSetId: item.imeterSetId }
+          );
+          scrollToBottom();
+        }}
+        justify="space-between"
+        style={{ width: '100%' }}
+      >
+        <Col>
+          <span>{item.name}</span>
+        </Col>
+        <Col>
+          <Tag color={item.deviceColor}>
+            {item.statusText}
+          </Tag>
+        </Col>
+      </Row>
+    ),
+    extra: !md ? (
+      <div style={{ marginRight: 12 }}>
+        <StaticGoogleMap
+          size="100x100"
+          className="img-fluid"
+          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+          maptype="satellite"
+          zoom={13}
+          center={`${item.centerLat},${item.centerLng}`}
+        >
+          <Marker
+            location={`${item.centerLat},${item.centerLng}`}
+            color="blue"
+          />
+        </StaticGoogleMap>
+      </div>
+    ) : null,
+    content: (
+      <Space direction="vertical">
+        <span style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12
+        }}>
+          <Tooltip title="Ângulo">
+            <InsertRowRightOutlined
+              style={{ fontSize: 20 }}
+            />
+          </Tooltip>{' '}
+          {item.percentage}% ({item.meterLevel})
+        </span>
+        <Typography.Text type="secondary">
+          {item.updated}
+        </Typography.Text>
       </Space>
     ),
   }));
 
   const getList = (dataSource: any) => {
     return (
-      <>
-        <ProList<any>
-          itemLayout="vertical"
-          rowKey="id"
-          style={{ paddingBottom: 0, marginBottom: 0 }}
-          dataSource={dataSource}
-          metas={{
-            title: {},
-            content: {},
-            extra: {},
-          }}
-        />
-      </>
+      <ProList<any>
+        itemLayout="vertical"
+        rowKey="id"
+        style={{
+          paddingBottom: 0,
+          marginBottom: 0
+        }}
+        dataSource={dataSource}
+        metas={{
+          title: {},
+          content: {},
+          extra: {},
+        }}
+      />
     );
   };
 
@@ -319,8 +386,14 @@ const PivotList: React.FC<Props> = (props) => {
     {
       key: '1',
       label: (
-        <a target="_blank" rel="noopener noreferrer" href={`/farms/${params.id}/edit`}>
-          Editar Fazenda
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`/farms/${params.id}/edit`}
+        >
+          {intl.formatMessage({
+            id: 'component.farm.devices.actions.edit.title',
+          })}
         </a>
       ),
     },
@@ -330,13 +403,29 @@ const PivotList: React.FC<Props> = (props) => {
     },
   ];
 
+  // Destroy WS connections
+  useUnmount(() => {
+    props.destroyPivotWs();
+    props.destroyIrpdWs();
+    props.destroyMeterSystemWs();
+  });
+
   return (
     <div className={className}>
-      <Row justify="space-between" align="middle" style={{ padding: '0px 16px' }}>
+      <Row
+        justify="space-between"
+        align="middle"
+        style={{ padding: '0px 16px' }}
+      >
         <Col>
           <Space size="small">
             <WithConnection />
-            <Typography.Title level={4} className={classNameSelect}>{props.selectedFarm?.name?.toString()}</Typography.Title>
+            <Typography.Title
+              level={4}
+              className={classNameSelect}
+            >
+              {props.selectedFarm?.name?.toString()}
+            </Typography.Title>
           </Space>
         </Col>
         <Col>
@@ -348,28 +437,44 @@ const PivotList: React.FC<Props> = (props) => {
         </Col>
       </Row>
       <Divider />
-      <Row align="middle" style={{ padding: '0px 12px', width: '100%' }}>
+      <Row
+        align="middle"
+        style={{ padding: '0px 12px', width: '100%' }}
+      >
         <Col xs={24}>
-          <Select showSearch placeholder="Ex: Pivo 1" size="large" style={{ width: '100%' }} />
+          <Select
+            showSearch
+            placeholder="Ex: Pivo 1"
+            size="large"
+            style={{ width: '100%' }}
+          />
         </Col>
         <Col></Col>
       </Row>
       <Divider style={{ marginBottom: 0 }} />
       <div className={classNameScrollable} style={{ width: '100%' }}>
+       
         {props.pivot.result.length > 0 ? (
           <>
-            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-              Pivôs
+            <Typography.Title
+              level={5}
+              style={{ textAlign: 'center', marginTop: 8 }}
+            >
+              {intl.formatMessage({ id: 'component.farm.devices.type.pivot' })}
             </Typography.Title>
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
             {getList(dataSource)}
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
           </>
         ) : null}
+        
         {props.repeater.result.length > 0 ? (
           <>
-            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-              Repetidores
+            <Typography.Title
+              level={5}
+              style={{ textAlign: 'center', marginTop: 8 }}
+            >
+              {intl.formatMessage({ id: 'component.farm.devices.type.repeaters' })}
             </Typography.Title>
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
             {getList(dataSource2)}
@@ -379,8 +484,11 @@ const PivotList: React.FC<Props> = (props) => {
 
         {props.irpd.result.length > 0 ? (
           <>
-            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-              Bombas
+            <Typography.Title
+              level={5}
+              style={{ textAlign: 'center', marginTop: 8 }}
+            >
+              {intl.formatMessage({ id: 'component.farm.devices.type.irpd' })}
             </Typography.Title>
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
             {getList(dataSource3)}
@@ -390,24 +498,28 @@ const PivotList: React.FC<Props> = (props) => {
 
         {props.meterSystem.result.length > 0 ? (
           <>
-            <Typography.Title level={5} style={{ textAlign: 'center', marginTop: 8 }}>
-              Medidores
+            <Typography.Title
+              level={5}
+              style={{ textAlign: 'center', marginTop: 8 }}
+            >
+              {intl.formatMessage({ id: 'component.farm.devices.type.metersystem' })}
             </Typography.Title>
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
             {getList(dataSource4)}
           </>
         ) : null}
+        
       </div>
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>
-          <AddDeviceFormContainer base={(props.selectedFarm as any)?.base?.radio_id} />
+          <AddDeviceFormContainer
+            base={(props.selectedFarm as any)?.base?.radio_id}
+          />
         </Col>
       </Row>
     </div>
   );
 };
-
-
 
 const mapStateToProps = ({
   pivot,
@@ -431,6 +543,12 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  destroyPivotWs: () => dispatch({ type: 'pivotInformation/onDestroy', payload: {} }),
+  destroyIrpdWs: () => dispatch({ type: 'irpd/onDestroyDeviceBox', payload: {} }),
+  destroyMeterSystemWs: () => dispatch({ type: 'meterSystem/onDestroyDeviceBox', payload: {} }),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PivotList);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DeviceBox);

@@ -87,7 +87,7 @@ export default {
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.pivot);
       const channels = state.result.map(r => ({
-        title: `d@pivot@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@pivot@${r.id}`,
         id: `@EditFarm_pivot${r.id}`,
         binds: [
           {
@@ -107,7 +107,7 @@ export default {
     *onDestroy({ }, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.pivot);
       const channels = state.result.map(r => ({
-        title: `d@pivot@${r.id}`,
+        title: `${process.env.NODE_ENV === 'development' ? 'd' : 'p'}@pivot@${r.id}`,
         id: `@EditFarm_pivot${r.id}`,
         binds: [
           {
