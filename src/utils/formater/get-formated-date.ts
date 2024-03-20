@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const formatDate = (date: string) => {
   const dateF = new Date(date);
 
@@ -25,3 +27,7 @@ export const formatDateTime = (date: string) => {
 
   return newDate;
 };
+
+export function formatDayJsDate(isoDate: string) {
+  return dayjs(isoDate).format('DD/MM/YY HH:mm');
+}

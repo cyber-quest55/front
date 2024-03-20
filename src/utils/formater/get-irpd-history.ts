@@ -4,6 +4,7 @@ import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
 import { getCentralEventStatus } from '@/utils/formater/get-irpd-event-status';
 import { getIrpdOrigin } from '@/utils/formater/get-irpd-origin';
 import { getIrpdStatus, getIrpdTurnedOnOrOffStatus } from '@/utils/formater/get-irpd-status';
+import { formatDayJsDate } from './get-formated-date';
 
 // Badge status
 export const getIrpdBadgeStatus = (messageStatus: number) => {
@@ -44,6 +45,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: true,
         badgeStatus: getIrpdBadgeStatus(item.irpd_action_v5.message_status),
         origin: PumpHistoryOrigin.Command,
+        created: new Date(item.irpd_action_v5.created),
       };
     }
 
@@ -71,6 +73,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: false,
         badgeStatus: '',
         origin: PumpHistoryOrigin.PumpUpdate,
+        created: formatDayJsDate(item.irpd_stream_v5.created),
       };
     }
 
@@ -84,6 +87,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: false,
         badgeStatus: '',
         origin: PumpHistoryOrigin.CentralUpdate,
+        created: formatDayJsDate(item.CentralStream.created),
       };
     }
 
@@ -110,6 +114,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: false,
         badgeStatus: '',
         origin: PumpHistoryOrigin.PumpUpdate,
+        created: formatDayJsDate(item.IrpdStreamV5_periodic.created),
       };
     }
 
@@ -130,6 +135,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: true,
         badgeStatus: getIrpdBadgeStatus(item.IrpdActionV5_schedule.message_status),
         origin: PumpHistoryOrigin.Command,
+        created: formatDayJsDate(item.IrpdActionV5_schedule.created),
       };
     }
 
@@ -143,6 +149,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: false,
         badgeStatus: '',
         origin: PumpHistoryOrigin.PumpUpdate,
+        created: formatDayJsDate(item.IrpdStreamV5_event.created),
       };
     }
 
@@ -168,6 +175,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: true,
         badgeStatus: getIrpdBadgeStatus(item.IrpdActionV5_simple.message_status),
         origin: PumpHistoryOrigin.PumpUpdate,
+        created: formatDayJsDate(item.IrpdActionV5_simple.created),
       };
     }
 
