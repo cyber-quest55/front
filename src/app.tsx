@@ -8,7 +8,7 @@ import {
 } from '@ant-design/pro-components';
 import { LoadScript } from '@react-google-maps/api';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link} from '@umijs/max';
+import { history, Link } from '@umijs/max';
 import { App } from 'antd';
 import dayjs from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
@@ -57,7 +57,7 @@ export async function getInitialState(): Promise<{
     try {
       const msg = await queryCurrentUser({});
       const data = await getUserInfo({});
-      return {...msg.profile, ...data};
+      return { ...msg.profile, ...data };
     } catch (error) {
       //history.push(loginPath);
     }
@@ -86,13 +86,11 @@ const loaderId = uniqid('loader-');
 
 const libraries: Libraries = ['visualization'];
 
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  }) => {
   return {
-    ...initialState?.settings,
-    defaultCollapsed: true,
+    ...initialState?.settings, 
     unAccessible: <ForbidenPage />,
-    noFound: <NoFoundPage />,
-    collapsed: initialState?.collapsed,
+    noFound: <NoFoundPage />, 
     onCollapse: () => {
       setInitialState({ ...initialState, collapsed: !initialState?.collapsed });
     },
@@ -107,10 +105,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
       ];
     },
-    siderMenuType: initialState?.collapsed ? 'sub' : 'group',
-
+    siderMenuType: initialState?.collapsed ? 'sub' : 'group', 
     logo: Logo,
-    breakpoint: 'md',
+    hasSiderMenu: false,
+    breakpoint: false,
     avatarProps: {
       style: { color: 'rgba(255,255,255,0.75)', padding: 0 },
       src: <UserOutlined />,
@@ -119,7 +117,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
-
+    localization: true,
     onPageChange: () => {
       const { location } = history;
       if (!initialState?.currentUser && location.pathname !== loginPath) {
@@ -128,14 +126,14 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
-
+    
     menuExtraRender: ({ collapsed }) =>
       !collapsed && (
         <div style={{ paddingInline: 12 }}>
@@ -143,14 +141,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         </div>
       ),
 
+  
+
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     token: initialState?.settings?.navTheme === 'realDark' ? {} : defaultSettings.token,
-    childrenRender: (children) => {
+    childrenRender: (children, {  }  ) => {
       // if (initialState?.loading) return <PageLoading />;
+
       return (
-        <App>
+        <App >
           <ProConfigProvider token={{ colorPrimary: defaultSettings.colorPrimary }}>
             <OfflineNetworkContainer />
             <LoadScript
@@ -159,6 +160,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
               loadingElement={<div>Carregando</div>}
               googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
             >
+              
               {children}
               <SettingDrawer
                 disableUrlParams
@@ -178,17 +180,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           </ProConfigProvider>
         </App>
       );
-    },
+    }, 
 
     menu: {
       collapsedShowGroupTitle: true,
     },
+    defaultCollapsed: true,
+
   };
 };
 
 export const dva = {
   config: {
-    onAction: [socketMiddleware(io("http://3.137.182.47:8080", {transports: ['websocket', 'polling', 'flashsocket'], autoConnect: false}))]
+    onAction: [socketMiddleware(io("http://3.137.182.47:8080", { transports: ['websocket', 'polling', 'flashsocket'], autoConnect: false }))]
   },
 }
 

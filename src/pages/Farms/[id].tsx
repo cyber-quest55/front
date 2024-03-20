@@ -20,11 +20,13 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useParams } from '@umijs/max';
 import { useMount } from 'ahooks';
-import { Col, Row, Spin, Tabs } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import { connect } from 'dva';
-import { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { FC, FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { queryRepeater } from '../../models/repeaters';
 import { queryPivot } from '../../models/pivot';
+import { AppOutline, MessageOutline, UnorderedListOutline } from 'antd-mobile-icons';
+import { TabBar } from 'antd-mobile'
 
 type Props = {
   dispatch?: any;
@@ -49,10 +51,84 @@ type Props = {
 
 };
 
+
+
 const Welcome: FunctionComponent<Props> = (props) => {
   const [activeKey, setActiveKey] = useState('1');
-  const { md } = useScreenHook();
+  const { md, xs} = useScreenHook();
   const params = useParams();
+
+  //const [isConnected, setIsConnected] = useState(false);
+
+  const Bottom: FC = () => {
+    const disabled = !props.selectedDevice.open;
+
+    const setRouteActive = (value: string) => {
+      /** Caso nosso dispositivo ainda não esteja selecionado */
+      if (value === '3' && disabled) {
+        return;
+      }
+      setActiveKey(value)
+    }
+
+    const tabs = [
+      {
+        key: '1',
+        title: 'Mapa',
+        icon: <AppOutline />,
+      },
+      {
+        key: '2',
+        title: 'Lista',
+        icon: <UnorderedListOutline />,
+      },
+      {
+        key: '3',
+        title: 'Dispositivo',
+        icon: <MessageOutline />,
+        disabled,
+      },
+    ]
+
+    return (
+      <TabBar safeArea activeKey={activeKey} onChange={value => setRouteActive(value)}>
+        {tabs.map(item => (
+          <TabBar.Item key={item.key} icon={item.icon} title={item.title} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }} />
+        ))}
+      </TabBar>
+    )
+  }
+
+  /**
+  useMount(() => {
+    socket.connect();
+
+    function onConnect() {}
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    socket.on('msg', (data: any) => {
+      props.dispatch({
+        type: 'pivotInformation/setNewPivotInformation',
+        payload: data,
+      });
+    });
+
+    socket.on('connect', () => {
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', onDisconnect);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('msg');
+    };
+  });
+ */
 
   const getDeviceBySelected = (selected: string) => {
     switch (selected) {
@@ -100,11 +176,11 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     if (params.id !== ':id') {
-      props.queryMeterSystem({id: parseInt(params.id as string),});
-      props.queryIrpd({id: parseInt(params.id as string),});
+      props.queryMeterSystem({ id: parseInt(params.id as string), });
+      props.queryIrpd({ id: parseInt(params.id as string), });
       props.queryPivot({ id: parseInt(params.id as string) });
       props.queryRepeater({ id: parseInt(params.id as string) });
-      props.queryPivotInformation({id: parseInt(params.id as string), params: {},});
+      props.queryPivotInformation({ id: parseInt(params.id as string), params: {}, });
     }
   }, [params]);
 
@@ -118,74 +194,26 @@ const Welcome: FunctionComponent<Props> = (props) => {
     props.connectWebsocket()
   })
 
-  const className = useEmotionCss(({}) => {
+  const className = useEmotionCss(({ }) => {
     return md
       ? {
-          position: 'absolute',
-          width: 400,
-          top: 10,
-          left: 45,
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        }
+        position: 'absolute',
+        width: 400,
+        top: 10,
+        left: 45,
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      }
       : {
-          width: '100%',
-          minHeight: '150px',
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        };
+        width: '100%',
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      };
   });
-
-  const classNameFixedMobile = useEmotionCss(({}) => {
-    return {
-      height: 65,
-      width: '100%',
-      background: 'white',
-      zIndex: 3,
-      ['.ant-tabs-nav-wrap']: {
-        display: 'flex',
-        justifyContent: 'center',
-      },
-      ['.ant-tabs-nav']: {
-        background: 'white',
-        zIndex: '5',
-        marginTop: '0px',
-      },
-    };
-  });
-
-  const items = [
-    {
-      key: '1',
-      label: `Tab 1`,
-      children: (
-        <Spin spinning={false}>
-          <div style={{ width: '100%', height: 'calc(100vh - 102px)', }}>
-            <RenderPivots />
-          </div>
-        </Spin>
-      ),
-    },
-    {
-      key: '2',
-      label: `Tab 2`,
-      children: (
-        <ProCard className={className}>
-          <PivotList />
-        </ProCard>
-      ),
-    },
-    {
-      key: '3',
-      label: `Tab 3`,
-      disabled: !props.selectedDevice.open,
-      children: getDeviceBySelected(props.selectedDevice.type),
-    },
-  ];
 
   const classNamts = useEmotionCss(() => ({
     '.ant-pro-page-container-children-container': {
@@ -201,21 +229,21 @@ const Welcome: FunctionComponent<Props> = (props) => {
       paddingBlockStart: '0px !important',
     },
   }));
-
+  
   return (
-    <div className={classNamts}>
+    <section className={classNamts}>
       <PageContainer
         header={{ children: <div style={{ display: 'none' }}>asd</div> }}
         ghost
         breadcrumb={{}}
-        title={' '}
+        title={''}
       >
-        <Row>
+        {md ? <Row>
           <Col
             xs={24}
             style={{
-              height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
-              marginTop: md? -23: 0,
+              height: '100vh',
+              marginTop: -23,
               position: 'relative',
             }}
           >
@@ -239,17 +267,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
                 </Spin>
               ) : null}
 
-              {!md ? (
-                <div className={classNameFixedMobile}>
-                  <Tabs
-                    defaultActiveKey="1"
-                    activeKey={activeKey}
-                    onChange={(key) => setActiveKey(key)}
-                    items={items}
-                    tabPosition="bottom"
-                  />
-                </div>
-              ) : null}
             </>
           </Col>
           {props.selectedDevice.open ? (
@@ -265,9 +282,36 @@ const Welcome: FunctionComponent<Props> = (props) => {
               </Col>
             ) : null
           ) : null}
-        </Row>
+        </Row>: null}
+
+          {xs?<div className={'app'}>
+          <div className={'body'}>
+            {activeKey === '1' &&
+              <Spin spinning={
+                props.pivot.loading ||
+                props.farm.loading ||
+                props.irpd.loading ||
+                props.meterSystem.loading ||
+                props.pivotInformation.loading
+              }>
+                <div style={{ width: '100vw', }}>
+                  <RenderPivots />
+                </div>
+              </Spin>}
+            {activeKey === '2' && <ProCard className={className}>
+              <PivotList />
+            </ProCard>}
+            {activeKey === '3' && <Spin spinning={false}>
+              {getDeviceBySelected(props.selectedDevice.type)}
+            </Spin>}
+          </div>
+          <div className={'bottom'}>
+            <Bottom />
+          </div>
+        </div>: null}
+        
       </PageContainer>
-    </div>
+    </section>
   );
 };
 
@@ -292,7 +336,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  connectWebsocket: () => dispatch({type: "socket/connect", payload: {}} ),
+  connectWebsocket: () => dispatch({ type: "socket/connect", payload: {} }),
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
   queryFarm: (props: any) => dispatch(queryFarm(props)),
   queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),

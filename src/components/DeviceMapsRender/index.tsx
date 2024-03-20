@@ -8,10 +8,11 @@ import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
-import { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent, useEffect, useRef } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
+import CustomInfoWindow from '../Devices/InfoWindow';
 
 type Props = {
   zoom: number;
@@ -26,7 +27,7 @@ type Props = {
 
 const DeviceMapsRender: FunctionComponent<Props> = (props) => {
   const { mapCenter, setMapCenter } = useMapHook(0, { lat: 0, lng: 0 });
-
+  const ref = useRef()
   const containerStyle = {
     width: '100%',
     height: props.height,
@@ -94,6 +95,8 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               name={item.name}
               updated={item.updated}
               statusText={item.statusText}
+              infoWindowRef={ref}
+              mapHistory={[]}
             />
           );
         break;
@@ -109,6 +112,8 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               updated={item.updated}
               id={item.id}
               onSelect={() => null}
+              infoWindowRef={ref}
+
             />
           );
         break;
@@ -127,6 +132,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               width={200}
               height={200}
               onSelect={() => null}
+              infoWindowRef={ref}
             />
           );
         break;
@@ -155,6 +161,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
       }}
       zoom={14.5}
     >
+      <CustomInfoWindow ref={ref}/>
       {props.selectedDevice.open ? renderCorrectDevice(props.selectedDevice.type) : null}
     </GoogleMap>
   );

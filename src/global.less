@@ -12,7 +12,31 @@ body,
 .colorWeak {
   filter: invert(80%);
 }
- 
+
+.app {
+  height: calc(100vh - 58px);;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  flex: 0;
+  border-bottom: solid 1px var(--adm-color-border);
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.bottom {
+  flex: 0;
+  border-top: solid 0.5px var(--adm-color-text-secondary);
+}
 
 .ant-layout {
   min-height: 100vh;
@@ -24,7 +48,17 @@ body,
 }
 
 .ant-pro-page-container-children-container{
-  padding-block-start: 0px !important;
+  @media (max-width: 768px) {
+    padding-inline: 8px !important;
+  }
+}
+
+.ant-pro-page-container .ant-pro-page-container-warp-page-header{
+  @media (max-width: 768px) {
+    padding-inline-start: 8px;
+    padding-inline-end: 8px;
+  }
+
 }
 
 .ant-menu-item-group-title {

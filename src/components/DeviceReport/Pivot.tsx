@@ -91,6 +91,7 @@ const PivotReport: React.FC<Props> = (props) => {
       [`@media screen and (max-width: ${token.screenMD}px)`]: {
         overflowY: 'auto',
         maxHeight: 'calc(100vh - 110px)',
+        maxWidth: '100vw'
       },
     };
   });

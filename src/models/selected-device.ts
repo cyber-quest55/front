@@ -53,6 +53,8 @@ export default {
       const { type, farmId, deviceId, otherProps } = payload;
 
       const selectedDevice = yield select((state) => state.selectedDevice);
+
+      /** Para o button de modo manutenção */
       if (selectedDevice.open && selectedDevice.type === DeviceType.Pivot) {
         yield put({ type: 'devicePanel/onDestroy', payload: selectedDevice });
       }
@@ -144,7 +146,7 @@ export default {
           }
         }
 
-        yield put({ type: 'selectedDevice/setDeviceCloseSuccess', payload: {} });
+        yield put({ type: 'setDeviceCloseSuccess', payload: {} });
       },
       takeLatest,
     ],

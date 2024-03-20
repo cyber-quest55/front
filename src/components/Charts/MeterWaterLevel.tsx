@@ -25,7 +25,7 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
   const [dates, setDates] = useState<any>([dayjs().subtract(1, 'month'), dayjs()]);
 
   const getReq = useRequest(getMeterSystemWaterLevel, { manual: true });
-   const meter = props.meterSystemById.unformated;
+  const meter = props.meterSystemById.unformated;
 
   const maxValue =
     meter.imeter_set?.length > 0
@@ -70,7 +70,7 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
   useEffect(() => {
     update();
   }, [dates, props.selectedDevice]);
- 
+
 
   return (
     <StatisticCard
@@ -98,85 +98,86 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
         </LightFilter>
       }
       chart={
-        <Spin spinning={getReq.loading}>
+        <Spin spinning={getReq.loading} >
+
           <Mix
             appendPadding={0}
             tooltip={{
               shared: true,
             }}
             syncViewPadding={true}
-            plots={[
+            plots={meter.imeter_set?.length > 0 && maxLimit && minLimit ? [
               meter.imeter_set?.length > 0 && maxLimit
                 ? {
-                    type: 'line',
-                    options: {
-                      data: getReq.data
-                        ? getReq?.data?.map((item: any) => ({
-                            ...item,
-                            value:
-                              meter.imeter_set?.length > 0
-                                ? ((maxLimit / 100) * maxValue) / 10
-                                : 0,
-                          }))
-                        : [],
-                      xField: 'from',
-                      yField: 'value',
-                      yAxis: {
-                        max: maxValue/ 10,
-                        label: {
-                          formatter: (item: string) => `${item} m`,
-                        },
+                  type: 'line',
+                  options: {
+                    data: getReq.data
+                      ? getReq?.data?.map((item: any) => ({
+                        ...item,
+                        value:
+                          meter.imeter_set?.length > 0
+                            ? ((maxLimit / 100) * maxValue) / 10
+                            : 0,
+                      }))
+                      : [],
+                    xField: 'from',
+                    yField: 'value',
+                    yAxis: {
+                      max: maxValue / 10,
+                      label: {
+                        formatter: (item: string) => `${item} m`,
                       },
-
-                      meta: {
-                        value: {
-                          alias: intl.formatMessage({
-                            id: 'component.meter.report.chart.label.max',
-                          }),
-                        },
-                      },
-                      color: 'red',
                     },
-                  }
+
+                    meta: {
+                      value: {
+                        alias: intl.formatMessage({
+                          id: 'component.meter.report.chart.label.max',
+                        }),
+                      },
+                    },
+                    color: 'red',
+                  },
+                }
                 : ({} as any),
               meter.imeter_set?.length > 0 && minLimit
                 ? {
-                    type: 'line',
-                    options: {
-                      data: getReq.data
-                        ? getReq?.data?.map((item: any) => ({
-                            ...item,
-                            value:
-                              meter.imeter_set?.length > 0
-                                ? ((minLimit / 100) * maxValue) / 10 
-                                : 0,
-                          }))
-                        : [],
-                      xField: 'from',
-                      yField: 'value',
-                      yAxis: {
-                        max: maxValue / 10,
-                        label: {
-                          formatter: (item: string) => `${item} m`,
-                        },
+                  type: 'line',
+                  options: {
+                    data: getReq.data
+                      ? getReq?.data?.map((item: any) => ({
+                        ...item,
+                        value:
+                          meter.imeter_set?.length > 0
+                            ? ((minLimit / 100) * maxValue) / 10
+                            : 0,
+                      }))
+                      : [],
+                    xField: 'from',
+                    yField: 'value',
+                    yAxis: {
+                      max: maxValue / 10,
+                      label: {
+                        formatter: (item: string) => `${item} m`,
                       },
-
-
-                      meta: {
-                        value: {
-                          alias: intl.formatMessage({
-                            id: 'component.meter.report.chart.label.min',
-                          }),
-                        },
-                      },
-                      color: '#FF6B3B',
                     },
-                  }
+
+
+                    meta: {
+                      value: {
+                        alias: intl.formatMessage({
+                          id: 'component.meter.report.chart.label.min',
+                        }),
+                      },
+                    },
+                    color: '#FF6B3B',
+                  },
+                }
                 : ({} as any),
               {
                 type: 'area',
                 options: {
-                  yAxis: { 
+                  yAxis: {
                     max: maxValue / 10,
 
                     label: {
@@ -184,7 +185,7 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
                     },
                   },
                   // height: 320 as any,
-                  data: getReq.data ? getReq.data.map(item => ({...item, value: item.value / 10})) : [],
+                  data: getReq.data ? getReq.data.map(item => ({ ...item, value: item.value / 10 })) : [],
                   padding: 'auto',
                   xField: 'from',
                   yField: 'value' as any,
@@ -197,7 +198,30 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
                   },
                 },
               },
-            ]}
+            ] : [{
+              type: 'area',
+              options: {
+                yAxis: {
+                  max: maxValue / 10,
+
+                  label: {
+                    formatter: (item: string) => `${item} m`,
+                  },
+                },
+                // height: 320 as any,
+                data: getReq.data ? getReq.data.map(item => ({ ...item, value: item.value / 10 })) : [],
+                padding: 'auto',
+                xField: 'from',
+                yField: 'value' as any,
+                meta: {
+                  value: {
+                    alias: intl.formatMessage({
+                      id: 'component.meter.report.chart.label.value',
+                    }),
+                  },
+                },
+              },
+            },]}
           />
         </Spin>
       }

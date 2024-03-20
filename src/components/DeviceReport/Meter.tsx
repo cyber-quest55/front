@@ -79,7 +79,7 @@ const MeterReport: React.FC = () => {
                   key: 'tab2',
                   disabled: true,
 
-                  children: <MeterActivityEventTable />,
+                  children: <></>,
                 },
               ],
               onChange: (key) => {

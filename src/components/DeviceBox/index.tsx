@@ -117,11 +117,10 @@ const DeviceBox: React.FC<Props> = (props) => {
       },
     };
   });
-
   const onSetDevice = (type: DeviceType, deviceId: number, otherProps: any) => {
     const farmId = parseInt(params.id as string);
     if (farmId)
-      props.setSelectedDevice({
+      props?.setSelectedDevice({
         type: type,
         deviceId: deviceId,
         farmId,
@@ -129,7 +128,7 @@ const DeviceBox: React.FC<Props> = (props) => {
       });
   };
 
-  const dataSource = props.pivotInformation.result?.map((item) => ({
+  const dataSource = props?.pivotInformation?.result?.map((item) => ({
     title: (
       <Row
         onClick={() => {
@@ -198,7 +197,7 @@ const DeviceBox: React.FC<Props> = (props) => {
     ),
   }));
 
-  const dataSource2 = props.repeater.result?.map((item) => ({
+  const dataSource2 = props?.repeater.result?.map((item) => ({
     title: (
       <Row justify="space-between" style={{ width: '100%' }}>
         <Col>
@@ -238,7 +237,7 @@ const DeviceBox: React.FC<Props> = (props) => {
     ),
   }));
 
-  const dataSource3 = props.irpd.result?.map((item) => ({
+  const dataSource3 = props?.irpd.result?.map((item) => ({
     title: (
       <Row
         onClick={() => {
@@ -254,6 +253,45 @@ const DeviceBox: React.FC<Props> = (props) => {
         <Col>
           <span>{item.name}</span>
         </Col>
+      </Row>
+    ),
+    extra: !md ? (
+      <div style={{ marginRight: 12 }}>
+        <StaticGoogleMap
+          size="100x100"
+          className="img-fluid"
+          apiKey="AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
+          maptype="satellite"
+          zoom={13}
+          center={`${item.centerLat},${item.centerLng}`}
+        >
+          <Marker location={`${item.centerLat},${item.centerLng}`} color="blue" />
+        </StaticGoogleMap>
+      </div>
+    ) : null,
+    content: (
+      <Space direction="vertical">
+        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Tooltip title="Ângulo">
+            <ClockCircleOutlined style={{ fontSize: 20 }} />
+          </Tooltip>{' '}
+          - bar
+        </span>
+        <Typography.Text type="secondary">{item.updated}</Typography.Text>
+      </Space>
+    ),
+  }));
+
+  const dataSource4 = props?.meterSystem.result?.map((item) => ({
+    title: (
+      <Row
+        onClick={() => {
+          onSetDevice(DeviceType.Meter, item.id, { imeterSetId: item.imeterSetId });
+          scrollToBottom();
+        }}
+        justify="space-between"
+        style={{ width: '100%' }}
+      >
         <Col>
           <Tag color={item.deviceColor}>
             {item.statusText}
@@ -453,8 +491,7 @@ const DeviceBox: React.FC<Props> = (props) => {
       </Row>
       <Divider style={{ marginBottom: 0 }} />
       <div className={classNameScrollable} style={{ width: '100%' }}>
-       
-        {props.pivot.result.length > 0 ? (
+        {props?.pivot?.result.length > 0 ? (
           <>
             <Typography.Title
               level={5}
@@ -467,8 +504,7 @@ const DeviceBox: React.FC<Props> = (props) => {
             <Divider style={{ marginBottom: 0, marginTop: 0 }} />
           </>
         ) : null}
-        
-        {props.repeater.result.length > 0 ? (
+        {props?.repeater?.result.length > 0 ? (
           <>
             <Typography.Title
               level={5}
@@ -482,7 +518,7 @@ const DeviceBox: React.FC<Props> = (props) => {
           </>
         ) : null}
 
-        {props.irpd.result.length > 0 ? (
+        {props?.irpd.result.length > 0 ? (
           <>
             <Typography.Title
               level={5}
@@ -496,7 +532,7 @@ const DeviceBox: React.FC<Props> = (props) => {
           </>
         ) : null}
 
-        {props.meterSystem.result.length > 0 ? (
+        {props?.meterSystem.result.length > 0 ? (
           <>
             <Typography.Title
               level={5}

@@ -474,7 +474,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
                 <Button icon={<EditFilled />}>
                   {intl.formatMessage({
                     id: 'component.pivot.operationalpanel.button.edit',
-                  })}
+                  })}imeterSetId
                 </Button>
               </Link>
             )}

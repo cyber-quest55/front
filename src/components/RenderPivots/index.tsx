@@ -8,16 +8,17 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
-import Field from '@ant-design/pro-field';
-import { GoogleMap } from '@react-google-maps/api';
+ import { GoogleMap } from '@react-google-maps/api';
 import { Dispatch, useParams } from '@umijs/max';
-import { Space, Switch, Typography } from 'antd';
+import { Flex, Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import RepeaterDevice from '../Devices/Repeater';
 import WaterPumpDevice from '../Devices/WaterPump';
+import CustomInfoWindow from '../Devices/InfoWindow';
+
 const scrollToBottom = () => {
   setTimeout(() => {
     window.scrollTo({
@@ -44,7 +45,9 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
     lat: 0,
     lng: 0,
   });
+  
 
+  const ref = useRef()
   const [showPivots, setShowPivots] = useState(true);
   const [showPump, setShowPump] = useState(true);
   const [showMetter, setShowMetter] = useState(true);
@@ -52,7 +55,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
 
   const containerStyle = {
     width: '100%',
-    height: md ? '100vh' : 'calc(100vh -  102px)',
+    height: md ? '100vh' : 'calc(100vh - 108px)',
   };
 
   useEffect(() => {
@@ -76,36 +79,20 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
   return (
     <>
       {xl ? (
-        <Space
+        <Flex
+          gap={12}
           style={{
             position: 'absolute',
-            top: 10,
+            bottom: 12,
             zIndex: 999,
-            left: 453,
+            left: 44,
+           
           }}
         >
           <ProCard
             style={{
               padding: 0,
-            }}
-          >
-            <Field
-              text="open"
-              mode="edit"
-              valueType="radioButton"
-              fieldProps={{ size: 'small' }}
-              valueEnum={{
-                open: {
-                  text: 'Google',
-                  status: 'Default',
-                },
-                all: { text: 'Sputnik', disabled: true },
-              }}
-            ></Field>
-          </ProCard>
-          <ProCard
-            style={{
-              padding: 0,
+              width: 150
             }}
           >
             <Space>
@@ -117,6 +104,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           <ProCard
             style={{
               padding: 0,
+              width: 165
+
             }}
           >
             <Space>
@@ -128,6 +117,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           <ProCard
             style={{
               padding: 0,
+              width: 165
+
             }}
           >
             <Space>
@@ -139,6 +130,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
           <ProCard
             style={{
               padding: 0,
+              width: 165
+
             }}
           >
             <Space>
@@ -146,13 +139,23 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               <Typography.Text>Repetidores </Typography.Text>
             </Space>
           </ProCard>
-        </Space>
+        </Flex>
       ) : null}
 
       <GoogleMap
         onLoad={(map) => setMap(map)}
         onZoomChanged={() => {
-          if (map !== null) setZoom(map.getZoom());
+          if (map !== null) {
+            if(map.getZoom() > 11){
+              if(zoom <= 11)
+                setZoom(map.getZoom())
+            }
+            if(map.getZoom() < 12){
+              if(zoom >= 12)
+                setZoom(map.getZoom())
+            }
+             
+          }
         }}
         mapContainerStyle={containerStyle}
         center={mapCenter}
@@ -165,89 +168,98 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
         }}
         zoom={zoom}
       >
+        <CustomInfoWindow ref={ref} />
+
         {!props.pivotInformation.loading && showPivots
           ? props.pivotInformation?.result?.map((item) => {
-              return (
-                <CirclePivot
-                  id={item.id}
-                  key={item.id}
-                  protocol={item.protocol}
-                  type={item.type}
-                  centerLat={item.centerLat}
-                  centerLng={item.centerLng}
-                  referencedLat={item.referencedLat}
-                  referencedLng={item.referencedLng}
-                  gpsLat={item.gpsLat}
-                  gpsLong={item.gpsLong}
-                  deviceColor={item.deviceColor}
-                  lineColor="#fff"
-                  referenceAngle={item.referenceAngle}
-                  irrigationDirection={item.irrigationDirection}
-                  stopAngle={item.stopAngle | 360}
-                  endAngle={item.endAngle}
-                  sectorAngle={item.sectorAngle}
-                  lpmGpsStreamLat={item.lpmGpsStreamLat}
-                  lpmGpsStreamLng={item.lpmGpsStreamLng}
-                  zoom={zoom}
-                  hasMarker={true}
-                  irrigationStatus={4}
-                  dashed={false}
-                  name={item.name}
-                  updated={item.updated}
-                  statusText={item.statusText}
-                  onSelect={onSetDevice}
-                  mapHistory={item.mapHistory}
-                  infoWindow
-                />
-              );
-            })
+            return (
+              <CirclePivot
+                id={item.id}
+                key={item.id}
+                protocol={item.protocol}
+                type={item.type}
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                referencedLat={item.referencedLat}
+                referencedLng={item.referencedLng}
+                gpsLat={item.gpsLat}
+                gpsLong={item.gpsLong}
+                deviceColor={item.deviceColor}
+                lineColor="#fff"
+                referenceAngle={item.referenceAngle}
+                irrigationDirection={item.irrigationDirection}
+                stopAngle={item.stopAngle | 360}
+                endAngle={item.endAngle}
+                sectorAngle={item.sectorAngle}
+                lpmGpsStreamLat={item.lpmGpsStreamLat}
+                lpmGpsStreamLng={item.lpmGpsStreamLng}
+                zoom={zoom}
+                hasMarker={true}
+                irrigationStatus={4}
+                dashed={false}
+                name={item.name}
+                updated={item.updated}
+                statusText={item.statusText}
+                onSelect={onSetDevice}
+                mapHistory={item.mapHistory}
+                infoWindowRef={ref}
+                 infoWindow
+              />
+            );
+          })
           : null}
         {!props.meterSystem.loading && showMetter
           ? props.meterSystem.result?.map((item, index) => (
-              <LakeLevelMeterDevice
-                key={'meter-system' + index}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                name={item.name}
-                updated={item.updated}
-                id={item.id}
-                onSelect={onSetDevice}
-                deviceColor={item.deviceColor}
-                statusText={item.statusText}
-                infoWindow
-                imeterSetId={item.imeterSetId}
-              />
-            ))
+            <LakeLevelMeterDevice
+              key={'meter-system' + index}
+              centerLat={item.centerLat}
+              centerLng={item.centerLng}
+              name={item.name}
+              updated={item.updated}
+              id={item.id}
+              onSelect={onSetDevice}
+              deviceColor={item.deviceColor}
+              statusText={item.statusText}
+              infoWindow
+              imeterSetId={item.imeterSetId}
+              infoWindowRef={ref}
+              zoom={zoom}
+            />
+          ))
           : null}
         {!props.irpd.loading && showPump
           ? props.irpd.result?.map((item, index) => (
-              <WaterPumpDevice
-                key={'water-pump' + index}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                name={item.name}
-                updated={item.updated}
-                id={item.id}
-                onSelect={onSetDevice}
-                deviceColor={item.deviceColor}
-                statusText={item.statusText}
-                waterId={item.waterId}
-                infoWindow
-              />
-            ))
+            <WaterPumpDevice
+              key={'water-pump' + index}
+              centerLat={item.centerLat}
+              centerLng={item.centerLng}
+              name={item.name}
+              updated={item.updated}
+              id={item.id}
+              onSelect={onSetDevice}
+              deviceColor={item.deviceColor}
+              statusText={item.statusText}
+              infoWindowRef={ref}
+              waterId={item.waterId}
+              infoWindow
+              zoom={zoom}
+            />
+          ))
           : null}
         {!props.repeater.loading && showRepeaters
           ? props.repeater.result?.map((item, index) => (
-              <RepeaterDevice
-                key={'reepater' + index}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                name={item.name}
-                updated={item.updated}
-                id={item.id}
-                onSelect={() => null}
-              />
-            ))
+            <RepeaterDevice
+              key={'reepater' + index}
+              centerLat={item.centerLat}
+              centerLng={item.centerLng}
+              name={item.name}
+              infoWindowRef={ref}
+              updated={item.updated}
+              id={item.id}
+              onSelect={() => null}
+              zoom={zoom}
+            />
+          ))
           : null}
       </GoogleMap>
     </>

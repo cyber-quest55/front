@@ -42,13 +42,14 @@ export default [
       },
     ],
   },
-
   {
     path: '/farms',
     name: 'Control',
     icon: 'formOutlined',
     routes: [
       {
+        hasNavbar: false,
+
         path: '/farms/:id',
         name: 'Sua Fazenda',
         component: './Farms/[id].tsx',
@@ -56,6 +57,7 @@ export default [
       {
         path: '/farms/:id/edit',
         name: 'Editar fazenda',
+        hideInMenu: true,
         component: './Farms/Edit.tsx'
       },
     ],
