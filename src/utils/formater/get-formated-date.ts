@@ -28,6 +28,9 @@ export const formatDateTime = (date: string) => {
   return newDate;
 };
 
-export function formatDayJsDate(isoDate: string) {
-  return dayjs(isoDate).format('DD/MM/YY HH:mm');
+export function formatDayJsDate(
+  isoDate: string,
+  format: string = 'DD/MM/YY HH:mm'
+) {
+  return dayjs(isoDate).format(format);
 }

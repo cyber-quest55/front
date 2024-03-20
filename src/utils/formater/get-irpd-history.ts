@@ -45,7 +45,7 @@ export const getIrpdHistoryArrayFmt = (data: APIModels.IrpdHistoryCompleteListIt
         badge: true,
         badgeStatus: getIrpdBadgeStatus(item.irpd_action_v5.message_status),
         origin: PumpHistoryOrigin.Command,
-        created: new Date(item.irpd_action_v5.created),
+        created: formatDayJsDate(item.irpd_action_v5.created),
       };
     }
 
