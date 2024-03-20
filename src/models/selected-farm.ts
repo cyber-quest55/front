@@ -27,9 +27,19 @@ export default {
   },
 
   effects: {
-    *setSelectedFarm({ payload }: { payload: any }, { put }: { put: any }) {
+    *setSelectedFarm(
+      { payload }: { payload: any },
+      { put, select }: { put: any, select: any },
+    ) {
       yield put({ type: 'setSelectedFarmDefinition', payload: payload });
       yield put({ type: 'selectedDevice/setDeviceClose', payload: {} });
+
+      const state = yield select((state) => state.farm);
+      if (state.selectedFarm.id !== payload.id) {
+        yield put({ type: 'pivotInformation/onDestroy', payload: {} });
+        yield put({ type: 'irpd/onDestroyDeviceBox', payload: {} });
+        yield put({ type: 'meterSystem/onDestroyDeviceBox', payload: {} });
+      }
     },
   },
 

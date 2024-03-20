@@ -1,7 +1,6 @@
 import { GetIrpdHistoryModelProps, queryIrpdHistory } from '@/models/irpd-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { PumpHistoryOrigin } from '@/utils/enum/pump-history-origin';
-import { formatDate } from '@/utils/formater/get-formated-date';
 import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
@@ -166,7 +165,7 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
             dataIndex: 'created',
             render: (value, item) => {
               return item?.created ? (
-                <>{formatDate(item.created)}</>
+                <>{item.created}</>
               ) : <></>;
             },
           },
@@ -198,7 +197,9 @@ const IrpdActivityHistoricTable: React.FC<Props> = (props) => {
         ]}
         expandable={{
           expandedRowRender: (record) => (
-            <ProDescriptions title={formatDate(record.arrived)}>
+            <ProDescriptions title={
+              record.arrived ? record.arrived : ''
+            }>
               {record.username ? (
                 <ProDescriptions.Item dataIndex="username" label="Nome" valueType="text">
                   {record.username}
