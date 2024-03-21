@@ -58,8 +58,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
   const { md, xs} = useScreenHook();
   const params = useParams();
 
-  //const [isConnected, setIsConnected] = useState(false);
-
   const Bottom: FC = () => {
     const disabled = !props.selectedDevice.open;
 
@@ -98,37 +96,6 @@ const Welcome: FunctionComponent<Props> = (props) => {
       </TabBar>
     )
   }
-
-  /**
-  useMount(() => {
-    socket.connect();
-
-    function onConnect() {}
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
-    socket.on('msg', (data: any) => {
-      props.dispatch({
-        type: 'pivotInformation/setNewPivotInformation',
-        payload: data,
-      });
-    });
-
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
-
-    socket.on('disconnect', onDisconnect);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('msg');
-    };
-  });
- */
 
   const getDeviceBySelected = (selected: string) => {
     switch (selected) {

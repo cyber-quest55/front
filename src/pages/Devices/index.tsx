@@ -1,240 +1,254 @@
-import DeviceList from '@/components/DeviceList';
 import RenderDotDevices from '@/components/RenderDotDevices';
 import { useScreenHook } from '@/hooks/screen';
-import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
-import { ProCard } from '@ant-design/pro-components';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Col, Row, Spin, Tabs } from 'antd';
+import { history, useParams } from '@umijs/max';
+import { SelectedFarmModelProps } from '@/models/selected-farm';
+import { GetFarmModelProps, queryFarm } from '@/models/farm';
+import { useMount } from 'ahooks';
+import { Col, Row, Spin } from 'antd';
+import { TabBar } from 'antd-mobile';
+import { AppOutline, MessageOutline, UnorderedListOutline } from 'antd-mobile-icons';
 import { connect } from 'dva';
-import { FunctionComponent, ReactNode } from 'react';
+import {
+  FC,
+  FunctionComponent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
 
 type Props = {
   children: ReactNode;
   google?: any;
   pivot: GetPivotModelProps;
   farm: GetFarmModelProps;
+  selectedFarm: SelectedFarmModelProps;
+  queryFarm: typeof queryFarm;
 };
 
 const Devices: FunctionComponent<Props> = (props) => {
-  const { md } = useScreenHook();
+  const params = useParams();
+  const { xs, md } = useScreenHook();
+  const [ activeKey, setActiveKey ] = useState('1');
 
-  const className = useEmotionCss(({}) => {
+  // Page component styles
+  const className = useEmotionCss(({ }) => {
     return md
       ? {
-          position: 'absolute',
-          width: 400,
-          top: 10,
-          left: 45,
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        }
+        position: 'absolute',
+        width: 400,
+        top: 10,
+        left: 45,
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      }
       : {
-          width: '100%',
-          minHeight: '150px',
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        };
+        width: '100%',
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      };
   });
 
-  const classNameFixedMobile = useEmotionCss(({}) => {
-    return {
-      height: 65,
-      width: '100%',
-      background: 'white',
-      zIndex: 3,
-      ['.ant-tabs-nav-wrap']: {
-        display: 'flex',
-        justifyContent: 'center',
+  const classNames = useEmotionCss(() => ({
+    '.ant-pro-page-container-children-container': {
+      paddingInline: 0,
+      paddingBlock: 0,
+      paddingBlockStart: '0px !important',
+    },
+    '.ant-pro-page-container-warp-page-header': {
+      display: 'none'
+    },
+
+    '.ant-page-header-heading': {
+      paddingBlockStart: '0px !important',
+    },
+  }));
+
+  // Renderers
+  const Bottom: FC = useCallback(() => {
+    const disabled = false;
+
+    const setRouteActive = (value: string) => {
+      /** Caso nosso dispositivo ainda não esteja selecionado */
+      if (value === '3' && disabled) {
+        return;
+      }
+      setActiveKey(value)
+    }
+
+    const tabs = [
+      {
+        key: '1',
+        title: 'Mapa',
+        icon: <AppOutline />,
       },
-      ['.ant-tabs-nav']: {
-        background: 'white',
-        zIndex: '5',
-        marginTop: '0px',
+      {
+        key: '2',
+        title: 'Lista',
+        icon: <UnorderedListOutline />,
       },
-    };
+      {
+        key: '3',
+        title: 'Dispositivo',
+        icon: <MessageOutline />,
+        disabled,
+      },
+    ]
+
+    return (
+      <TabBar safeArea activeKey={activeKey} onChange={value => setRouteActive(value)}>
+        {tabs.map(item => (
+          <TabBar.Item key={item.key} icon={item.icon} title={item.title} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }} />
+        ))}
+      </TabBar>
+    )
+  }, [])
+
+
+  // Page effects
+  useMount(() => {
+    if (!props.farm.loaded) {
+      if (params.id !== ':id') {
+        props.queryFarm({ id: Number(params.id) });
+      } else {
+        props.queryFarm({});
+      }
+    }
   });
 
-  const items = [
-    {
-      key: '1',
-      label: `Tab 1`,
-      children: (
-        <Spin spinning={false}>
-          <div style={{ width: '100%', height: 'calc(100vh - 102px)' }}>
-            <RenderDotDevices />
-          </div>
-        </Spin>
-      ),
-    },
-    {
-      key: '2',
-      label: `Tab 2`,
-      children: (
-        <ProCard className={className}>
-          <DeviceList />
-        </ProCard>
-      ),
-    },
-  ];
+  // useEffect(() => {
+  //   if (params.id === ':id' && props.selectedFarm.id !== 0) {
+  //     history.push(`${props.selectedFarm.id}`);
+  //     return;
+  //   }
+  // }, [
+  //   params,
+  //   props.selectedFarm
+  // ]);
 
+  // useEffect(() => {
+  //   if (
+  //       props.selectedFarm.id !== 0 && (
+  //         params.id !== ':id' &&
+  //         props.selectedFarm.id !==  Number(params.id)
+  //       )        
+  //   ) {
+  //     history.push(`${props.selectedFarm.id}`);
+  //     return;
+  //   }
+  // }, [
+  //   props.selectedFarm
+  // ]);
+
+  // TSX
   return (
-    <Row>
-      <Col
-        xs={24}
-        style={{
-          height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
-          position: 'relative',
+    <section className={classNames}>
+      <PageContainer
+        header={{
+          children: (
+            <div style={{ display: 'none' }}>asd</div>
+          ) 
         }}
+        ghost
+        breadcrumb={{}}
+        title={''}
       >
-        <>
-          {md ? (
-            <Spin spinning={props.pivot.loading || props.farm.loading}>
-              <div style={{ width: '100%', height: '100vh' }}>
-                <RenderDotDevices />
-              </div>
-              <ProCard className={className}>
-                <DeviceList />
-              </ProCard>
-              {/***
-                 <ProCard
-              className={legendClassName}
-              title="Dispositivos"
-            >
-             
-              <Space direction="vertical" size="middle">
-                <Space direction="vertical">
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Central encontrada </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Controlador encontrado </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Bomba encontrada </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Repetidora encontrada </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> GPS/Monitor encontrado </Typography.Text>
-                  </Space>
-                </Space>
-                <Space size={35} align='start' style={{ fontSize: 10 }}>
-                  <Space direction="vertical" size="small" align="start">
-                    <Typography.Text style={{ fontWeight: 500 }}>Dispositivo</Typography.Text>
-                    <Space direction="vertical" size={6}>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'green',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Encontrado </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'red',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Não encontrado </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'yellow',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Central </Typography.Text>
-                      </Space>
+        {
+          md ? (
+            <Row>            
+              <Col
+                xs={24}
+                style={{
+                  height: '100vh',
+                  marginTop: -23,
+                  position: 'relative',
+                }}
+              >
+                {
+                  md ? (
+                    <Spin spinning={false}>
+                      <div style={{ width: '100%', height: '100vh' }}>
+                        <RenderDotDevices />
+                      </div>
+                      <ProCard className={className}>
 
-                    </Space>
-                  </Space>
-                  <Space direction="vertical" size="small" align="start" >
-                    <Typography.Text style={{ fontWeight: 500 }}>Linha</Typography.Text>
-                    <Space direction="vertical" size={6}>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'green',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Muito forte </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'blue',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Forte </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'orange',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Moderado </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'red',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Fraco </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'black',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Erro </Typography.Text>
-                      </Space>
-                    </Space>
-                  </Space>
-                </Space>
-              </Space>
-            </ProCard>
-                 */}
-            </Spin>
-          ) : null}
-          {md ? null : (
-            <div className={classNameFixedMobile}>
-              <Tabs defaultActiveKey="1" items={items} tabPosition="bottom" />
-            </div>
-          )}
-        </>
-      </Col>
-    </Row>
+                      </ProCard>
+                    </Spin>
+                  ) : null
+                }
+              </Col>
+            </Row>
+          ) : null
+        }
+        {xs ? (
+          <div className={'app'}>
+            <div className={'body'}>
+              {
+                activeKey === '1' ? (
+                  <Spin spinning={false}>
+                    <div style={{ width: '100vw', }}>
+                      <RenderDotDevices />
+                    </div>
+                  </Spin>
+                ) : null
+              }
+            {
+              activeKey === '2' ? ( 
+                <ProCard className={className}>
+                
+                </ProCard> 
+              ) : null
+            }
+            {
+              activeKey === '3' ? (
+                <Spin spinning={false}>
+      
+                </Spin>                
+              ) : null
+            }
+          </div>
+          <div className={'bottom'}>
+            <Bottom />
+          </div>
+        </div>
+        ) : null}
+      </PageContainer>
+    </section>
   );
 };
 
-const mapStateToProps = ({ pivot, farm }: { pivot: any; farm: any }) => ({
+const mapStateToProps = ({
   pivot,
+  pivotInformation,
   farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  meterSystem,
+  irpd,
+}: any) => ({
+  pivot,
+  pivotInformation,
+  farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  meterSystem,
+  irpd,
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  queryFarm: (props: any) => dispatch(queryFarm(props)),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Devices);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Devices);
