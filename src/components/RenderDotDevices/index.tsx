@@ -7,6 +7,9 @@ import { GetMeterSystemModelProps } from '@/models/meter-sysem';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
+import { ProCard } from '@ant-design/pro-components';
+import { useIntl } from '@umijs/max';
+import { Flex, Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
 import React, { useEffect } from 'react';
 import DotDevice from '../Devices/DotDevice';
@@ -22,8 +25,9 @@ export type RenderPivotsProps = {
 };
 
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
+  const intl = useIntl();
   const { xl } = useScreenHook();
-  
+
   const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
     lat: 0,
     lng: 0,
@@ -43,6 +47,79 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
 
   return (
     <>
+    {xl ? (
+        <Flex
+          gap={12}
+          style={{
+            position: 'absolute',
+            bottom: 12,
+            zIndex: 999,
+            left: 44,
+           
+          }}
+        >
+          <ProCard
+            style={{
+              padding: 0,
+              width: 150,
+            }}
+          >
+            <Space>
+              <Switch
+                onChange={(e) => console.log(e)}
+                size="small"
+              />
+              <Typography.Text>
+                {
+                  intl.formatMessage({
+                    id: 'component.signal.map.switch.rellief',
+                  })
+                }
+              </Typography.Text>
+            </Space>
+          </ProCard>
+          <ProCard
+            style={{
+              padding: 0,
+              width: 165,
+            }}
+          >
+            <Space>
+              <Switch
+                onChange={(e) => console.log(e)}
+                size="small"
+              />
+              <Typography.Text>
+                {
+                  intl.formatMessage({
+                    id: 'component.signal.map.switch.gps',
+                  })
+                }
+              </Typography.Text>
+            </Space>
+          </ProCard>
+          <ProCard
+            style={{
+              padding: 0,
+              width: 165
+            }}
+          >
+            <Space>
+              <Switch
+                onChange={(e) => console.log(e)} 
+                size="small"
+              />
+              <Typography.Text>
+                {
+                  intl.formatMessage({
+                    id: 'component.signal.map.switch.lines',
+                  })
+                }
+              </Typography.Text>
+            </Space>
+          </ProCard>
+        </Flex>
+      ) : null}
       <GoogleMap
         onLoad={(map) => setMap(map)}
         onZoomChanged={() => {
@@ -63,8 +140,9 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
         }}
         zoom={zoom}
       >
-        {!props.pivotInformation.loading
-          ? props.pivotInformation.result?.map((item) => (
+        {
+          !props.pivotInformation.loading
+            ? props.pivotInformation.result?.map((item) => (
               <DotDevice
                 id={item.id}
                 key={item.id}
@@ -78,9 +156,11 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 infoWindowRef={null}
               />
             ))
-          : null}
-        {!props.meterSystem.loading
-          ? props.meterSystem.result?.map((item) => (
+            : null
+        }
+        {
+          !props.irpd.loading
+            ? props.irpd.result?.map((item) => (
               <DotDevice
                 id={item.id}
                 key={item.id}
@@ -94,25 +174,11 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 infoWindowRef={null}
               />
             ))
-          : null}
-        {!props.irpd.loading
-          ? props.irpd.result?.map((item) => (
-              <DotDevice
-                id={item.id}
-                key={item.id}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                deviceColor="#FF0000"
-                lineColor="#fff"
-                name={item.name}
-                updated={item.updated}
-                mapRef={null}
-                infoWindowRef={null}
-              />
-            ))
-          : null}
-        {!props.central.loading
-          ? props.central.result?.map((item) => (
+            : null
+        }
+        {
+          !props.central.loading
+            ? props.central.result?.map((item) => (
               <DotDevice
                 id={item.id}
                 key={item.id}
@@ -126,9 +192,11 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 infoWindowRef={null}
               />
             ))
-          : null}
-        {!props.repeater.loading
-          ? props.repeater.result?.map((item) => (
+            : null
+        }
+        {
+          !props.repeater.loading
+            ? props.repeater.result?.map((item) => (
               <DotDevice
                 id={item.id}
                 key={item.id}
@@ -142,31 +210,34 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 infoWindowRef={null}
               />
             ))
-          : null}
+            : null
+        }
       </GoogleMap>
     </>
   );
 };
 
-const mapStateToProps = 
-({
-  pivotInformation,
-  farm,
-  meterSystem,
-  irpd,
-  central,
-  repeater,
-}:  any) => ({
-  pivotInformation,
-  farm,
-  meterSystem,
-  irpd,
-  central,
-  repeater,
-});
+const mapStateToProps =
+  ({
+    pivotInformation,
+    farm,
+    meterSystem,
+    irpd,
+    central,
+    repeater,
+  }: any) => ({
+    pivotInformation,
+    farm,
+    meterSystem,
+    irpd,
+    central,
+    repeater,
+  });
 
 
-const mapDispatchToProps = () => ({ 
-});
+const mapDispatchToProps = () => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(RenderDotDevices);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RenderDotDevices);
