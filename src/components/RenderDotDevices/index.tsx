@@ -11,7 +11,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { Flex, Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
 
 export type RenderPivotsProps = {
@@ -27,6 +27,10 @@ export type RenderPivotsProps = {
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   const intl = useIntl();
   const { xl } = useScreenHook();
+  const [
+    mapMode,
+    setMapMode
+  ] = useState<'satellite' | 'terrain'>('satellite');
 
   const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
     lat: 0,
@@ -66,7 +70,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           >
             <Space>
               <Switch
-                onChange={(e) => console.log(e)}
+                onChange={(e) => setMapMode(e ? 'terrain' : 'satellite')}
                 size="small"
               />
               <Typography.Text>
@@ -132,7 +136,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           rotateControl: false,
           mapTypeControl: false,
           isFractionalZoomEnabled: false,
-          mapTypeId: 'satellite',
+          mapTypeId: mapMode,
           zoomControl: false,
           scaleControl: false,
           fullscreenControl: false,
