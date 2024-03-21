@@ -104,7 +104,7 @@ const DeviceBox: React.FC<Props> = (props) => {
     };
   });
 
-  const className = useEmotionCss(({ }) => {
+  const className = useEmotionCss(() => {
     return {
       [`.ant-pro-card-body`]: {
         paddingInline: '0px !important',

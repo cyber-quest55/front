@@ -10,7 +10,7 @@ export type CirclePivotProps = {
   deviceColor?: string;
   infoWindowRef: any;
   mapRef: any;
-
+  lineColor: string;
 };
 
 const CircleOptions = {
@@ -50,7 +50,6 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({ centerLat, centerLng
         onMouseOut={handleMouseLeave}
         options={circleOptions}
       />
-
     </>
   );
 }, (prevProps, nextProps) => {

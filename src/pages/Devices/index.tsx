@@ -1,15 +1,20 @@
+import SignalDevices from '@/components/SignalDevices';
 import RenderDotDevices from '@/components/RenderDotDevices';
 import { useScreenHook } from '@/hooks/screen';
 import { GetPivotModelProps } from '@/models/pivot';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { history, useParams } from '@umijs/max';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
+import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/pivot-information';
+import { GetIrpdModelProps, queryIrpd } from '@/models/irpd';
+import { queryPivot } from '@/models/pivot';
+import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
 import { GetFarmModelProps, queryFarm } from '@/models/farm';
+import { useParams } from '@umijs/max';
 import { useMount } from 'ahooks';
-import { Col, Row, Spin } from 'antd';
+import {  Col, Row, Spin } from 'antd';
 import { TabBar } from 'antd-mobile';
-import { AppOutline, MessageOutline, UnorderedListOutline } from 'antd-mobile-icons';
+import { AppOutline, UnorderedListOutline } from 'antd-mobile-icons';
 import { connect } from 'dva';
 import {
   FC,
@@ -24,9 +29,16 @@ type Props = {
   children: ReactNode;
   google?: any;
   pivot: GetPivotModelProps;
+  pivotInformation: GetPivotInformationModelProps;
+  irpd: GetIrpdModelProps;
+  repeater: GetRepeaterModelProps;
   farm: GetFarmModelProps;
   selectedFarm: SelectedFarmModelProps;
   queryFarm: typeof queryFarm;
+  queryPivotInformation: typeof queryPivotInformation;
+  queryIrpd: typeof queryIrpd;
+  queryPivot: typeof queryPivot;
+  queryRepeater: typeof queryRepeater;
 };
 
 const Devices: FunctionComponent<Props> = (props) => {
@@ -76,12 +88,11 @@ const Devices: FunctionComponent<Props> = (props) => {
     const disabled = false;
 
     const setRouteActive = (value: string) => {
-      /** Caso nosso dispositivo ainda não esteja selecionado */
       if (value === '3' && disabled) {
         return;
       }
-      setActiveKey(value)
-    }
+      setActiveKey(value);
+    };
 
     const tabs = [
       {
@@ -91,26 +102,42 @@ const Devices: FunctionComponent<Props> = (props) => {
       },
       {
         key: '2',
-        title: 'Lista',
+        title: 'Radios',
         icon: <UnorderedListOutline />,
       },
       {
         key: '3',
-        title: 'Dispositivo',
-        icon: <MessageOutline />,
-        disabled,
+        title: 'Sinal',
+        icon: <UnorderedListOutline />,
       },
-    ]
+    ];
 
     return (
-      <TabBar safeArea activeKey={activeKey} onChange={value => setRouteActive(value)}>
-        {tabs.map(item => (
-          <TabBar.Item key={item.key} icon={item.icon} title={item.title} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }} />
-        ))}
+      <TabBar
+        safeArea
+        activeKey={activeKey}
+        onChange={value => {
+          setRouteActive(value);
+        }}
+      >
+        {
+          tabs.map(item => (
+            <TabBar.Item
+              key={item.key}
+              icon={item.icon}
+              title={item.title}
+              style={{ 
+                cursor: disabled ? 'not-allowed' : 'pointer'
+              }}
+            />
+          ))
+        }
       </TabBar>
-    )
-  }, [])
-
+    );
+  }, [
+    activeKey,
+    setActiveKey
+  ]);
 
   // Page effects
   useMount(() => {
@@ -123,29 +150,25 @@ const Devices: FunctionComponent<Props> = (props) => {
     }
   });
 
-  // useEffect(() => {
-  //   if (params.id === ':id' && props.selectedFarm.id !== 0) {
-  //     history.push(`${props.selectedFarm.id}`);
-  //     return;
-  //   }
-  // }, [
-  //   params,
-  //   props.selectedFarm
-  // ]);
-
-  // useEffect(() => {
-  //   if (
-  //       props.selectedFarm.id !== 0 && (
-  //         params.id !== ':id' &&
-  //         props.selectedFarm.id !==  Number(params.id)
-  //       )        
-  //   ) {
-  //     history.push(`${props.selectedFarm.id}`);
-  //     return;
-  //   }
-  // }, [
-  //   props.selectedFarm
-  // ]);
+  useEffect(() => {
+    if (params.id !== ':id') {
+      props.queryIrpd({
+        id: parseInt(params.id as string),
+      });
+      props.queryPivot({
+        id: parseInt(params.id as string),
+      });
+      props.queryRepeater({
+        id: parseInt(params.id as string),
+      });
+      props.queryPivotInformation({
+        id: parseInt(params.id as string),
+        params: {},
+      });
+    }
+  }, [
+    params
+  ]);
 
   // TSX
   return (
@@ -153,7 +176,9 @@ const Devices: FunctionComponent<Props> = (props) => {
       <PageContainer
         header={{
           children: (
-            <div style={{ display: 'none' }}>asd</div>
+            <div style={{ display: 'none' }}>
+
+            </div>
           ) 
         }}
         ghost
@@ -173,12 +198,21 @@ const Devices: FunctionComponent<Props> = (props) => {
               >
                 {
                   md ? (
-                    <Spin spinning={false}>
+                    <Spin
+                      spinning={
+                        props.pivot.loading ||
+                        props.farm.loading ||
+                        props.irpd.loading ||
+                        props.pivotInformation.loading
+                      }
+                    >
                       <div style={{ width: '100%', height: '100vh' }}>
                         <RenderDotDevices />
                       </div>
-                      <ProCard className={className}>
-
+                      <ProCard
+                        className={className}
+                      >
+                        <SignalDevices />
                       </ProCard>
                     </Spin>
                   ) : null
@@ -192,32 +226,43 @@ const Devices: FunctionComponent<Props> = (props) => {
             <div className={'body'}>
               {
                 activeKey === '1' ? (
-                  <Spin spinning={false}>
+                  <Spin
+                    spinning={
+                      props.pivot.loading ||
+                      props.farm.loading ||
+                      props.irpd.loading ||
+                      props.pivotInformation.loading
+                    }
+                  >
                     <div style={{ width: '100vw', }}>
                       <RenderDotDevices />
                     </div>
                   </Spin>
                 ) : null
               }
-            {
-              activeKey === '2' ? ( 
-                <ProCard className={className}>
-                
-                </ProCard> 
-              ) : null
-            }
-            {
-              activeKey === '3' ? (
-                <Spin spinning={false}>
-      
-                </Spin>                
-              ) : null
-            }
+              {
+                activeKey === '2' ? ( 
+                  <ProCard
+                    className={className}
+                  >
+                    <SignalDevices />
+                  </ProCard> 
+                ) : null
+              }
+              {
+                activeKey === '3' ? ( 
+                  <ProCard
+                    className={className}
+                  >
+                  
+                  </ProCard> 
+                ) : null
+              }
+            </div>
+            <div className={'bottom'}>
+              <Bottom />
+            </div>
           </div>
-          <div className={'bottom'}>
-            <Bottom />
-          </div>
-        </div>
         ) : null}
       </PageContainer>
     </section>
@@ -231,7 +276,6 @@ const mapStateToProps = ({
   selectedDevice,
   selectedFarm,
   repeater,
-  meterSystem,
   irpd,
 }: any) => ({
   pivot,
@@ -240,12 +284,15 @@ const mapStateToProps = ({
   selectedDevice,
   selectedFarm,
   repeater,
-  meterSystem,
   irpd,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryFarm: (props: any) => dispatch(queryFarm(props)),
+  queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
+  queryIrpd: (props: any) => dispatch(queryIrpd(props)),
+  queryRepeater: (props: any) => dispatch(queryRepeater(props)),
+  queryPivot: (props: any) => dispatch(queryPivot(props)),
 });
 
 export default connect(

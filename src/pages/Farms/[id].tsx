@@ -158,7 +158,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
   }, [props.selectedDevice]);
 
   useMount(async () => {
-    props.connectWebsocket()
+    props.connectWebsocket();
   })
 
   const className = useEmotionCss(({ }) => {

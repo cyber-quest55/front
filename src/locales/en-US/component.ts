@@ -974,4 +974,6 @@ export default {
   'component.imeter.status.212': 'Battery level below 10V',
   'component.imeter.status.213': 'Unknown status',
   'component.imeter.status.none': 'Unknown status',
+  // Signal screen component texts
+  'component.signal.box.radio.search': 'Ping Radios',
 };
