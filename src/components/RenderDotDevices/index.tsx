@@ -31,6 +31,10 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
     mapMode,
     setMapMode
   ] = useState<'satellite' | 'terrain'>('satellite');
+  const [showGps, setShowGps] = useState<boolean>(false);
+  const [drawLines, setDrawLines] = useState<boolean>(false);
+
+  console.log(showGps, drawLines);
 
   const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
     lat: 0,
@@ -51,86 +55,86 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
 
   return (
     <>
-    {xl ? (
-        <Flex
-          gap={12}
-          style={{
-            position: 'absolute',
-            bottom: 12,
-            zIndex: 999,
-            left: 44,
-           
-          }}
-        >
-          <ProCard
+      {
+        xl ? (
+          <Flex
+            gap={12}
             style={{
-              padding: 0,
-              width: 150,
+              position: 'absolute',
+              bottom: 12,
+              zIndex: 999,
+              left: 44,
+
             }}
           >
-            <Space>
-              <Switch
-                onChange={(e) => setMapMode(e ? 'terrain' : 'satellite')}
-                size="small"
-              />
-              <Typography.Text>
-                {
-                  intl.formatMessage({
-                    id: 'component.signal.map.switch.rellief',
-                  })
-                }
-              </Typography.Text>
-            </Space>
-          </ProCard>
-          <ProCard
-            style={{
-              padding: 0,
-              width: 165,
-            }}
-          >
-            <Space>
-              <Switch
-                onChange={(e) => console.log(e)}
-                size="small"
-              />
-              <Typography.Text>
-                {
-                  intl.formatMessage({
-                    id: 'component.signal.map.switch.gps',
-                  })
-                }
-              </Typography.Text>
-            </Space>
-          </ProCard>
-          <ProCard
-            style={{
-              padding: 0,
-              width: 165
-            }}
-          >
-            <Space>
-              <Switch
-                onChange={(e) => console.log(e)} 
-                size="small"
-              />
-              <Typography.Text>
-                {
-                  intl.formatMessage({
-                    id: 'component.signal.map.switch.lines',
-                  })
-                }
-              </Typography.Text>
-            </Space>
-          </ProCard>
-        </Flex>
-      ) : null}
+            <ProCard
+              style={{
+                padding: 0,
+                width: 150,
+              }}
+            >
+              <Space>
+                <Switch
+                  onChange={(e) => setMapMode(e ? 'terrain' : 'satellite')}
+                  size="small"
+                />
+                <Typography.Text>
+                  {
+                    intl.formatMessage({
+                      id: 'component.signal.map.switch.rellief',
+                    })
+                  }
+                </Typography.Text>
+              </Space>
+            </ProCard>
+            <ProCard
+              style={{
+                padding: 0,
+                width: 165,
+              }}
+            >
+              <Space>
+                <Switch
+                  onChange={(e) => setShowGps(e)}
+                  size="small"
+                />
+                <Typography.Text>
+                  {
+                    intl.formatMessage({
+                      id: 'component.signal.map.switch.gps',
+                    })
+                  }
+                </Typography.Text>
+              </Space>
+            </ProCard>
+            <ProCard
+              style={{
+                padding: 0,
+                width: 165
+              }}
+            >
+              <Space>
+                <Switch
+                  onChange={(e) => setDrawLines(e)}
+                  size="small"
+                />
+                <Typography.Text>
+                  {
+                    intl.formatMessage({
+                      id: 'component.signal.map.switch.lines',
+                    })
+                  }
+                </Typography.Text>
+              </Space>
+            </ProCard>
+          </Flex>
+        ) : null
+      }
       <GoogleMap
         onLoad={(map) => setMap(map)}
-        onZoomChanged={() => {
-          if (map !== null) setZoom(map.getZoom());
-        }}
         mapContainerStyle={containerStyle}
         center={mapCenter}
+        zoom={zoom}
         options={{
           keyboardShortcuts: false,
           rotateControl: false,
@@ -142,7 +146,9 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           fullscreenControl: false,
           streetViewControl: false,
         }}
-        zoom={zoom}
+        onZoomChanged={() => {
+          if (map !== null) setZoom(map.getZoom());
+        }}
       >
         {
           !props.pivotInformation.loading

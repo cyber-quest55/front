@@ -78,10 +78,9 @@ const SignalDevices: React.FC<Props> = (props) => {
   });
 
   // Data sources
-  const pivotDatasource = props?.pivot?.result?.map((item) => ({
+  const pivotDatasource = props?.pivotInformation?.result?.map((item) => ({
     title: (
       <Row
-        onClick={() => {}}
         key={`row-pivot-information-${item.id}`}
         justify="space-between"
         style={{ width: '100%' }}
@@ -92,11 +91,27 @@ const SignalDevices: React.FC<Props> = (props) => {
           </span>
         </Col>
         <Col>
-          <Tag color="red">
-            Test tag 1
+          <Tag
+            color="green"
+            onClick={(e) => {
+              e.preventDefault();
+              console.log('[controller button]');
+            }}
+          >
+            {intl.formatMessage({
+              id: 'component.signal.box.devices.item.controller',
+            })}
           </Tag>
-          <Tag color="blue">
-            Test tag 2
+          <Tag
+            color="red"
+            onClick={(e) => {
+              e.preventDefault();
+              console.log('[gps button]');
+            }}
+          >
+            {intl.formatMessage({
+              id: 'component.signal.box.devices.item.gps',
+            })}
           </Tag>
         </Col>
       </Row>
@@ -105,7 +120,9 @@ const SignalDevices: React.FC<Props> = (props) => {
       <></>
     ),
     content: (
-      <></>
+      <Typography.Text type="secondary">
+        {item.updated}
+      </Typography.Text>
     ),
   }));
 
@@ -123,11 +140,15 @@ const SignalDevices: React.FC<Props> = (props) => {
           </span>
         </Col>
         <Col>
-          <Tag color="red">
-            Test tag 1
+          <Tag color="green">
+            {intl.formatMessage({
+              id: 'component.signal.box.devices.item.controller',
+            })}
           </Tag>
-          <Tag color="blue">
-            Test tag 2
+          <Tag color="red">
+            {intl.formatMessage({
+              id: 'component.signal.box.devices.item.gps',
+            })}
           </Tag>
         </Col>
       </Row>
@@ -156,11 +177,15 @@ const SignalDevices: React.FC<Props> = (props) => {
           </span>
         </Col>
         <Col>
-          <Tag color="red">
-            Test tag 1
+          <Tag color="green">
+            {intl.formatMessage({
+              id: 'component.signal.box.devices.item.controller',
+            })}
           </Tag>
-          <Tag color="blue">
-            Test tag 2
+          <Tag color="red">
+            {intl.formatMessage({
+              id: 'component.signal.box.devices.item.gps',
+            })}
           </Tag>
         </Col>
       </Row>
@@ -174,6 +199,12 @@ const SignalDevices: React.FC<Props> = (props) => {
       </Typography.Text>
     ),
   }));
+
+  const finalDatasource = [
+    ...pivotDatasource,
+    ...irpdDatasource,
+    ...repeaterDatasource,
+  ];
 
   // Renderers
   const renderDeviceList = useCallback((datasource: {
@@ -231,15 +262,19 @@ const SignalDevices: React.FC<Props> = (props) => {
         }}
       >
         {
-          /* Pivot items */
-          props?.pivot?.result.length > 0 ? (
+          /* Unified list */
+          (
+            props?.pivot?.result.length > 0,
+            props?.irpd?.result.length > 0,
+            props?.repeater?.result.length > 0
+          ) ? (
             <>
               <Typography.Title
                 level={5}
                 style={{ textAlign: 'center', marginTop: 8 }}
               >
                 {intl.formatMessage({
-                  id: 'component.farm.devices.type.pivot',
+                  id: 'component.signal.box.devices.label',
                 })}
               </Typography.Title>
               <Divider
@@ -248,63 +283,7 @@ const SignalDevices: React.FC<Props> = (props) => {
                   marginTop: 0
                 }}
               />
-              {renderDeviceList(pivotDatasource)}
-              <Divider
-                style={{
-                  marginBottom: 0,
-                  marginTop: 0
-                }}
-              />
-            </>
-          ) : null
-        }
-        {
-          /* Irpd items */
-          props?.irpd?.result.length > 0 ? (
-            <>
-              <Typography.Title
-                level={5}
-                style={{ textAlign: 'center', marginTop: 8 }}
-              >
-                {intl.formatMessage({
-                  id: 'component.farm.devices.type.irpd',
-                })}
-              </Typography.Title>
-              <Divider
-                style={{
-                  marginBottom: 0,
-                  marginTop: 0
-                }}
-              />
-              {renderDeviceList(irpdDatasource)}
-              <Divider
-                style={{
-                  marginBottom: 0,
-                  marginTop: 0
-                }}
-              />
-            </>
-          ) : null
-        }
-        {
-          /* Repeater items */
-          props?.repeater?.result.length > 0 ? (
-            <>
-              <Typography.Title
-                level={5}
-                style={{ textAlign: 'center', marginTop: 8 }}
-              >
-                {intl.formatMessage({ id:
-                  'component.farm.devices.type.repeaters',
-                })}
-              </Typography.Title>
-              <Divider
-                style={{
-                  marginBottom: 0,
-                  marginTop: 0
-                }}
-              />
-              {renderDeviceList(repeaterDatasource)}
+              {renderDeviceList(finalDatasource)}
               <Divider
                 style={{
                   marginBottom: 0,

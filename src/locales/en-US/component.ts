@@ -976,6 +976,9 @@ export default {
   'component.imeter.status.none': 'Unknown status',
   // Signal screen component texts
   'component.signal.box.radio.search': 'Ping Radios',
+  'component.signal.box.devices.label': 'Devices',
+  'component.signal.box.devices.item.controller': 'Controller',
+  'component.signal.box.devices.item.gps': 'GPS',
   'component.signal.map.switch.rellief': 'Rellief ',
   'component.signal.map.switch.gps': 'Display GPS ',
   'component.signal.map.switch.lines': 'Draw lines ',
