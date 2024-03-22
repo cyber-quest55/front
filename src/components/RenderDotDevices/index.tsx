@@ -22,9 +22,11 @@ export type RenderPivotsProps = {
   irpd: GetIrpdModelProps;
   central: GetCentralModelProps;
   repeater: GetRepeaterModelProps;
+  deviceCenterCoordinates?: { lat: number, lng: number }
 };
 
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
+  // Gooks
   const intl = useIntl();
   const { xl } = useScreenHook();
   const [
@@ -33,19 +35,27 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   ] = useState<'satellite' | 'terrain'>('satellite');
   const [showGps, setShowGps] = useState<boolean>(false);
   const [drawLines, setDrawLines] = useState<boolean>(false);
-
-  console.log(showGps, drawLines);
-
-  const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(14, {
+  const {
+    zoom,
+    setZoom,
+    map,
+    setMap,
+    mapCenter,
+    setMapCenter
+  } = useMapHook(14, {
     lat: 0,
     lng: 0,
   });
 
+  console.log(showGps, drawLines);
+
+  // Styles
   const containerStyle = {
     width: '100%',
     height: xl ? '100vh' : 'calc(100vh -  102px)',
   };
 
+  // Center map when loaded
   useEffect(() => {
     if (props.pivotInformation.loaded === true) {
       const pivot = props.pivotInformation.result[0];
@@ -53,6 +63,14 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
     }
   }, [props.pivotInformation.loaded]);
 
+  // Update map center coordinates when seleting device
+  useEffect(() => {
+    if (props.deviceCenterCoordinates) {
+      setMapCenter(props.deviceCenterCoordinates);
+    }
+  }, [props.deviceCenterCoordinates]);
+
+  // TSX
   return (
     <>
       {

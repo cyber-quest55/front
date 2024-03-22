@@ -29,6 +29,7 @@ type Props = {
   irpd: GetIrpdModelProps;
   repeater: GetRepeaterModelProps;
   selectedFarm: SelectedFarmModelProps;
+  onDeviceMouseOver: (params: { lat: number, lng: number }) => void
 };
 
 // Component
@@ -84,6 +85,12 @@ const SignalDevices: React.FC<Props> = (props) => {
         key={`row-pivot-information-${item.id}`}
         justify="space-between"
         style={{ width: '100%' }}
+        onMouseEnter={() => {
+          props.onDeviceMouseOver({
+            lat: item.centerLat,
+            lng: item.centerLng,
+          })
+        }}
       >
         <Col>
           <span>
@@ -129,10 +136,15 @@ const SignalDevices: React.FC<Props> = (props) => {
   const irpdDatasource = props?.irpd?.result?.map((item) => ({
     title: (
       <Row
-        onClick={() => {}}
         key={`row-irpd-information-${item.id}`}
         justify="space-between"
         style={{ width: '100%' }}
+        onMouseEnter={() => {
+          props.onDeviceMouseOver({
+            lat: item.centerLat,
+            lng: item.centerLng,
+          })
+        }}
       >
         <Col>
           <span>
@@ -166,10 +178,15 @@ const SignalDevices: React.FC<Props> = (props) => {
   const repeaterDatasource = props?.repeater?.result?.map((item) => ({
     title: (
       <Row
-        onClick={() => {}}
         key={`row-repeaters-information-${item.id}`}
         justify="space-between"
         style={{ width: '100%' }}
+        onMouseEnter={() => {
+          props.onDeviceMouseOver({
+            lat: item.centerLat,
+            lng: item.centerLng,
+          })
+        }}
       >
         <Col>
           <span>

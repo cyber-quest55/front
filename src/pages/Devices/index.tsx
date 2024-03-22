@@ -45,6 +45,10 @@ const Devices: FunctionComponent<Props> = (props) => {
   const params = useParams();
   const { xs, md } = useScreenHook();
   const [ activeKey, setActiveKey ] = useState('1');
+  const [ hoveredDevice, setHoveredDevice ] = useState<{ 
+    lat: number,
+    lng: number 
+  } | null>(null);
 
   // Page component styles
   const className = useEmotionCss(({ }) => {
@@ -206,13 +210,24 @@ const Devices: FunctionComponent<Props> = (props) => {
                         props.pivotInformation.loading
                       }
                     >
-                      <div style={{ width: '100%', height: '100vh' }}>
-                        <RenderDotDevices />
+                      <div
+                        style={{ 
+                          width: '100%',
+                          height: '100vh' 
+                        }}
+                      >
+                        <RenderDotDevices
+                          deviceCenterCoordinates={hoveredDevice}
+                        />
                       </div>
                       <ProCard
                         className={className}
                       >
-                        <SignalDevices />
+                        <SignalDevices 
+                          onDeviceMouseOver={({ lat, lng }) => {
+                            setHoveredDevice({ lat, lng });
+                          }}
+                        />
                       </ProCard>
                     </Spin>
                   ) : null
@@ -235,7 +250,9 @@ const Devices: FunctionComponent<Props> = (props) => {
                     }
                   >
                     <div style={{ width: '100vw', }}>
-                      <RenderDotDevices />
+                      <RenderDotDevices
+                        deviceCenterCoordinates={hoveredDevice}
+                      />
                     </div>
                   </Spin>
                 ) : null
@@ -245,7 +262,11 @@ const Devices: FunctionComponent<Props> = (props) => {
                   <ProCard
                     className={className}
                   >
-                    <SignalDevices />
+                    <SignalDevices 
+                      onDeviceMouseOver={({ lat, lng }) => {
+                        setHoveredDevice({ lat, lng });
+                      }}
+                    />
                   </ProCard> 
                 ) : null
               }
