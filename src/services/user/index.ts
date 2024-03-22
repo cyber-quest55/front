@@ -54,10 +54,10 @@ export async function getUserRole(options: API.GetUserPermissionsParams) {
 
 export async function saveUserRole(options: API.SaveUserRoleParams) {
   return request<string>(
-    `/v3/farms/${options.farmId}/users/${options.id}/permissions/admin/`, {
+    `/v4/farms/${options.farmId}/users/${options.id}/permissions/admin/`, {
       method: 'PATCH',
-      params: {
-        administrator: options.administrator
+      data: {
+        administrator: options.administrator,
       }
     }
   );

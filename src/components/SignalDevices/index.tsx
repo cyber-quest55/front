@@ -92,7 +92,7 @@ const SignalDevices: React.FC<Props> = (props) => {
         </Col>
         <Col>
           <Tag
-            color="green"
+            color="#03a05e"
             onClick={(e) => {
               e.preventDefault();
               console.log('[controller button]');
@@ -103,7 +103,7 @@ const SignalDevices: React.FC<Props> = (props) => {
             })}
           </Tag>
           <Tag
-            color="red"
+            color="#dc4446"
             onClick={(e) => {
               e.preventDefault();
               console.log('[gps button]');
@@ -140,12 +140,12 @@ const SignalDevices: React.FC<Props> = (props) => {
           </span>
         </Col>
         <Col>
-          <Tag color="green">
+          <Tag color="#03a05e">
             {intl.formatMessage({
               id: 'component.signal.box.devices.item.controller',
             })}
           </Tag>
-          <Tag color="red">
+          <Tag color="#dc4446">
             {intl.formatMessage({
               id: 'component.signal.box.devices.item.gps',
             })}
@@ -177,12 +177,12 @@ const SignalDevices: React.FC<Props> = (props) => {
           </span>
         </Col>
         <Col>
-          <Tag color="green">
+          <Tag color="#03a05e">
             {intl.formatMessage({
               id: 'component.signal.box.devices.item.controller',
             })}
           </Tag>
-          <Tag color="red">
+          <Tag color="#dc4446">
             {intl.formatMessage({
               id: 'component.signal.box.devices.item.gps',
             })}
