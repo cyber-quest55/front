@@ -11,8 +11,9 @@ import { ProCard } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { Flex, Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
+import SignalInfoWindow from '../Devices/SignalInfoWindow';
 
 export type RenderPivotsProps = {
   zoom: number;
@@ -28,6 +29,7 @@ export type RenderPivotsProps = {
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   // Gooks
   const intl = useIntl();
+  const ref = useRef();
   const { xl } = useScreenHook();
   const [
     mapMode,
@@ -168,6 +170,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           if (map !== null) setZoom(map.getZoom());
         }}
       >
+        <SignalInfoWindow ref={ref} />
         {
           !props.pivotInformation.loading
             ? props.pivotInformation.result?.map((item) => (
@@ -181,7 +184,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 mapRef={null}
-                infoWindowRef={null}
+                infoWindowRef={ref}
               />
             ))
             : null
@@ -199,7 +202,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 mapRef={null}
-                infoWindowRef={null}
+                infoWindowRef={ref}
               />
             ))
             : null
@@ -217,7 +220,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 mapRef={null}
-                infoWindowRef={null}
+                infoWindowRef={ref}
               />
             ))
             : null
@@ -235,7 +238,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 name={item.name}
                 updated={item.updated}
                 mapRef={null}
-                infoWindowRef={null}
+                infoWindowRef={ref}
               />
             ))
             : null

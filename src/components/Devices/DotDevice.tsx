@@ -24,9 +24,20 @@ const CircleOptions = {
   zIndex: 1,
 };
 
-const DotDevice: React.FC<CirclePivotProps> = React.memo(({ centerLat, centerLng, name, updated, deviceColor = '#000', infoWindowRef }) => {
+const DotDevice: React.FC<CirclePivotProps> = React.memo(({
+  centerLat,
+  centerLng,
+  name,
+  updated,
+  deviceColor = '#000',
+  infoWindowRef
+}) => {
   const handleMouseEnter = useCallback(() => {
-    infoWindowRef?.current?.setContentAndOpen({ name, updated, deviceColor }, { lat: centerLat, lng: centerLng })
+    infoWindowRef?.current?.setContentAndOpen({
+      name,
+      updated,
+      deviceColor
+    }, { lat: centerLat, lng: centerLng })
   }, []);
 
   const handleMouseLeave = useCallback(() => {
