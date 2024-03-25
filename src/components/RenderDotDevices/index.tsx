@@ -170,22 +170,49 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           if (map !== null) setZoom(map.getZoom());
         }}
       >
-        <SignalInfoWindow ref={ref} />
+        <SignalInfoWindow
+          ref={ref}
+        />
         {
           !props.pivotInformation.loading
             ? props.pivotInformation.result?.map((item) => (
-              <DotDevice
-                id={item.id}
-                key={item.id}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                deviceColor="#FF0000"
-                lineColor="#fff"
-                name={item.name}
-                updated={item.updated}
-                mapRef={null}
-                infoWindowRef={ref}
-              />
+              <>
+                <DotDevice
+                  id={item.id}
+                  key={item.id}
+                  centerLat={item.centerLat}
+                  centerLng={item.centerLng}
+                  controlRadio={item.controlRadio}
+                  deviceColor={item.deviceColor}
+                  statusText={item.statusText}
+                  dotColor="#FF0000"
+                  lineColor="#fff"
+                  name={item.name}
+                  updated={item.updated}
+                  mapRef={null}
+                  infoWindowRef={ref}
+                />
+                {
+                  showGps ? (
+                    <DotDevice
+                      id={item.id}
+                      key={item.id}
+                      centerLat={item.gpsLat}
+                      centerLng={item.gpsLong}
+                      controlRadio={item.monitorRadio}
+                      deviceColor={item.deviceColor}
+                      statusText={item.statusText}
+                      dotColor="#FF0000"
+                      lineColor="#fff"
+                      name={`${item.name} GPS`}
+                      updated={item.updated}
+                      mapRef={null}
+                      infoWindowRef={ref}
+                    />
+                  ) : null
+                }
+              </>
+              
             ))
             : null
         }
@@ -197,7 +224,10 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 key={item.id}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
-                deviceColor="#FF0000"
+                deviceColor={item.deviceColor}
+                controlRadio={item.controlRadio}
+                statusText={item.statusText!}
+                dotColor="#FF0000"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}
@@ -216,6 +246,9 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
                 deviceColor="yellow"
+                controlRadio={""}
+                statusText={"Central online"}
+                dotColor="yellow"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}
@@ -233,7 +266,10 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 key={item.id}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
-                deviceColor="blue"
+                deviceColor={item.deviceColor}
+                controlRadio={item.controlRadio}
+                statusText={item.statusText!}
+                dotColor="blue"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}

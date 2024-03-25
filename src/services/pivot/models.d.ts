@@ -1037,6 +1037,16 @@ declare namespace APIModels {
 }
 
 declare namespace WkModels {
+  /* Start of signal page WS */
+  type SignalResponseResponseStream = {
+    radio_id: string,
+    device_name: string,
+    farm_id: number,
+    device_id: number,
+    device_type: string,
+  }
+  /* End of signal page WS */
+
   /* Start of device panel WS */
   type PivotControllerActionGps = {
     id: number;

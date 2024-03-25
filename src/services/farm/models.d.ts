@@ -5,6 +5,14 @@ declare namespace APIModels {
     timezone: string;
     is_administrator: boolean;
     payment_status: number;
+    base: {
+      id: number;
+      type: string;
+      created: string;
+      updated: string;
+      radio_id: string;
+      taken: any;
+    }
   };
 
   type FarmConnection = {

@@ -250,6 +250,7 @@ export default {
           protocol: item.protocol,
           pumpPressure: irpdPressure,
           infoWindowRef: null,
+          controlRadio: item.pump,
         });
       }
 

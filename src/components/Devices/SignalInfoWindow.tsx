@@ -5,12 +5,18 @@ import { Space, Tag, Typography } from 'antd';
 const SignalInfoWindow = forwardRef((_, ref) => {
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
-  const [content, setContent] = useState({
+  const [content, setContent] = useState<{
+    name: string,
+    deviceColor: string,
+    statusText: string,
+    radio: string,
+    updated: string,
+  }>({
     name: '',
-    status: '',
     deviceColor: '',
     statusText: '',
-    updated: ''
+    radio: '',
+    updated: '',
   });
 
   useImperativeHandle(ref, () => ({
@@ -29,7 +35,7 @@ const SignalInfoWindow = forwardRef((_, ref) => {
   }));
 
   const close = () => {
-    setVisible(false)
+    setVisible(false);
   }
 
   return (
@@ -41,16 +47,30 @@ const SignalInfoWindow = forwardRef((_, ref) => {
         <Space direction="vertical" >
           <Typography.Title
             level={5}
+            style={{
+              color: '#000000',
+            }}
           >
             {content.name}
           </Typography.Title>
+          <Typography.Text
+            style={{
+              color: '#000000',
+            }}
+          >
+            {content.radio}
+          </Typography.Text>
           <Tag
             color={content.deviceColor}
           >
             {content.statusText}
           </Tag>
-          <Typography.Text>
-            {content.updated}
+          <Typography.Text
+            style={{
+              color: '#000000',
+            }}
+          >
+            Updated: {content.updated}
           </Typography.Text>
         </Space>
       </InfoWindow>

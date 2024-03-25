@@ -74,6 +74,7 @@ export default {
           centerLng: parseFloat(latLng[1]),
           name: payload[index].name,
           updated: new Date(payload[index].updated).toLocaleString(),
+          controlRadio: item.repeater_radio_id
         });
       }
 

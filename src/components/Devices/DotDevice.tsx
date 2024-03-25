@@ -8,6 +8,9 @@ export type CirclePivotProps = {
   name: string;
   updated: string;
   deviceColor?: string;
+  statusText: string;
+  controlRadio?: string;
+  dotColor?: string;
   infoWindowRef: any;
   mapRef: any;
   lineColor: string;
@@ -28,16 +31,24 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
   centerLat,
   centerLng,
   name,
+  controlRadio,
+  deviceColor,
+  dotColor,
+  statusText,
   updated,
-  deviceColor = '#000',
   infoWindowRef
 }) => {
   const handleMouseEnter = useCallback(() => {
     infoWindowRef?.current?.setContentAndOpen({
       name,
       updated,
+      statusText,
+      radio: controlRadio || '',
       deviceColor
-    }, { lat: centerLat, lng: centerLng })
+    }, {
+      lat: centerLat,
+      lng: centerLng
+    })
   }, []);
 
   const handleMouseLeave = useCallback(() => {
@@ -46,10 +57,10 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
 
   const circleOptions = useMemo(() => ({
     ...CircleOptions,
-    strokeColor: deviceColor,
-    fillColor: deviceColor,
+    strokeColor: dotColor,
+    fillColor: dotColor,
     radius: 50,
-  }), [deviceColor]);
+  }), [dotColor]);
 
   if (!centerLat || !centerLng) return null;
 
@@ -70,7 +81,9 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
     prevProps.centerLng === nextProps.centerLng &&
     prevProps.name === nextProps.name &&
     prevProps.updated === nextProps.updated &&
-    prevProps.deviceColor === nextProps.deviceColor
+    prevProps.deviceColor === nextProps.deviceColor &&
+    prevProps.statusText === nextProps.statusText &&
+    prevProps.controlRadio === nextProps.controlRadio
   );
 });
 

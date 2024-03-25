@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import uniqid from 'uniqid';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
+import { formatDayJsDate } from '@/utils/formater/get-formated-date';
 
 export type GetPivotInformationModelProps = {
   result: CirclePivotProps[];
@@ -325,7 +326,7 @@ export default {
           lpmGpsStreamLng: 30,
           lpmGpsStreamLat: 30,
           zoom: 15,
-          updated: new Date(payload.results[index].updated).toLocaleString(),
+          updated: formatDayJsDate(payload.results[index].updated),
           name: item.name,
           statusText: statusText,
           onSelect: () => null,
@@ -333,6 +334,8 @@ export default {
           pluviometerMeasure,
           isRaining,
           currentAngle: Math.round(currentAngle),
+          controlRadio: item.control_radio_id,
+          monitorRadio: item.monitor_radio_id,
         });
       }
 
