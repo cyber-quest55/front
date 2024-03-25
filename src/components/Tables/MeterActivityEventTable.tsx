@@ -5,7 +5,6 @@ import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
-  LightFilter,
   ProFormDateRangePicker,
   ProTable,
 } from '@ant-design/pro-components';
@@ -147,16 +146,17 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
         dateFormatter="string"
         toolbar={{
           title: (
-            <LightFilter>
-              <ProFormDateRangePicker
-              
+               <ProFormDateRangePicker
+               formItemProps={{ noStyle: true, style: { width: 350 } }}
+
                 name="startdate"
                 label={intl.formatMessage({
                   id: 'component.pivot.tab.history.rangepicker.label',
                 })}
                 disabled={reqGetData.loading}
                 fieldProps={{
-                  
+                  style: { width: 350 },
+
                   presets: rangePresets,
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
@@ -167,8 +167,7 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
                   value: dates,
                 }}
               />
-            </LightFilter>
-          ),
+           ),
           filter: (
             ExportButton
           ),

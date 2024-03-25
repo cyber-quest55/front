@@ -1,11 +1,10 @@
-import { useScreenHook } from '@/hooks/screen';
 import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { getMeterSystemWaterLevel } from '@/services/metersystem';
 import { rangePresets } from '@/utils/presets/RangePicker';
 import { Mix } from '@ant-design/charts';
-import { LightFilter, ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
+import { ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
@@ -21,7 +20,6 @@ type Props = {
 
 const MeterWaterLevelChart: React.FC<Props> = (props) => {
   const intl = useIntl();
-  const { md } = useScreenHook();
   const [dates, setDates] = useState<any>([dayjs().subtract(1, 'month'), dayjs()]);
 
   const getReq = useRequest(getMeterSystemWaterLevel, { manual: true });
@@ -77,25 +75,27 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
       className={className}
       title={intl.formatMessage({ id: 'component.meter.report.chart' })}
       extra={
-        <LightFilter style={{ width: md ? 360 : 275 }}>
-          <ProFormDateRangePicker
-            name="startdate"
-            label={intl.formatMessage({
-              id: 'component.pivot.tab.history.rangepicker.label',
-            })}
-            disabled={getReq.loading}
-            fieldProps={{
-              presets: rangePresets,
-              onChange: (v) => {
-                if (v && v[0] && v[1]) {
-                  setDates(v);
-                }
-              },
 
-              value: dates,
-            }}
-          />
-        </LightFilter>
+        <ProFormDateRangePicker
+          name="startdate"
+          label={intl.formatMessage({
+            id: 'component.pivot.tab.history.rangepicker.label',
+          })}
+          formItemProps={{ noStyle: true, style: { width: 350 } }}
+          disabled={getReq.loading}
+          fieldProps={{
+            style: { width: 350 },
+
+            presets: rangePresets,
+            onChange: (v) => {
+              if (v && v[0] && v[1]) {
+                setDates(v);
+              }
+            },
+
+            value: dates,
+          }}
+        />
       }
       chart={
         <Spin spinning={getReq.loading} >

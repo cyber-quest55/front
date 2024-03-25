@@ -1,5 +1,5 @@
 import countries from '@/utils/data/country';
-import { ProFormItem, ProFormItemProps, ProFormSelect } from '@ant-design/pro-components';
+import { ProFormInstance, ProFormItem, ProFormItemProps, ProFormSelect } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Col, Space } from 'antd';
 import { MaskedInput } from 'antd-mask-input';
@@ -11,13 +11,13 @@ interface IDocumentProps {
   formItemProps: ProFormItemProps;
   country: string;
   selectItemProps: ProFormItemProps;
-  formRef: any;
+  formRef: ProFormInstance<any>;
 }
 
 const CustomDocumentInput = (props: any) => {
   const cnt = countries.find((item) => item.iso === props.country);
 
-  const mask1: string = cnt ? cnt.masks.documentPeson.value : '';
+  const mask1: string = cnt ? cnt.masks.documentPerson.value : '';
   const mask2 = cnt ? cnt.masks.documentEmployer.value : '';
 
   const onChangeDocType = (doc: number) => {
@@ -30,6 +30,10 @@ const CustomDocumentInput = (props: any) => {
     props.formRef.current?.setFieldValue(props.selectItemProps.name, doc);
   };
 
+  React.useEffect(() => { 
+     props.formRef.current?.setFieldValue(props.name, '');
+  }, [props.country])
+
   return (
     <Space.Compact style={{ width: '100%', margin: 0, padding: 0 }}>
       <div>
@@ -38,18 +42,16 @@ const CustomDocumentInput = (props: any) => {
           fieldProps={{
             allowClear: false,
           }}
-          request={async () => {
-            return [
-              {
-                label: cnt?.masks.documentPeson.label,
-                value: 1,
-              },
-              {
-                label: cnt?.masks.documentEmployer.label,
-                value: 2,
-              },
-            ];
-          }}
+          options={[
+            {
+              label: cnt?.masks.documentPerson.label,
+              value: 1,
+            },
+            {
+              label: cnt?.masks.documentEmployer.label,
+              value: 2,
+            },
+          ]}
           {...props.selectItemProps}
         />
       </div>
@@ -70,7 +72,7 @@ const CustomDocumentInput = (props: any) => {
 };
 
 const InputDocument: React.FunctionComponent<IDocumentProps> = (props) => {
-  const className = useEmotionCss(({}) => {
+   const className = useEmotionCss(({}) => {
     return {
       '.ant-form-item': {
         marginBottom: '0px',

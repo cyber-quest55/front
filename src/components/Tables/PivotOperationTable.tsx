@@ -66,14 +66,16 @@ const PivotOperationTable: React.FC<Props> = (props) => {
       <ProTable<any>
         toolbar={{
           title: (
-            <LightFilter>
-              <ProFormDateRangePicker
+               <ProFormDateRangePicker
                 disabled={props.pivotHistory.loading}
                 name="startdate"
                 label={intl.formatMessage({
                   id: 'component.pivot.tab.history.rangepicker.label',
                 })}
+                formItemProps={{ noStyle: true, style: { width: 350 } }}
+
                 fieldProps={{
+                  style: { width: 350 },
                   presets: rangePresets,
                   onChange: (v) => {
                     if (v && v[0] && v[1]) {
@@ -85,8 +87,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                   value: dates,
                 }}
               />
-            </LightFilter>
-          ),
+           ),
           filter: (
         
               <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>

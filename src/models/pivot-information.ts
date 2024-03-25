@@ -283,7 +283,7 @@ export default {
         let isRaining = false;
         if (item.controllerstream_periodic) {
           if (
-            item.controllerstream_periodic.content?.pluviometer_daily_measure.daily_measure > 0 &&
+            item.controllerstream_periodic.content?.pluviometer_daily_measure?.daily_measure > 0 &&
             dayjs().diff(dayjs(item.controllerstream_periodic.created), 'minutes') <= 70
           ) {
             isRaining = true;
@@ -417,7 +417,7 @@ export default {
             // This section calculates the pluviometer measure to display on device box
             let isRaining = false;
             if (
-              payload.content?.pluviometer_daily_measure.daily_measure > 0 &&
+              payload.content?.pluviometer_daily_measure?.daily_measure > 0 &&
               dayjs().diff(dayjs(payload.created), 'minutes') <= 70
             ) {
               isRaining = true;
@@ -426,7 +426,7 @@ export default {
             return {
               ...r,
               isRaining,
-              pluviometerMeasure: payload.content.pluviometer_daily_measure.daily_measure,
+              pluviometerMeasure: payload.content.pluviometer_daily_measure?.daily_measure,
               updated: new Date(payload.updated).toLocaleString(),
             }
           }

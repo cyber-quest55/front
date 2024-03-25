@@ -55,7 +55,7 @@ type Props = {
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const [activeKey, setActiveKey] = useState('1');
-  const { md, xs} = useScreenHook();
+  const { md, xs } = useScreenHook();
   const params = useParams();
 
   //const [isConnected, setIsConnected] = useState(false);
@@ -163,10 +163,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     if (
-        props.selectedFarm.id !== 0 && (
-          params.id !== ':id' &&
-          props.selectedFarm.id !==  Number(params.id)
-        )        
+      props.selectedFarm.id !== 0 && (
+        params.id !== ':id' &&
+        props.selectedFarm.id !== Number(params.id)
+      )
     ) {
       history.push(`${props.selectedFarm.id}`);
       return;
@@ -229,16 +229,17 @@ const Welcome: FunctionComponent<Props> = (props) => {
       paddingBlockStart: '0px !important',
     },
   }));
-  
+
   return (
-    <section className={classNamts}>
+    <section className={classNamts}  >
       <PageContainer
+
         header={{ children: <div style={{ display: 'none' }}>asd</div> }}
         ghost
         breadcrumb={{}}
         title={''}
       >
-        {md ? <Row>
+        {md ? <Row >
           <Col
             xs={24}
             style={{
@@ -271,20 +272,26 @@ const Welcome: FunctionComponent<Props> = (props) => {
           </Col>
           {props.selectedDevice.open ? (
             md ? (
-              <Col
-                xs={24}
-                style={{
-                  padding: '15px 15px',
-                  minHeight: 'calc(100vh - 116px)',
-                }}
-              >
-                {getDeviceBySelected(props.selectedDevice.type)}
-              </Col>
+               
+                <Col
+                  xs={24}
+                  id={"page-container"}
+                  style={{
+                    padding: '15px 15px',
+                    minHeight: 'calc(100vh - 116px)',
+                  }}
+                >
+                  {
+                    getDeviceBySelected(props.selectedDevice.type)
+                  }
+                </Col>
+             
+
             ) : null
           ) : null}
-        </Row>: null}
+        </Row> : null}
 
-          {xs?<div className={'app'}>
+        {xs ? <div className={'app'}>
           <div className={'body'}>
             {activeKey === '1' &&
               <Spin spinning={
@@ -308,8 +315,8 @@ const Welcome: FunctionComponent<Props> = (props) => {
           <div className={'bottom'}>
             <Bottom />
           </div>
-        </div>: null}
-        
+        </div> : null}
+
       </PageContainer>
     </section>
   );

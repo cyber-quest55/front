@@ -20,6 +20,7 @@ const InputCellphone: React.FunctionComponent<IDocumentProps> = (props) => {
     : countries.find((item) => item.phone === props.countryCode);
   const mask = cnt ? cnt.masks[key] : '';
 
+
   const className = useEmotionCss(({ token }) => {
     return {
       '.ant-input': {

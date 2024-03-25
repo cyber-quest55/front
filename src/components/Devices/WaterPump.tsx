@@ -62,7 +62,7 @@ const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
           mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
         >
           <div
-            onClick={() =>
+            onClick={() => onSelect && 
               onSelect(DeviceType.Pump, props.id, {
                 params: getCommonDateParam(true),
                 waterId: waterId,

@@ -84,28 +84,27 @@ const PivotEventTable: React.FC<Props> = (props) => {
       <ProTable<any>
         toolbar={{
           title: (
-            <LightFilter>
-              <ProFormDateRangePicker
-                disabled={props.pivotHistory?.loading}
-                name="startdate"
-                label={intl.formatMessage({
-                  id: 'component.pivot.tab.history.rangepicker.label',
-                })}
+            <ProFormDateRangePicker
+              disabled={props.pivotHistory?.loading}
+              name="startdate"
+              label={intl.formatMessage({
+                id: 'component.pivot.tab.history.rangepicker.label',
+              })}
+              formItemProps={{ noStyle: true, style: { width: 350 } }}
 
-                fieldProps={{
-                  presets: rangePresets,
-
-                  onChange: (v) => {
-                    if (v && v[0] && v[1]) {
-                      setDates(v);
-                      ref.current?.reload();
-                    };
-                  },
-                  allowClear: false,
-                  value: dates,
-                }}
-              />
-            </LightFilter>
+              fieldProps={{
+                presets: rangePresets,
+                style: { width: 350 },
+                onChange: (v) => {
+                  if (v && v[0] && v[1]) {
+                    setDates(v);
+                    ref.current?.reload();
+                  };
+                },
+                allowClear: false,
+                value: dates,
+              }}
+            />
           ),
           filter: (
             <Button
