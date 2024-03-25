@@ -4,6 +4,7 @@ import { getIrpdColor } from '@/utils/formater/get-irpd-color';
 import { getIrpdStatus } from '@/utils/formater/get-irpd-status';
 import { AxiosError } from 'axios';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
+import { formatDayJsDate } from '@/utils/formater/get-formated-date';
 
 export interface GetIrpdModelProps {
   result: WaterPumpProps[];
@@ -243,7 +244,7 @@ export default {
           centerLat: parseFloat(latLng[0]),
           centerLng: parseFloat(latLng[1]),
           name: payload[index].name,
-          updated: new Date(payload[index].updated).toLocaleString(),
+          updated: formatDayJsDate(payload[index].updated),
           deviceColor: deviceColor,
           statusText: statusText,
           waterId: item?.latest_irpd_config_v5?.flow,

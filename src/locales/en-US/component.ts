@@ -979,6 +979,7 @@ export default {
   'component.signal.box.devices.label': 'Devices',
   'component.signal.box.devices.item.controller': 'Controller',
   'component.signal.box.devices.item.gps': 'GPS',
+  'component.signal.box.devices.item.radio': 'Radio',
   'component.signal.map.switch.rellief': 'Rellief ',
   'component.signal.map.switch.gps': 'Display GPS ',
   'component.signal.map.switch.lines': 'Draw lines ',

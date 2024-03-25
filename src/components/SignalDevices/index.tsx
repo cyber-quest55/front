@@ -21,9 +21,11 @@ import {
 import React, { useCallback } from 'react';
 import { connect } from 'umi';
 import WithConnection from '../WithConnection';
+import { GetSignalModelProps } from '@/models/signal';
 
 // Component props
 type Props = {
+  signal: GetSignalModelProps;
   pivot: GetPivotModelProps;
   pivotInformation: GetPivotInformationModelProps;
   irpd: GetIrpdModelProps;
@@ -99,7 +101,12 @@ const SignalDevices: React.FC<Props> = (props) => {
         </Col>
         <Col>
           <Tag
-            color="#03a05e"
+            color={
+              props.signal.signalResponses.some(
+                itm => itm.radio_id === item.controlRadio
+              ) ? '#03a05e'
+                : '#dc4446'
+            }
             onClick={(e) => {
               e.preventDefault();
               console.log('[controller button]');
@@ -110,7 +117,12 @@ const SignalDevices: React.FC<Props> = (props) => {
             })}
           </Tag>
           <Tag
-            color="#dc4446"
+            color={
+              props.signal.signalResponses.some(
+                itm => itm.radio_id === item.monitorRadio
+              ) ? '#03a05e'
+                : '#dc4446'
+            }
             onClick={(e) => {
               e.preventDefault();
               console.log('[gps button]');
@@ -152,14 +164,16 @@ const SignalDevices: React.FC<Props> = (props) => {
           </span>
         </Col>
         <Col>
-          <Tag color="#03a05e">
+          <Tag
+            color={
+              props.signal.signalResponses.some(
+                itm => itm.radio_id === item.controlRadio
+              ) ? '#03a05e'
+                : '#dc4446'
+            }
+          >
             {intl.formatMessage({
-              id: 'component.signal.box.devices.item.controller',
-            })}
-          </Tag>
-          <Tag color="#dc4446">
-            {intl.formatMessage({
-              id: 'component.signal.box.devices.item.gps',
+              id: 'component.signal.box.devices.item.radio',
             })}
           </Tag>
         </Col>
@@ -194,14 +208,16 @@ const SignalDevices: React.FC<Props> = (props) => {
           </span>
         </Col>
         <Col>
-          <Tag color="#03a05e">
+          <Tag
+            color={
+              props.signal.signalResponses.some(
+                itm => itm.radio_id === item.controlRadio
+              ) ? '#03a05e'
+                : '#dc4446'
+            }
+          >
             {intl.formatMessage({
-              id: 'component.signal.box.devices.item.controller',
-            })}
-          </Tag>
-          <Tag color="#dc4446">
-            {intl.formatMessage({
-              id: 'component.signal.box.devices.item.gps',
+              id: 'component.signal.box.devices.item.radio',
             })}
           </Tag>
         </Col>
@@ -338,6 +354,7 @@ const mapStateToProps = ({
   irpd,
   repeater,
   selectedFarm,
+  signal,
 }: any) => ({
   pivot,
   farm,
@@ -346,6 +363,7 @@ const mapStateToProps = ({
   irpd,
   repeater,
   selectedFarm,
+  signal,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

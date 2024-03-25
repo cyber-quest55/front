@@ -141,8 +141,29 @@ export default {
       state: GetSignalModelProps,
       { payload }: { payload: WkModels.SignalResponseResponseStream },
     ) {
-      console.log('[ws payload]', payload);
-      return state;
+      const hasSignalIndex = state.signalResponses.findIndex(
+        s => s.device_id === payload.device_id,
+      );
+      
+      if (hasSignalIndex >= 0) {
+        return {
+          ...state,
+          signalResponses: state.signalResponses.map((s, i) => {
+            if (i === hasSignalIndex) {
+              return payload;
+            }
+            return s;
+          }),
+        };
+      } else {
+        return {
+          ...state,
+          signalResponses: [
+            ...state.signalResponses,
+            { ...payload },
+          ]
+        };
+      }
     },
   },
 }

@@ -14,9 +14,11 @@ import { connect } from 'dva';
 import React, { useEffect, useRef, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
 import SignalInfoWindow from '../Devices/SignalInfoWindow';
+import { GetSignalModelProps } from '@/models/signal';
 
 export type RenderPivotsProps = {
   zoom: number;
+  signal: GetSignalModelProps;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;
   meterSystem: GetMeterSystemModelProps;
@@ -185,12 +187,17 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                   controlRadio={item.controlRadio}
                   deviceColor={item.deviceColor}
                   statusText={item.statusText}
-                  dotColor="#FF0000"
                   lineColor="#fff"
                   name={item.name}
                   updated={item.updated}
                   mapRef={null}
                   infoWindowRef={ref}
+                  dotColor={
+                    props.signal.signalResponses.some(
+                      itm => itm.radio_id === item.controlRadio
+                    )? '#03a05e'
+                      : '#FF0000'
+                  }
                 />
                 {
                   showGps ? (
@@ -202,12 +209,17 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                       controlRadio={item.monitorRadio}
                       deviceColor={item.deviceColor}
                       statusText={item.statusText}
-                      dotColor="#FF0000"
                       lineColor="#fff"
                       name={`${item.name} GPS`}
                       updated={item.updated}
                       mapRef={null}
                       infoWindowRef={ref}
+                      dotColor={
+                        props.signal.signalResponses.some(
+                          itm => itm.radio_id === item.monitorRadio
+                        ) ? '#03a05e'
+                          : '#FF0000'
+                      }
                     />
                   ) : null
                 }
@@ -227,12 +239,17 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 deviceColor={item.deviceColor}
                 controlRadio={item.controlRadio}
                 statusText={item.statusText!}
-                dotColor="#FF0000"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}
                 mapRef={null}
                 infoWindowRef={ref}
+                dotColor={
+                  props.signal.signalResponses.some(
+                    itm => itm.radio_id === item.controlRadio
+                  ) ? '#03a05e'
+                    : '#FF0000'
+                }
               />
             ))
             : null
@@ -269,12 +286,17 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                 deviceColor={item.deviceColor}
                 controlRadio={item.controlRadio}
                 statusText={item.statusText!}
-                dotColor="blue"
                 lineColor="#fff"
                 name={item.name}
                 updated={item.updated}
                 mapRef={null}
                 infoWindowRef={ref}
+                dotColor={
+                  props.signal.signalResponses.some(
+                    itm => itm.radio_id === item.controlRadio
+                  ) ? '#03a05e'
+                    : '#FF0000'
+                }
               />
             ))
             : null
@@ -292,6 +314,7 @@ const mapStateToProps =
     irpd,
     central,
     repeater,
+    signal,
   }: any) => ({
     pivotInformation,
     farm,
@@ -299,6 +322,7 @@ const mapStateToProps =
     irpd,
     central,
     repeater,
+    signal,
   });
 
 

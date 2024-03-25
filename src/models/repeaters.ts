@@ -1,5 +1,6 @@
 import { LakeLevelMeterProps } from '@/components/Devices/LakeLevelMeter';
 import { getRepeaters } from '@/services/repeaters';
+import { formatDayJsDate } from '@/utils/formater/get-formated-date';
 import { AxiosError } from 'axios';
 
 export interface GetRepeaterModelProps {
@@ -73,7 +74,7 @@ export default {
           centerLat: parseFloat(latLng[0]),
           centerLng: parseFloat(latLng[1]),
           name: payload[index].name,
-          updated: new Date(payload[index].updated).toLocaleString(),
+          updated: formatDayJsDate(payload[index].updated),
           controlRadio: item.repeater_radio_id
         });
       }
