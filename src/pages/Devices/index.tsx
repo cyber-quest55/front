@@ -40,7 +40,6 @@ type Props = {
   queryPivot: typeof queryPivot;
   queryRepeater: typeof queryRepeater;
   connectWebsocket: () => void;
-
 };
 
 const Devices: FunctionComponent<Props> = (props) => {
@@ -156,6 +155,7 @@ const Devices: FunctionComponent<Props> = (props) => {
     }
     props.connectWebsocket();
   });
+
 
   useEffect(() => {
     if (params.id !== ':id') {

@@ -9,16 +9,21 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { ProList } from '@ant-design/pro-components';
 import { WifiOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
+import { useMount, useUnmount } from 'ahooks';
 import {
   Button,
   Col,
   Divider,
+  Drawer,
   Row,
   Space,
   Tag,
   Typography,
 } from 'antd';
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useState,
+} from 'react';
 import { connect } from 'umi';
 import WithConnection from '../WithConnection';
 import { GetSignalModelProps, pingDevices } from '@/models/signal';
@@ -31,14 +36,22 @@ type Props = {
   irpd: GetIrpdModelProps;
   repeater: GetRepeaterModelProps;
   selectedFarm: SelectedFarmModelProps;
-  pingDevices: typeof pingDevices,
-  onDeviceMouseOver: (params: { lat: number, lng: number }) => void,
+  pingDevices: typeof pingDevices;
+  onDeviceMouseOver: (params: { lat: number, lng: number }) => void;
+  subscribeWs: () => void;
+  unsubscribeWs: () => void;
 };
 
 // Component
 const SignalDevices: React.FC<Props> = (props) => {
   // Hooks
   const intl = useIntl();
+  
+  const [
+    isDeviceDrawerOpen,
+    setDeviceDrawerState
+  ] = useState<boolean>(false);
+  const toggleDrawer = () => setDeviceDrawerState(prev => !prev);
 
   // Styles
   const className = useEmotionCss(({ }) => {
@@ -88,6 +101,14 @@ const SignalDevices: React.FC<Props> = (props) => {
         key={`row-pivot-information-${item.id}`}
         justify="space-between"
         style={{ width: '100%' }}
+        onClick={() => {
+          const hasSignal = props.signal.signalResponses.some(
+            itm => itm.radio_id === item.controlRadio
+          );
+          if (hasSignal) {
+            toggleDrawer();
+          }
+        }}
         onMouseEnter={() => {
           props.onDeviceMouseOver({
             lat: item.centerLat,
@@ -108,10 +129,6 @@ const SignalDevices: React.FC<Props> = (props) => {
               ) ? '#03a05e'
                 : '#dc4446'
             }
-            onClick={(e) => {
-              e.preventDefault();
-              console.log('[controller button]');
-            }}
           >
             {intl.formatMessage({
               id: 'component.signal.box.devices.item.controller',
@@ -124,10 +141,6 @@ const SignalDevices: React.FC<Props> = (props) => {
               ) ? '#03a05e'
                 : '#dc4446'
             }
-            onClick={(e) => {
-              e.preventDefault();
-              console.log('[gps button]');
-            }}
           >
             {intl.formatMessage({
               id: 'component.signal.box.devices.item.gps',
@@ -240,6 +253,15 @@ const SignalDevices: React.FC<Props> = (props) => {
     ...repeaterDatasource,
   ];
 
+  // Ws subscribe / unsubscribe
+  useMount(() => {
+    props.subscribeWs();
+  });
+
+  useUnmount(() => {
+    props.unsubscribeWs();
+  })
+
   // Renderers
   const renderDeviceList = useCallback((datasource: {
     title: React.ReactElement,
@@ -267,6 +289,13 @@ const SignalDevices: React.FC<Props> = (props) => {
   // TSX
   return (
     <div className={className}>
+      <Drawer
+        title="Test"
+        onClose={toggleDrawer}
+        open={isDeviceDrawerOpen}
+      >
+
+      </Drawer>
       <Row
         justify="space-between"
         align="middle"
@@ -314,7 +343,7 @@ const SignalDevices: React.FC<Props> = (props) => {
               <Divider
                 style={{
                   marginBottom: 0,
-                  marginTop: 0
+                  marginTop: 0,
                 }}
               />
               {renderDeviceList(finalDatasource)}
@@ -374,6 +403,8 @@ const mapStateToProps = ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
   pingDevices: (props: any) => dispatch(pingDevices(props)),
+  subscribeWs: () => dispatch({ type: 'signal/onInit', payload: {} }),
+  unsubscribeWs: () => dispatch({ type: 'signal/onInit', payload: {} }),
 });
 
 export default connect(
