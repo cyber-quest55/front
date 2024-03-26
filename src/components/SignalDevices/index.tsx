@@ -9,7 +9,7 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { ProList } from '@ant-design/pro-components';
 import { WifiOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import { useMount, useUnmount } from 'ahooks';
+import { useUnmount } from 'ahooks';
 import {
   Button,
   Col,
@@ -253,11 +253,6 @@ const SignalDevices: React.FC<Props> = (props) => {
     ...repeaterDatasource,
   ];
 
-  // Ws subscribe / unsubscribe
-  useMount(() => {
-    props.subscribeWs();
-  });
-
   useUnmount(() => {
     props.unsubscribeWs();
   })
@@ -364,6 +359,7 @@ const SignalDevices: React.FC<Props> = (props) => {
             type="primary"
             icon={<WifiOutlined />}
             onClick={() => {
+              props.subscribeWs();
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
               })
@@ -404,7 +400,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
   pingDevices: (props: any) => dispatch(pingDevices(props)),
   subscribeWs: () => dispatch({ type: 'signal/onInit', payload: {} }),
-  unsubscribeWs: () => dispatch({ type: 'signal/onInit', payload: {} }),
+  unsubscribeWs: () => dispatch({ type: 'signal/onDestroy', payload: {} }),
 });
 
 export default connect(

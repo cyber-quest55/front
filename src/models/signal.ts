@@ -19,12 +19,20 @@ type SignalLog = {
   deviceType: string;
 }
 
+type NodeElement = WkModels.NodeReponseStream & {
+  fromLat: number;
+  fromLng: number;
+  toLat: number;
+  toLng: number;
+}
+
 // Model state type
 export type GetSignalModelProps = {
   error: AxiosError | null;
   isLoading: boolean;
   logs: SignalLog[];
-  signalResponses: WkModels.SignalResponseResponseStream[];
+  nodeResponses: NodeElement[];
+  signalResponses: WkModels.SignalResponseStream[];
   socketId: string;
 }
 
@@ -44,6 +52,7 @@ export default {
     error: null,
     isLoading: false,
     logs: [],
+    nodeResponses: [],
     signalResponses: [],
     socketId: uniqid('@Signal_'),
   } as GetSignalModelProps,
@@ -63,19 +72,19 @@ export default {
     },
     // Web socket subscribers
     *onInit({}, { put, select }: { put: any; select: any }) {
-      console.log('[on init here] hha');
       const state = yield select((state) => state.signal);
       const farmState = yield select((state) => state.farm);
+      console.log('[on init]');
       const channels = [
         {
           title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}n/${farmState.selectedFarm.base.radio_id}`,
           id: state.socketId,
           binds: [
             {
-              callback: ['signal/wsDeviceSweepNCallback'],
+              callback: ['signal/wsDeviceSweepCallback'],
               event: 'device_sweep',
-              id: state.socketId,
-            }
+              id: state.socketId
+            },
           ],
         },
         {
@@ -83,9 +92,9 @@ export default {
           id: state.id,
           binds: [
             {
-              callback: ['signal/wsDeviceSweepFCallback'],
-              event: 'device_sweep',
-              id: state.socketId,
+              callback: ['signal/wsNodeFindCallback'],
+              event: 'find_nodes',
+              id: state.socketId
             }
           ],
         },
@@ -101,10 +110,10 @@ export default {
           id: state.socketId,
           binds: [
             {
-              callback: ['signal/wsDeviceSweepNCallback'],
+              callback: ['signal/wsDeviceSweepCallback'],
               event: 'device_sweep',
               id: state.socketId
-            }
+            },
           ],
         },
         {
@@ -112,8 +121,8 @@ export default {
           id: state.id,
           binds: [
             {
-              callback: ['signal/wsDeviceSweepFCallback'],
-              event: 'device_sweep',
+              callback: ['signal/wsNodeFindCallback'],
+              event: 'find_nodes',
               id: state.socketId
             }
           ],
@@ -122,24 +131,23 @@ export default {
       yield getSocketBinds(channels, put, 'unsubscribe');
     },
     // Web socket callbacks
-    *wsDeviceSweepNCallback(
-      { payload }: { payload: WkModels.SignalResponseResponseStream },
+    *wsDeviceSweepCallback(
+      { payload }: { payload: WkModels.SignalResponseStream },
       { put, select }: { put: any; call: any; select: any },
     ) {
+      console.log('[on here]');
       const farmState = yield select((state) => state.farm);
-      yield put({ type: 'wsDeviceSweepFCallbackSuccess', payload: {
+      yield put({ type: 'wsDeviceSweepCallbackSuccess', payload: {
         data: payload,
         farm: farmState.selectedFarm,
       }});
     },
-    *wsDeviceSweepFCallback(
-      { payload }: { payload: WkModels.SignalResponseResponseStream },
-      { put, select }: { put: any; call: any; select: any },
+    *wsNodeFindCallback(
+      { payload }: { payload: WkModels.NodeReponseStream },
+      { put }: { put: any; call: any; select: any },
     ) {
-      const farmState = yield select((state) => state.farm);
-      yield put({ type: 'wsDeviceSweepFCallbackSuccess', payload: {
+      yield put({ type: 'wsNodeFindCallbackSuccess', payload: {
         data: payload,
-        farm: farmState.selectedFarm,
       }});
     },
   },
@@ -150,8 +158,8 @@ export default {
         ...state,
         error: null,
         isLoading: true,
-        signalResponses: [],
-        logs: [],
+        // signalResponses: [],
+        // logs: [],
       };
     },
     pingFarmDevicesError(
@@ -168,12 +176,12 @@ export default {
       return {
         ...state,
         error: null,
-        isLoading: true,
+        isLoading: false,
       };
     },
     setSignalResponses(
       state: GetSignalModelProps,
-      { payload }: { payload: WkModels.SignalResponseResponseStream[] },
+      { payload }: { payload: WkModels.SignalResponseStream[] },
     ) {
       return {
         ...state,
@@ -181,10 +189,10 @@ export default {
       };
     },
     // Websocket reducers
-    wsDeviceSweepFCallbackSuccess(
+    wsDeviceSweepCallbackSuccess(
       state: GetSignalModelProps,
       { payload }: { payload: {
-        data: WkModels.SignalResponseResponseStream,
+        data: WkModels.SignalResponseStream,
         farm: SelectedFarmModelProps,
       } },
     ) {
@@ -226,5 +234,47 @@ export default {
         };
       }
     },
+    wsNodeFindCallbackSuccess(
+      state: GetSignalModelProps,
+      { payload }: { payload: {
+        data: WkModels.NodeReponseStream,
+      } },
+    ) {
+      const hasNodeIndex = state.nodeResponses.findIndex(
+        s => s.from === payload.data.from && s.to === payload.data.to
+      );
+
+      if (hasNodeIndex >= 0) {
+        return {
+          ...state,
+          nodeResponses: state.nodeResponses.map((n, i) => {
+            if (i === hasNodeIndex) {
+              return {
+                ...n,
+                ...payload.data,
+              };
+            }
+            return n
+          })
+        };
+      } else {
+
+        const newNode: NodeElement = {
+          ...payload.data,
+          fromLat: 0,
+          toLat: 0,
+          fromLng: 0,
+          toLng: 0,
+        } 
+
+        return {
+          ...state,
+          nodeResponses: [
+            ...state.nodeResponses,
+            newNode,
+          ]
+        };
+      }
+    }
   },
 }

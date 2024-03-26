@@ -24,6 +24,13 @@ declare namespace API {
 
   type GetFarmFullParams = { id: string };
 
+  type PingFarmDevicesParams = {
+    id: string;
+    body?: {
+      payload: string;
+    };
+  };
+
   type UpdateFarmParams = {
     id: string;
     body: APIModels.UpdateFarmPayload

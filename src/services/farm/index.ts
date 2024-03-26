@@ -26,9 +26,10 @@ export async function updatedBase(
   });
 }
 
-export async function pingFarmDevices(options: API.GetFarmFullParams) {
+export async function pingFarmDevices(options: API.PingFarmDevicesParams) {
   return request<number>(`/v3/farms/${options.id}/mqtt/gn/`, {
     method: 'POST',
+    data: options.body,
   })
 }
 

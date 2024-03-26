@@ -1038,12 +1038,19 @@ declare namespace APIModels {
 
 declare namespace WkModels {
   /* Start of signal page WS */
-  type SignalResponseResponseStream = {
-    radio_id: string,
-    device_name: string,
-    farm_id: number,
-    device_id: number,
-    device_type: string,
+  type SignalResponseStream = {
+    radio_id: string;
+    device_name: string;
+    farm_id: number;
+    device_id: number;
+    device_type: string;
+  }
+
+  type NodeReponseStream = {
+    from: string;
+    to: string;
+    db: number;
+    quality: string;
   }
   /* End of signal page WS */
 
