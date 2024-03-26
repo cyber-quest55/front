@@ -21,7 +21,7 @@ import {
 import React, { useCallback } from 'react';
 import { connect } from 'umi';
 import WithConnection from '../WithConnection';
-import { GetSignalModelProps } from '@/models/signal';
+import { GetSignalModelProps, pingDevices } from '@/models/signal';
 
 // Component props
 type Props = {
@@ -31,7 +31,8 @@ type Props = {
   irpd: GetIrpdModelProps;
   repeater: GetRepeaterModelProps;
   selectedFarm: SelectedFarmModelProps;
-  onDeviceMouseOver: (params: { lat: number, lng: number }) => void
+  pingDevices: typeof pingDevices,
+  onDeviceMouseOver: (params: { lat: number, lng: number }) => void,
 };
 
 // Component
@@ -333,7 +334,11 @@ const SignalDevices: React.FC<Props> = (props) => {
             size="large"
             type="primary"
             icon={<WifiOutlined />}
-            onClick={() => {}}
+            onClick={() => {
+              props.pingDevices({
+                id: props.selectedFarm.id.toString(),
+              })
+            }}
           >
             {intl.formatMessage({
               id: 'component.signal.box.radio.search',
@@ -368,6 +373,7 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
+  pingDevices: (props: any) => dispatch(pingDevices(props)),
 });
 
 export default connect(

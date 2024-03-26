@@ -7,6 +7,7 @@ import { getSocketBinds } from '../utils/formater/get-socket-binds';
 // Model state type
 export type GetSignalModelProps = {
   error: AxiosError | null,
+  isLoading: boolean,
   signalResponses: WkModels.SignalResponseResponseStream[],
   socketId: string;
 }
@@ -25,6 +26,7 @@ export default {
   
   state: {
     error: null,
+    isLoading: false,
     signalResponses: [],
     socketId: uniqid('@Signal_'),
   } as GetSignalModelProps,
@@ -34,9 +36,10 @@ export default {
       { payload }: { payload: API.GetFarmFullParams },
       { call, put }: { call: any; put: any },
     ) {
-      yield put({ type: 'setSignalResponses', payload: [] });
+      yield put({ type: 'pingFarmDevicesStart' });
       try {
-        yield call(pingFarmDevices, payload,);
+        yield call(pingFarmDevices, payload);
+        yield put({ type: 'pingFarmDevicesSuccess' });
         yield put({ type: 'onInit', payload: {} });
       } catch (error: any) {
         yield put({ type: 'pingFarmDevicesError', payload: error });
@@ -46,9 +49,10 @@ export default {
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.signal);
       const farmState = yield select((state) => state.farm);
+      console.log('[listening to websockets here]');
       const channels = [
         {
-          title: `n/${farmState.selectedFarm.base.radio_id}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}n/${farmState.selectedFarm.base.radio_id}`,
           id: state.socketId,
           binds: [
             {
@@ -59,7 +63,7 @@ export default {
           ],
         },
         {
-          title: `f/${farmState.selectedFarm.base.radio_id}`,
+          title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}f/${farmState.selectedFarm.base.radio_id}`,
           id: state.id,
           binds: [
             {
@@ -75,13 +79,14 @@ export default {
     *onDestroy({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.signal);
       const farmState = yield select((state) => state.farm);
+      console.log('[destroying to websockets here]');
       const channels = [
         {
           title: `n/${farmState.selectedFarm.base.radio_id}`,
           id: state.socketId,
           binds: [
             {
-              callback: [],
+              callback: ['signal/wsDeviceSweepNCallback'],
               event: 'device_sweep',
               id: state.socketId
             }
@@ -92,7 +97,7 @@ export default {
           id: state.id,
           binds: [
             {
-              callback: [],
+              callback: ['signal/wsDeviceSweepFCallback'],
               event: 'device_sweep',
               id: state.socketId
             }
@@ -106,17 +111,25 @@ export default {
       { payload }: { payload: WkModels.SignalResponseResponseStream },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsPivotControllerStreamPanelSuccess', payload });
+      yield put({ type: 'wsDeviceSweepFCallbackSuccess', payload });
     },
     *wsDeviceSweepFCallback(
       { payload }: { payload: WkModels.SignalResponseResponseStream },
       { put }: { put: any; call: any; select: any },
     ) {
-      yield put({ type: 'wsPivotControllerStreamPanelSuccess', payload });
+      yield put({ type: 'wsDeviceSweepFCallbackSuccess', payload });
     },
   },
 
   reducers: {
+    pingFarmDevicesStart(state: GetSignalModelProps) {
+      return {
+        ...state,
+        error: null,
+        isLoading: true,
+        signalResponses: [],
+      };
+    },
     pingFarmDevicesError(
       state: GetSignalModelProps,
       { payload }: { payload: AxiosError },
@@ -124,7 +137,14 @@ export default {
       return {
         ...state,
         error: payload.response?.data,
-        loading: false,
+        isLoading: false,
+      };
+    },
+    pingFarmDevicesSuccess(state: GetSignalModelProps) {
+      return {
+        ...state,
+        error: null,
+        isLoading: true,
       };
     },
     setSignalResponses(
@@ -142,7 +162,7 @@ export default {
       { payload }: { payload: WkModels.SignalResponseResponseStream },
     ) {
       const hasSignalIndex = state.signalResponses.findIndex(
-        s => s.device_id === payload.device_id,
+        s => s.radio_id === payload.radio_id,
       );
       
       if (hasSignalIndex >= 0) {

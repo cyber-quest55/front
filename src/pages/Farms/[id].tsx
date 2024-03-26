@@ -48,7 +48,6 @@ type Props = {
   queryPivot: typeof queryPivot;
   queryRepeater: typeof queryRepeater;
   connectWebsocket: any;
-
 };
 
 
@@ -159,7 +158,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useMount(async () => {
     props.connectWebsocket();
-  })
+  });
 
   const className = useEmotionCss(({ }) => {
     return md

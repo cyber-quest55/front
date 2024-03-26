@@ -12,7 +12,7 @@ import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
 import { GetFarmModelProps, queryFarm } from '@/models/farm';
 import { useParams } from '@umijs/max';
 import { useMount } from 'ahooks';
-import {  Col, Row, Spin } from 'antd';
+import { Col, Row, Spin } from 'antd';
 import { TabBar } from 'antd-mobile';
 import { AppOutline, UnorderedListOutline } from 'antd-mobile-icons';
 import { connect } from 'dva';
@@ -39,6 +39,8 @@ type Props = {
   queryIrpd: typeof queryIrpd;
   queryPivot: typeof queryPivot;
   queryRepeater: typeof queryRepeater;
+  connectWebsocket: () => void;
+
 };
 
 const Devices: FunctionComponent<Props> = (props) => {
@@ -152,6 +154,7 @@ const Devices: FunctionComponent<Props> = (props) => {
         props.queryFarm({});
       }
     }
+    props.connectWebsocket();
   });
 
   useEffect(() => {
@@ -309,6 +312,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  connectWebsocket: () => dispatch({ type: "socket/connect", payload: {} }),
   queryFarm: (props: any) => dispatch(queryFarm(props)),
   queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
   queryIrpd: (props: any) => dispatch(queryIrpd(props)),
