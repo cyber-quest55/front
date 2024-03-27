@@ -127,6 +127,11 @@ const SignalDevices: React.FC<Props> = (props) => {
               gpsRadio: item.monitorRadio,
               name: item.name,
             });
+            props.pingDevices({
+              id: props.selectedFarm.id.toString(),
+              device: item.controlRadio || item.monitorRadio,
+              keepLines: false,
+            })
             toggleDrawer();
           }
         }}
@@ -192,6 +197,24 @@ const SignalDevices: React.FC<Props> = (props) => {
             lng: item.centerLng,
           })
         }}
+        onClick={() => {
+          const hasSignal = props.signal.signalResponses.some(
+            itm => itm.radio_id === item.controlRadio
+          );
+          if (hasSignal) {
+            setCurrentRadio({ 
+              controlRadio: item.controlRadio,
+              gpsRadio: '',
+              name: item.name,
+            });
+            props.pingDevices({
+              id: props.selectedFarm.id.toString(),
+              device: item.controlRadio,
+              keepLines: false,
+            })
+            toggleDrawer();
+          }
+        }}
       >
         <Col>
           <span>
@@ -235,6 +258,24 @@ const SignalDevices: React.FC<Props> = (props) => {
             lat: item.centerLat,
             lng: item.centerLng,
           })
+        }}
+        onClick={() => {
+          const hasSignal = props.signal.signalResponses.some(
+            itm => itm.radio_id === item.controlRadio
+          );
+          if (hasSignal) {
+            setCurrentRadio({ 
+              controlRadio: item.controlRadio,
+              gpsRadio: '',
+              name: item.name,
+            });
+            props.pingDevices({
+              id: props.selectedFarm.id.toString(),
+              device: item.controlRadio,
+              keepLines: false,
+            })
+            toggleDrawer();
+          }
         }}
       >
         <Col>

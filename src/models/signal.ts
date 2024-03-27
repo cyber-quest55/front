@@ -54,7 +54,10 @@ export type GetSignalModelProps = {
 }
 
 // External Dispatchers
-export const pingDevices = (payload: API.GetFarmFullParams) => {
+export const pingDevices = (payload: API.GetFarmFullParams & {
+  keepLines?: boolean;
+  device?: string;
+}) => {
   return {
     type: 'signal/pingFarmDevices',
     payload: payload,
@@ -85,8 +88,9 @@ export default {
   effects: {
     *pingFarmDevices(
       { payload }: { payload: API.GetFarmFullParams & {
-        keepLines?: boolean
-      } },
+        keepLines?: boolean;
+        device?: string;
+      }},
       { call, put }: { call: any; put: any },
     ) {
       yield put({
@@ -96,7 +100,16 @@ export default {
         },
       });
       try {
-        yield call(pingFarmDevices, payload);
+        const apiPayload = {
+          id: payload.id,
+          body: payload.device ? {
+            payload: payload.device,
+          } : undefined,
+        }
+        yield call(
+          pingFarmDevices,
+          apiPayload
+        );
         yield put({ type: 'pingFarmDevicesSuccess' });
       } catch (error: any) {
         yield put({ type: 'pingFarmDevicesError', payload: error });
