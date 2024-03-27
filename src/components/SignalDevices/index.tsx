@@ -19,7 +19,6 @@ import {
   Button,
   Col,
   Divider,
-  Drawer,
   Row,
   Space,
   Tag,
@@ -31,6 +30,7 @@ import React, {
   useState,
 } from 'react';
 import { connect } from 'umi';
+import IntensityDrawer from './IntensitiesDrawer';
 import WithConnection from '../WithConnection';
 import { GetFarmModelProps } from '@/models/farm';
 
@@ -53,12 +53,20 @@ type Props = {
 // Component
 const SignalDevices: React.FC<Props> = (props) => {
   // Hooks
-  const intl = useIntl();
-  
+  const intl = useIntl();  
   const [
     isDeviceDrawerOpen,
-    setDeviceDrawerState
+    setDeviceDrawerState,
   ] = useState<boolean>(false);
+  const [
+    currentRadio,
+    setCurrentRadio,
+  ] = useState<{
+    controlRadio: string;
+    gpsRadio?: string;
+    name: string;
+  } | null>(null);
+
   const toggleDrawer = () => setDeviceDrawerState(prev => !prev);
 
   // Styles
@@ -114,6 +122,11 @@ const SignalDevices: React.FC<Props> = (props) => {
             itm => itm.radio_id === item.controlRadio
           );
           if (hasSignal) {
+            setCurrentRadio({ 
+              controlRadio: item.controlRadio,
+              gpsRadio: item.monitorRadio,
+              name: item.name,
+            });
             toggleDrawer();
           }
         }}
@@ -315,13 +328,15 @@ const SignalDevices: React.FC<Props> = (props) => {
   // TSX
   return (
     <div className={className}>
-      <Drawer
-        title="Test"
-        onClose={toggleDrawer}
-        open={isDeviceDrawerOpen}
-      >
-
-      </Drawer>
+      {/* Signal intensity drawer */}
+      <IntensityDrawer 
+        title={currentRadio?.name}
+        isOpen={isDeviceDrawerOpen}
+        toggleDrawer={toggleDrawer}
+        nodes={props.signal.nodeResponses}
+        currentRadio={currentRadio?.controlRadio || currentRadio?.gpsRadio}
+      />
+      {/* Component default content */}
       <Row
         justify="space-between"
         align="middle"

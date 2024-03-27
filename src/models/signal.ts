@@ -10,7 +10,7 @@ import { GetRepeaterModelProps } from './repeaters';
 import { GetPivotInformationModelProps } from './pivot-information';
 
 // Types
-type SignalLog = {
+export type SignalLog = {
   logId: number;
   type: string;
   date: string;
@@ -33,7 +33,7 @@ type RadioCoordinate = {
   type: string;
 }
 
-type NodeElement = WkModels.NodeReponseStream & {
+export type NodeElement = WkModels.NodeReponseStream & {
   fromLat: number;
   fromLng: number;
   toLat: number;
