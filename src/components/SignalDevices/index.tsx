@@ -6,6 +6,11 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { GetIrpdModelProps } from '@/models/irpd';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetRepeaterModelProps } from '@/models/repeaters';
+import {
+  GetSignalModelProps,
+  pingDevices,
+  loadRadioCoordinates
+} from '@/models/signal';
 import { ProList } from '@ant-design/pro-components';
 import { WifiOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
@@ -22,14 +27,16 @@ import {
 } from 'antd';
 import React, {
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 import { connect } from 'umi';
 import WithConnection from '../WithConnection';
-import { GetSignalModelProps, pingDevices } from '@/models/signal';
+import { GetFarmModelProps } from '@/models/farm';
 
 // Component props
 type Props = {
+  farm: GetFarmModelProps,
   signal: GetSignalModelProps;
   pivot: GetPivotModelProps;
   pivotInformation: GetPivotInformationModelProps;
@@ -40,6 +47,7 @@ type Props = {
   onDeviceMouseOver: (params: { lat: number, lng: number }) => void;
   subscribeWs: () => void;
   unsubscribeWs: () => void;
+  loadRadioCoordinates: () => void;
 };
 
 // Component
@@ -253,9 +261,32 @@ const SignalDevices: React.FC<Props> = (props) => {
     ...repeaterDatasource,
   ];
 
+  // Effects
   useUnmount(() => {
     props.unsubscribeWs();
-  })
+  });
+
+  useEffect(() => {
+    if (props.farm.loaded) {
+      props.subscribeWs();
+    }
+  }, [
+    props.farm.loaded
+  ]);
+
+  useEffect(() => {
+    if (
+      props.irpd.loaded &&
+      props.repeater.loaded &&
+      props.pivotInformation.loaded
+    ) {
+      props.loadRadioCoordinates();
+    }
+  }, [
+    props.pivotInformation.loaded,
+    props.irpd.loaded,
+    props.repeater.loaded
+  ]);
 
   // Renderers
   const renderDeviceList = useCallback((datasource: {
@@ -359,7 +390,6 @@ const SignalDevices: React.FC<Props> = (props) => {
             type="primary"
             icon={<WifiOutlined />}
             onClick={() => {
-              props.subscribeWs();
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
               })
@@ -399,6 +429,7 @@ const mapStateToProps = ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setSelectedDevice: (props: any) => dispatch(setSelectedDevice(props)),
   pingDevices: (props: any) => dispatch(pingDevices(props)),
+  loadRadioCoordinates: () => dispatch(loadRadioCoordinates()),
   subscribeWs: () => dispatch({ type: 'signal/onInit', payload: {} }),
   unsubscribeWs: () => dispatch({ type: 'signal/onDestroy', payload: {} }),
 });

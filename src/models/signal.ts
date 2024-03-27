@@ -5,6 +5,9 @@ import { pingFarmDevices } from '@/services/farm';
 import { getSocketBinds } from '../utils/formater/get-socket-binds';
 import { formatDayJsDate } from '@/utils/formater/get-formated-date';
 import { SelectedFarmModelProps } from './selected-farm';
+import { GetIrpdModelProps } from './irpd';
+import { GetRepeaterModelProps } from './repeaters';
+import { GetPivotInformationModelProps } from './pivot-information';
 
 // Types
 type SignalLog = {
@@ -19,11 +22,24 @@ type SignalLog = {
   deviceType: string;
 }
 
+type RadioCoordinate = {
+  mainRadio: string;
+  gpsRadio?: string | null;
+  lat: number;
+  lng: number;
+  gpsLat?: number | null;
+  gpsLng?: number | null;
+  name: string;
+  type: string;
+}
+
 type NodeElement = WkModels.NodeReponseStream & {
   fromLat: number;
   fromLng: number;
   toLat: number;
   toLng: number;
+  fromName: string;
+  toName: string;
 }
 
 // Model state type
@@ -32,6 +48,7 @@ export type GetSignalModelProps = {
   isLoading: boolean;
   logs: SignalLog[];
   nodeResponses: NodeElement[];
+  radioCoordinates: RadioCoordinate[];
   signalResponses: WkModels.SignalResponseStream[];
   socketId: string;
 }
@@ -44,6 +61,13 @@ export const pingDevices = (payload: API.GetFarmFullParams) => {
   };
 };
 
+export const loadRadioCoordinates = () => {
+  return {
+    type: 'signal/loadCurrentRadioCoordinates',
+    payload: {},
+  }
+}
+
 // Signal model
 export default {
   namespace: 'signal',
@@ -53,16 +77,24 @@ export default {
     isLoading: false,
     logs: [],
     nodeResponses: [],
+    radioCoordinates: [],
     signalResponses: [],
     socketId: uniqid('@Signal_'),
   } as GetSignalModelProps,
   
   effects: {
     *pingFarmDevices(
-      { payload }: { payload: API.GetFarmFullParams },
+      { payload }: { payload: API.GetFarmFullParams & {
+        keepLines?: boolean
+      } },
       { call, put }: { call: any; put: any },
     ) {
-      yield put({ type: 'pingFarmDevicesStart' });
+      yield put({
+        type: 'pingFarmDevicesStart',
+        payload: {
+          keepLines: payload.keepLines || false
+        },
+      });
       try {
         yield call(pingFarmDevices, payload);
         yield put({ type: 'pingFarmDevicesSuccess' });
@@ -70,11 +102,62 @@ export default {
         yield put({ type: 'pingFarmDevicesError', payload: error });
       }
     },
+    *loadCurrentRadioCoordinates(
+      {},
+      { put, select }: { put: any, select: any },
+    ) {
+      const irpdState: GetIrpdModelProps = yield select((state) => state.irpd);
+      const repeaterState: GetRepeaterModelProps = yield select((state) => state.repeater);
+      const pivotState: GetPivotInformationModelProps = yield select((state) => state.pivotInformation);
+
+      const irpdMapped = irpdState.result.map(irpd => ({
+        name: irpd.name,
+        mainRadio: irpd.controlRadio,
+        gpsRadio: null,
+        lat: irpd.centerLat,
+        lng: irpd.centerLng,
+        gpsLat: null,
+        gpsLng: null,
+        type: 'irpd',
+      }));
+
+      const repeaterMapped = repeaterState.result.map(repeater => ({
+        name: repeater.name,
+        mainRadio: repeater.controlRadio,
+        gpsRadio: null,
+        lat: repeater.centerLat,
+        lng: repeater.centerLng,
+        gpsLat: null,
+        gpsLng: null,
+        type: 'repeater',
+      }));
+
+      const pivotMapped = pivotState.result.map(pivot => ({
+        name: pivot.name,
+        mainRadio: pivot.controlRadio,
+        gpsRadio: pivot.monitorRadio,
+        lat: pivot.centerLat,
+        lng: pivot.centerLng,
+        gpsLat: pivot.gpsLat,
+        gpsLng: pivot.gpsLong,
+        type: 'pivot',
+      }));
+
+      const joinedCoordinates = [
+        ...irpdMapped,
+        ...repeaterMapped,
+        ...pivotMapped,
+      ];
+
+      yield put({
+        type: 'setRadioCoordinates',
+        payload: joinedCoordinates,
+      });
+    },
     // Web socket subscribers
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.signal);
       const farmState = yield select((state) => state.farm);
-      console.log('[on init]');
       const channels = [
         {
           title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}n/${farmState.selectedFarm.base.radio_id}`,
@@ -135,7 +218,6 @@ export default {
       { payload }: { payload: WkModels.SignalResponseStream },
       { put, select }: { put: any; call: any; select: any },
     ) {
-      console.log('[on here]');
       const farmState = yield select((state) => state.farm);
       yield put({ type: 'wsDeviceSweepCallbackSuccess', payload: {
         data: payload,
@@ -153,13 +235,21 @@ export default {
   },
 
   reducers: {
-    pingFarmDevicesStart(state: GetSignalModelProps) {
+    pingFarmDevicesStart(
+      state: GetSignalModelProps,
+      { payload }: { payload: { keepLines: boolean } }
+    ) {
+      if (payload.keepLines) return {
+        ...state,
+        error: null,
+        isLoading: true,
+      };
+
       return {
         ...state,
         error: null,
         isLoading: true,
-        // signalResponses: [],
-        // logs: [],
+        nodeResponses: [],
       };
     },
     pingFarmDevicesError(
@@ -177,6 +267,15 @@ export default {
         ...state,
         error: null,
         isLoading: false,
+      };
+    },
+    setRadioCoordinates(
+      state: GetSignalModelProps,
+      { payload }: { payload: RadioCoordinate[] },
+    ) {
+      return {
+        ...state,
+        radioCoordinates: payload,
       };
     },
     setSignalResponses(
@@ -259,22 +358,38 @@ export default {
         };
       } else {
 
-        const newNode: NodeElement = {
-          ...payload.data,
-          fromLat: 0,
-          toLat: 0,
-          fromLng: 0,
-          toLng: 0,
-        } 
+        const fromDevice = state.radioCoordinates.find(
+          rc => (rc.mainRadio || rc.gpsRadio) === payload.data.from,
+        );
+        const toDevice = state.radioCoordinates.find(
+          rc => (rc.mainRadio || rc.gpsRadio) === payload.data.to,
+        );
 
-        return {
-          ...state,
-          nodeResponses: [
-            ...state.nodeResponses,
-            newNode,
-          ]
-        };
+        if (fromDevice && toDevice) {
+          const newNode: NodeElement = {
+            ...payload.data,
+            fromLat: fromDevice.lat || fromDevice.gpsLat!,
+            fromLng: fromDevice.lng || fromDevice.gpsLng!,
+            toLat: toDevice.lat || toDevice.gpsLat!,
+            toLng: toDevice.lng || toDevice.gpsLng!,
+            fromName: fromDevice.name,
+            toName: toDevice.name,
+          }
+
+          console.log('adding node', newNode);
+  
+          return {
+            ...state,
+            nodeResponses: [
+              ...state.nodeResponses,
+              newNode,
+            ]
+          };
+        }
+
       }
+
+      return state;
     }
   },
 }
