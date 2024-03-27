@@ -172,7 +172,7 @@ export default {
         },
         {
           title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}f/${farmState.selectedFarm.base.radio_id}`,
-          id: state.id,
+          id: state.socketId,
           binds: [
             {
               callback: ['signal/wsNodeFindCallback'],
