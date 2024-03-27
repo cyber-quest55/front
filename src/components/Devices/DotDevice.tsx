@@ -83,7 +83,8 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
     prevProps.updated === nextProps.updated &&
     prevProps.deviceColor === nextProps.deviceColor &&
     prevProps.statusText === nextProps.statusText &&
-    prevProps.controlRadio === nextProps.controlRadio
+    prevProps.controlRadio === nextProps.controlRadio &&
+    prevProps.dotColor === nextProps.dotColor
   );
 });
 

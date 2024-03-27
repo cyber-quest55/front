@@ -195,7 +195,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                   dotColor={
                     props.signal.signalResponses.some(
                       itm => itm.radio_id === item.controlRadio
-                    )? '#03a05e'
+                    ) ? '#03a05e'
                       : '#FF0000'
                   }
                 />
