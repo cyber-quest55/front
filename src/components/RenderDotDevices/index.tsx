@@ -15,6 +15,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
 import SignalInfoWindow from '../Devices/SignalInfoWindow';
 import { GetSignalModelProps } from '@/models/signal';
+import ConnectionInfoWindow from '../SignalDevices/ConnectionInfoWindow';
 import ConnectionLine from '../SignalDevices/ConnectionLine';
 
 export type RenderPivotsProps = {
@@ -40,6 +41,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   // Gooks
   const intl = useIntl();
   const ref = useRef();
+  const connectionRef = useRef();
   const { xl } = useScreenHook();
   const [
     mapMode,
@@ -181,6 +183,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
         }}
       >
         <SignalInfoWindow ref={ref} />
+        <ConnectionInfoWindow ref={connectionRef} />
         {
           /* This block renders connection info about devices */
           props.signal.nodeResponses.map((item) => (
@@ -191,10 +194,14 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
               fromLng={item.fromLng}
               toLng={item.toLng}
               lineColor={CONNECTION_LINE_COLOR[item.quality]}
+              fromName={item.fromName}
+              toName={item.toName}
+              quality={item.quality}
+              strength={item.db}
+              infoWindowRef={connectionRef}
             />
           ))
         }
-        
         {
           /* This block renders farm central device */
           !props.central.loading
