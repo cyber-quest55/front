@@ -15,6 +15,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
 import SignalInfoWindow from '../Devices/SignalInfoWindow';
 import { GetSignalModelProps } from '@/models/signal';
+import ConnectionLine from '../SignalDevices/ConnectionLine';
 
 export type RenderPivotsProps = {
   zoom: number;
@@ -27,6 +28,13 @@ export type RenderPivotsProps = {
   repeater: GetRepeaterModelProps;
   deviceCenterCoordinates?: { lat: number, lng: number }
 };
+
+const CONNECTION_LINE_COLOR = {
+  "weak": "#FF0000",
+  "moderate": "#81502F",
+  "strong": "#81CF2F",
+  "very strong": "#03a05e",
+}
 
 const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   // Gooks
@@ -172,10 +180,23 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           if (map !== null) setZoom(map.getZoom());
         }}
       >
-        <SignalInfoWindow
-          ref={ref}
-        />
+        <SignalInfoWindow ref={ref} />
         {
+          /* This block renders connection info about devices */
+          props.signal.nodeResponses.map((item) => (
+            <ConnectionLine 
+              key={`connection-${item.from}-${item.to}`}
+              fromLat={item.fromLat}
+              toLat={item.toLat}
+              fromLng={item.fromLng}
+              toLng={item.toLng}
+              lineColor={CONNECTION_LINE_COLOR[item.quality]}
+            />
+          ))
+        }
+        
+        {
+          /* This block renders farm central device */
           !props.central.loading
             ? props.central.result?.map((item) => (
               <DotDevice
@@ -197,6 +218,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
             : null
         }
         {
+          /* This block renders farm pivot devices */
           !props.pivotInformation.loading
             ? props.pivotInformation.result?.map((item) => (
               <>
@@ -250,6 +272,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
             : null
         }
         {
+          /* This block renders farm irpd devices */
           !props.irpd.loading
             ? props.irpd.result?.map((item) => (
               <DotDevice
@@ -276,6 +299,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
             : null
         }
         {
+          /* This block renders farm repeater devices */
           !props.repeater.loading
             ? props.repeater.result?.map((item) => (
               <DotDevice
