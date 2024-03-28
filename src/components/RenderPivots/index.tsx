@@ -21,10 +21,12 @@ import CustomInfoWindow from '../Devices/InfoWindow';
 
 const scrollToBottom = () => {
   setTimeout(() => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth',
-    });
+    const element = document.getElementById('page-container');
+    if (element) {
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offset = elementPosition   // Ajuste de 100 pixels para o topo da tela
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
   }, 500);
 };
 
@@ -221,6 +223,10 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               deviceColor={item.deviceColor}
               statusText={item.statusText}
               infoWindow
+
+              percentage={ item.percentage  }
+              meterLevel={ item.meterLevel  }
+
               imeterSetId={item.imeterSetId}
               infoWindowRef={ref}
               zoom={zoom}

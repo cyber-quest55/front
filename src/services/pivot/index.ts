@@ -55,7 +55,7 @@ export async function getPivotReports(
 ) {
   return request<{
     data: API.GetPivotByIdInformationResponse;
-  }>(`/v3/farms/${props.farmId}/pivots/${props.pivotId}/report/`, {
+  }>(`/v4/reports/farms/${props.farmId}/pivots/${props.pivotId}/`, {
     method: 'GET',
     params: options,
   });

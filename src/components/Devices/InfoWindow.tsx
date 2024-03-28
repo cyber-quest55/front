@@ -4,7 +4,7 @@ import { Space, Tag, Typography } from 'antd';
 
 const CustomInfoWindow = forwardRef((_, ref) => {
     const [visible, setVisible] = useState(false);
-    const [content, setContent] = useState({name: '', status: '', deviceColor: '', statusText: '', updated: ''});
+    const [content, setContent] = useState({ name: '', status: '', deviceColor: '', statusText: '', updated: '' });
     const [position, setPosition] = useState({ lat: 0, lng: 0 });
 
     useImperativeHandle(ref, () => ({
@@ -25,14 +25,14 @@ const CustomInfoWindow = forwardRef((_, ref) => {
     const close = () => {
         setVisible(false)
     }
- 
+
     return (
-        visible && <InfoWindow  onCloseClick={close} position={position} >
-           <Space direction="vertical" >
-            <Typography.Title level={5}>{content.name}</Typography.Title>
-            <Tag color={content.deviceColor}>{content.statusText}</Tag>
-            <Typography.Text>{content.updated}</Typography.Text>
-          </Space>
+        visible && <InfoWindow onCloseClick={close} position={position} >
+            <Space direction="vertical" >
+                <Typography.Title style={{color: 'black'}} color={"black"} level={5}>{content.name}</Typography.Title>
+                {content.deviceColor && content.statusText && <Tag color={content.deviceColor}>{content.statusText}</Tag>}
+                <Typography.Text style={{color: 'black'}}>{content.updated}</Typography.Text>
+            </Space>
         </InfoWindow>
     );
 });

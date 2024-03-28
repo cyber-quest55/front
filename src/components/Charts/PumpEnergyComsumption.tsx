@@ -3,7 +3,6 @@ import { getIrpdWaterConsumption } from '@/services/irpd';
 import { getWaterConsumptionType } from '@/utils/formater/get-water-consumption-type';
 import { Column, G2 } from '@ant-design/charts';
 import {
-  LightFilter,
   ProFormDatePicker,
   ProFormSegmented,
   StatisticCard,
@@ -20,152 +19,6 @@ type Props = {
   dispatch: any;
 };
 
-const waterConsuption = [
-  { year: '2013', type: 'Horas em pico', value: 92.1 },
-  { year: '2013', type: 'Horas em fora de pico', value: 145.1 },
-  { year: '2013', type: 'Horas em reduzido', value: 110.6 },
-  { year: '2014', type: 'Horas em pico', value: 91.8 },
-  { year: '2014', type: 'Horas em fora de pico', value: 140.9 },
-  { year: '2014', type: 'Horas em reduzido', value: 99.0 },
-  { year: '2015', type: 'Horas em pico', value: 87.1 },
-  { year: '2015', type: 'Horas em fora de pico', value: 139.4 },
-  { year: '2015', type: 'Horas em reduzido', value: 103.9 },
-  { year: '2016', type: 'Horas em pico', value: 80.0 },
-  { year: '2016', type: 'Horas em fora de pico', value: 134.8 },
-  { year: '2016', type: 'Horas em reduzido', value: 100.0 },
-];
-
-const waterConsumption2 = {
-  message: 'SUCCESS',
-  data: [
-    {
-      from: '2024-01-01',
-      to: '2024-01-02',
-      value: 180,
-      type: 1,
-    },
-    {
-      from: '2024-01-01',
-      to: '2024-01-02',
-      value: 181,
-      type: 2,
-    },
-    {
-      from: '2024-01-01',
-      to: '2024-01-02',
-      value: 182,
-      type: 3,
-    },
-    {
-      from: '2024-01-02',
-      to: '2024-01-03',
-      value: 183,
-      type: 1,
-    },
-    {
-      from: '2024-01-02',
-      to: '2024-01-03',
-      value: 184,
-      type: 2,
-    },
-    {
-      from: '2024-01-02',
-      to: '2024-01-03',
-      value: 185,
-      type: 3,
-    },
-    {
-      from: '2024-01-03',
-      to: '2024-01-04',
-      value: 186,
-      type: 1,
-    },
-    {
-      from: '2024-01-03',
-      to: '2024-01-04',
-      value: 187,
-      type: 2,
-    },
-    {
-      from: '2024-01-03',
-      to: '2024-01-04',
-      value: 188,
-      type: 3,
-    },
-    {
-      from: '2024-01-04',
-      to: '2024-01-05',
-      value: 189,
-      type: 1,
-    },
-    {
-      from: '2024-01-04',
-      to: '2024-01-05',
-      value: 190,
-      type: 2,
-    },
-    {
-      from: '2024-01-04',
-      to: '2024-01-05',
-      value: 191,
-      type: 3,
-    },
-    {
-      from: '2024-01-05',
-      to: '2024-01-06',
-      value: 192,
-      type: 1,
-    },
-    {
-      from: '2024-01-05',
-      to: '2024-01-06',
-      value: 193,
-      type: 2,
-    },
-    {
-      from: '2024-01-05',
-      to: '2024-01-06',
-      value: 194,
-      type: 3,
-    },
-    {
-      from: '2024-01-06',
-      to: '2024-01-07',
-      value: 195,
-      type: 1,
-    },
-    {
-      from: '2024-01-06',
-      to: '2024-01-07',
-      value: 196,
-      type: 2,
-    },
-    {
-      from: '2024-01-06',
-      to: '2024-01-07',
-      value: 197,
-      type: 3,
-    },
-    {
-      from: '2024-01-07',
-      to: '2024-01-08',
-      value: 198,
-      type: 1,
-    },
-    {
-      from: '2024-01-07',
-      to: '2024-01-08',
-      value: 199,
-      type: 2,
-    },
-    {
-      from: '2024-01-07',
-      to: '2024-01-08',
-      value: 200,
-      type: 3,
-    },
-  ],
-};
 
 const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
   const intl = useIntl();
@@ -207,14 +60,11 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
 
 
   const getFormatedDate = (date1: Dayjs, date2: Dayjs) => {
-
-    if(precision === 'month'){
-      return date1.format('DD/MM')
-    }
+    return `${date1.format('DD/MM')} - ${date2.format('DD/MM')}`
   }
 
   const formatDatsource = (data: Array<APIModels.IrpdWaterConsumption> | undefined) => {
-    if( !data ){ 
+    if (!data) {
       return []
     }
     const values = data.map((item) => {
@@ -228,10 +78,10 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
         type: item.type,
         formatedType,
         period: getFormatedDate(bDate, eDate),
-        value: item.value,
+        value: item.volume_value,
       };
     });
-     
+
     return values
   };
 
@@ -287,50 +137,47 @@ const PumpEnergyConsumptionChart: React.FC<Props> = (props) => {
       }
       colSpan={{ xs: 24 }}
       title={
-        <LightFilter layout="inline">
-          <ProFormDatePicker
-            label={intl.formatMessage({
-              id: 'component.pivot.tab.history.rangepicker.label',
-            })}
-            fieldProps={{
-              picker: precision,
-              onChange: (date) => setDates(date),
-              allowClear: false,
-              value: dates,
-            }}
-          />
-        </LightFilter>
+        <ProFormDatePicker
+          label={intl.formatMessage({
+            id: 'component.pivot.tab.history.rangepicker.label',
+          })}
+          fieldProps={{
+            picker: precision,
+            onChange: (date) => setDates(date),
+            allowClear: false,
+            value: dates,
+          }}
+        />
       }
       extra={
-        <LightFilter>
-          <ProFormSegmented
-            fieldProps={{
-              value: precision,
-              onChange: (item) => setPrecision(item),
-            }}
-            request={async () => [
-              {
-                label: intl.formatMessage({
-                  id: 'component.irpd.report.chart.datetype.opt.1',
-                }),
-                value: 'year',
-              },
-            
-              {
-                label: intl.formatMessage({
-                  id: 'component.irpd.report.chart.datetype.opt.3',
-                }),
-                value: 'month',
-              },
-              {
-                label: intl.formatMessage({
-                  id: 'component.irpd.report.chart.datetype.opt.2',
-                }),
-                value: 'week',
-              },
-            ]}
-          />
-        </LightFilter>
+
+        <ProFormSegmented
+          fieldProps={{
+            value: precision,
+            onChange: (item) => setPrecision(item),
+          }}
+          request={async () => [
+            {
+              label: intl.formatMessage({
+                id: 'component.irpd.report.chart.datetype.opt.1',
+              }),
+              value: 'year',
+            },
+
+            {
+              label: intl.formatMessage({
+                id: 'component.irpd.report.chart.datetype.opt.3',
+              }),
+              value: 'month',
+            },
+            {
+              label: intl.formatMessage({
+                id: 'component.irpd.report.chart.datetype.opt.2',
+              }),
+              value: 'week',
+            },
+          ]}
+        />
       }
     />
   );

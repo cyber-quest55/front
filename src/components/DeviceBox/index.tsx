@@ -57,10 +57,12 @@ type Props = {
 
 const scrollToBottom = () => {
   setTimeout(() => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: 'smooth',
-    });
+    const element = document.getElementById('page-container');
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
   }, 500);
 };
 
@@ -126,6 +128,8 @@ const DeviceBox: React.FC<Props> = (props) => {
         farmId,
         otherProps: otherProps,
       });
+    scrollToBottom();
+
   };
 
   const dataSource = props?.pivotInformation?.result?.map((item) => ({
@@ -133,7 +137,6 @@ const DeviceBox: React.FC<Props> = (props) => {
       <Row
         onClick={() => {
           onSetDevice(DeviceType.Pivot, item.id, {});
-          scrollToBottom();
         }}
         key={`row-pivot-information-${item.id}`}
         justify="space-between"
@@ -169,10 +172,10 @@ const DeviceBox: React.FC<Props> = (props) => {
       <Space key={`row-pivot-information-space-${item.id}`} direction="vertical">
         <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Tooltip title={
-            item.isRaining 
-              ? intl.formatMessage({ id: 'component.farm.devices.pivot.raining' }) 
-              : intl.formatMessage({ id: 'component.farm.devices.pivot.pluviometer' }) 
-            }
+            item.isRaining
+              ? intl.formatMessage({ id: 'component.farm.devices.pivot.raining' })
+              : intl.formatMessage({ id: 'component.farm.devices.pivot.pluviometer' })
+          }
           >
             <BsCloudRainFill style={{ fontSize: 20 }} />
           </Tooltip>{' '}
@@ -184,10 +187,10 @@ const DeviceBox: React.FC<Props> = (props) => {
           </Tooltip>{' '}
           {
             item.currentAngle < 0
-            ? item.currentAngle * -1
-            : item.currentAngle === 0 
-              ? '-' 
-              : item.currentAngle
+              ? item.currentAngle * -1
+              : item.currentAngle === 0
+                ? '-'
+                : item.currentAngle
           } °
         </span>
         <Typography.Text type="secondary">
@@ -203,7 +206,7 @@ const DeviceBox: React.FC<Props> = (props) => {
         <Col>
           <span
             onClick={() => {
-              navigate(`/farms/${params.id}/repeater/${item.id}/edit`) 
+              navigate(`/farms/${params.id}/repeater/${item.id}/edit`)
             }}
           >
             {item.name}
@@ -245,8 +248,7 @@ const DeviceBox: React.FC<Props> = (props) => {
             waterId: item.waterId,
             params: getCommonDateParam(true),
           });
-          scrollToBottom();
-        }}
+         }}
         justify="space-between"
         style={{ width: '100%' }}
       >
@@ -296,8 +298,7 @@ const DeviceBox: React.FC<Props> = (props) => {
             item.id,
             { imeterSetId: item.imeterSetId }
           );
-          scrollToBottom();
-        }}
+         }}
         justify="space-between"
         style={{ width: '100%' }}
       >
@@ -492,7 +493,7 @@ const DeviceBox: React.FC<Props> = (props) => {
             {getList(dataSource4)}
           </>
         ) : null}
-        
+
       </div>
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>

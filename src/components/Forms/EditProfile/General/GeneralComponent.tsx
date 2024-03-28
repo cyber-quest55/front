@@ -29,7 +29,7 @@ const removeNotNumbersAndZeroOfString = (string: string) => {
 };
 
 const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
-  const [form] = Form.useForm<any>();
+  const [form,] = Form.useForm<any>();
   const intl = useIntl();
   const { message } = App.useApp();
   const ref = React.useRef<ProFormInstance<any> | undefined>();
@@ -155,6 +155,10 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
       });
     }
   };
+
+  React.useEffect(() => { 
+    form.setFieldsValue({...currentUser})
+  }, [currentUser])
 
   return (
     <ProCard
@@ -345,6 +349,7 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
                         })}
                     />
                     <CustomInput.Cellphone
+                      country={country}
                       countryCode={prefix_cell_phone}
                       colProps={{ xs: 24, md: 8, xl: 8 }}
                       formItemProps={{
@@ -356,6 +361,7 @@ const EditGeneralComponent: React.FunctionComponent<any> = (props) => {
                       }}
                     />
                     <CustomInput.Cellphone
+                      country={country}
                       countryCode={prefix_cell_phone}
                       colProps={{ xs: 24, md: 8, xl: 8 }}
                       formItemProps={{

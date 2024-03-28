@@ -10,7 +10,7 @@ export default defineConfig({
     SOCKET_SUFFIX: 'd@',
     SOCKET_DEVICE_SUFFIX: 'd/',
     FCM_SUFFIX: "d-",
-    API_URL: 'https://dev-app.irricontrol.net',
+    API_URL: 'https://app.irricontrol.net',
     REACT_APP_FIREBASE_APIKEY: "AIzaSyCp-8PCL9NbEcQmT1IZpcsIR7oXuc7pw8s",
     REACT_APP_FIREBASE_AUTHDOMAIN: "irricontrol-dev.firebaseapp.com",
     REACT_APP_FIREBASE_PROJECTID: "irricontrol-dev",

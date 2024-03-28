@@ -3,12 +3,11 @@ import { getUserInfo, currentUser as queryCurrentUser } from '@/services/user/in
 import { LinkOutlined, UserOutlined } from '@ant-design/icons';
 import {
   ProConfigProvider,
-  SettingDrawer,
   type Settings as LayoutSettings,
 } from '@ant-design/pro-components';
 import { LoadScript } from '@react-google-maps/api';
 import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
+import { history, Link, } from '@umijs/max';
 import { App } from 'antd';
 import dayjs from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
@@ -29,6 +28,10 @@ import '@/utils/FCMService'
 import PushNotificationConfig from './components/PushNotificationConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+import { setDefaultConfig } from 'antd-mobile'
+import enUS from 'antd-mobile/es/locales/en-US'
+import { ToggleDarkMode } from './components/ToggleDarkMode';
+
 
 type Libraries = ('drawing' | 'geometry' | 'localContext' | 'places' | 'visualization')[];
 
@@ -40,6 +43,10 @@ console.error = function filterWarnings(msg, ...args) {
     consoleError(msg, ...args);
   }
 };
+
+setDefaultConfig({
+  locale: enUS,
+})
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
@@ -80,13 +87,14 @@ export async function getInitialState(): Promise<{
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
-// testing 4
+
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 const loaderId = uniqid('loader-');
 
 const libraries: Libraries = ['visualization'];
 
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  }) => {
+  
   return {
     ...initialState?.settings, 
     unAccessible: <ForbidenPage />,
@@ -96,12 +104,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
     },
     actionsRender: ({ collapsed, isMobile }) => {
       if (isMobile) {
-        return [];
+        return [<div key="ToggleDarkMode" style={{ color: 'rgba(255,255,255,0.75)' }}>
+        <ToggleDarkMode initialState={initialState} setInitialState={setInitialState}/>
+      </div>];
       }
       return [
         <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
           <LocaleSelectorContainer isCollapsed={collapsed} />
         </div>,
+        <div key="ToggleDarkMode" style={{ color: 'rgba(255,255,255,0.75)' }}>
+          <ToggleDarkMode initialState={initialState} setInitialState={setInitialState}/>
+        </div>
         // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
       ];
     },
@@ -117,6 +130,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
+
+
     localization: true,
     onPageChange: () => {
       const { location } = history;
@@ -149,10 +164,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
     token: initialState?.settings?.navTheme === 'realDark' ? {} : defaultSettings.token,
     childrenRender: (children, {  }  ) => {
       // if (initialState?.loading) return <PageLoading />;
-
+       
       return (
         <App >
-          <ProConfigProvider token={{ colorPrimary: defaultSettings.colorPrimary }}>
+          <ProConfigProvider token={{ colorPrimary: defaultSettings.colorPrimary }} >
             <OfflineNetworkContainer />
             <LoadScript
               libraries={libraries as any}
@@ -162,18 +177,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
             >
               
               {children}
-              <SettingDrawer
-                disableUrlParams
-                themeOnly
-                enableDarkTheme
-                settings={initialState?.settings}
-                onSettingChange={(settings) => {
-                  setInitialState((preInitialState: any) => ({
-                    ...preInitialState,
-                    settings,
-                  }));
-                }}
-              />
+              
               <ZendeskChat />
               <PushNotificationConfig />
             </LoadScript>

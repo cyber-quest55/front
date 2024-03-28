@@ -1,12 +1,9 @@
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
-  LightFilter,
   ProDescriptions,
-  ProFormDateRangePicker,
   ProTable,
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
@@ -19,6 +16,7 @@ import { getPivotExcelReport } from '../../services/pivot';
 import { httpToExcel } from '../../utils/adapters/excel';
 import { useTableHook } from '@/hooks/table';
 import { queryPivotHistory } from '../../models/pivot-history';
+import MobileRangePicker from '../Input/RangePicker';
 
 type Props = {
   pivotHistory: GetPivotHistoryModelProps;
@@ -37,14 +35,13 @@ const PivotEventTable: React.FC<Props> = (props) => {
   useEffect(() => {
     if (!props.pivotHistory?.loading) {
       const { deviceId, farmId } = props.selectedDevice;
-
       props.queryPivotHistory({
         path: { deviceId, farmId },
         params: {
           gps: true,
           central: true,
-          date_start: dates[0].toISOString(),
-          date_end: dates[1].toISOString(),
+          date_start: dates[0].format('YYYY-MM-DD'),
+          date_end: dates[1].format('YYYY-MM-DD'),
           page: currentPage,
         },
       })
@@ -79,33 +76,21 @@ const PivotEventTable: React.FC<Props> = (props) => {
 
   const ref = useRef<ActionType>();
 
+  const handleChangeRange = (e: any) => {
+    setDates(e);
+  };
+
+
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <ProTable<any>
         toolbar={{
           title: (
-            <LightFilter>
-              <ProFormDateRangePicker
-                disabled={props.pivotHistory?.loading}
-                name="startdate"
-                label={intl.formatMessage({
-                  id: 'component.pivot.tab.history.rangepicker.label',
-                })}
-
-                fieldProps={{
-                  presets: rangePresets,
-
-                  onChange: (v) => {
-                    if (v && v[0] && v[1]) {
-                      setDates(v);
-                      ref.current?.reload();
-                    };
-                  },
-                  allowClear: false,
-                  value: dates,
-                }}
-              />
-            </LightFilter>
+            <MobileRangePicker
+              onConfirm={handleChangeRange}
+              selectedDate={dates}
+              title=''
+            />
           ),
           filter: (
             <Button
