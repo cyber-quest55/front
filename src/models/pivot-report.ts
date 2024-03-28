@@ -29,8 +29,8 @@ export default {
   effects: {
     *queryPivotReport({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
       yield put({ type: 'queryPivotReportStart' });
-      const start_date = dayjs().subtract(1, 'month').toISOString()
-      const end_date = dayjs().toISOString()
+      const start_date = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
+      const end_date = dayjs().format('YYYY-MM-DD')
       try {
         const response: API.GetPivotReportResponse = yield call(getPivotReports, payload, {
           start_date ,

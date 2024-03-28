@@ -1,11 +1,9 @@
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { getMeterSystemTable } from '@/services/metersystem';
 import { formatDateTime } from '@/utils/formater/get-formated-date';
-import { rangePresets } from '@/utils/presets/RangePicker';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
-  ProFormDateRangePicker,
   ProTable,
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
@@ -16,6 +14,7 @@ import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
 import { getMeterExcelReport } from '../../services/metersystem';
 import { httpToExcel } from '../../utils/adapters/excel';
+import MobileRangePicker from '../Input/RangePicker';
 
 type Props = {
   selectedDevice: SelectedDeviceModelProps;
@@ -35,15 +34,15 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
     ref.current?.reload();
   }, [props.selectedDevice, dates])
 
-  const handleExportReport = async  () => { 
+  const handleExportReport = async () => {
     try {
       const response = await reqGetExcel.runAsync({
-        deviceId: props.selectedDevice.deviceId, 
-        otherId: props.selectedDevice?.otherProps?.imeterSetId 
+        deviceId: props.selectedDevice.deviceId,
+        otherId: props.selectedDevice?.otherProps?.imeterSetId
       },
         {
           date_start: dates[0].toISOString(),
-          date_end: dates[1].toISOString(), 
+          date_end: dates[1].toISOString(),
         }
       )
       httpToExcel(response, `relatório-metersystem-${dates[0].toISOString()}-${dates[1].toISOString()}`)
@@ -51,7 +50,7 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
         duration: 7,
         content: intl.formatMessage({
           id: 'component.pivot.download.report.success',
-        }) 
+        })
       });
     } catch (error) {
       message.error(intl.formatMessage({
@@ -65,6 +64,10 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
       id: 'component.export',
     })}
   </Button>
+
+  const handleChangeRange = (e: any) => {
+    setDates(e);
+  };
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -146,28 +149,13 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
         dateFormatter="string"
         toolbar={{
           title: (
-               <ProFormDateRangePicker
-               formItemProps={{ noStyle: true, style: { width: 350 } }}
+            <MobileRangePicker
+              onConfirm={handleChangeRange}
+              selectedDate={dates}
+              title=''
+            />
 
-                name="startdate"
-                label={intl.formatMessage({
-                  id: 'component.pivot.tab.history.rangepicker.label',
-                })}
-                disabled={reqGetData.loading}
-                fieldProps={{
-                  style: { width: 350 },
-
-                  presets: rangePresets,
-                  onChange: (v) => {
-                    if (v && v[0] && v[1]) {
-                      setDates(v);
-                    }
-                  },
-
-                  value: dates,
-                }}
-              />
-           ),
+          ),
           filter: (
             ExportButton
           ),

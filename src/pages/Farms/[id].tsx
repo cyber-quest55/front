@@ -228,12 +228,12 @@ const Welcome: FunctionComponent<Props> = (props) => {
     '.ant-page-header-heading': {
       paddingBlockStart: '0px !important',
     },
-  }));
+  })); 
 
   return (
     <section className={classNamts}  >
       <PageContainer
-
+        className='no-padding'
         header={{ children: <div style={{ display: 'none' }}>asd</div> }}
         ghost
         breadcrumb={{}}
@@ -259,7 +259,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
                     props.pivotInformation.loading
                   }
                 >
-                  <div style={{ width: '100%', height: '100vh' }}>
+                  <div style={{ width: '100%', height: '100vh', }}>
                     <RenderPivots />
                   </div>
                   <ProCard className={className}>
@@ -272,27 +272,26 @@ const Welcome: FunctionComponent<Props> = (props) => {
           </Col>
           {props.selectedDevice.open ? (
             md ? (
-               
-                <Col
-                  xs={24}
-                  id={"page-container"}
-                  style={{
-                    padding: '15px 15px',
-                    minHeight: 'calc(100vh - 116px)',
-                  }}
-                >
-                  {
-                    getDeviceBySelected(props.selectedDevice.type)
-                  }
-                </Col>
-             
+              <Col
+                xs={24}
+                id={"page-container"}
+                style={{
+                  padding: '15px 15px',
+                  minHeight: 'calc(100vh - 116px)',
+                }}
+              >
+                {
+                  getDeviceBySelected(props.selectedDevice.type)
+                }
+              </Col>
+
 
             ) : null
           ) : null}
         </Row> : null}
 
         {xs ? <div className={'app'}>
-          <div className={'body'}>
+          <div className={'body'} >
             {activeKey === '1' &&
               <Spin spinning={
                 props.pivot.loading ||
@@ -300,8 +299,9 @@ const Welcome: FunctionComponent<Props> = (props) => {
                 props.irpd.loading ||
                 props.meterSystem.loading ||
                 props.pivotInformation.loading
-              }>
-                <div style={{ width: '100vw', }}>
+              } 
+              >
+                <div style={{ width: '100vw', }} >
                   <RenderPivots />
                 </div>
               </Spin>}

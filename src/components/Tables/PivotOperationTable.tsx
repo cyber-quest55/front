@@ -3,13 +3,10 @@ import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { getPivotListGpsStream, getPivotListOperation, getPivotExcelReport } from '@/services/pivot';
 import { getPivotDirection } from '@/utils/formater/get-pivot-direction';
 import { getPivotStatus } from '@/utils/formater/get-pivot-status';
-import { rangePresets } from '@/utils/presets/RangePicker';
 
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   ActionType,
-  LightFilter,
-  ProFormDateRangePicker,
   ProTable,
 } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
@@ -19,6 +16,7 @@ import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
 import { httpToExcel } from '../../utils/adapters/excel';
+import MobileRangePicker from '../Input/RangePicker';
 
 type Props = {
   pivotHistory: GetPivotHistoryModelProps;
@@ -36,14 +34,14 @@ const PivotOperationTable: React.FC<Props> = (props) => {
 
   const ref = useRef<ActionType>();
 
-  const handleExportReport = async  () => { 
+  const handleExportReport = async () => {
     try {
-      const response = await reqGetExcel.runAsync({pivotId: props.selectedDevice.deviceId},
+      const response = await reqGetExcel.runAsync({ pivotId: props.selectedDevice.deviceId },
         {
           date_start: dates[0].toISOString(),
           date_end: dates[1].toISOString(),
-          kwh_value_p : 1,
-          kwh_value_hfp: 1, 
+          kwh_value_p: 1,
+          kwh_value_hfp: 1,
           kwh_value_r: 1
         }
       )
@@ -52,7 +50,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
         duration: 7,
         content: intl.formatMessage({
           id: 'component.pivot.download.report.success',
-        }) 
+        })
       });
     } catch (error) {
       message.error(intl.formatMessage({
@@ -61,41 +59,29 @@ const PivotOperationTable: React.FC<Props> = (props) => {
     }
   }
 
+  const handleChangeRange = (e: any) => {
+    setDates(e);
+  };
+
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <ProTable<any>
         toolbar={{
           title: (
-               <ProFormDateRangePicker
-                disabled={props.pivotHistory.loading}
-                name="startdate"
-                label={intl.formatMessage({
-                  id: 'component.pivot.tab.history.rangepicker.label',
-                })}
-                formItemProps={{ noStyle: true, style: { width: 350 } }}
-
-                fieldProps={{
-                  style: { width: 350 },
-                  presets: rangePresets,
-                  onChange: (v) => {
-                    if (v && v[0] && v[1]) {
-                      setDates(v);
-                      ref.current?.reload();
-                    }
-                  },
-
-                  value: dates,
-                }}
-              />
-           ),
+            <MobileRangePicker
+              onConfirm={handleChangeRange}
+              selectedDate={dates}
+              title=''
+            />
+          ),
           filter: (
-        
-              <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
-                {intl.formatMessage({
-                  id: 'component.export',
-                })}
-              </Button>
-            
+
+            <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
+              {intl.formatMessage({
+                id: 'component.export',
+              })}
+            </Button>
+
           ),
         }}
         request={async (p): Promise<any> => {
@@ -127,7 +113,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
             }),
             dataIndex: 'start_date',
 
-            render: (value, item) => {
+            render: (_value, item) => {
               if (item) return <>{dayjs(item.update).format('DD/MM/YYYY')}</>;
             },
           },
@@ -137,7 +123,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
             }),
             dataIndex: 'end_date',
 
-            render: (value, item) => {
+            render: (_value, item) => {
               if (item) return <>{dayjs(item.update).format('DD/MM/YYYY')}</>;
             },
           },
@@ -187,9 +173,9 @@ const PivotOperationTable: React.FC<Props> = (props) => {
         options={false}
         search={false}
         dateFormatter="string"
-        onRow={(record, rowIndex) => {
+        onRow={(record, _rowIndex) => {
           return {
-            onClick: (event) => {
+            onClick: (_event) => {
               modal.info({
                 title: 'GPS Information List',
                 closable: true,
@@ -198,7 +184,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                 content: (
                   <ProTable<APIModels.PivotListGpsStream>
                     ghost
-                    request={async (p, sort, filter): Promise<any> => {
+                    request={async (p, _sort, _filter): Promise<any> => {
                       const result: API.GetPivotHistoryOperationResponse =
                         (await reqGetGPSData.runAsync(
                           {
@@ -206,7 +192,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                           },
                           {
                             date_start: record.start_date,
-                            date_end:record.end_date ,
+                            date_end: record.end_date,
                             page: p.current,
                           },
                         )) as any;
@@ -287,7 +273,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                           id: 'component.pivot.tab.history.operations.table.latest.table.col.7',
                         }),
                         render: (_, item) => {
-                          return `${item?.content?.end_tower_pressure?.end_tower_pressure.toFixed(2)} bar` ;
+                          return `${item?.content?.end_tower_pressure?.end_tower_pressure.toFixed(2)} bar`;
                         },
                       },
                       {

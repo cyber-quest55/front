@@ -1,14 +1,14 @@
-import { rangePresets } from '@/utils/presets/RangePicker';
+import MobileRangePicker from '@/components/Input/RangePicker';
 import { Line } from '@ant-design/charts';
-import { ProFormDateTimeRangePicker, StatisticCard } from '@ant-design/pro-components';
+import { StatisticCard } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { Empty } from 'antd';
-import  { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import * as React from 'react';
 
 interface IPressureComparativeComponentProps {
   values: { angle: number; value: number; name: string }[];
-  dateRange: Dayjs[],
+  dateRange: [Dayjs, Dayjs],
   setDateRange: any;
 }
 
@@ -18,7 +18,6 @@ const PressureComparativeComponent: React.FunctionComponent<IPressureComparative
   const intl = useIntl();
 
  
-
   const handleChangeRange = (e: any) => {
     props.setDateRange(e);
   };
@@ -26,17 +25,10 @@ const PressureComparativeComponent: React.FunctionComponent<IPressureComparative
   return (
     <StatisticCard
       extra={
-        <ProFormDateTimeRangePicker
-          initialValue={props.dateRange}
-          formItemProps={{ noStyle: true, style: { width: 350 } }}
-          fieldProps={{
-            style: { width: 350 },
-            value: props.dateRange as any,
-            presets: rangePresets,
-            onChange: handleChangeRange,
-            allowClear: false,
-            defaultValue: props.dateRange as any
-          }}
+        <MobileRangePicker
+          onConfirm={handleChangeRange}
+          selectedDate={props.dateRange}
+          title=''
         />
       }
       style={{ marginTop: 16 }}

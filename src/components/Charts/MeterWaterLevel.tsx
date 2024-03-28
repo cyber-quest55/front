@@ -2,16 +2,15 @@ import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
 
 import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { getMeterSystemWaterLevel } from '@/services/metersystem';
-import { rangePresets } from '@/utils/presets/RangePicker';
 import { Mix } from '@ant-design/charts';
-import { ProFormDateRangePicker, StatisticCard } from '@ant-design/pro-components';
-import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { StatisticCard } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import MobileRangePicker from '../Input/RangePicker';
 
 type Props = {
   selectedDevice: SelectedDeviceModelProps;
@@ -35,21 +34,6 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
   const maxLimit =
     meter.imeter_set?.length > 0 ? meter?.imeter_set[0]?.latest_config?.max_limit : undefined;
 
-  const className = useEmotionCss(({ token }) => {
-    return {
-      '.ant-pro-card-header': {
-        [`@media screen and (max-width: ${token.screenMD}px)`]: {
-          display: 'block',
-        },
-      },
-      '.ant-pro-card-body': {
-        [`@media screen and (max-width: ${token.screenMD}px)`]: {
-          paddingInline: 12,
-        },
-      },
-    };
-  });
-
   const update = async () => {
     await getReq.runAsync(
       {
@@ -70,31 +54,19 @@ const MeterWaterLevelChart: React.FC<Props> = (props) => {
   }, [dates, props.selectedDevice]);
 
 
+  const handleChangeRange = (e: any) => {
+    setDates(e);
+  };
+
   return (
     <StatisticCard
-      className={className}
       title={intl.formatMessage({ id: 'component.meter.report.chart' })}
       extra={
 
-        <ProFormDateRangePicker
-          name="startdate"
-          label={intl.formatMessage({
-            id: 'component.pivot.tab.history.rangepicker.label',
-          })}
-          formItemProps={{ noStyle: true, style: { width: 350 } }}
-          disabled={getReq.loading}
-          fieldProps={{
-            style: { width: 350 },
-
-            presets: rangePresets,
-            onChange: (v) => {
-              if (v && v[0] && v[1]) {
-                setDates(v);
-              }
-            },
-
-            value: dates,
-          }}
+        <MobileRangePicker
+          onConfirm={handleChangeRange}
+          selectedDate={dates}
+          title=''
         />
       }
       chart={

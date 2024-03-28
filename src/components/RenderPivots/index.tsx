@@ -8,7 +8,7 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
-import { GoogleMap } from '@react-google-maps/api';
+ import { GoogleMap } from '@react-google-maps/api';
 import { Dispatch, useParams } from '@umijs/max';
 import { Flex, Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
@@ -47,7 +47,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
     lat: 0,
     lng: 0,
   });
-
+  
 
   const ref = useRef()
   const [showPivots, setShowPivots] = useState(true);
@@ -88,7 +88,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             bottom: 12,
             zIndex: 999,
             left: 44,
-
+           
           }}
         >
           <ProCard
@@ -148,15 +148,15 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
         onLoad={(map) => setMap(map)}
         onZoomChanged={() => {
           if (map !== null) {
-            if (map.getZoom() > 11) {
-              if (zoom <= 11)
+            if(map.getZoom() > 11){
+              if(zoom <= 11)
                 setZoom(map.getZoom())
             }
-            if (map.getZoom() < 12) {
-              if (zoom >= 12)
+            if(map.getZoom() < 12){
+              if(zoom >= 12)
                 setZoom(map.getZoom())
             }
-
+             
           }
         }}
         mapContainerStyle={containerStyle}
@@ -205,7 +205,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 onSelect={onSetDevice}
                 mapHistory={item.mapHistory}
                 infoWindowRef={ref}
-                infoWindow
+                 infoWindow
               />
             );
           })
@@ -223,6 +223,10 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               deviceColor={item.deviceColor}
               statusText={item.statusText}
               infoWindow
+
+              percentage={ item.percentage  }
+              meterLevel={ item.meterLevel  }
+
               imeterSetId={item.imeterSetId}
               infoWindowRef={ref}
               zoom={zoom}
@@ -238,7 +242,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               name={item.name}
               updated={item.updated}
               id={item.id}
-              onSelect={'onSetDevice'}
+              onSelect={onSetDevice}
               deviceColor={item.deviceColor}
               statusText={item.statusText}
               infoWindowRef={ref}

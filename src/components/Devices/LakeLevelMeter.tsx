@@ -50,7 +50,7 @@ const LakeLevelMeterDevice: React.FC<LakeLevelMeterProps> = React.memo((props) =
   const liquidChartOptions = {
     width: props.width ? props.width : 75,
     height: props.height ? props.height : 75,
-    percent: 0.25,
+    percent: props.percentage as number / 100,
     style: {
       marginTop: props.height ? -(props.height / 2) : -37.5,
       marginLeft: props.width ? -(props.width / 2) : -37.5,

@@ -18,7 +18,7 @@ const PressureComparativeContainer: React.FC<Props> = (props) => {
   const { xs } = useScreenHook();
   const comparisonReq = useRequest(getPressureComparison, { manual: true });
 
-  const [dateRange, setDateRange] = useState<Dayjs[]>([dayjs(), dayjs()]);
+  const [dateRange, setDateRange] = useState<[Dayjs, Dayjs]>([dayjs(), dayjs()]);
   const [compValue, setCompValue] = useState<{ angle: number; value: number; name: string }[]>([]);
 
   const getComparative = (pressures: any): { angle: number; value: number; name: string }[] => {

@@ -30,7 +30,7 @@ declare namespace API {
 
   type GetPivotHistoryParams = {
     farmId: number;
-    pivotId: string;
+    deviceId: string;
   };
 
   type GetPivotHistoryResponse = {

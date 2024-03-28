@@ -57,28 +57,28 @@ const PivotReport: React.FC<Props> = (props) => {
 
   const [option, setOption] = useState<undefined | number>(undefined);
 
-  const energyConsumption = props.pivotReport.result.energy_consumption;
+  const energyConsumption = props.pivotReport.result?.data?.energy_consumption;
 
   const data = [
     {
       type: intl.formatMessage({
         id: 'component.pivot.voltage.chart.legend.1',
       }),
-      value: parseInt(props.pivotReport.result?.energy_consumption?.ponta?.hours.toString()),
+      value: parseInt(props.pivotReport.result?.data?.energy_consumption?.ponta?.hours.toString()),
     },
     {
       type: intl.formatMessage({
         id: 'component.pivot.voltage.chart.legend.2',
       }),
       value: parseInt(
-        props.pivotReport.result?.energy_consumption?.fora_de_ponta?.hours?.toString(),
+        props.pivotReport.result?.data?.energy_consumption?.fora_de_ponta?.hours?.toString(),
       ),
     },
     {
       type: intl.formatMessage({
         id: 'component.pivot.voltage.chart.legend.3',
       }),
-      value: parseInt(props.pivotReport.result?.energy_consumption?.reduzido?.hours.toString()),
+      value: parseInt(props.pivotReport.result?.data?.energy_consumption?.reduzido?.hours.toString()),
       color: 'red',
     },
   ];
@@ -155,7 +155,7 @@ const PivotReport: React.FC<Props> = (props) => {
             colSpan={{ xs: 24, md: 12, xxl: 12 }}
           >
             <StatisticCard
-              loading={props.pivotReport.loading   && <StatisticSkeleton lastRow/>}
+              loading={props.pivotReport.loading && <StatisticSkeleton lastRow />}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(1)}
               style={{ height: 'calc(275px / 2)' }}
@@ -163,21 +163,21 @@ const PivotReport: React.FC<Props> = (props) => {
                 title: intl.formatMessage({
                   id: 'component.pivot.unexpectedstops.1',
                 }),
-                value: props.pivotReport.result?.unexpected_stops?.lack_of_pressure,
+                value: props.pivotReport.result?.data?.unexpected_stops?.lack_of_pressure,
                 description: (
                   <Statistic
                     className={className}
                     title={intl.formatMessage({
                       id: 'component.pivot.unexpectedstops.5',
                     })}
-                    value="8.04%"
+                    value={`${props.pivotReport.result?.data?.unexpected_stops?.lack_of_pressure_last_month.toFixed(2)}%`}
                     trend="down"
                   />
                 ),
               }}
             />
             <StatisticCard
-              loading={props.pivotReport.loading  && <StatisticSkeleton lastRow />}
+              loading={props.pivotReport.loading && <StatisticSkeleton lastRow />}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(2)}
               style={{ height: 'calc(275px / 2)' }}
@@ -185,14 +185,14 @@ const PivotReport: React.FC<Props> = (props) => {
                 title: intl.formatMessage({
                   id: 'component.pivot.unexpectedstops.2',
                 }),
-                value: props.pivotReport.result?.unexpected_stops?.energy_blackot,
+                value: props.pivotReport.result?.data?.unexpected_stops?.energy_blackot,
                 description: (
                   <Statistic
                     className={className}
                     title={intl.formatMessage({
                       id: 'component.pivot.unexpectedstops.5',
                     })}
-                    value="8.04%"
+                    value={`${props.pivotReport.result?.data?.unexpected_stops?.energy_blackot_last_month.toFixed(2)}%`}
                     trend="down"
                   />
                 ),
@@ -204,7 +204,7 @@ const PivotReport: React.FC<Props> = (props) => {
             colSpan={{ xs: 24, md: 12, xxl: 12 }}
           >
             <StatisticCard
-              loading={props.pivotReport.loading  && <StatisticSkeleton lastRow />}
+              loading={props.pivotReport.loading && <StatisticSkeleton lastRow />}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(3)}
               style={{ height: 'calc(275px / 2)' }}
@@ -212,21 +212,21 @@ const PivotReport: React.FC<Props> = (props) => {
                 title: intl.formatMessage({
                   id: 'component.pivot.unexpectedstops.3',
                 }),
-                value: props.pivotReport.result?.unexpected_stops?.misalignment,
+                value: props.pivotReport.result?.data?.unexpected_stops?.misalignment,
                 description: (
                   <Statistic
                     className={className}
                     title={intl.formatMessage({
                       id: 'component.pivot.unexpectedstops.5',
                     })}
-                    value="8.04%"
+                    value={`${props.pivotReport.result?.data?.unexpected_stops?.misalignment_last_month.toFixed(2)}%`}
                     trend="down"
                   />
                 ),
               }}
             />
             <StatisticCard
-              loading={props.pivotReport.loading  && <StatisticSkeleton lastRow/>}
+              loading={props.pivotReport.loading && <StatisticSkeleton lastRow />}
               bodyStyle={{ cursor: 'pointer' }}
               onClick={() => setOption(4)}
               style={{ height: 'calc(275px / 2)' }}
@@ -234,14 +234,14 @@ const PivotReport: React.FC<Props> = (props) => {
                 title: intl.formatMessage({
                   id: 'component.pivot.unexpectedstops.4',
                 }),
-                value: props.pivotReport.result?.unexpected_stops?.power_surge,
+                value: props.pivotReport.result?.data?.unexpected_stops?.power_surge,
                 description: (
                   <Statistic
                     className={className}
                     title={intl.formatMessage({
                       id: 'component.pivot.unexpectedstops.5',
                     })}
-                    value="8.04%"
+                    value={`${props.pivotReport.result?.data?.unexpected_stops?.power_surge_last_month.toFixed(2)}%`}
                     trend="down"
                   />
                 ),
@@ -262,46 +262,46 @@ const PivotReport: React.FC<Props> = (props) => {
             <ProCard split={md ? 'vertical' : 'horizontal'}>
               <ProCard split={'horizontal'} wrap>
                 <StatisticCard
-                  loading={props.pivotReport.loading  && <StatisticSkeleton />}
-                  onClick={() => {}}
+                  loading={props.pivotReport.loading && <StatisticSkeleton />}
+                  onClick={() => { }}
                   statistic={{
                     title: intl.formatMessage({
                       id: 'component.pivot.voltage.label.1',
                     }),
-                    value: props.pivotReport.result?.flow?.total_m3h.toFixed(2),
+                    value: props.pivotReport.result?.data?.flow?.total_m3h.toFixed(2),
                     suffix: 'm³',
                   }}
                 />
 
                 <StatisticCard
-                  loading={props.pivotReport.loading  && <StatisticSkeleton />}
+                  loading={props.pivotReport.loading && <StatisticSkeleton />}
                   statistic={{
                     title: intl.formatMessage({
                       id: 'component.pivot.voltage.label.3',
                     }),
-                    value: props.pivotReport.result?.hours_count?.wet_total_hours.toFixed(3),
+                    value: props.pivotReport.result?.data?.hours_count?.wet_total_hours.toFixed(3),
                     suffix: 'h',
                   }}
                 />
               </ProCard>
               <ProCard split={'horizontal'} wrap>
                 <StatisticCard
-                  loading={props.pivotReport.loading  && <StatisticSkeleton />}
+                  loading={props.pivotReport.loading && <StatisticSkeleton />}
                   statistic={{
                     title: intl.formatMessage({
                       id: 'component.pivot.voltage.label.2',
                     }),
-                    value: '99.000,31',
+                    value:  props.pivotReport.result?.data?.flow?.total_m3h_last_month.toFixed(2),
                     suffix: 'm³',
                   }}
                 />
                 <StatisticCard
-                  loading={props.pivotReport.loading  && <StatisticSkeleton />}
+                  loading={props.pivotReport.loading && <StatisticSkeleton />}
                   statistic={{
                     title: intl.formatMessage({
                       id: 'component.pivot.voltage.label.4',
                     }),
-                    value: '150,03',
+                    value: props.pivotReport.result?.data?.hours_count?.wet_total_hours_last_month.toFixed(3),
                     suffix: 'h',
                   }}
                 />
@@ -501,13 +501,13 @@ const PivotReport: React.FC<Props> = (props) => {
                     }}
                     height={260}
                     data={
-                      props.pivotReport.result?.voltage_array
-                        ? props.pivotReport.result?.voltage_array?.map((item) => {
-                            return {
-                              Date: new Date(item.date).toISOString().split('T')[0],
-                              scales: item.voltage,
-                            };
-                          })
+                      props.pivotReport.result?.data?.voltage_array
+                        ? props.pivotReport.result?.data?.voltage_array?.map((item) => {
+                          return {
+                            Date: new Date(item.date).toISOString().split('T')[0],
+                            scales: item.voltage,
+                          };
+                        })
                         : []
                     }
                     padding="auto"
@@ -534,8 +534,8 @@ const PivotReport: React.FC<Props> = (props) => {
                         title: intl.formatMessage({
                           id: 'component.pivot.voltage.label.8',
                         }),
-                        value: props.pivotReport.result?.voltage_min
-                          ? props.pivotReport.result?.voltage_min[0]
+                        value: props.pivotReport.result?.data?.voltage_min
+                          ? props.pivotReport.result?.data?.voltage_min[0]
                           : 0,
                         suffix: 'V',
                       }}
@@ -548,8 +548,8 @@ const PivotReport: React.FC<Props> = (props) => {
                         title: intl.formatMessage({
                           id: 'component.pivot.voltage.label.9',
                         }),
-                        value: props.pivotReport.result?.voltage_med
-                          ? props.pivotReport.result?.voltage_med[0]
+                        value: props.pivotReport.result?.data?.voltage_med
+                          ? props.pivotReport.result?.data?.voltage_med[0]
                           : 0,
                         suffix: 'V',
                       }}
@@ -562,8 +562,8 @@ const PivotReport: React.FC<Props> = (props) => {
                         title: intl.formatMessage({
                           id: 'component.pivot.voltage.label.10',
                         }),
-                        value: props.pivotReport.result?.voltage_max
-                          ? props.pivotReport.result?.voltage_max[0]
+                        value: props.pivotReport.result?.data?.voltage_max
+                          ? props.pivotReport.result?.data?.voltage_max[0]
                           : 0,
                         suffix: 'V',
                       }}
@@ -579,45 +579,45 @@ const PivotReport: React.FC<Props> = (props) => {
           colSpan={{ xs: 24, lg: 12 }}
           wrap
           ghost
-           className={classNameTableProCard}
+          className={classNameTableProCard}
         >
           <ProCard
-             style={{ minHeight: 1032 }}
+            style={{ minHeight: 1032 }}
             title={intl.formatMessage({
               id: 'component.pivot.tab.history.title',
             })}
-            tabs={   {
-                    tabPosition: 'top',
-                    activeKey: tab,
-                    items: [
-                      {
-                        label: intl.formatMessage({
-                          id: 'component.pivot.tab.history.event',
-                        }),
-                        key: 'tab1',
+            tabs={{
+              tabPosition: 'top',
+              activeKey: tab,
+              items: [
+                {
+                  label: intl.formatMessage({
+                    id: 'component.pivot.tab.history.event',
+                  }),
+                  key: 'tab1',
 
-                        children: <PivotEventTable />,
-                      },
-                      {
-                        label: intl.formatMessage({
-                          id: 'component.pivot.tab.history.operations',
-                        }),
-                        key: 'tab2',
-                        children: <PivotOperationTable />,
-                      },
-                    ],
-                    onChange: (key) => {
-                      setTab(key);
-                    },
-                  }
+                  children: <PivotEventTable />,
+                },
+                {
+                  label: intl.formatMessage({
+                    id: 'component.pivot.tab.history.operations',
+                  }),
+                  key: 'tab2',
+                  children: <PivotOperationTable />,
+                },
+              ],
+              onChange: (key) => {
+                setTab(key);
+              },
+            }
             }
             colSpan={{ xs: 24, md: 24 }}
           />
-          <PressureComparativeContainer/>
+          <PressureComparativeContainer />
         </ProCard>
 
         <StatisticCard
-          loading={props.pivotReport.loading && <CardSkeleton rows={9}/>}
+          loading={props.pivotReport.loading && <CardSkeleton rows={9} />}
           title={intl.formatMessage({
             id: 'component.pivot.pressure.label.2',
           })}
@@ -641,13 +641,13 @@ const PivotReport: React.FC<Props> = (props) => {
                 },
               }}
               data={
-                props.pivotReport.result?.water_blade?.by_angle
-                  ? props.pivotReport.result?.water_blade?.by_angle.map((item, index) => {
-                      return {
-                        Ângulo: index + 1,
-                        value: item,
-                      };
-                    })
+                props.pivotReport.result?.data?.water_blade?.by_angle
+                  ? props.pivotReport.result?.data?.water_blade?.by_angle.map((item, index) => {
+                    return {
+                      Ângulo: index + 1,
+                      value: item,
+                    };
+                  })
                   : []
               }
               padding="auto"
