@@ -6,6 +6,7 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/pivot-information';
+import { queryCentral } from '@/models/central';
 import { GetIrpdModelProps, queryIrpd } from '@/models/irpd';
 import { queryPivot } from '@/models/pivot';
 import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
@@ -34,6 +35,7 @@ type Props = {
   repeater: GetRepeaterModelProps;
   farm: GetFarmModelProps;
   selectedFarm: SelectedFarmModelProps;
+  queryCentral: typeof queryCentral;
   queryFarm: typeof queryFarm;
   queryPivotInformation: typeof queryPivotInformation;
   queryIrpd: typeof queryIrpd;
@@ -159,6 +161,7 @@ const Devices: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     if (params.id !== ':id') {
+      props.queryCentral({ id: params.id as string });
       props.queryIrpd({
         id: parseInt(params.id as string),
       });
@@ -318,6 +321,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryIrpd: (props: any) => dispatch(queryIrpd(props)),
   queryRepeater: (props: any) => dispatch(queryRepeater(props)),
   queryPivot: (props: any) => dispatch(queryPivot(props)),
+  queryCentral: (props: any) => dispatch(queryCentral(props)),
 });
 
 export default connect(

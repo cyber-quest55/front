@@ -176,6 +176,27 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           ref={ref}
         />
         {
+          !props.central.loading
+            ? props.central.result?.map((item) => (
+              <DotDevice
+                id={item.id}
+                key={item.id}
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                deviceColor="yellow"
+                controlRadio={item.baseRadio}
+                statusText={"Central online"}
+                dotColor="yellow"
+                lineColor="#fff"
+                name={item.name}
+                updated={item.updated}
+                mapRef={null}
+                infoWindowRef={ref}
+              />
+            ))
+            : null
+        }
+        {
           !props.pivotInformation.loading
             ? props.pivotInformation.result?.map((item) => (
               <>
@@ -250,27 +271,6 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                   ) ? '#03a05e'
                     : '#FF0000'
                 }
-              />
-            ))
-            : null
-        }
-        {
-          !props.central.loading
-            ? props.central.result?.map((item) => (
-              <DotDevice
-                id={item.id}
-                key={item.id}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                deviceColor="yellow"
-                controlRadio={""}
-                statusText={"Central online"}
-                dotColor="yellow"
-                lineColor="#fff"
-                name={item.name}
-                updated={item.updated}
-                mapRef={null}
-                infoWindowRef={ref}
               />
             ))
             : null

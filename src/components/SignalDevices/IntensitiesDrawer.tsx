@@ -99,7 +99,7 @@ const IntesitiesDrawer: React.FC<Props> = ({
 
     setTimedOut(false);
     if (isOpen) {
-      const newTimeoutId = setTimeout(() => setTimedOut(true), 5000);
+      const newTimeoutId = setTimeout(() => setTimedOut(true), 60000);
       setTimeoutId(newTimeoutId);
     }
 
