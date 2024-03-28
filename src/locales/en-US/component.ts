@@ -983,4 +983,6 @@ export default {
   'component.signal.map.switch.rellief': 'Rellief ',
   'component.signal.map.switch.gps': 'Display GPS ',
   'component.signal.map.switch.lines': 'Draw lines ',
+  'component.signal.box.loading.status.normal': 'Waiting for device response',
+  'component.signal.box.loading.status.timeout': 'This device is tooking longer than expected to respond',
 };

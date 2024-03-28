@@ -16,12 +16,14 @@ import { WifiOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import { useUnmount } from 'ahooks';
 import {
+  Badge,
   Button,
   Col,
   Divider,
   Row,
   Space,
   Tag,
+  Tooltip,
   Typography,
 } from 'antd';
 import React, {
@@ -57,6 +59,10 @@ const SignalDevices: React.FC<Props> = (props) => {
   const [
     isDeviceDrawerOpen,
     setDeviceDrawerState,
+  ] = useState<boolean>(false);
+  const [
+    timedOut,
+    setTimedOut,
   ] = useState<boolean>(false);
   const [
     currentRadio,
@@ -143,9 +149,34 @@ const SignalDevices: React.FC<Props> = (props) => {
         }}
       >
         <Col>
-          <span>
+          <span
+            style={{
+              marginRight: '8px',
+            }}
+          >
             {item.name}
           </span>
+          {
+            (
+              props.signal.listening &&
+              !props.signal.signalResponses.some(
+                itm => itm.radio_id === item.controlRadio
+              )
+            ) ? (
+              <Tooltip
+                key="tooltip_status"
+                title={
+                  timedOut
+                    ? intl.formatMessage({ id: 'component.signal.box.loading.status.timeout' })
+                    : intl.formatMessage({ id: 'component.signal.box.loading.status.normal' })
+                }
+              >
+                <Badge
+                  status={timedOut ? 'warning' : 'processing'}
+                />
+              </Tooltip>
+            ) : null
+          }
         </Col>
         <Col>
           <Tag
@@ -217,9 +248,34 @@ const SignalDevices: React.FC<Props> = (props) => {
         }}
       >
         <Col>
-          <span>
+          <span
+            style={{
+              marginRight: '8px',
+            }}
+          >
             {item.name}
           </span>
+          {
+            (
+              props.signal.listening &&
+              !props.signal.signalResponses.some(
+                itm => itm.radio_id === item.controlRadio
+              )
+            ) ? (
+              <Tooltip
+                key="tooltip_status"
+                title={
+                  timedOut
+                    ? intl.formatMessage({ id: 'component.signal.box.loading.status.timeout' })
+                    : intl.formatMessage({ id: 'component.signal.box.loading.status.normal' })
+                }
+              >
+                <Badge
+                  status={timedOut ? 'warning' : 'processing'}
+                />
+              </Tooltip>
+            ) : null
+          }
         </Col>
         <Col>
           <Tag
@@ -279,9 +335,34 @@ const SignalDevices: React.FC<Props> = (props) => {
         }}
       >
         <Col>
-          <span>
+          <span
+            style={{
+              marginRight: '8px',
+            }}
+          >
             {item.name}
           </span>
+          {
+            (
+              props.signal.listening &&
+              !props.signal.signalResponses.some(
+                itm => itm.radio_id === item.controlRadio
+              )
+            ) ? (
+              <Tooltip
+                key="tooltip_status"
+                title={
+                  timedOut
+                    ? intl.formatMessage({ id: 'component.signal.box.loading.status.timeout' })
+                    : intl.formatMessage({ id: 'component.signal.box.loading.status.normal' })
+                }
+              >
+                <Badge
+                  status={timedOut ? 'warning' : 'processing'}
+                />
+              </Tooltip>
+            ) : null
+          }
         </Col>
         <Col>
           <Tag
@@ -375,6 +456,7 @@ const SignalDevices: React.FC<Props> = (props) => {
         isOpen={isDeviceDrawerOpen}
         toggleDrawer={toggleDrawer}
         nodes={props.signal.nodeResponses}
+        signals={props.signal.radioCoordinates}
         currentRadio={currentRadio?.controlRadio || currentRadio?.gpsRadio}
       />
       {/* Component default content */}
@@ -448,7 +530,8 @@ const SignalDevices: React.FC<Props> = (props) => {
             onClick={() => {
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
-              })
+              });
+              setTimeout(() => setTimedOut(true), 60000);
             }}
           >
             {intl.formatMessage({

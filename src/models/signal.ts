@@ -22,7 +22,7 @@ export type SignalLog = {
   deviceType: string;
 }
 
-type RadioCoordinate = {
+export type RadioCoordinate = {
   mainRadio: string;
   gpsRadio?: string | null;
   lat: number;
@@ -46,6 +46,7 @@ export type NodeElement = WkModels.NodeReponseStream & {
 export type GetSignalModelProps = {
   error: AxiosError | null;
   isLoading: boolean;
+  listening: boolean;
   logs: SignalLog[];
   nodeResponses: NodeElement[];
   radioCoordinates: RadioCoordinate[];
@@ -78,6 +79,7 @@ export default {
   state: {
     error: null,
     isLoading: false,
+    listening: false,
     logs: [],
     nodeResponses: [],
     radioCoordinates: [],
@@ -280,6 +282,7 @@ export default {
         ...state,
         error: null,
         isLoading: false,
+        listening: true,
       };
     },
     setRadioCoordinates(
@@ -388,8 +391,6 @@ export default {
             fromName: fromDevice.name,
             toName: toDevice.name,
           }
-
-          console.log('adding node', newNode);
   
           return {
             ...state,
