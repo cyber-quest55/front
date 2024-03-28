@@ -985,4 +985,5 @@ export default {
   'component.signal.map.switch.lines': 'Draw lines ',
   'component.signal.box.loading.status.normal': 'Waiting for device response',
   'component.signal.box.loading.status.timeout': 'This device is tooking longer than expected to respond',
+  'component.signal.box.loading.status.noresponse': 'There was no response received from this device',
 };

@@ -1,14 +1,19 @@
 import { NodeElement, RadioCoordinate } from '@/models/signal';
+import { useIntl } from '@umijs/max';
 import {
+  Badge,
   Col,
   Drawer,
   Flex,
   Progress,
   Row,
+  Tooltip,
   Typography
 } from 'antd';
 import React, {
   useCallback,
+  useEffect,
+  useState,
 } from 'react';
 
 type Props = {
@@ -36,6 +41,13 @@ const IntesitiesDrawer: React.FC<Props> = ({
   nodes,
   signals,
 }: Props) => {
+  // Hooks
+  const intl = useIntl();
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [
+    timedOut,
+    setTimedOut,
+  ] = useState<boolean>(false);
 
   // Computed info
   const connectedNodes = useCallback(
@@ -71,12 +83,42 @@ const IntesitiesDrawer: React.FC<Props> = ({
     signals,
   ]);
 
+  // Actions
+  const handleCloseModal = () => {
+    toggleDrawer();
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  };
+
+  // Effects
+  useEffect(() => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    setTimedOut(false);
+    if (isOpen) {
+      const newTimeoutId = setTimeout(() => setTimedOut(true), 5000);
+      setTimeoutId(newTimeoutId);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [
+    isOpen,
+    currentRadio
+  ]);
+
   // TSX
   return (
     <Drawer
       title={title}
       open={isOpen}
-      onClose={toggleDrawer}
+      onClose={handleCloseModal}
       mask={false}
     >
 
@@ -95,11 +137,31 @@ const IntesitiesDrawer: React.FC<Props> = ({
                   justifyContent: 'center'
                 }}
               >
-                <Typography.Text
-                  ellipsis={{ tooltip: item.name }}
-                >
-                  {item.name}
-                </Typography.Text>
+                <Flex style={{
+                  alignItems: 'center',
+                  gap: '8px',
+                }}>
+                  <Typography.Text
+                    ellipsis={{ tooltip: item.name }}
+                  >
+                    {item.name}
+                  </Typography.Text>
+                  {
+                    (
+                      !timedOut &&
+                      item.percentage === 0
+                    ) ? (
+                      <Tooltip
+                        key="tooltip_status"
+                        title={intl.formatMessage({
+                          id: 'component.signal.box.loading.status.normal',
+                        })}
+                      >
+                        <Badge status="processing" />
+                      </Tooltip>
+                    ) : null
+                  }
+                </Flex>
                 <Progress
                   percent={item.percentage}
                   steps={4}

@@ -73,8 +73,6 @@ const SignalDevices: React.FC<Props> = (props) => {
     name: string;
   } | null>(null);
 
-  const toggleDrawer = () => setDeviceDrawerState(prev => !prev);
-
   // Styles
   const className = useEmotionCss(({ }) => {
     return {
@@ -138,7 +136,7 @@ const SignalDevices: React.FC<Props> = (props) => {
               device: item.controlRadio || item.monitorRadio,
               keepLines: false,
             })
-            toggleDrawer();
+            setDeviceDrawerState(true);
           }
         }}
         onMouseEnter={() => {
@@ -243,7 +241,7 @@ const SignalDevices: React.FC<Props> = (props) => {
               device: item.controlRadio,
               keepLines: false,
             })
-            toggleDrawer();
+            setDeviceDrawerState(true);
           }
         }}
       >
@@ -330,7 +328,7 @@ const SignalDevices: React.FC<Props> = (props) => {
               device: item.controlRadio,
               keepLines: false,
             })
-            toggleDrawer();
+            setDeviceDrawerState(true);
           }
         }}
       >
@@ -454,7 +452,7 @@ const SignalDevices: React.FC<Props> = (props) => {
       <IntensityDrawer 
         title={currentRadio?.name}
         isOpen={isDeviceDrawerOpen}
-        toggleDrawer={toggleDrawer}
+        toggleDrawer={() => setDeviceDrawerState(false)}
         nodes={props.signal.nodeResponses}
         signals={props.signal.radioCoordinates}
         currentRadio={currentRadio?.controlRadio || currentRadio?.gpsRadio}
