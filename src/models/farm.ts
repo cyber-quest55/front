@@ -25,10 +25,13 @@ export default {
     loading: true,
     selectedFarm: {},
     error: {},
-  },
+  } as GetFarmModelProps,
 
   effects: {
-    *queryFarm({ payload }: { payload: any }, { call, put }: { call: any; put: any }) {
+    *queryFarm(
+      { payload }: { payload: any },
+      { call, put }: { call: any; put: any }
+    ) {
       yield put({ type: 'queryFarmStart' });
       try {
 
@@ -37,7 +40,9 @@ export default {
         const hasFarm = response.findIndex(f => f.id === payload.id);
         const selectedFarm = response[hasFarm >= 0 ? hasFarm : 0];
 
-        yield put({ type: 'queryFarmSuccess', payload: { data: response, id: payload.id } });
+        yield put({ type: 'queryFarmSuccess', payload: { data: response, id: payload.id, selectedFarm: selectedFarm  } });
+
+        // Selected farm changed here
         yield put({ type: 'selectedFarm/setSelectedFarm', payload: selectedFarm });
         
       } catch (error: any) {
@@ -62,13 +67,19 @@ export default {
     },
     queryFarmSuccess(
       state: GetFarmModelProps,
-      { payload }: { payload: { data: API.GetFarmResponse; id: string } },
+      { payload }: { 
+        payload: {
+          data: API.GetFarmResponse;
+          id: string
+          selectedFarm: any,
+        }
+      },
     ) {
       return {
         ...state,
         loading: false,
         loaded: true,
-        selectedFarm: payload.data[0],
+        selectedFarm: payload.selectedFarm,
         result: payload.data,
         error: {},
       };

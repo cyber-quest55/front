@@ -280,6 +280,8 @@ export default {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,
+            created: formattedIncomingValue[0].created,
+            arrived: formattedIncomingValue[0].arrived,
           };
           return {
             ...state,
@@ -316,6 +318,8 @@ export default {
             customStatus: formattedIncomingValue[0].customStatus,
             badgeStatus: formattedIncomingValue[0].badgeStatus,
             badge: formattedIncomingValue[0].badge,
+            created: formattedIncomingValue[0].created,
+            arrived: formattedIncomingValue[0].arrived,
           };
           return {
             ...state,
@@ -352,6 +356,8 @@ export default {
             customStatus: formattedIncomingValue[0].customStatus,
             badgeStatus: formattedIncomingValue[0].badgeStatus,
             badge: formattedIncomingValue[0].badge,
+            created: formattedIncomingValue[0].created,
+            arrived: formattedIncomingValue[0].arrived,
           };
           return {
             ...state,
@@ -386,6 +392,8 @@ export default {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,
+            created: formattedIncomingValue[0].created,
+            arrived: formattedIncomingValue[0].arrived,
           };
           return {
             ...state,
@@ -420,6 +428,7 @@ export default {
           currentValues[hasEntry] = {
             ...currentValues[hasEntry],
             customStatus: formattedIncomingValue[0].customStatus,
+            created: formattedIncomingValue[0].created,
           };
           return {
             ...state,
