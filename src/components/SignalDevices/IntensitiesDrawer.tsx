@@ -23,6 +23,7 @@ type Props = {
   currentRadio?: string;
   nodes: NodeElement[];
   signals: RadioCoordinate[],
+  isGps: boolean,
 }
 
 // Percentage values
@@ -40,6 +41,7 @@ const IntesitiesDrawer: React.FC<Props> = ({
   currentRadio,
   nodes,
   signals,
+  isGps,
 }: Props) => {
   // Hooks
   const intl = useIntl();
@@ -116,12 +118,11 @@ const IntesitiesDrawer: React.FC<Props> = ({
   // TSX
   return (
     <Drawer
-      title={title}
+      title={isGps ? `${title} GPS` : title}
       open={isOpen}
       onClose={handleCloseModal}
       mask={false}
     >
-
       <Row gutter={[16, 16]}>
         {
           possibleNodeConnections().map((item, index) => item ? (

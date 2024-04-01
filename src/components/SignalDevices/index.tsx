@@ -20,6 +20,7 @@ import {
   Button,
   Col,
   Divider,
+  Popconfirm,
   Row,
   Space,
   Tag,
@@ -68,6 +69,7 @@ const SignalDevices: React.FC<Props> = (props) => {
     currentRadio,
     setCurrentRadio,
   ] = useState<{
+    selectedRadio: string;
     controlRadio: string;
     gpsRadio?: string;
     name: string;
@@ -115,28 +117,56 @@ const SignalDevices: React.FC<Props> = (props) => {
   });
 
   // Data sources
-  const pivotDatasource = props?.pivotInformation?.result?.map((item) => ({
-    title: (
+  const pivotDatasource = props?.pivotInformation?.result?.map((item) => {
+    // Contro and monitor signal
+    const hasSignal = props.signal.signalResponses.some(
+      itm => itm.radio_id === item.controlRadio
+    );
+    const hasMonitorSignal = props.signal.signalResponses.some(
+      itm => itm.radio_id === item.monitorRadio
+    );
+
+    let titleNode: React.ReactElement = (
       <Row
         key={`row-pivot-information-${item.id}`}
         justify="space-between"
         style={{ width: '100%' }}
         onClick={() => {
-          const hasSignal = props.signal.signalResponses.some(
-            itm => itm.radio_id === item.controlRadio
-          );
+          // If has both signas another component will handle this
+          if (hasSignal && hasMonitorSignal) return;
+
+          // [Controller] Open drawer
           if (hasSignal) {
             setCurrentRadio({ 
+              selectedRadio: item.controlRadio,
               controlRadio: item.controlRadio,
               gpsRadio: item.monitorRadio,
               name: item.name,
             });
             props.pingDevices({
               id: props.selectedFarm.id.toString(),
-              device: item.controlRadio || item.monitorRadio,
+              device: item.controlRadio,
               keepLines: false,
             })
             setDeviceDrawerState(true);
+            return;
+          }
+
+          // [GPS] Open drawe
+          if (hasMonitorSignal) {
+            setCurrentRadio({
+              selectedRadio: item.monitorRadio,
+              controlRadio: item.controlRadio,
+              gpsRadio: item.monitorRadio,
+              name: item.name,
+            });
+            props.pingDevices({
+              id: props.selectedFarm.id.toString(),
+              device: item.monitorRadio,
+              keepLines: false,
+            })
+            setDeviceDrawerState(true);
+            return;
           }
         }}
         onMouseEnter={() => {
@@ -203,16 +233,62 @@ const SignalDevices: React.FC<Props> = (props) => {
           </Tag>
         </Col>
       </Row>
-    ),
-    extra: (
-      <></>
-    ),
-    content: (
-      <Typography.Text type="secondary">
-        {item.updated}
-      </Typography.Text>
-    ),
-  }));
+    );
+
+    return {
+      title: (hasSignal && hasMonitorSignal) ? (
+        <Popconfirm
+          title="Select signa"
+          description="This node has multiple signals. Select one to inspect?"
+          onConfirm={() => {
+            if (hasSignal) {
+              setCurrentRadio({ 
+                selectedRadio: item.controlRadio,
+                controlRadio: item.controlRadio,
+                gpsRadio: item.monitorRadio,
+                name: item.name,
+              });
+              props.pingDevices({
+                id: props.selectedFarm.id.toString(),
+                device: item.controlRadio,
+                keepLines: false,
+              })
+              setDeviceDrawerState(true);
+              return;
+            }
+          }}
+          onCancel={() => {
+            if (hasMonitorSignal) {
+              setCurrentRadio({
+                selectedRadio: item.monitorRadio,
+                controlRadio: item.controlRadio,
+                gpsRadio: item.monitorRadio,
+                name: item.name,
+              });
+              props.pingDevices({
+                id: props.selectedFarm.id.toString(),
+                device: item.monitorRadio,
+                keepLines: false,
+              })
+              setDeviceDrawerState(true);
+            }
+          }}
+          okText="Controller"
+          cancelText="GPS"
+        >
+          {titleNode}
+        </Popconfirm>
+      ) : titleNode,
+      extra: (
+        <></>
+      ),
+      content: (
+        <Typography.Text type="secondary">
+          {item.updated}
+        </Typography.Text>
+      ),
+    }
+  });
 
   const irpdDatasource = props?.irpd?.result?.map((item) => ({
     title: (
@@ -231,7 +307,8 @@ const SignalDevices: React.FC<Props> = (props) => {
             itm => itm.radio_id === item.controlRadio
           );
           if (hasSignal) {
-            setCurrentRadio({ 
+            setCurrentRadio({
+              selectedRadio: item.controlRadio,
               controlRadio: item.controlRadio,
               gpsRadio: '',
               name: item.name,
@@ -318,7 +395,8 @@ const SignalDevices: React.FC<Props> = (props) => {
             itm => itm.radio_id === item.controlRadio
           );
           if (hasSignal) {
-            setCurrentRadio({ 
+            setCurrentRadio({
+              selectedRadio: item.controlRadio,
               controlRadio: item.controlRadio,
               gpsRadio: '',
               name: item.name,
@@ -455,7 +533,8 @@ const SignalDevices: React.FC<Props> = (props) => {
         toggleDrawer={() => setDeviceDrawerState(false)}
         nodes={props.signal.nodeResponses}
         signals={props.signal.radioCoordinates}
-        currentRadio={currentRadio?.controlRadio || currentRadio?.gpsRadio}
+        currentRadio={currentRadio?.selectedRadio}
+        isGps={currentRadio?.selectedRadio === currentRadio?.gpsRadio}
       />
       {/* Component default content */}
       <Row
