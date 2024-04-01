@@ -1,8 +1,10 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { InfoWindow } from '@react-google-maps/api';
+import { useIntl } from '@umijs/max';
 import { Space, Typography } from 'antd';
 
 const ConnectionInfoWindow = forwardRef((_, ref) => {
+  const intl = useIntl();
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState({ lat: 0, lng: 0 });
   const [content, setContent] = useState<{
@@ -16,6 +18,13 @@ const ConnectionInfoWindow = forwardRef((_, ref) => {
     quality: '',
     strength: 0,
   });
+
+  const signalTransations = {
+    "weak": intl.formatMessage({ id: 'component.signal.map.connection.1' }),
+    "moderate": intl.formatMessage({ id: 'component.signal.map.connection.2' }),
+    "strong": intl.formatMessage({ id: 'component.signal.map.connection.3' }),
+    "very strong": intl.formatMessage({ id: 'component.signal.map.connection.4' }),
+  }
 
   useImperativeHandle(ref, () => ({
     setContentAndOpen: (newContent, position) => {
@@ -56,14 +65,20 @@ const ConnectionInfoWindow = forwardRef((_, ref) => {
               color: '#000000',
             }}
           >
-            Quality {content.quality}
+            {intl.formatMessage({
+              id: 'component.signal.map.connection.quality',
+            })}{signalTransations[content.quality]}
           </Typography.Text>
           <Typography.Text
             style={{
               color: '#000000',
             }}
           >
-            Strength: {content.strength}
+            {intl.formatMessage({
+              id: 'component.signal.map.connection.strength',
+            }, {
+              connStr: content.strength
+            })}
           </Typography.Text>
         </Space>
       </InfoWindow>

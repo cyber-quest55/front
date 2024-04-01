@@ -27,7 +27,8 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
   strength
 }) => {
   const handleMouseEnter = useCallback(() => {
-    console.log('hover herwe');
+    const midLat = (fromLat + toLat) / 2;
+    const midLng = (fromLng + toLng) / 2;
     infoWindowRef?.current?.setContentAndOpen(
       {
         fromName,
@@ -35,8 +36,8 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
         quality,
         strength,
       }, {
-        lat: toLat,
-        lng: toLng
+        lat: midLat,
+        lng: midLng
       }
     )
   }, [
@@ -69,7 +70,7 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
         strokeColor: lineColor,
         strokeOpacity: 1,
         strokeWeight: 3,
-        clickable: false,
+        clickable: true,
         draggable: false,
         editable: false,
         visible: true,

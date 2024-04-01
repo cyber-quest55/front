@@ -241,7 +241,7 @@ const SignalDevices: React.FC<Props> = (props) => {
           title={intl.formatMessage({ id: 'component.signal.box.devices.item.select.title' })}
           description={intl.formatMessage({ id: 'component.signal.box.devices.item.select.description' })}
           icon={<QuestionCircleOutlined style={{ color: '#03a05e' }} />}
-          placement="bottom"
+          placement="bottomLeft"
           onConfirm={() => {
             if (hasSignal) {
               setCurrentRadio({ 
