@@ -1,3 +1,4 @@
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { NodeElement, RadioCoordinate } from '@/models/signal';
 import { useIntl } from '@umijs/max';
 import {
@@ -50,6 +51,20 @@ const IntesitiesDrawer: React.FC<Props> = ({
     timedOut,
     setTimedOut,
   ] = useState<boolean>(false);
+
+  // Classes
+  const classNameScrollable = useEmotionCss(({ }) => {
+    return {
+      maxHeight: 'calc(100vh - 192px)',
+      [`@media screen and (max-width: 762px)`]: {
+        maxHeight: 'calc(100vh - 184px)',
+        height: '100vh',
+      },
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      position: 'relative',
+    };
+  });
 
   // Computed info
   const connectedNodes = useCallback(
@@ -123,55 +138,64 @@ const IntesitiesDrawer: React.FC<Props> = ({
       onClose={handleCloseModal}
       mask={false}
     >
-      <Row gutter={[16, 16]}>
-        {
-          possibleNodeConnections().map((item, index) => item ? (
-            <Col
-              span={12}
-              key={index}
-            >
-              <Flex
-                gap="10px"
-                style={{
-                  flexDirection: 'column',
-                  alignItems: 'start',
-                  justifyContent: 'center'
-                }}
+      <div
+        className={classNameScrollable}
+        style={{
+          width: '100%',
+          paddingBottom: '60px',
+        }}
+      >
+        <Row gutter={[16, 16]}>
+          {
+            possibleNodeConnections().map((item, index) => item ? (
+              <Col
+                span={12}
+                key={index}
               >
-                <Flex style={{
-                  alignItems: 'center',
-                  gap: '8px',
-                }}>
-                  <Typography.Text
-                    ellipsis={{ tooltip: item.name }}
-                  >
-                    {item.name}
-                  </Typography.Text>
-                  {
-                    (
-                      !timedOut &&
-                      item.percentage === 0
-                    ) ? (
-                      <Tooltip
-                        key="tooltip_status"
-                        title={intl.formatMessage({
-                          id: 'component.signal.box.loading.status.normal',
-                        })}
-                      >
-                        <Badge status="processing" />
-                      </Tooltip>
-                    ) : null
-                  }
+                <Flex
+                  gap="10px"
+                  style={{
+                    flexDirection: 'column',
+                    alignItems: 'start',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Flex style={{
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}>
+                    <Typography.Text
+                      ellipsis={{ tooltip: item.name }}
+                    >
+                      {item.name}
+                    </Typography.Text>
+                    {
+                      (
+                        !timedOut &&
+                        item.percentage === 0
+                      ) ? (
+                        <Tooltip
+                          key="tooltip_status"
+                          title={intl.formatMessage({
+                            id: 'component.signal.box.loading.status.normal',
+                          })}
+                        >
+                          <Badge status="processing" />
+                        </Tooltip>
+                      ) : null
+                    }
+                  </Flex>
+                  <Progress
+                    percent={item.percentage}
+                    steps={4}
+                  />
                 </Flex>
-                <Progress
-                  percent={item.percentage}
-                  steps={4}
-                />
-              </Flex>
-            </Col>
-          ) : null)
-        }
-      </Row>
+              </Col>
+            ) : null)
+          }        
+        </Row>
+      </div>
+
     </Drawer>
   )
 }
