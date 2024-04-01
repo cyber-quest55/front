@@ -1,3 +1,4 @@
+import { useMount } from "ahooks";
 import { BsSun, BsMoon } from "react-icons/bs";
 
 export const ToggleDarkMode = ({ initialState, setInitialState, }) => {
@@ -29,6 +30,13 @@ export const ToggleDarkMode = ({ initialState, setInitialState, }) => {
             })
         })
     }
+
+    useMount(() => { 
+        document.documentElement.setAttribute(
+            'data-prefers-color-scheme',
+            'dark'
+        )
+    })
 
     return <span onClick={toggleDark} style={style} >
         {initialState?.settings?.navTheme === 'realDark' ? <BsMoon /> : <BsSun />}
