@@ -12,14 +12,18 @@ import { GetPivotInformationModelProps } from './pivot-information';
 // Types
 export type SignalLog = {
   logId: number;
-  type: string;
+  type: 'FOUND' | 'NODE';
   date: string;
   farmName: string;
   radio: string;
   device: string;
-  deviceID: number;
+  deviceID?: number;
   farmID: number;
-  deviceType: string;
+  deviceType?: string;
+  quality?: string;
+  strength?: number;
+  fromRadioId?: string;
+  toRadioId?: string;
 }
 
 export type RadioCoordinate = {
@@ -246,10 +250,12 @@ export default {
     },
     *wsNodeFindCallback(
       { payload }: { payload: WkModels.NodeReponseStream },
-      { put }: { put: any; call: any; select: any },
+      { put, select }: { put: any; call: any; select: any },
     ) {
+      const farmState = yield select((state) => state.farm);
       yield put({ type: 'wsNodeFindCallbackSuccess', payload: {
         data: payload,
+        farm: farmState.selectedFarm,
       }});
     },
   },
@@ -367,15 +373,31 @@ export default {
       state: GetSignalModelProps,
       { payload }: { payload: {
         data: WkModels.NodeReponseStream,
+        farm: SelectedFarmModelProps,
       } },
     ) {
       const hasNodeIndex = state.nodeResponses.findIndex(
         s => s.from === payload.data.from && s.to === payload.data.to
       );
 
+      const log: SignalLog = {
+        logId: state.logs.length + 1,
+        date: formatDayJsDate(new Date().toISOString()),
+        type: 'NODE',
+        farmID: payload.farm.id,
+        device: '',
+        radio: payload.data.from,
+        farmName: payload.farm.name,
+        quality: payload.data.quality,
+        fromRadioId: payload.data.from,
+        toRadioId: payload.data.to,
+        strength: payload.data.db,
+      }
+
       if (hasNodeIndex >= 0) {
         return {
           ...state,
+          logs: [ ...state.logs, log ],
           nodeResponses: state.nodeResponses.map((n, i) => {
             if (i === hasNodeIndex) {
               return {
@@ -405,9 +427,11 @@ export default {
             fromName: fromDevice.name,
             toName: toDevice.name,
           }
+          log['device'] = toDevice.name;
   
           return {
             ...state,
+            logs: [ ...state.logs, log ],
             nodeResponses: [
               ...state.nodeResponses,
               newNode,
