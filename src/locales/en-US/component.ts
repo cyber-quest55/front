@@ -986,4 +986,6 @@ export default {
   'component.signal.box.loading.status.normal': 'Waiting for device response',
   'component.signal.box.loading.status.timeout': 'This device is tooking longer than expected to respond',
   'component.signal.box.loading.status.noresponse': 'There was no response received from this device',
+  'component.signal.box.devices.item.select.title': 'Select signal',
+  'component.signal.box.devices.item.select.description': 'This node has multiple signals! Select witch one you want to inspect:',
 };

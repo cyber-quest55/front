@@ -12,7 +12,7 @@ import {
   loadRadioCoordinates
 } from '@/models/signal';
 import { ProList } from '@ant-design/pro-components';
-import { WifiOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, WifiOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
 import { useUnmount } from 'ahooks';
 import {
@@ -238,8 +238,10 @@ const SignalDevices: React.FC<Props> = (props) => {
     return {
       title: (hasSignal && hasMonitorSignal) ? (
         <Popconfirm
-          title="Select signa"
-          description="This node has multiple signals. Select one to inspect?"
+          title={intl.formatMessage({ id: 'component.signal.box.devices.item.select.title' })}
+          description={intl.formatMessage({ id: 'component.signal.box.devices.item.select.description' })}
+          icon={<QuestionCircleOutlined style={{ color: '#03a05e' }} />}
+          placement="bottom"
           onConfirm={() => {
             if (hasSignal) {
               setCurrentRadio({ 
@@ -273,8 +275,8 @@ const SignalDevices: React.FC<Props> = (props) => {
               setDeviceDrawerState(true);
             }
           }}
-          okText="Controller"
-          cancelText="GPS"
+          okText={intl.formatMessage({ id: 'component.signal.box.devices.item.controller' })}
+          cancelText={intl.formatMessage({ id: 'component.signal.box.devices.item.gps' })}
         >
           {titleNode}
         </Popconfirm>
