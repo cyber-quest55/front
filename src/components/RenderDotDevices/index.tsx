@@ -28,6 +28,8 @@ export type RenderPivotsProps = {
   central: GetCentralModelProps;
   repeater: GetRepeaterModelProps;
   deviceCenterCoordinates?: { lat: number, lng: number }
+  keepLines: boolean;
+  setKeepLines: (value: boolean) => void;
 };
 
 const CONNECTION_LINE_COLOR = {
@@ -48,7 +50,6 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
     setMapMode
   ] = useState<'satellite' | 'terrain'>('satellite');
   const [showGps, setShowGps] = useState<boolean>(false);
-  const [drawLines, setDrawLines] = useState<boolean>(false);
   const {
     zoom,
     setZoom,
@@ -60,8 +61,6 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
     lat: 0,
     lng: 0,
   });
-
-  console.log(showGps, drawLines);
 
   // Styles
   const containerStyle = {
@@ -147,7 +146,8 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
             >
               <Space>
                 <Switch
-                  onChange={(e) => setDrawLines(e)}
+                  value={props.signal.keepLines}
+                  onChange={(e) => props.setKeepLines(e)}
                   size="small"
                 />
                 <Typography.Text>
@@ -357,7 +357,12 @@ const mapStateToProps =
   });
 
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setKeepLines: (value: boolean) => dispatch({
+    type: 'signal/updateKeepLines',
+    payload: value
+  })
+});
 
 export default connect(
   mapStateToProps,

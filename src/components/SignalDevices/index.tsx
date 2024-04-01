@@ -146,7 +146,6 @@ const SignalDevices: React.FC<Props> = (props) => {
             props.pingDevices({
               id: props.selectedFarm.id.toString(),
               device: item.controlRadio,
-              keepLines: false,
             })
             setDeviceDrawerState(true);
             return;
@@ -163,7 +162,6 @@ const SignalDevices: React.FC<Props> = (props) => {
             props.pingDevices({
               id: props.selectedFarm.id.toString(),
               device: item.monitorRadio,
-              keepLines: false,
             })
             setDeviceDrawerState(true);
             return;
@@ -253,7 +251,6 @@ const SignalDevices: React.FC<Props> = (props) => {
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
                 device: item.controlRadio,
-                keepLines: false,
               })
               setDeviceDrawerState(true);
               return;
@@ -270,7 +267,6 @@ const SignalDevices: React.FC<Props> = (props) => {
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
                 device: item.monitorRadio,
-                keepLines: false,
               })
               setDeviceDrawerState(true);
             }
@@ -318,7 +314,6 @@ const SignalDevices: React.FC<Props> = (props) => {
             props.pingDevices({
               id: props.selectedFarm.id.toString(),
               device: item.controlRadio,
-              keepLines: false,
             })
             setDeviceDrawerState(true);
           }
@@ -406,7 +401,6 @@ const SignalDevices: React.FC<Props> = (props) => {
             props.pingDevices({
               id: props.selectedFarm.id.toString(),
               device: item.controlRadio,
-              keepLines: false,
             })
             setDeviceDrawerState(true);
           }

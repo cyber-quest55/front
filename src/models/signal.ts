@@ -47,6 +47,7 @@ export type GetSignalModelProps = {
   error: AxiosError | null;
   isLoading: boolean;
   listening: boolean;
+  keepLines: boolean;
   logs: SignalLog[];
   nodeResponses: NodeElement[];
   radioCoordinates: RadioCoordinate[];
@@ -80,6 +81,7 @@ export default {
     error: null,
     isLoading: false,
     listening: false,
+    keepLines: false,
     logs: [],
     nodeResponses: [],
     radioCoordinates: [],
@@ -90,16 +92,13 @@ export default {
   effects: {
     *pingFarmDevices(
       { payload }: { payload: API.GetFarmFullParams & {
-        keepLines?: boolean;
         device?: string;
       }},
       { call, put }: { call: any; put: any },
     ) {
       yield put({
         type: 'pingFarmDevicesStart',
-        payload: {
-          keepLines: payload.keepLines || false
-        },
+        payload: {},
       });
       try {
         const apiPayload = {
@@ -168,6 +167,12 @@ export default {
         type: 'setRadioCoordinates',
         payload: joinedCoordinates,
       });
+    },
+    *updateKeepLines(
+      { payload }: { payload: boolean },
+      { put }: { put: any },
+    ) {
+      yield put({ type: 'setKeepLines', payload })
     },
     // Web socket subscribers
     *onInit({}, { put, select }: { put: any; select: any }) {
@@ -252,9 +257,9 @@ export default {
   reducers: {
     pingFarmDevicesStart(
       state: GetSignalModelProps,
-      { payload }: { payload: { keepLines: boolean } }
+      {}
     ) {
-      if (payload.keepLines) return {
+      if (state.keepLines) return {
         ...state,
         error: null,
         isLoading: true,
@@ -301,6 +306,15 @@ export default {
       return {
         ...state,
         signalResponses: payload,
+      };
+    },
+    setKeepLines(
+      state: GetSignalModelProps,
+      { payload }: { payload: boolean },
+    ) {
+      return {
+        ...state,
+        keepLines: payload,
       };
     },
     // Websocket reducers
