@@ -66,6 +66,10 @@ const SignalDevices: React.FC<Props> = (props) => {
     setTimedOut,
   ] = useState<boolean>(false);
   const [
+    isDisabledSearch,
+    setDisabledSearch
+  ] = useState<boolean>(false);
+  const [
     currentRadio,
     setCurrentRadio,
   ] = useState<{
@@ -491,6 +495,12 @@ const SignalDevices: React.FC<Props> = (props) => {
     props.farm.selectedFarm
   ]);
 
+  useEffect(() => {
+    setDisabledSearch(false);
+  }, [
+    props.farm.selectedFarm
+  ]);
+
   // Renderers
   const renderDeviceList = useCallback((datasource: {
     title: React.ReactElement,
@@ -596,6 +606,7 @@ const SignalDevices: React.FC<Props> = (props) => {
             size="large"
             type="primary"
             icon={<WifiOutlined />}
+            disabled={isDisabledSearch}
             onClick={() => {
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
@@ -603,7 +614,11 @@ const SignalDevices: React.FC<Props> = (props) => {
               if (!props.signal.listening) {
                 props.subscribeWs();
               }
-              setTimeout(() => setTimedOut(true), 60000);
+              setDisabledSearch(true);
+              setTimeout(() => {
+                setTimedOut(true);
+                setDisabledSearch(false);
+              }, 60000);
             }}
           >
             {intl.formatMessage({
