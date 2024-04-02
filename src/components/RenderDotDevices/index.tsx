@@ -229,6 +229,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           ))
         }
         {
+          /* This block renders farm central dot */
           (
             !props.farmById.loading &&
             props.farmById.result &&
