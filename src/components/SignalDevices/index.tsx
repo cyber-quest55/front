@@ -397,8 +397,8 @@ const SignalDevices: React.FC<Props> = (props) => {
           );
           if (hasSignal) {
             setCurrentRadio({
-              selectedRadio: item.controlRadio,
-              controlRadio: item.controlRadio,
+              selectedRadio: item.controlRadio!,
+              controlRadio: item.controlRadio!,
               gpsRadio: '',
               name: item.name,
             });
