@@ -12,6 +12,7 @@ export type ConnectionLineProps = {
   toName: string;
   quality: string;
   strength: number;
+  isGps: boolean;
 };
 
 const ConnectionLine: React.FC<ConnectionLineProps> = ({
