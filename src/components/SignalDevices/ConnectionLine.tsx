@@ -13,6 +13,7 @@ export type ConnectionLineProps = {
   quality: string;
   strength: number;
   isGps: boolean;
+  showGps: boolean;
 };
 
 const ConnectionLine: React.FC<ConnectionLineProps> = ({
@@ -25,7 +26,9 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
   fromName,
   toName,
   quality,
-  strength
+  strength,
+  isGps,
+  showGps
 }) => {
   const handleMouseEnter = useCallback(() => {
     const midLat = (fromLat + toLat) / 2;
@@ -62,6 +65,8 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
 
   if (!fromLat || !fromLng || !toLat || !toLng) return null;
 
+  const isLineVisible = (isGps && showGps) || !isGps
+
   return (
     <Polyline
       path={path}
@@ -74,7 +79,7 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({
         clickable: true,
         draggable: false,
         editable: false,
-        visible: true,
+        visible: isLineVisible,
         zIndex: 1,
       }}
     />

@@ -225,6 +225,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
               quality={item.quality}
               strength={item.db}
               infoWindowRef={connectionRef}
+              showGps={showGps}
               isGps={
                 props.signal.radioCoordinates.find(
                   (s) => (s.gpsRadio === item.from || s.gpsRadio === item.to)
