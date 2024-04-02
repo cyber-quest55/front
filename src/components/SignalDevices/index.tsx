@@ -600,7 +600,9 @@ const SignalDevices: React.FC<Props> = (props) => {
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
               });
-              props.subscribeWs();
+              if (!props.signal.listening) {
+                props.subscribeWs();
+              }
               setTimeout(() => setTimedOut(true), 60000);
             }}
           >
