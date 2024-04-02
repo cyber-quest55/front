@@ -483,8 +483,11 @@ const SignalDevices: React.FC<Props> = (props) => {
     }
   }, [
     props.pivotInformation.loaded,
+    props.pivotInformation.result,
     props.irpd.loaded,
+    props.irpd.result,
     props.repeater.loaded,
+    props.repeater.result,
     props.farm.selectedFarm
   ]);
 

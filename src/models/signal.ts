@@ -132,6 +132,8 @@ export default {
       const repeaterState: GetRepeaterModelProps = yield select((state) => state.repeater);
       const pivotState: GetPivotInformationModelProps = yield select((state) => state.pivotInformation);
 
+      console.log('[recalculating here]', irpdState.result, repeaterState.result, pivotState.result);
+
       const irpdMapped = irpdState.result.map(irpd => ({
         name: irpd.name,
         mainRadio: irpd.controlRadio,
