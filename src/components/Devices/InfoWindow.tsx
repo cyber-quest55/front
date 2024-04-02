@@ -22,23 +22,25 @@ const CustomInfoWindow = forwardRef((_, ref) => {
 		}
 	}));
 
-	const close = () => {
-		setVisible(false)
-	}
+  const close = () => {
+    setVisible(false)
+  }
 
-	return (
-		visible && <InfoWindow onCloseClick={close} position={position} >
-			<Space direction="vertical" >
-				<Typography.Title level={5}>{content.name}</Typography.Title>
-				{
-					content.deviceColor && content.statusText ? (
-						<Tag color={content.deviceColor}>{content.statusText}</Tag>
-					) : null
-				}
-				<Typography.Text>{content.updated}</Typography.Text>
-			</Space>
-		</InfoWindow>
-	);
+  return (
+    visible ? (
+			<InfoWindow onCloseClick={close} position={position}>
+        <Space direction="vertical" >
+          <Typography.Title style={{color: 'black'}} color={"black"} level={5}>{content.name}</Typography.Title>
+          {
+						(content.deviceColor && content.statusText)
+							? <Tag color={content.deviceColor}>{content.statusText}</Tag>
+							: null
+					}
+          <Typography.Text style={{color: 'black'}}>{content.updated}</Typography.Text>
+        </Space>
+      </InfoWindow>
+		) : null
+  );
 });
 
 export default CustomInfoWindow;

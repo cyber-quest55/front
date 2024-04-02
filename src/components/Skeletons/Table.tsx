@@ -19,15 +19,15 @@ const TableSkeleton: React.FunctionComponent<{rows: number }>  = (props) => {
         </Col>
          <Col span={24}> 
             <Flex vertical  gap={8}>
-                <Skeleton.Input active shape={'circle'} style={{maxWidth: '100%', marginBottom: 8 }} size='large' block={false}/>
+                <Skeleton.Input active  style={{maxWidth: '100%', marginBottom: 8 }} size='large' block={false}/>
                 {[ ...Array(props.rows).keys() ].map(item => {
                     return (            
                         <Flex justify="space-between" key={item} style={{width: '100%',  }}>
-                            <div><Skeleton.Input    active shape={'circle'} style={{maxWidth: '20%', }} block={false}/></div>
-                            <div><Skeleton.Input    active shape={'circle'} style={{maxWidth: '20%', }} block={false}/></div>
-                            <div><Skeleton.Input    active shape={'circle'} style={{maxWidth: '20%', }} block={false}/></div>
-                            <div><Skeleton.Input    active shape={'circle'} style={{maxWidth: '20%', }} block={false}/></div>
-                            <div><Skeleton.Input    active shape={'circle'} style={{maxWidth: '20%', }} block={false}/></div>
+                            <div><Skeleton.Input    active  style={{maxWidth: '20%', }} block={false}/></div>
+                            <div><Skeleton.Input    active  style={{maxWidth: '20%', }} block={false}/></div>
+                            <div><Skeleton.Input    active  style={{maxWidth: '20%', }} block={false}/></div>
+                            <div><Skeleton.Input    active  style={{maxWidth: '20%', }} block={false}/></div>
+                            <div><Skeleton.Input    active  style={{maxWidth: '20%', }} block={false}/></div>
                         </Flex>
                     )
                 })}
@@ -36,7 +36,7 @@ const TableSkeleton: React.FunctionComponent<{rows: number }>  = (props) => {
          <Col span={24}> 
             <Flex justify="flex-end"  gap={8}>
             <div><Skeleton.Button    active shape={'square'} style={{maxWidth: '20%', }} block={false}/></div>
-            <div><Skeleton.Input    active shape={'circle'} style={{maxWidth: '20%', }} block={false}/></div>
+            <div><Skeleton.Input    active  style={{maxWidth: '20%', }} block={false}/></div>
             </Flex>
          </Col>  
       </Row> 

@@ -582,6 +582,8 @@ declare namespace APIModels {
     from: string;
     to: string;
     value: number;
+    hours_value: number;
+    volume_value: number;
     type: number;
   };
 

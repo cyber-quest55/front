@@ -19,18 +19,21 @@ export type GlobalHeaderRightProps = {
 };
 
 export const AvatarName = () => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState || {};
-  return <span className="anticon">{currentUser?.email.split('@')[0]}</span>;
+  const { sm } = useScreenHook();
+
+  return !sm? null: <span className="anticon">{"User"}</span>;
 };
 
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
-  const { md } = useScreenHook();
+  const { sm } = useScreenHook();
   const { initialState, setInitialState } = useModel('@@initialState');
   const userID = initialState?.currentUser?.id;
 
   const className = useEmotionCss(({}) => {
     return {
+      span: {
+        marginInlineStart: '0px !important',
+      },
       [`.ant-pro-card-body`]: {
         paddingInline: '0px !important',
       },
@@ -170,8 +173,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       icon: <UserOutlined />,
       label: 'Perfil',
     },
-    !md || initialState?.collapsed
-      ? {
+    !sm ? {
           key: 'TESTE',
           
           label:<LocaleSelectorContainer/>,

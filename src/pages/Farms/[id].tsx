@@ -54,7 +54,7 @@ type Props = {
 
 const Welcome: FunctionComponent<Props> = (props) => {
   const [activeKey, setActiveKey] = useState('1');
-  const { md, xs} = useScreenHook();
+  const { md, xs } = useScreenHook();
   const params = useParams();
 
   const Bottom: FC = () => {
@@ -129,10 +129,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
 
   useEffect(() => {
     if (
-        props.selectedFarm.id !== 0 && (
-          params.id !== ':id' &&
-          props.selectedFarm.id !==  Number(params.id)
-        )        
+      props.selectedFarm.id !== 0 && (
+        params.id !== ':id' &&
+        props.selectedFarm.id !== Number(params.id)
+      )
     ) {
       history.push(`${props.selectedFarm.id}`);
       return;
@@ -194,17 +194,18 @@ const Welcome: FunctionComponent<Props> = (props) => {
     '.ant-page-header-heading': {
       paddingBlockStart: '0px !important',
     },
-  }));
-  
+  })); 
+
   return (
-    <section className={classNamts}>
+    <section className={classNamts}  >
       <PageContainer
+        className='no-padding'
         header={{ children: <div style={{ display: 'none' }}>asd</div> }}
         ghost
         breadcrumb={{}}
         title={''}
       >
-        {md ? <Row>
+        {md ? <Row >
           <Col
             xs={24}
             style={{
@@ -224,7 +225,7 @@ const Welcome: FunctionComponent<Props> = (props) => {
                     props.pivotInformation.loading
                   }
                 >
-                  <div style={{ width: '100%', height: '100vh' }}>
+                  <div style={{ width: '100%', height: '100vh', }}>
                     <RenderPivots />
                   </div>
                   <ProCard className={className}>
@@ -239,19 +240,24 @@ const Welcome: FunctionComponent<Props> = (props) => {
             md ? (
               <Col
                 xs={24}
+                id={"page-container"}
                 style={{
                   padding: '15px 15px',
                   minHeight: 'calc(100vh - 116px)',
                 }}
               >
-                {getDeviceBySelected(props.selectedDevice.type)}
+                {
+                  getDeviceBySelected(props.selectedDevice.type)
+                }
               </Col>
+
+
             ) : null
           ) : null}
-        </Row>: null}
+        </Row> : null}
 
-          {xs?<div className={'app'}>
-          <div className={'body'}>
+        {xs ? <div className={'app'}>
+          <div className={'body'} >
             {activeKey === '1' &&
               <Spin spinning={
                 props.pivot.loading ||
@@ -259,8 +265,9 @@ const Welcome: FunctionComponent<Props> = (props) => {
                 props.irpd.loading ||
                 props.meterSystem.loading ||
                 props.pivotInformation.loading
-              }>
-                <div style={{ width: '100vw', }}>
+              } 
+              >
+                <div style={{ width: '100vw', }} >
                   <RenderPivots />
                 </div>
               </Spin>}
@@ -274,8 +281,8 @@ const Welcome: FunctionComponent<Props> = (props) => {
           <div className={'bottom'}>
             <Bottom />
           </div>
-        </div>: null}
-        
+        </div> : null}
+
       </PageContainer>
     </section>
   );

@@ -407,7 +407,7 @@ const LocaleSelectorComponent: React.FC<SelectLangProps> = (props) => {
 
   const inlineStyle = {
     cursor: 'pointer',
-    padding: '12px',
+    padding: '8px',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',

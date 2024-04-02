@@ -53,6 +53,13 @@ body,
   }
 }
 
+.no-padding .ant-pro-page-container-children-container{
+  @media (max-width: 768px) {
+    padding-inline: 0px !important;
+  }
+}
+
+
 .ant-pro-page-container .ant-pro-page-container-warp-page-header{
   @media (max-width: 768px) {
     padding-inline-start: 8px;
@@ -187,4 +194,13 @@ ol {
   &:hover {
     scrollbar-color: transparent transparent;
   }
+}
+
+.ant-pro-table-list-toolbar .ant-pro-table-list-toolbar-container{
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+
+.ant-pro-table-list-toolbar .ant-pro-table-list-toolbar-left{
+  margin-block-end: 0px;
 }

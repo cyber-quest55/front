@@ -1,14 +1,14 @@
+import MobileRangePicker from '@/components/Input/RangePicker';
 import { Line } from '@ant-design/charts';
-import { LightFilter, ProFormDateTimeRangePicker, StatisticCard } from '@ant-design/pro-components';
+import { StatisticCard } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
 import { Empty } from 'antd';
-import { TimeRangePickerProps } from 'antd/lib';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import * as React from 'react';
 
 interface IPressureComparativeComponentProps {
   values: { angle: number; value: number; name: string }[];
-  dateRange: Dayjs[],
+  dateRange: [Dayjs, Dayjs],
   setDateRange: any;
 }
 
@@ -17,13 +17,7 @@ const PressureComparativeComponent: React.FunctionComponent<IPressureComparative
 ) => {
   const intl = useIntl();
 
-  const rangePresets: TimeRangePickerProps['presets'] = [
-    { label: 'Last 7 Days', value: [dayjs().add(-7, 'd'), dayjs()] },
-    { label: 'Last 14 Days', value: [dayjs().add(-14, 'd'), dayjs()] },
-    { label: 'Last 30 Days', value: [dayjs().add(-30, 'd'), dayjs()] },
-    { label: 'Last 90 Days', value: [dayjs().add(-90, 'd'), dayjs()] },
-  ];
-
+ 
   const handleChangeRange = (e: any) => {
     props.setDateRange(e);
   };
@@ -31,19 +25,11 @@ const PressureComparativeComponent: React.FunctionComponent<IPressureComparative
   return (
     <StatisticCard
       extra={
-        <LightFilter>
-          <ProFormDateTimeRangePicker
-            initialValue={props.dateRange}
-            formItemProps={{ noStyle: true, style: { } }}
-            fieldProps={{
-              value: props.dateRange as any,
-              presets: rangePresets, 
-              onChange: handleChangeRange,
-              allowClear: false,
-              defaultValue:  props.dateRange as any
-            }}
-          />
-        </LightFilter>
+        <MobileRangePicker
+          onConfirm={handleChangeRange}
+          selectedDate={props.dateRange}
+          title=''
+        />
       }
       style={{ marginTop: 16 }}
       title={intl.formatMessage({

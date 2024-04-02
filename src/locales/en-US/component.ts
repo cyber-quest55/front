@@ -13,6 +13,7 @@ export default {
   'component.message.success': 'Success!',
   'component.presets.rangepicker': 'Last {value} Days',
   'component.popconfirm.oktext': 'Are you sure about that?',
+  'component.datepiker.oktext': 'Ok',
 
   'component.message.error': 'Error!',
   'component.descriptor.opt.disabled.label': 'Disabled',

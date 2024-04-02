@@ -93,7 +93,7 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
     }
   };
 
-  const className = useEmotionCss(({}) => {
+  const className = useEmotionCss(({ }) => {
     return {
       '.ant-pro-form-group-container': {
         width: '100%',
@@ -160,7 +160,9 @@ const CreateFarmFormComponent: React.FunctionComponent = () => {
           id: 'validations.required',
         }),
       ),
-    central_linked: yup.boolean(),
+    central_linked: yup.boolean().isTrue(intl.formatMessage({
+      id: 'validations.required',
+    }),),
     location: yup.string().required(),
   });
   const yupSync1 = yupValidator(schema1, form1Ref.current?.getFieldsValue as any);

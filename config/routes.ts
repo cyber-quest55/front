@@ -101,8 +101,8 @@ export default [
   {
     path: 'farms/:farmId/pivot/:pivotId/weatherstation',
     name: 'Weather Station',
-    hideInMenu: true,
     component: './WeatherStation/index.tsx',
+    icon: 'CloudOutlined'
   },
   {
     path: 'farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',

@@ -287,6 +287,7 @@ export default {
           if (
             item.controllerstream_periodic.content?.pluviometer_daily_measure?.daily_measure > 0 &&
             dayjs().diff(dayjs(item.controllerstream_periodic?.created), 'minutes') <= 70
+
           ) {
             isRaining = true;
           }
@@ -431,6 +432,7 @@ export default {
               ...r,
               isRaining,
               pluviometerMeasure: payload.content?.pluviometer_daily_measure?.daily_measure,
+
               updated: new Date(payload.updated).toLocaleString(),
             }
           }
