@@ -6,12 +6,12 @@ import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectedFarmModelProps } from '@/models/selected-farm';
 import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/pivot-information';
-import { queryCentral } from '@/models/central';
 import { GetIrpdModelProps, queryIrpd } from '@/models/irpd';
 import { queryPivot } from '@/models/pivot';
 import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
 import { GetFarmModelProps, queryFarm } from '@/models/farm';
-import { useParams } from '@umijs/max';
+import { queryFarmById } from '@/models/farm-by-id';
+import { history, useParams } from '@umijs/max';
 import { useMount } from 'ahooks';
 import { Col, Row, Spin } from 'antd';
 import { TabBar } from 'antd-mobile';
@@ -35,13 +35,14 @@ type Props = {
   repeater: GetRepeaterModelProps;
   farm: GetFarmModelProps;
   selectedFarm: SelectedFarmModelProps;
-  queryCentral: typeof queryCentral;
   queryFarm: typeof queryFarm;
   queryPivotInformation: typeof queryPivotInformation;
   queryIrpd: typeof queryIrpd;
   queryPivot: typeof queryPivot;
   queryRepeater: typeof queryRepeater;
+  queryFarmById: typeof queryFarmById;
   connectWebsocket: () => void;
+  unsubscribeWs: () => void;
 };
 
 const Devices: FunctionComponent<Props> = (props) => {
@@ -158,10 +159,36 @@ const Devices: FunctionComponent<Props> = (props) => {
     props.connectWebsocket();
   });
 
+  useEffect(() => {
+    if (params.id === ':id' && props.selectedFarm.id !== 0) {
+      history.push(`../${props.selectedFarm.id}`);
+      return;
+    }
+  }, [
+    params,
+    props.selectedFarm
+  ]);
+
+  useEffect(() => {
+    if (
+        props.selectedFarm.id !== 0 && (
+          params.id !== ':id' &&
+          props.selectedFarm.id !==  Number(params.id)
+        )        
+    ) {
+      props.unsubscribeWs();
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [
+    props.selectedFarm
+  ]);
 
   useEffect(() => {
     if (params.id !== ':id') {
-      props.queryCentral({ id: params.id as string });
+      props.queryFarmById({
+        id: Number(params.id)
+      });
       props.queryIrpd({
         id: parseInt(params.id as string),
       });
@@ -321,7 +348,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryIrpd: (props: any) => dispatch(queryIrpd(props)),
   queryRepeater: (props: any) => dispatch(queryRepeater(props)),
   queryPivot: (props: any) => dispatch(queryPivot(props)),
-  queryCentral: (props: any) => dispatch(queryCentral(props)),
+  queryFarmById: (props: any) => dispatch(queryFarmById(props)),
+  unsubscribeWs: () => dispatch({ type: 'signal/onDestroy', payload: {} }),
 });
 
 export default connect(

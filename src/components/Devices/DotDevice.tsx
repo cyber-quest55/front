@@ -7,8 +7,8 @@ export type CirclePivotProps = {
   centerLng: number;
   name: string;
   updated: string;
-  deviceColor?: string;
-  statusText: string;
+  deviceColor?: string | null;
+  statusText?: string | null;
   controlRadio?: string;
   dotColor?: string;
   infoWindowRef: any;

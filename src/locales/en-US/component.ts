@@ -985,6 +985,7 @@ export default {
   'component.signal.box.loading.status.noresponse': 'There was no response received from this device',
   'component.signal.box.devices.item.select.title': 'Select signal',
   'component.signal.box.devices.item.select.description': 'This node has multiple signals! Select witch one you want to inspect:',
+  'component.signal.map.central': 'Central',
   'component.signal.map.connection.quality': 'Quality: ',
   'component.signal.map.connection.strength': 'Strength: {connStr} dBm',
   'component.signal.map.connection.1': 'Weak',

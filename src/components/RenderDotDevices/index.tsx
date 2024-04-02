@@ -25,6 +25,8 @@ import { GetSignalModelProps } from '@/models/signal';
 import ConnectionInfoWindow from '../SignalDevices/ConnectionInfoWindow';
 import ConnectionLine from '../SignalDevices/ConnectionLine';
 import LogsDrawer from './LogsDrawer';
+import { GetFarmByIdModelProps } from '@/models/farm-by-id';
+import { formatDayJsDate } from '@/utils/formater/get-formated-date';
 
 
 export type RenderPivotsProps = {
@@ -32,6 +34,7 @@ export type RenderPivotsProps = {
   signal: GetSignalModelProps;
   pivotInformation: GetPivotInformationModelProps;
   farm: GetFarmModelProps;
+  farmById: GetFarmByIdModelProps;
   meterSystem: GetMeterSystemModelProps;
   irpd: GetIrpdModelProps;
   central: GetCentralModelProps;
@@ -226,26 +229,27 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           ))
         }
         {
-          /* This block renders farm central device */
-          !props.central.loading
-            ? props.central.result?.map((item) => (
-              <DotDevice
-                id={item.id}
-                key={item.id}
-                centerLat={item.centerLat}
-                centerLng={item.centerLng}
-                deviceColor="yellow"
-                controlRadio={item.baseRadio}
-                statusText={"Central online"}
-                dotColor="yellow"
-                lineColor="#fff"
-                name={item.name}
-                updated={item.updated}
-                mapRef={null}
-                infoWindowRef={ref}
-              />
-            ))
-            : null
+          (
+            !props.farmById.loading &&
+            props.farmById.result &&
+            Object.keys(props.farmById.result).length > 0
+          ) ? (
+            <DotDevice
+              id={props.farmById.result.id}
+              key={props.farmById.result.id}
+              centerLat={Number(props.farmById.result.location.split(',')[0])}
+              centerLng={Number(props.farmById.result.location.split(',')[1])}
+              controlRadio={props.farmById.result.base.radio_id}
+              deviceColor={null}
+              statusText={null}
+              lineColor="#fff"
+              name={intl.formatMessage({ id: 'component.signal.map.central' })}
+              updated={formatDayJsDate(props.farmById.result.updated)}
+              mapRef={null}
+              infoWindowRef={ref}
+              dotColor="yellow"
+            />
+          ) : null
         }
         {
           /* This block renders farm pivot devices */
@@ -364,6 +368,7 @@ const mapStateToProps =
   ({
     pivotInformation,
     farm,
+    farmById,
     meterSystem,
     irpd,
     central,
@@ -372,6 +377,7 @@ const mapStateToProps =
   }: any) => ({
     pivotInformation,
     farm,
+    farmById,
     meterSystem,
     irpd,
     central,

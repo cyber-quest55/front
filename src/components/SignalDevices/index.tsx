@@ -474,14 +474,6 @@ const SignalDevices: React.FC<Props> = (props) => {
   });
 
   useEffect(() => {
-    if (props.farm.loaded) {
-      props.subscribeWs();
-    }
-  }, [
-    props.farm.loaded
-  ]);
-
-  useEffect(() => {
     if (
       props.irpd.loaded &&
       props.repeater.loaded &&
@@ -492,7 +484,8 @@ const SignalDevices: React.FC<Props> = (props) => {
   }, [
     props.pivotInformation.loaded,
     props.irpd.loaded,
-    props.repeater.loaded
+    props.repeater.loaded,
+    props.farm.selectedFarm
   ]);
 
   // Renderers
@@ -604,6 +597,7 @@ const SignalDevices: React.FC<Props> = (props) => {
               props.pingDevices({
                 id: props.selectedFarm.id.toString(),
               });
+              props.subscribeWs();
               setTimeout(() => setTimedOut(true), 60000);
             }}
           >

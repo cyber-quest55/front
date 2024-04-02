@@ -8,6 +8,7 @@ import { SelectedFarmModelProps } from './selected-farm';
 import { GetIrpdModelProps } from './irpd';
 import { GetRepeaterModelProps } from './repeaters';
 import { GetPivotInformationModelProps } from './pivot-information';
+import { GetFarmByIdModelProps } from './farm-by-id';
 
 // Types
 export type SignalLog = {
@@ -126,6 +127,7 @@ export default {
       {},
       { put, select }: { put: any, select: any },
     ) {
+      const centralState: GetFarmByIdModelProps = yield select((state) => state.farmById);
       const irpdState: GetIrpdModelProps = yield select((state) => state.irpd);
       const repeaterState: GetRepeaterModelProps = yield select((state) => state.repeater);
       const pivotState: GetPivotInformationModelProps = yield select((state) => state.pivotInformation);
@@ -164,6 +166,16 @@ export default {
       }));
 
       const joinedCoordinates = [
+        {
+          name: centralState.result.name,
+          mainRadio: centralState.result.base.radio_id,
+          gpsRadio: null,
+          lat: Number(centralState.result.location.split(',')[0]),
+          lng: Number(centralState.result.location.split(',')[1]),
+          gpsLat: null,
+          gpsLng: null,
+          type: 'central',
+        },
         ...irpdMapped,
         ...repeaterMapped,
         ...pivotMapped,
@@ -213,6 +225,7 @@ export default {
     *onDestroy({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.signal);
       const farmState = yield select((state) => state.farm);
+      yield put({ type: 'resetState' });
       const channels = [
         {
           title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}n/${farmState.selectedFarm.base.radio_id}`,
@@ -263,6 +276,21 @@ export default {
   },
 
   reducers: {
+    resetState(
+      state: GetSignalModelProps,
+      {}
+    ) {
+      return {
+        ...state,
+        error: null,
+        isLoading: false,
+        listening: false,
+        logs: [],
+        nodeResponses: [],
+        radioCoordinates: [],
+        signalResponses: [],
+      }
+    },
     pingFarmDevicesStart(
       state: GetSignalModelProps,
       {}

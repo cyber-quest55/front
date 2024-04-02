@@ -69,15 +69,6 @@ const IntesitiesDrawer: React.FC<Props> = ({
     search,
   ]);
 
-  /*
-  02/04/2024 09:19:05
-  TipoPIVOT
-  Nome:Pivô 04
-  ID (Rádio):903 (0013A20041ED851D)
-  Sinal de Força (dbm):moderate (-80dbm)
-  Decisão Morena
-  */
-
   // TSX
   return (
     <Drawer
