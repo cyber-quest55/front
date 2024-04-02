@@ -994,4 +994,13 @@ export default {
   'component.signal.map.switch.rellief': 'Rellief ',
   'component.signal.map.switch.gps': 'Display GPS ',
   'component.signal.map.switch.lines': 'Draw lines ',
+  'component.signal.map.logs.title': 'Logs',
+  'component.signal.map.logs.search.placeholder': 'Search for logs...',
+  'component.signal.map.logs.tab.1': 'Found Connections',
+  'component.signal.map.logs.tab.2': 'Connected Nodes',
+  'component.signal.map.logs.field.device': 'Device: ',
+  'component.signal.map.logs.field.radio': 'Radio: ',
+  'component.signal.map.logs.field.fromdevice': 'From device: ',
+  'component.signal.map.logs.field.todevice': 'To device: ',
+  'component.signal.map.logs.field.connection': 'Connection strength: ',
 };

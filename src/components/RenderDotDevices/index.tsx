@@ -9,7 +9,14 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { GoogleMap } from '@react-google-maps/api';
 import { ProCard } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
-import { Flex, Space, Switch, Typography } from 'antd';
+import {
+  Flex,
+  FloatButton,
+  Space,
+  Switch,
+  Typography
+} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
 import React, { useEffect, useRef, useState } from 'react';
 import DotDevice from '../Devices/DotDevice';
@@ -17,6 +24,8 @@ import SignalInfoWindow from '../Devices/SignalInfoWindow';
 import { GetSignalModelProps } from '@/models/signal';
 import ConnectionInfoWindow from '../SignalDevices/ConnectionInfoWindow';
 import ConnectionLine from '../SignalDevices/ConnectionLine';
+import LogsDrawer from './LogsDrawer';
+
 
 export type RenderPivotsProps = {
   zoom: number;
@@ -49,6 +58,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
     mapMode,
     setMapMode
   ] = useState<'satellite' | 'terrain'>('satellite');
+  const [isLogsOpen, setIsLogsOpenState] = useState<boolean>(false);
   const [showGps, setShowGps] = useState<boolean>(false);
   const {
     zoom,
@@ -86,6 +96,19 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
   // TSX
   return (
     <>
+      <FloatButton
+        shape="circle"
+        badge={{ count: props.signal.logs.length }}
+        style={{ bottom: 96 }}
+        icon={<ExclamationCircleOutlined />}
+        onClick={() => setIsLogsOpenState(true)}
+      />
+       <LogsDrawer 
+        title={intl.formatMessage({ id: 'component.signal.map.logs.title' })}
+        isOpen={isLogsOpen}
+        toggleDrawer={() => setIsLogsOpenState(false)}
+        logs={props.signal.logs}
+      />
       {
         xl ? (
           <Flex

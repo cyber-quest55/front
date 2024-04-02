@@ -24,6 +24,8 @@ export type SignalLog = {
   strength?: number;
   fromRadioId?: string;
   toRadioId?: string;
+  fromName?: string;
+  toName?: string;
 }
 
 export type RadioCoordinate = {
@@ -335,12 +337,15 @@ export default {
         s => s.radio_id === payload.data.radio_id,
       );
 
+      const device = state.radioCoordinates.find(
+        rc => (rc.mainRadio || rc.gpsRadio) === payload.data.radio_id,
+      );
       const log: SignalLog = {
         logId: state.logs.length + 1,
         date: formatDayJsDate(new Date().toISOString()),
         type: 'FOUND',
         farmID: payload.data.farm_id,
-        device: payload.data.device_name,
+        device: device?.name || '',
         deviceID: payload.data.device_id,
         deviceType: payload.data.device_type,
         radio: payload.data.radio_id,
@@ -427,7 +432,8 @@ export default {
             fromName: fromDevice.name,
             toName: toDevice.name,
           }
-          log['device'] = toDevice.name;
+          log['fromName'] = fromDevice.name;
+          log['toName'] = toDevice.name;
   
           return {
             ...state,
