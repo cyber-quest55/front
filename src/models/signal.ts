@@ -460,12 +460,11 @@ export default {
             ...payload.data,
             fromLat: (fromDevice.gpsRadio === payload.data.from) ? fromDevice.gpsLat! : fromDevice.lat,
             fromLng: (fromDevice.gpsRadio === payload.data.from) ? fromDevice.gpsLng! : fromDevice.lng,
-            toLat: (toDevice.gpsRadio === payload.data.from) ? toDevice.gpsLat! : toDevice.lat,
-            toLng: (toDevice.gpsRadio === payload.data.from) ? toDevice.gpsLng! : toDevice.lng,
+            toLat: (toDevice.gpsRadio === payload.data.to) ? toDevice.gpsLat! : toDevice.lat,
+            toLng: (toDevice.gpsRadio === payload.data.to) ? toDevice.gpsLng! : toDevice.lng,
             fromName: (fromDevice.gpsRadio === payload.data.from) ? `${fromDevice.name} GPS` : fromDevice.name,
-            toName: (toDevice.gpsRadio === payload.data.from) ? `${toDevice.name} GPS` : toDevice.name,
+            toName: (toDevice.gpsRadio === payload.data.to) ? `${toDevice.name} GPS` : toDevice.name,
           }
-          console.log('adding new node', newNode, payload);
           log['fromName'] = fromDevice.name;
           log['toName'] = toDevice.name;
   
