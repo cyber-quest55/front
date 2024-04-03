@@ -100,7 +100,7 @@ const SignalDevices: React.FC<Props> = (props) => {
     return {
       maxHeight: 'calc(100vh - 350px)',
       [`@media screen and (max-width: 762px)`]: {
-        maxHeight: 'calc(100vh - 283px)',
+        maxHeight: 'calc(100vh - 212px)',
         height: '100vh',
       },
       overflowY: 'auto',
@@ -532,7 +532,8 @@ const SignalDevices: React.FC<Props> = (props) => {
         dataSource={datasource}
         style={{
           paddingBottom: 0,
-          marginBottom: 0
+          marginBottom: 0,
+          height: '100%',
         }}
         metas={{
           title: {},

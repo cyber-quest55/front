@@ -69,6 +69,7 @@ const Devices: FunctionComponent<Props> = (props) => {
       }
       : {
         width: '100%',
+        height: '100%',
         padding: 0,
         [`.ant-pro-card-body`]: {
           paddingInline: '0px !important',
@@ -85,10 +86,10 @@ const Devices: FunctionComponent<Props> = (props) => {
     '.ant-pro-page-container-warp-page-header': {
       display: 'none'
     },
-
     '.ant-page-header-heading': {
       paddingBlockStart: '0px !important',
     },
+
   }));
 
   // Renderers
@@ -213,7 +214,7 @@ const Devices: FunctionComponent<Props> = (props) => {
         header={{
           children: (
             <div style={{ display: 'none' }}>
-
+              aad
             </div>
           ) 
         }}
