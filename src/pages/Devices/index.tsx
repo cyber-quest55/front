@@ -206,6 +206,10 @@ const Devices: FunctionComponent<Props> = (props) => {
   return (
     <section className={classNames}>
       <PageContainer
+        className='no-padding'  
+        ghost
+        breadcrumb={{}}
+        title={''}
         header={{
           children: (
             <div style={{ display: 'none' }}>
@@ -213,9 +217,6 @@ const Devices: FunctionComponent<Props> = (props) => {
             </div>
           ) 
         }}
-        ghost
-        breadcrumb={{}}
-        title={''}
       >
         {
           md ? (
