@@ -166,13 +166,17 @@ export default {
         type: 'pivot',
       }));
 
-      const joinedCoordinates = [
+      const joinedCoordinates = centralState.loading ? [
+        ...irpdMapped,
+        ...repeaterMapped,
+        ...pivotMapped,
+      ] : [
         {
-          name: centralState.result.name,
-          mainRadio: centralState.result.base.radio_id,
+          name: centralState.result?.name,
+          mainRadio: centralState.result?.base?.radio_id,
           gpsRadio: null,
-          lat: Number(centralState.result.location.split(',')[0]),
-          lng: Number(centralState.result.location.split(',')[1]),
+          lat: Number(centralState.result?.location.split(',')[0]),
+          lng: Number(centralState.result?.location.split(',')[1]),
           gpsLat: null,
           gpsLng: null,
           type: 'central',
@@ -200,7 +204,7 @@ export default {
       const prefix = process.env.NODE_ENV === 'development' ? 'd/' : '';
       const channels = [
         {
-          title: `${prefix}n/${farmState.selectedFarm.base.radio_id}`,
+          title: `${prefix}n/${farmState.selectedFarm?.base?.radio_id}`,
           id: state.socketId,
           binds: [
             {
@@ -211,7 +215,7 @@ export default {
           ],
         },
         {
-          title: `${prefix}f/${farmState.selectedFarm.base.radio_id}`,
+          title: `${prefix}f/${farmState.selectedFarm?.base?.radio_id}`,
           id: state.socketId,
           binds: [
             {

@@ -55,7 +55,7 @@ export default {
       try {
         const response: API.GetIrpdResponse = yield call(getIrpds, payload);
         yield put({ type: 'queryIrpdSuccess', payload: response });
-        yield put({ type: 'irpd/onInitDeviceBox', payload: {} });
+        yield put({ type: 'onInitDeviceBox', payload: {} });
       } catch (error: any) {
         yield put({ type: 'queryIrpdError', payload: error });
       }

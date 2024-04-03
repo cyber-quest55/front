@@ -477,7 +477,7 @@ const SignalDevices: React.FC<Props> = (props) => {
     if (!props.signal.listening) {
       props.subscribeWs();
     }
-    const id = props.selectedFarm.id.toString();
+    const id = props.selectedFarm?.id?.toString();
     props.pingDevices({ id });
     setDisabledSearch(true);
     setTimeout(() => {

@@ -196,7 +196,21 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
 
 export const dva = {
   config: {
-    onAction: [socketMiddleware(io("http://3.137.182.47:8080", { transports: ['websocket', 'polling', 'flashsocket'], autoConnect: false }))]
+    onAction: [
+      socketMiddleware(
+        io(
+          'http://3.137.182.47:8080',
+          {
+            transports: [
+              'websocket',
+              'polling',
+              'flashsocket'
+            ],
+            autoConnect: false
+          }
+        )
+      )
+    ]
   },
 }
 

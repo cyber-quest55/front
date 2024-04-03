@@ -243,7 +243,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
           ) ? (
             <DotDevice
               id={props.farmById.result.id}
-              key={props.farmById.result.id}
+              key={`central-${props.farmById.result.id}`}
               centerLat={Number(props.farmById.result.location.split(',')[0])}
               centerLng={Number(props.farmById.result.location.split(',')[1])}
               controlRadio={props.farmById.result.base.radio_id}
@@ -265,7 +265,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
               <>
                 <DotDevice
                   id={item.id}
-                  key={item.id}
+                  key={`pivot-${item.id}`}
                   centerLat={item.centerLat}
                   centerLng={item.centerLng}
                   controlRadio={item.controlRadio}
@@ -287,7 +287,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
                   showGps ? (
                     <DotDevice
                       id={item.id}
-                      key={item.id}
+                      key={`pivot-gps-${item.id}`}
                       centerLat={item.gpsLat}
                       centerLng={item.gpsLong}
                       controlRadio={item.monitorRadio}
@@ -318,7 +318,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
             ? props.irpd.result?.map((item) => (
               <DotDevice
                 id={item.id}
-                key={item.id}
+                key={`irpd-${item.id}`}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
                 deviceColor={item.deviceColor}
@@ -345,7 +345,7 @@ const RenderDotDevices: React.FC<RenderPivotsProps> = (props) => {
             ? props.repeater.result?.map((item) => (
               <DotDevice
                 id={item.id}
-                key={item.id}
+                key={`repeater-${item.id}`}
                 centerLat={item.centerLat}
                 centerLng={item.centerLng}
                 deviceColor={item.deviceColor}
