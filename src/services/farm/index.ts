@@ -26,6 +26,13 @@ export async function updatedBase(
   });
 }
 
+export async function pingFarmDevices(options: API.PingFarmDevicesParams) {
+  return request<number>(`/v3/farms/${options.id}/mqtt/gn/`, {
+    method: 'POST',
+    data: options.body,
+  })
+}
+
 export async function enablePivotReports(options: API.GetFarmFullParams) {
   return request<string>(`/v3/reports/farms/${options.id}/pivot-enable/`, {
     method: 'POST'

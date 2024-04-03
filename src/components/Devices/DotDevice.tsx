@@ -7,10 +7,13 @@ export type CirclePivotProps = {
   centerLng: number;
   name: string;
   updated: string;
-  deviceColor?: string;
+  deviceColor?: string | null;
+  statusText?: string | null;
+  controlRadio?: string;
+  dotColor?: string;
   infoWindowRef: any;
   mapRef: any;
-
+  lineColor: string;
 };
 
 const CircleOptions = {
@@ -24,9 +27,28 @@ const CircleOptions = {
   zIndex: 1,
 };
 
-const DotDevice: React.FC<CirclePivotProps> = React.memo(({ centerLat, centerLng, name, updated, deviceColor = '#000', infoWindowRef }) => {
+const DotDevice: React.FC<CirclePivotProps> = React.memo(({
+  centerLat,
+  centerLng,
+  name,
+  controlRadio,
+  deviceColor,
+  dotColor,
+  statusText,
+  updated,
+  infoWindowRef
+}) => {
   const handleMouseEnter = useCallback(() => {
-    infoWindowRef?.current?.setContentAndOpen({ name, updated, deviceColor }, { lat: centerLat, lng: centerLng })
+    infoWindowRef?.current?.setContentAndOpen({
+      name,
+      updated,
+      statusText,
+      radio: controlRadio || '',
+      deviceColor
+    }, {
+      lat: centerLat,
+      lng: centerLng
+    })
   }, []);
 
   const handleMouseLeave = useCallback(() => {
@@ -35,10 +57,10 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({ centerLat, centerLng
 
   const circleOptions = useMemo(() => ({
     ...CircleOptions,
-    strokeColor: deviceColor,
-    fillColor: deviceColor,
+    strokeColor: dotColor,
+    fillColor: dotColor,
     radius: 50,
-  }), [deviceColor]);
+  }), [dotColor]);
 
   if (!centerLat || !centerLng) return null;
 
@@ -50,7 +72,6 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({ centerLat, centerLng
         onMouseOut={handleMouseLeave}
         options={circleOptions}
       />
-
     </>
   );
 }, (prevProps, nextProps) => {
@@ -60,7 +81,10 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({ centerLat, centerLng
     prevProps.centerLng === nextProps.centerLng &&
     prevProps.name === nextProps.name &&
     prevProps.updated === nextProps.updated &&
-    prevProps.deviceColor === nextProps.deviceColor
+    prevProps.deviceColor === nextProps.deviceColor &&
+    prevProps.statusText === nextProps.statusText &&
+    prevProps.controlRadio === nextProps.controlRadio &&
+    prevProps.dotColor === nextProps.dotColor
   );
 });
 

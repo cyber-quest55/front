@@ -15,6 +15,7 @@ declare namespace APIModels {
     created: string;
     updated: string;
     energy_type?: string;
+    repeater_radio_id: string;
     farm: number;
     base: number;
   };

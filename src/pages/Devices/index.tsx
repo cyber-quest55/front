@@ -1,240 +1,346 @@
-import DeviceList from '@/components/DeviceList';
+import SignalDevices from '@/components/SignalDevices';
 import RenderDotDevices from '@/components/RenderDotDevices';
 import { useScreenHook } from '@/hooks/screen';
-import { GetFarmModelProps } from '@/models/farm';
 import { GetPivotModelProps } from '@/models/pivot';
-import { ProCard } from '@ant-design/pro-components';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Col, Row, Spin, Tabs } from 'antd';
+import { SelectedFarmModelProps } from '@/models/selected-farm';
+import { GetPivotInformationModelProps, queryPivotInformation } from '@/models/pivot-information';
+import { GetIrpdModelProps, queryIrpd } from '@/models/irpd';
+import { queryPivot } from '@/models/pivot';
+import { GetRepeaterModelProps, queryRepeater } from '@/models/repeaters';
+import { GetFarmModelProps, queryFarm } from '@/models/farm';
+import { queryFarmById } from '@/models/farm-by-id';
+import { history, useParams } from '@umijs/max';
+import { useMount } from 'ahooks';
+import { Col, Row, Spin } from 'antd';
+import { TabBar } from 'antd-mobile';
+import { AppOutline, UnorderedListOutline } from 'antd-mobile-icons';
 import { connect } from 'dva';
-import { FunctionComponent, ReactNode } from 'react';
+import {
+  FC,
+  FunctionComponent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
 
 type Props = {
   children: ReactNode;
   google?: any;
   pivot: GetPivotModelProps;
+  pivotInformation: GetPivotInformationModelProps;
+  irpd: GetIrpdModelProps;
+  repeater: GetRepeaterModelProps;
   farm: GetFarmModelProps;
+  selectedFarm: SelectedFarmModelProps;
+  queryFarm: typeof queryFarm;
+  queryPivotInformation: typeof queryPivotInformation;
+  queryIrpd: typeof queryIrpd;
+  queryPivot: typeof queryPivot;
+  queryRepeater: typeof queryRepeater;
+  queryFarmById: typeof queryFarmById;
+  connectWebsocket: () => void;
+  unsubscribeWs: () => void;
 };
 
 const Devices: FunctionComponent<Props> = (props) => {
-  const { md } = useScreenHook();
+  const params = useParams();
+  const { xs, md } = useScreenHook();
+  const [ activeKey, setActiveKey ] = useState('1');
+  const [ hoveredDevice, setHoveredDevice ] = useState<{ 
+    lat: number,
+    lng: number 
+  } | null>(null);
 
-  const className = useEmotionCss(({}) => {
+  // Page component styles
+  const className = useEmotionCss(({ }) => {
     return md
       ? {
-          position: 'absolute',
-          width: 400,
-          top: 10,
-          left: 45,
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        }
+        position: 'absolute',
+        width: 400,
+        top: 10,
+        left: 45,
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      }
       : {
-          width: '100%',
-          minHeight: '150px',
-          padding: 0,
-          [`.ant-pro-card-body`]: {
-            paddingInline: '0px !important',
-          },
-        };
+        width: '100%',
+        height: '100%',
+        padding: 0,
+        [`.ant-pro-card-body`]: {
+          paddingInline: '0px !important',
+        },
+      };
   });
 
-  const classNameFixedMobile = useEmotionCss(({}) => {
-    return {
-      height: 65,
-      width: '100%',
-      background: 'white',
-      zIndex: 3,
-      ['.ant-tabs-nav-wrap']: {
-        display: 'flex',
-        justifyContent: 'center',
-      },
-      ['.ant-tabs-nav']: {
-        background: 'white',
-        zIndex: '5',
-        marginTop: '0px',
-      },
+  const classNames = useEmotionCss(() => ({
+    '.ant-pro-page-container-children-container': {
+      paddingInline: 0,
+      paddingBlock: 0,
+      paddingBlockStart: '0px !important',
+    },
+    '.ant-pro-page-container-warp-page-header': {
+      display: 'none'
+    },
+    '.ant-page-header-heading': {
+      paddingBlockStart: '0px !important',
+    },
+
+  }));
+
+  // Renderers
+  const Bottom: FC = useCallback(() => {
+    const disabled = false;
+
+    const setRouteActive = (value: string) => {
+      if (value === '3' && disabled) {
+        return;
+      }
+      setActiveKey(value);
     };
-  });
 
-  const items = [
-    {
-      key: '1',
-      label: `Tab 1`,
-      children: (
-        <Spin spinning={false}>
-          <div style={{ width: '100%', height: 'calc(100vh - 102px)' }}>
-            <RenderDotDevices />
-          </div>
-        </Spin>
-      ),
-    },
-    {
-      key: '2',
-      label: `Tab 2`,
-      children: (
-        <ProCard className={className}>
-          <DeviceList />
-        </ProCard>
-      ),
-    },
-  ];
+    const tabs = [
+      {
+        key: '1',
+        title: 'Mapa',
+        icon: <AppOutline />,
+      },
+      {
+        key: '2',
+        title: 'Radios',
+        icon: <UnorderedListOutline />,
+      },
+    ];
 
-  return (
-    <Row>
-      <Col
-        xs={24}
-        style={{
-          height: md ? '100vh' : 'calc(100vh - 56px - 60px)',
-          position: 'relative',
+    return (
+      <TabBar
+        safeArea
+        activeKey={activeKey}
+        onChange={value => {
+          setRouteActive(value);
         }}
       >
-        <>
-          {md ? (
-            <Spin spinning={props.pivot.loading || props.farm.loading}>
-              <div style={{ width: '100%', height: '100vh' }}>
-                <RenderDotDevices />
-              </div>
-              <ProCard className={className}>
-                <DeviceList />
-              </ProCard>
-              {/***
-                 <ProCard
-              className={legendClassName}
-              title="Dispositivos"
-            >
-             
-              <Space direction="vertical" size="middle">
-                <Space direction="vertical">
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Central encontrada </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Controlador encontrado </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Bomba encontrada </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> Repetidora encontrada </Typography.Text>
-                  </Space>
-                  <Space>
-                    <CodeSandboxOutlined style={{ fontSize: 20 }} />
-                    <Typography.Text> GPS/Monitor encontrado </Typography.Text>
-                  </Space>
-                </Space>
-                <Space size={35} align='start' style={{ fontSize: 10 }}>
-                  <Space direction="vertical" size="small" align="start">
-                    <Typography.Text style={{ fontWeight: 500 }}>Dispositivo</Typography.Text>
-                    <Space direction="vertical" size={6}>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'green',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Encontrado </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'red',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Não encontrado </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'yellow',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Central </Typography.Text>
-                      </Space>
+        {
+          tabs.map(item => (
+            <TabBar.Item
+              key={item.key}
+              icon={item.icon}
+              title={item.title}
+              style={{ 
+                cursor: disabled ? 'not-allowed' : 'pointer'
+              }}
+            />
+          ))
+        }
+      </TabBar>
+    );
+  }, [
+    activeKey,
+    setActiveKey
+  ]);
 
-                    </Space>
-                  </Space>
-                  <Space direction="vertical" size="small" align="start" >
-                    <Typography.Text style={{ fontWeight: 500 }}>Linha</Typography.Text>
-                    <Space direction="vertical" size={6}>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'green',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Muito forte </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'blue',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Forte </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'orange',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Moderado </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'red',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Fraco </Typography.Text>
-                      </Space>
-                      <Space>
-                        <div style={{
-                          borderRadius: '50%',
-                          backgroundColor: 'black',
-                          height: 13,
-                          width: 13
-                        }}></div>
-                        <Typography.Text style={{ fontSize: 12 }}> Erro </Typography.Text>
-                      </Space>
-                    </Space>
-                  </Space>
-                </Space>
-              </Space>
-            </ProCard>
-                 */}
-            </Spin>
-          ) : null}
-          {md ? null : (
-            <div className={classNameFixedMobile}>
-              <Tabs defaultActiveKey="1" items={items} tabPosition="bottom" />
+  // Page effects
+  useMount(() => {
+    if (!props.farm.loaded) {
+      if (params.id !== ':id') {
+        props.queryFarm({ id: Number(params.id) });
+      } else {
+        props.queryFarm({});
+      }
+    }
+    props.connectWebsocket();
+  });
+
+  useEffect(() => {
+    if (params.id === ':id' && props.selectedFarm.id !== 0) {
+      history.push(`../${props.selectedFarm.id}`);
+      return;
+    }
+  }, [
+    params,
+    props.selectedFarm
+  ]);
+
+  useEffect(() => {
+    if (
+        props.selectedFarm.id !== 0 && (
+          params.id !== ':id' &&
+          props.selectedFarm.id !==  Number(params.id)
+        )        
+    ) {
+      props.unsubscribeWs();
+      history.push(`${props.selectedFarm.id}`);
+      return;
+    }
+  }, [
+    props.selectedFarm
+  ]);
+
+  useEffect(() => {
+    if (params.id !== ':id') {
+      props.queryFarmById({
+        id: Number(params.id)
+      });
+      props.queryIrpd({
+        id: parseInt(params.id as string),
+      });
+      props.queryPivot({
+        id: parseInt(params.id as string),
+      });
+      props.queryRepeater({
+        id: parseInt(params.id as string),
+      });
+      props.queryPivotInformation({
+        id: parseInt(params.id as string),
+        params: {},
+      });
+    }
+  }, [
+    params
+  ]);
+
+  // TSX
+  return (
+    <section className={classNames}>
+      <PageContainer
+        className='no-padding'  
+        ghost
+        breadcrumb={{}}
+        title={''}
+        header={{
+          children: (
+            <div style={{ display: 'none' }}>
+              aad
             </div>
-          )}
-        </>
-      </Col>
-    </Row>
+          ) 
+        }}
+      >
+        {
+          md ? (
+            <Row>            
+              <Col
+                xs={24}
+                style={{
+                  height: '100vh',
+                  marginTop: -23,
+                  position: 'relative',
+                }}
+              >
+                {
+                  md ? (
+                    <Spin
+                      spinning={
+                        props.pivot.loading ||
+                        props.farm.loading ||
+                        props.irpd.loading ||
+                        props.pivotInformation.loading
+                      }
+                    >
+                      <div
+                        style={{ 
+                          width: '100%',
+                          height: '100vh' 
+                        }}
+                      >
+                        <RenderDotDevices
+                          deviceCenterCoordinates={hoveredDevice}
+                        />
+                      </div>
+                      <ProCard
+                        className={className}
+                      >
+                        <SignalDevices 
+                          onDeviceMouseOver={({ lat, lng }) => {
+                            setHoveredDevice({ lat, lng });
+                          }}
+                        />
+                      </ProCard>
+                    </Spin>
+                  ) : null
+                }
+              </Col>
+            </Row>
+          ) : null
+        }
+        {xs ? (
+          <div className={'app'}>
+            <div className={'body'}>
+              {
+                activeKey === '1' ? (
+                  <Spin
+                    spinning={
+                      props.pivot.loading ||
+                      props.farm.loading ||
+                      props.irpd.loading ||
+                      props.pivotInformation.loading
+                    }
+                  >
+                    <div style={{ width: '100vw', }}>
+                      <RenderDotDevices
+                        deviceCenterCoordinates={hoveredDevice}
+                      />
+                    </div>
+                  </Spin>
+                ) : null
+              }
+              {
+                activeKey === '2' ? ( 
+                  <ProCard
+                    className={className}
+                  >
+                    <SignalDevices 
+                      onDeviceMouseOver={({ lat, lng }) => {
+                        setHoveredDevice({ lat, lng });
+                      }}
+                    />
+                  </ProCard> 
+                ) : null
+              }
+            </div>
+            <div className={'bottom'}>
+              <Bottom />
+            </div>
+          </div>
+        ) : null}
+      </PageContainer>
+    </section>
   );
 };
 
-const mapStateToProps = ({ pivot, farm }: { pivot: any; farm: any }) => ({
+const mapStateToProps = ({
   pivot,
+  pivotInformation,
   farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  irpd,
+}: any) => ({
+  pivot,
+  pivotInformation,
+  farm,
+  selectedDevice,
+  selectedFarm,
+  repeater,
+  irpd,
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  connectWebsocket: () => dispatch({ type: "socket/connect", payload: {} }),
+  queryFarm: (props: any) => dispatch(queryFarm(props)),
+  queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),
+  queryIrpd: (props: any) => dispatch(queryIrpd(props)),
+  queryRepeater: (props: any) => dispatch(queryRepeater(props)),
+  queryPivot: (props: any) => dispatch(queryPivot(props)),
+  queryFarmById: (props: any) => dispatch(queryFarmById(props)),
+  unsubscribeWs: () => dispatch({ type: 'signal/onDestroy', payload: {} }),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Devices);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Devices);

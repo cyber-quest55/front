@@ -44,9 +44,11 @@ export type CirclePivotProps = {
   pluviometerMeasure?: number;
   isRaining?: boolean;
   currentAngle: number;
+  controlRadio: string;
+  monitorRadio: string;
 };
 
-const circleOptions = {
+export const circleOptions = {
   strokeOpacity: 1,
   strokeWeight: 3,
   fillOpacity: 0.5,

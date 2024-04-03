@@ -305,7 +305,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 									await reqSaveRole.runAsync({
 										id: currentUser!.id,
 										farmId: params.id as string,
-										administrator: !isFarmAdmin,
+										administrator: isFarmAdmin,
 									})
 									reqFarmUsers.refresh();
 									queryFarmById({ id: parseInt(params.id as string) });
@@ -324,7 +324,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 									await reqSaveRole.runAsync({
 										id: currentUser!.id,
 										farmId: params.id as string,
-										administrator: !isFarmAdmin,
+										administrator: isFarmAdmin,
 									})
 									reqFarmUsers.refresh();
 									queryFarmById({ id: parseInt(params.id as string) });

@@ -5,7 +5,7 @@ export interface GetFarmModelProps {
   result: API.GetFarmResponse;
   loading: boolean;
   loaded: boolean;
-  selectedFarm: any;
+  selectedFarm: APIModels.Farm;
   error: any;
 }
 
@@ -25,7 +25,7 @@ export default {
     loading: true,
     selectedFarm: {},
     error: {},
-  } as GetFarmModelProps,
+  },
 
   effects: {
     *queryFarm(

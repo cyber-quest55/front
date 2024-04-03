@@ -1,4 +1,5 @@
 import { getCentral } from '@/services/central';
+import { formatDayJsDate } from '@/utils/formater/get-formated-date';
 import { AxiosError } from 'axios';
 
 interface Central {
@@ -7,6 +8,7 @@ interface Central {
   centerLng: number;
   name: string;
   updated: string;
+  baseRadio: string;
 }
 export interface GetCentralModelProps {
   result: Central[];
@@ -62,7 +64,7 @@ export default {
       state: GetCentralModelProps,
       { payload }: { payload: API.GetCentralResponse },
     ) {
-      const mapper = [];
+      const mapper: Central[] = [];
 
       /**
        * Observações:
@@ -72,12 +74,15 @@ export default {
       const item = payload;
 
       const latLng = item.location.split(',');
+
+
       mapper.push({
         id: item.id,
         centerLat: parseFloat(latLng[0]),
         centerLng: parseFloat(latLng[1]),
         name: item.name,
-        updated: new Date(item.updated).toLocaleString(),
+        updated: formatDayJsDate(item.updated),
+        baseRadio: item.base.radio_id,
       });
 
       return {

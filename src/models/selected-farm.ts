@@ -32,6 +32,7 @@ export default {
       { put, select }: { put: any, select: any },
     ) {
       yield put({ type: 'setSelectedFarmDefinition', payload: payload });
+      yield put({ type: 'farm/setSelectedFarm', payload })
       yield put({ type: 'selectedDevice/setDeviceClose', payload: {} });
 
       const state = yield select((state) => state.farm);
