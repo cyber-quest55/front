@@ -36,10 +36,12 @@ import { connect } from 'umi';
 import IntensityDrawer from './IntensitiesDrawer';
 import WithConnection from '../WithConnection';
 import { GetFarmModelProps } from '@/models/farm';
+import { GetFarmByIdModelProps } from '@/models/farm-by-id';
 
 // Component props
 type Props = {
-  farm: GetFarmModelProps,
+  farm: GetFarmModelProps;
+  farmById: GetFarmByIdModelProps;
   signal: GetSignalModelProps;
   pivot: GetPivotModelProps;
   pivotInformation: GetPivotInformationModelProps;
@@ -495,7 +497,8 @@ const SignalDevices: React.FC<Props> = (props) => {
     if (
       props.irpd.loaded &&
       props.repeater.loaded &&
-      props.pivotInformation.loaded
+      props.pivotInformation.loaded &&
+      props.farmById.loaded
     ) {
       props.loadRadioCoordinates();
     }
@@ -506,6 +509,7 @@ const SignalDevices: React.FC<Props> = (props) => {
     props.irpd.result,
     props.repeater.loaded,
     props.repeater.result,
+    props.farmById.loaded,
     props.farm.selectedFarm
   ]);
 
@@ -640,6 +644,7 @@ const SignalDevices: React.FC<Props> = (props) => {
 const mapStateToProps = ({
   pivot,
   farm,
+  farmById,
   pivotInformation,
   central,
   irpd,
@@ -649,6 +654,7 @@ const mapStateToProps = ({
 }: any) => ({
   pivot,
   farm,
+  farmById,
   pivotInformation,
   central,
   irpd,
