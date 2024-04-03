@@ -63,10 +63,7 @@ export type GetSignalModelProps = {
 }
 
 // External Dispatchers
-export const pingDevices = (payload: API.GetFarmFullParams & {
-  keepLines?: boolean;
-  device?: string;
-}) => {
+export const pingDevices = (payload: API.GetFarmFullParams & { device?: string; }) => {
   return {
     type: 'signal/pingFarmDevices',
     payload: payload,
@@ -98,9 +95,11 @@ export default {
   
   effects: {
     *pingFarmDevices(
-      { payload }: { payload: API.GetFarmFullParams & {
-        device?: string;
-      }},
+      { payload }: {
+        payload: API.GetFarmFullParams & {
+          device?: string;
+        }
+      },
       { call, put }: { call: any; put: any },
     ) {
       yield put({
@@ -114,13 +113,15 @@ export default {
             payload: payload.device,
           } : undefined,
         }
-        yield call(
-          pingFarmDevices,
-          apiPayload
-        );
-        yield put({ type: 'pingFarmDevicesSuccess' });
+        yield call(pingFarmDevices, apiPayload);
+        yield put({
+          type: 'pingFarmDevicesSuccess',
+        });
       } catch (error: any) {
-        yield put({ type: 'pingFarmDevicesError', payload: error });
+        yield put({
+          type: 'pingFarmDevicesError',
+          payload: error,
+        });
       }
     },
     *loadCurrentRadioCoordinates(
@@ -196,9 +197,10 @@ export default {
     *onInit({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.signal);
       const farmState = yield select((state) => state.farm);
+      const prefix = process.env.NODE_ENV === 'development' ? 'd/' : '';
       const channels = [
         {
-          title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}n/${farmState.selectedFarm.base.radio_id}`,
+          title: `${prefix}n/${farmState.selectedFarm.base.radio_id}`,
           id: state.socketId,
           binds: [
             {
@@ -209,7 +211,7 @@ export default {
           ],
         },
         {
-          title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}f/${farmState.selectedFarm.base.radio_id}`,
+          title: `${prefix}f/${farmState.selectedFarm.base.radio_id}`,
           id: state.socketId,
           binds: [
             {
@@ -225,10 +227,11 @@ export default {
     *onDestroy({}, { put, select }: { put: any; select: any }) {
       const state = yield select((state) => state.signal);
       const farmState = yield select((state) => state.farm);
+      const prefix = process.env.NODE_ENV === 'development' ? 'd/' : '';
       yield put({ type: 'resetState' });
       const channels = [
         {
-          title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}n/${farmState.selectedFarm.base.radio_id}`,
+          title: `${prefix}n/${farmState.selectedFarm.base.radio_id}`,
           id: state.socketId,
           binds: [
             {
@@ -239,7 +242,7 @@ export default {
           ],
         },
         {
-          title: `${process.env.NODE_ENV === 'development' ? 'd/' : ''}f/${farmState.selectedFarm.base.radio_id}`,
+          title: `${prefix}f/${farmState.selectedFarm.base.radio_id}`,
           id: state.id,
           binds: [
             {

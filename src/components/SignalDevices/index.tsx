@@ -472,6 +472,20 @@ const SignalDevices: React.FC<Props> = (props) => {
     ...repeaterDatasource,
   ];
 
+  // Actions
+  function searchRadioHandler() {
+    if (!props.signal.listening) {
+      props.subscribeWs();
+    }
+    const id = props.selectedFarm.id.toString();
+    props.pingDevices({ id });
+    setDisabledSearch(true);
+    setTimeout(() => {
+      setTimedOut(true);
+      setDisabledSearch(false);
+    }, 60000);
+  }
+
   // Effects
   useUnmount(() => {
     props.unsubscribeWs();
@@ -600,26 +614,17 @@ const SignalDevices: React.FC<Props> = (props) => {
           ) : null
         }
       </div>
-      <Row justify="center" style={{ marginTop: -45 }}>
+      <Row
+        justify="center"
+        style={{ marginTop: -45 }}
+      >
         <Col>
           <Button
             size="large"
             type="primary"
             icon={<WifiOutlined />}
             disabled={isDisabledSearch}
-            onClick={() => {
-              props.pingDevices({
-                id: props.selectedFarm.id.toString(),
-              });
-              if (!props.signal.listening) {
-                props.subscribeWs();
-              }
-              setDisabledSearch(true);
-              setTimeout(() => {
-                setTimedOut(true);
-                setDisabledSearch(false);
-              }, 60000);
-            }}
+            onClick={searchRadioHandler}
           >
             {intl.formatMessage({
               id: 'component.signal.box.radio.search',
@@ -660,7 +665,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   unsubscribeWs: () => dispatch({ type: 'signal/onDestroy', payload: {} }),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignalDevices);
+export default connect(mapStateToProps, mapDispatchToProps)(SignalDevices);
