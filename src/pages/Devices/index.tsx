@@ -113,11 +113,6 @@ const Devices: FunctionComponent<Props> = (props) => {
         title: 'Radios',
         icon: <UnorderedListOutline />,
       },
-      {
-        key: '3',
-        title: 'Sinal',
-        icon: <UnorderedListOutline />,
-      },
     ];
 
     return (
@@ -300,15 +295,6 @@ const Devices: FunctionComponent<Props> = (props) => {
                         setHoveredDevice({ lat, lng });
                       }}
                     />
-                  </ProCard> 
-                ) : null
-              }
-              {
-                activeKey === '3' ? ( 
-                  <ProCard
-                    className={className}
-                  >
-                  
                   </ProCard> 
                 ) : null
               }
