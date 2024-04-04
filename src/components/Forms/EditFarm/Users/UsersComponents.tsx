@@ -20,7 +20,6 @@ import { useMount, useRequest } from 'ahooks';
 import {
 	App,
 	Button,
-	Card,
 	Col,
 	Divider,
 	List,
@@ -240,7 +239,9 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 					</Typography.Title>
 				}
 			>
-				<Card style={{ width: '100%' }}>
+				<ProCard
+					style={{ width: '100%' }}
+				>
 					<Space 
 						direction="vertical"
 						style={{ paddingTop: 8, width: '100%' }}	
@@ -296,7 +297,7 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 							</Button>
 						</Popconfirm>
 					</Space>
-				</Card>
+				</ProCard>
 				{
 					reqPermission.loading ? (
 						<Row
