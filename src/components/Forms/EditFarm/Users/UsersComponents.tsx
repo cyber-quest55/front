@@ -4,6 +4,7 @@ import {
 	EditOutlined,
 	QuestionCircleOutlined,
 } from '@ant-design/icons';
+// import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { queryFarmById } from '@/models/farm-by-id';
 import { useScreenHook } from '@/hooks/screen';
 import { useIntl, useParams } from '@umijs/max';
@@ -76,16 +77,29 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 		{ manual: true },
 	);
 
-	// Effects
-	useMount(() => {
-		reqFarmUsers.run({ id: params.id as string });
-	});
-
-	useEffect(() => {
-		if (reqRole.data) {
-			setIsFarmAdmin(reqRole.data?.is_admin);
-		}
-	}, [reqRole.data]);
+	// Classnames
+	// const modalClassname = useEmotionCss(() => {
+	// 	return md ? {} : {
+	// 		'.ant-modal': {
+	// 			position: 'fixed',
+	// 			top: 0,
+	// 			left: 0,
+	// 			width: '100vw',
+	// 			height: '100vh',
+	// 			margin: 0,
+	// 			borderRadius: 0,
+	// 		},
+	// 		'.ant-modal-content': {
+	// 			height: '100vh',
+	// 			width: '100vw',
+	// 			margin: 0,
+	// 			top: 0,
+	// 		},
+	// 		'.ant-modal-body': {
+	// 			height: 'calc(100vh - 110px)',
+	// 		},
+	// 	}
+	// });
 
 	// Guidelines handlers
 	const showGuidelines = () => {
@@ -111,6 +125,17 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 		</Space>
 	);
 
+	// Effects
+	useMount(() => {
+		reqFarmUsers.run({ id: params.id as string });
+	});
+
+	useEffect(() => {
+		if (reqRole.data) {
+			setIsFarmAdmin(reqRole.data?.is_admin);
+		}
+	}, [reqRole.data]);
+
 	// Main TSX
   return (
     <ProCard
@@ -125,15 +150,15 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 			ghost
 		>
 			<Modal
-				title={
-					<Typography.Title level={3}>
-						{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title' })}
-					</Typography.Title>
-					}
 				open={isGuidelinesOpen}
 				onCancel={handleGuidelinesOk}
 				footer={false}
 				closable
+				title={
+					<Typography.Title level={3}>
+						{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title' })}
+					</Typography.Title>
+				}
 			>
 				<Typography.Paragraph type="secondary">
 					{intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.description' })}
@@ -170,14 +195,14 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				</Typography.Paragraph>
       </Modal>
 			<Modal
+				open={isAddUserOpen}
+				onCancel={toggleAddUser}
+				footer={false}
 				title={
 					<Typography.Title level={3}>
 						{intl.formatMessage({ id: 'component.edit.farm.users.add.title' })}
 					</Typography.Title>
 				}
-				open={isAddUserOpen}
-				onCancel={toggleAddUser}
-				footer={false}
 			>
 				<AddUserForm 
 					onSubmit={async (values) => {
@@ -206,14 +231,14 @@ const EditFarmUsersComponent: FunctionComponent<Props> = ({
 				/>
 			</Modal>
 			<Modal
+				open={isEditUserOpen}
+				onCancel={toggleEditUser}
+				footer={false}
 				title={
 					<Typography.Title level={3}>
 						{intl.formatMessage({ id: 'component.edit.farm.users.edit.title' })}
 					</Typography.Title>
 				}
-				open={isEditUserOpen}
-				onCancel={toggleEditUser}
-				footer={false}
 			>
 				<Card style={{ width: '100%' }}>
 					<Space 
