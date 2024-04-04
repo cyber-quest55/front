@@ -173,9 +173,9 @@ const PivotOperationTable: React.FC<Props> = (props) => {
         options={false}
         search={false}
         dateFormatter="string"
-        onRow={(record, _rowIndex) => {
+        onRow={(record,) => {
           return {
-            onClick: (_event) => {
+            onClick: () => {
               modal.info({
                 title: 'GPS Information List',
                 closable: true,
@@ -184,7 +184,7 @@ const PivotOperationTable: React.FC<Props> = (props) => {
                 content: (
                   <ProTable<APIModels.PivotListGpsStream>
                     ghost
-                    request={async (p, _sort, _filter): Promise<any> => {
+                    request={async (p,): Promise<any> => {
                       const result: API.GetPivotHistoryOperationResponse =
                         (await reqGetGPSData.runAsync(
                           {

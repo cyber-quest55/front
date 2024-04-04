@@ -17,7 +17,6 @@ import {
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl } from '@umijs/max';
-import { Col, Modal, Row } from 'antd';
 import { useState } from 'react';
 import { connect } from 'umi';
 import DeviceMapsRender from '../DeviceMapsRender';
@@ -30,15 +29,9 @@ import PressureComparativeContainer from '../Charts/PressureComparative/Pressure
 import TableSkeleton from '../Skeletons/Table';
 import StatisticSkeleton from '../Skeletons/Statistic';
 import CardSkeleton from '../Skeletons/Card';
+import UnspectedStopsContainer from '../Modals/UnspectedStops/UnspectedStopsContainer';
 
 const { Statistic } = StatisticCard;
-
-const failureTitle: any = {
-  1: 'Falta de pressão',
-  2: 'Queda de energia',
-  3: 'Desalinhado',
-  4: 'Oscilação de energia',
-};
 
 type Props = {
   pivot: GetPivotModelProps;
@@ -122,20 +115,11 @@ const PivotReport: React.FC<Props> = (props) => {
 
   return (
     <>
-      <Modal
-        width={1020}
-        title={option !== undefined ? failureTitle[option] : failureTitle[1]}
-        onCancel={() => setOption(undefined)}
+      <UnspectedStopsContainer
+        type={option}
         open={option ? true : false}
-        destroyOnClose
-      >
-        <Row>
-          <Col xs={24} md={12} style={{ height: 360 }}>
-            <DeviceMapsRender height={400} />
-          </Col>
-          <Col xs={24} md={12}></Col>
-        </Row>
-      </Modal>
+        onCancel={() => setOption(undefined)}
+      />
       <ProCard
         className={generalClassName}
         ghost
@@ -291,7 +275,7 @@ const PivotReport: React.FC<Props> = (props) => {
                     title: intl.formatMessage({
                       id: 'component.pivot.voltage.label.2',
                     }),
-                    value:  props.pivotReport.result?.data?.flow?.total_m3h_last_month.toFixed(2),
+                    value: props.pivotReport.result?.data?.flow?.total_m3h_last_month.toFixed(2),
                     suffix: 'm³',
                   }}
                 />

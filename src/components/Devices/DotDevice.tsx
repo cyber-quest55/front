@@ -12,8 +12,9 @@ export type CirclePivotProps = {
   controlRadio?: string;
   dotColor?: string;
   infoWindowRef: any;
-  mapRef: any;
-  lineColor: string;
+  mapRef?: any;
+  lineColor?: string;
+  zIndex?: number;
 };
 
 const CircleOptions = {
@@ -36,7 +37,7 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
   dotColor,
   statusText,
   updated,
-  infoWindowRef
+  infoWindowRef, zIndex
 }) => {
   const handleMouseEnter = useCallback(() => {
     infoWindowRef?.current?.setContentAndOpen({
@@ -59,7 +60,8 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
     ...CircleOptions,
     strokeColor: dotColor,
     fillColor: dotColor,
-    radius: 50,
+    radius: 25,
+    zIndex: zIndex? zIndex: 99
   }), [dotColor]);
 
   if (!centerLat || !centerLng) return null;
