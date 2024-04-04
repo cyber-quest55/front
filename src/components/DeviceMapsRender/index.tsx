@@ -8,7 +8,7 @@ import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
-import { FunctionComponent, useEffect, useRef } from 'react';
+import { Component, FunctionComponent, ReactNode, useEffect, useRef } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
@@ -23,6 +23,7 @@ type Props = {
   selectedDevice: SelectedDeviceModelProps;
   meterSystemById: GetMeterSystemByIdModelProps;
   pivotInformation: GetPivotInformationModelProps;
+  children?: ReactNode
 };
 
 const DeviceMapsRender: FunctionComponent<Props> = (props) => {
@@ -163,6 +164,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
     >
       <CustomInfoWindow ref={ref}/>
       {props.selectedDevice.open ? renderCorrectDevice(props.selectedDevice.type) : null}
+      {props.children}
     </GoogleMap>
   );
 };

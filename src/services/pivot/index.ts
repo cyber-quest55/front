@@ -376,3 +376,16 @@ export async function getPivotExcelReport(
     responseType: 'blob'
   });
 }
+
+
+
+
+export async function getPivotUnspectedStops(props: { farmId: number, pivotId: number; }, options: { start_date: string, end_date: string }) {
+  return request<{message: string, data: any[]}>(
+    `/v4/reports/farms/${props.farmId}/pivots/${props.pivotId}/unexpected_stops`,
+    {
+      method: 'GET',
+      params: options
+    },
+  );
+}
