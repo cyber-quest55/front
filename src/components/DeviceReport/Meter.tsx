@@ -23,6 +23,8 @@ const MeterReport: React.FC = () => {
       [`@media screen and (max-width: ${token.screenMD}px)`]: {
         overflowY: 'auto',
         height: 'calc(100vh - 110px)',
+        maxWidth: '100%'
+
       },
     };
   });

@@ -4,17 +4,10 @@ import { GetPivotModelProps } from '@/models/pivot';
 import { GetPivotHistoryModelProps } from '@/models/pivot-history';
 import { GetPivotInformationModelProps } from '@/models/pivot-information';
 import { GetPivotReportModelProps } from '@/models/pivot-report';
-import {
-  SelectedDeviceModelProps,
-  setSelectedDevice,
-} from '@/models/selected-device';
+import { SelectedDeviceModelProps, setSelectedDevice } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { G2, Line, Pie } from '@ant-design/plots';
-import {
-  ProCard,
-
-  StatisticCard,
-} from '@ant-design/pro-components';
+import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl } from '@umijs/max';
 import { useState } from 'react';
@@ -566,7 +559,6 @@ const PivotReport: React.FC<Props> = (props) => {
           className={classNameTableProCard}
         >
           <ProCard
-            style={{ minHeight: 1032 }}
             title={intl.formatMessage({
               id: 'component.pivot.tab.history.title',
             })}
