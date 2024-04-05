@@ -10,9 +10,9 @@ import MeterActivityEventTable from '../Tables/MeterActivityEventTable';
 import { useIntl } from '@umijs/max';
 
 const MeterReport: React.FC = () => {
+  const intl = useIntl();
   const { md } = useScreenHook();
   const { tab, setTab } = useTabsHook('tab1');
-  const intl = useIntl()
 
   const generalClassName = useEmotionCss(({ token }) => {
     return {
@@ -36,61 +36,76 @@ const MeterReport: React.FC = () => {
   });
 
   return (
-    <>
+    <ProCard
+      className={generalClassName}
+      ghost
+      style={{ marginBlockStart: 8 }}
+      gutter={[8, 8]}
+      wrap
+    >
+
       <ProCard
-        className={generalClassName}
         ghost
-        style={{ marginBlockStart: 8 }}
-        gutter={[8, 8]}
+        colSpan={{ xs: 24, md: 14 }}
         wrap
+        gutter={[16, 16]}
       >
-        <ProCard ghost colSpan={{ xs: 24, md: 14 }} wrap gutter={[16, 16]}>
-          <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
-            <DeviceMapsRender height={275} />
-          </ProCard>
-          <ProCard colSpan={{ xs: 24, md: 16, xxl: 15 }} style={{ height: md ? 275 : '100%' }}>
-            <DevicePanelContainer type={DeviceType.Meter} />
-          </ProCard>
-          <StatisticCard ghost colSpan={{ xs: 24 }}>
-            <MeterWaterLevel />
-          </StatisticCard>
-        </ProCard>
-
         <ProCard
-          colSpan={{ xs: 24, lg: 10 }}
-          wrap
           ghost
-          className={classNameTableProCard}
-          gutter={[0, 16]}
+          colSpan={{ xs: 24, md: 8, xxl: 9 }}
+          style={{ height: 275 }}
         >
-          <ProCard
-            title={ intl.formatMessage({id: 'component.meter.report.table.title'})}
-            tabs={{
-              tabPosition: 'top',
-              activeKey: tab,
-              items: [
-                {
-                  label: intl.formatMessage({id: 'component.meter.report.table.tab.1'}),
-                  key: 'tab1',
-                  children: <MeterActivityEventTable />,
-                },
-                {
-                  label: intl.formatMessage({id: 'component.meter.report.table.tab.2'}),
-                  key: 'tab2',
-                  disabled: true,
-
-                  children: <></>,
-                },
-              ],
-              onChange: (key) => {
-                setTab(key);
-              },
-            }}
-            colSpan={{ xs: 24, md: 24 }}
-          ></ProCard>
+          <DeviceMapsRender height={275} />
         </ProCard>
+        <ProCard
+          colSpan={{ xs: 24, md: 16, xxl: 15 }}
+          style={{ height: md ? 275 : '100%' }}
+        >
+          <DevicePanelContainer type={DeviceType.Meter} />
+        </ProCard>
+        <StatisticCard
+          ghost
+          colSpan={{ xs: 24 }}
+        >
+          <MeterWaterLevel />
+        </StatisticCard>
       </ProCard>
-    </>
+
+      <ProCard
+        colSpan={{ xs: 24, lg: 10 }}
+        className={classNameTableProCard}
+        gutter={[16, 16]}
+        wrap
+        ghost
+      >
+        <ProCard
+          title={intl.formatMessage({ id: 'component.meter.report.table.title' })}
+          tabs={{
+            tabPosition: 'top',
+            activeKey: tab,
+            items: [
+              {
+                label: intl.formatMessage({ id: 'component.meter.report.table.tab.1' }),
+                key: 'tab1',
+                children: <MeterActivityEventTable />,
+              },
+              {
+                label: intl.formatMessage({ id: 'component.meter.report.table.tab.2' }),
+                key: 'tab2',
+                disabled: true,
+
+                children: <></>,
+              },
+            ],
+            onChange: (key) => {
+              setTab(key);
+            },
+          }}
+          colSpan={{ xs: 24, md: 24 }}
+        ></ProCard>
+      </ProCard>
+
+    </ProCard>
   );
 };
 

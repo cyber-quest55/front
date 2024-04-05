@@ -98,6 +98,9 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               statusText={item.statusText}
               infoWindowRef={ref}
               mapHistory={[]}
+              controlRadio={item.controlRadio}
+              currentAngle={item.currentAngle}
+              monitorRadio={item.monitorRadio}
             />
           );
         break;
