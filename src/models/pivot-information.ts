@@ -304,6 +304,8 @@ export default {
             : item.controllerstream_gps.current_angle;
         } catch (err) {}
        
+        if (!gpsLat || !gpsLong) continue;
+
         // Computed information about pivots
         mapper.push({
           id: item.id,
