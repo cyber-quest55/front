@@ -8,15 +8,17 @@ import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useRequest } from 'ahooks';
 import { getPivotUnspectedStops } from '@/services/pivot';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
-import DotDevice from '@/components/Devices/DotDevice';
 import { rangePresets } from '@/utils/presets/RangePicker';
 import { useScreenHook } from '@/hooks/screen';
+import UnspectedStopsDevice from '@/components/Devices/UnspectedStops';
+import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 
 interface IUnspectedStopsModalProps {
   type: number;
   open: boolean;
   onCancel: any;
   selectedDevice: SelectedDeviceModelProps;
+  pivotById: GetPivotByIdModelProps;
 }
 
 const intl = getIntl();
@@ -57,6 +59,8 @@ const UnspectedStopsModalComponent: React.FunctionComponent<IUnspectedStopsModal
     }
   }, [props.open, dates])
 
+  const item = props.pivotById?.loaded ? props.pivotById.result : undefined;
+
   return (
     <Modal
       title={props.type !== undefined ? failureTitle[props.type] : failureTitle[1]}
@@ -69,29 +73,28 @@ const UnspectedStopsModalComponent: React.FunctionComponent<IUnspectedStopsModal
       <Spin spinning={getUnspectedReq.loading}>
         <Row gutter={[20, 20]}>
           <Col xs={24} md={12} style={{ height: 400 }}>
-            <DeviceMapsRender height={400} >
-              {!getUnspectedReq.loading ? getUnspectedReq.data?.data?.map((item, index) => {
-                return <DotDevice
-                  infoWindowRef={null}
-                  name=""
-                  updated=''
-                  dotColor={index === selected? "#ff0000": "#000"}
-                  id={`device-dot-${index}`}
-                  key={`device-dot-${index}`}
-                  zIndex={index === selected? 100: 99}
-                  centerLat={item?.location?.latitude}
-                  centerLng={item?.location?.longitude} />
-              }) : null}
+            <DeviceMapsRender height={400} showDevice={false}>
+              {item && getUnspectedReq && !getUnspectedReq.loading && <UnspectedStopsDevice
+                id="heat-map-device"
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                referencedLat={item.referencedLat}
+                referencedLng={item.referencedLng}
+                deviceColor={item.deviceColor}
+                data={getUnspectedReq.data?.data?.map((item) => {
+                  return { lat: item?.location?.latitude, lng: item?.location?.longitude }
+                })}
+              />}
             </DeviceMapsRender>
           </Col>
           <Col xs={24} md={12}  >
             <ProTable<any>
               onRow={(record, rowIndex) => {
                 return {
-                  onClick: () => { 
+                  onClick: () => {
                     setSelected(rowIndex)
                   }, // click row
-               };
+                };
               }}
               toolbar={{
                 title: intl.formatMessage({ id: 'component.pivot.unspectedstops.table.title' }),

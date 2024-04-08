@@ -43,9 +43,10 @@ export type CirclePivotProps = {
   infoWindowRef: any;
   pluviometerMeasure?: number;
   isRaining?: boolean;
-  currentAngle: number;
-  controlRadio: string;
-  monitorRadio: string;
+  currentAngle?: number;
+  controlRadio?: string;
+  monitorRadio?: string;
+  zIndex?: number;
 };
 
 export const circleOptions = {
@@ -261,7 +262,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
       draggable: false,
       editable: false,
       visible: true,
-      zIndex: 1,
+      zIndex: 0,
       strokeColor: deviceColor,
       fillColor: deviceColor,
       radius
@@ -481,6 +482,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
                   strokeOpacity: 0,
                   strokeWeight: 0.5,
                   fillOpacity: 0.5,
+                  zIndex: 0,
                 }}
               />
               {/** Draw dashed line */}
@@ -503,7 +505,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
                       lng: endIrrigationDashedLine.longitude,
                     },
                   ],
-                  zIndex: 3,
+                  zIndex: 0,
                 }}
               />
             </>
@@ -515,6 +517,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
               ...lineOptions,
               strokeColor: lineColor,
               path: linePoints,
+              zIndex: 0
             }}
           />
           {/** Draw triangle */}
@@ -526,7 +529,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
               strokeWeight: 0,
               fillColor: lineColor,
               fillOpacity: 1,
-              zIndex: 3,
+              zIndex: 0,
             }}
           />
           {/** Draw arrow */}
@@ -538,7 +541,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
               strokeWeight: 0,
               fillColor: lineColor,
               fillOpacity: 1,
-              zIndex: 3,
+              zIndex: 1,
             }}
           />
 
@@ -555,7 +558,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
                   strokeColor: lineColor,
                   strokeOpacity: 1,
                   strokeWeight: 1,
-                  zIndex: 999,
+                  zIndex: 0,
                 }}
               />
             ))
@@ -570,6 +573,7 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
                   strokeWeight: 0.5,
                   fillColor: props.deviceColor,
                   fillOpacity: 0.5,
+                  zIndex: 0
                 }}
               />
             </>

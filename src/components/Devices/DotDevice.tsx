@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
-import { Circle } from '@react-google-maps/api';
-
+import { Circle, Marker } from '@react-google-maps/api';
+ 
 export type CirclePivotProps = {
   id: number | string;
   centerLat: number;
@@ -15,6 +15,8 @@ export type CirclePivotProps = {
   mapRef?: any;
   lineColor?: string;
   zIndex?: number;
+  radius?: number;
+  zoom?: number;
 };
 
 const CircleOptions = {
@@ -37,7 +39,10 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
   dotColor,
   statusText,
   updated,
-  infoWindowRef, zIndex
+  infoWindowRef,
+  zIndex,
+  radius,
+  zoom,
 }) => {
   const handleMouseEnter = useCallback(() => {
     infoWindowRef?.current?.setContentAndOpen({
@@ -58,22 +63,34 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
 
   const circleOptions = useMemo(() => ({
     ...CircleOptions,
-    strokeColor: dotColor,
+    strokeColor: 'white',
     fillColor: dotColor,
-    radius: 25,
-    zIndex: zIndex? zIndex: 99
+    radius: radius || 25,
+    zIndex: zIndex ? zIndex : 99
   }), [dotColor]);
 
   if (!centerLat || !centerLng) return null;
 
   return (
     <>
-      <Circle
-        center={{ lat: centerLat, lng: centerLng }}
-        onMouseOver={handleMouseEnter}
-        onMouseOut={handleMouseLeave}
-        options={circleOptions}
-      />
+      {zoom && zoom <= 11 ? (
+        <Marker
+          position={{
+            lat: centerLat,
+            lng: centerLng,
+          }}
+          zIndex={13}
+          onMouseOver={handleMouseEnter}
+          onMouseOut={handleMouseLeave}
+          visible={true}
+        />
+      ) :  <Circle
+      center={{ lat: centerLat, lng: centerLng }}
+      onMouseOver={handleMouseEnter}
+      onMouseOut={handleMouseLeave}
+      options={circleOptions}
+    />}
+     
     </>
   );
 }, (prevProps, nextProps) => {
@@ -86,7 +103,9 @@ const DotDevice: React.FC<CirclePivotProps> = React.memo(({
     prevProps.deviceColor === nextProps.deviceColor &&
     prevProps.statusText === nextProps.statusText &&
     prevProps.controlRadio === nextProps.controlRadio &&
-    prevProps.dotColor === nextProps.dotColor
+    prevProps.dotColor === nextProps.dotColor&& 
+    prevProps.zoom === nextProps.zoom
+
   );
 });
 

@@ -4,12 +4,15 @@ import { connect } from 'dva';
 import UnspectedStopsComponent from './UnspectedStopsComponent';
 import UnspectedStopsMobile from './UnspectedStopsMobile';
 import { SelectedDeviceModelProps } from '@/models/selected-device';
+import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
 
 interface UnspectedStopsModalContainerProps {
     type: number;
     open: boolean;
-    onCancel: any; 
+    onCancel: any;
     selectedDevice: SelectedDeviceModelProps;
+    pivotById: GetPivotByIdModelProps;
+
 }
 
 const UnspectedStopsModalContainer: React.FunctionComponent<UnspectedStopsModalContainerProps> = (props) => {
@@ -28,8 +31,9 @@ const UnspectedStopsModalContainer: React.FunctionComponent<UnspectedStopsModalC
     );
 };
 
-const mapStateToProps = ({ selectedDevice }: any) => ({
+const mapStateToProps = ({ selectedDevice, pivotById }: any) => ({
     selectedDevice,
+    pivotById,
 });
 
 const mapDispatchToProps = () => ({});

@@ -8,8 +8,8 @@ import { GetRepeaterModelProps } from '@/models/repeaters';
 import { setSelectedDevice } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { ProCard } from '@ant-design/pro-components';
- import { GoogleMap } from '@react-google-maps/api';
-import { Dispatch, useParams } from '@umijs/max';
+import { GoogleMap } from '@react-google-maps/api';
+import { Dispatch, useIntl, useParams } from '@umijs/max';
 import { Flex, Space, Switch, Typography } from 'antd';
 import { connect } from 'dva';
 import React, { useEffect, useRef, useState } from 'react';
@@ -18,6 +18,7 @@ import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import RepeaterDevice from '../Devices/Repeater';
 import WaterPumpDevice from '../Devices/WaterPump';
 import CustomInfoWindow from '../Devices/InfoWindow';
+import DotDevice from '../Devices/DotDevice';
 
 const scrollToBottom = () => {
   setTimeout(() => {
@@ -47,13 +48,13 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
     lat: 0,
     lng: 0,
   });
-  
+
 
   const ref = useRef()
-  const [showPivots, setShowPivots] = useState(true);
-  const [showPump, setShowPump] = useState(true);
-  const [showMetter, setShowMetter] = useState(true);
-  const [showRepeaters, setShowRepeaters] = useState(true);
+  const intl = useIntl();
+  const [showPump, setShowPump] = useState(false);
+  const [showMetter, setShowMetter] = useState(false);
+  const [showRepeaters, setShowRepeaters] = useState(false);
 
   const containerStyle = {
     width: '100%',
@@ -88,18 +89,19 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             bottom: 12,
             zIndex: 999,
             left: 44,
-           
+
           }}
         >
           <ProCard
             style={{
               padding: 0,
-              width: 150
+              width: 165
+
             }}
           >
             <Space>
-              <Switch onChange={(e) => setShowPivots(e)} defaultChecked size="small" />
-              <Typography.Text>Pivôs </Typography.Text>
+              <Switch value={showPump} onChange={(e) => setShowPump(e)} defaultChecked size="small" />
+              <Typography.Text>{intl.formatMessage({id: 'component.name.irpd'})} </Typography.Text>
             </Space>
           </ProCard>
 
@@ -111,8 +113,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             }}
           >
             <Space>
-              <Switch onChange={(e) => setShowPump(e)} defaultChecked size="small" />
-              <Typography.Text>Bombas </Typography.Text>
+              <Switch value={showMetter}  onChange={(e) => setShowMetter(e)} defaultChecked size="small" />
+              <Typography.Text>{intl.formatMessage({id: 'component.name.meter'})} </Typography.Text>
             </Space>
           </ProCard>
 
@@ -124,21 +126,8 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
             }}
           >
             <Space>
-              <Switch onChange={(e) => setShowMetter(e)} defaultChecked size="small" />
-              <Typography.Text>Medidores </Typography.Text>
-            </Space>
-          </ProCard>
-
-          <ProCard
-            style={{
-              padding: 0,
-              width: 165
-
-            }}
-          >
-            <Space>
-              <Switch onChange={(e) => setShowRepeaters(e)} defaultChecked size="small" />
-              <Typography.Text>Repetidores </Typography.Text>
+              <Switch value={showRepeaters}  onChange={(e) => setShowRepeaters(e)} defaultChecked size="small" />
+              <Typography.Text>{intl.formatMessage({id: 'component.name.repeater'})} </Typography.Text>
             </Space>
           </ProCard>
         </Flex>
@@ -148,15 +137,15 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
         onLoad={(map) => setMap(map)}
         onZoomChanged={() => {
           if (map !== null) {
-            if(map.getZoom() > 11){
-              if(zoom <= 11)
+            if (map.getZoom() > 11) {
+              if (zoom <= 11)
                 setZoom(map.getZoom())
             }
-            if(map.getZoom() < 12){
-              if(zoom >= 12)
+            if (map.getZoom() < 12) {
+              if (zoom >= 12)
                 setZoom(map.getZoom())
             }
-             
+
           }
         }}
         mapContainerStyle={containerStyle}
@@ -172,7 +161,7 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
       >
         <CustomInfoWindow ref={ref} />
 
-        {!props.pivotInformation.loading && showPivots
+        {!props.pivotInformation.loading
           ? props.pivotInformation?.result?.map((item) => {
             return (
               <CirclePivot
@@ -205,12 +194,13 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 onSelect={onSetDevice}
                 mapHistory={item.mapHistory}
                 infoWindowRef={ref}
-                 infoWindow
+                infoWindow
+ 
               />
             );
           })
           : null}
-        {!props.meterSystem.loading && showMetter
+        {!props.meterSystem.loading ? showMetter
           ? props.meterSystem.result?.map((item, index) => (
             <LakeLevelMeterDevice
               key={'meter-system' + index}
@@ -224,16 +214,34 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               statusText={item.statusText}
               infoWindow
 
-              percentage={ item.percentage  }
-              meterLevel={ item.meterLevel  }
+              percentage={item.percentage}
+              meterLevel={item.meterLevel}
 
               imeterSetId={item.imeterSetId}
               infoWindowRef={ref}
               zoom={zoom}
             />
           ))
-          : null}
-        {!props.irpd.loading && showPump
+          :
+          props.meterSystem.result?.map((item) => (
+            <DotDevice
+              id={item.id}
+              key={`meter-${item.id}`}
+              centerLat={item.centerLat}
+              centerLng={item.centerLng}
+              controlRadio={item.controlRadio}
+              deviceColor={item.deviceColor}
+              statusText={item.statusText}
+              lineColor=""
+              name={item.name}
+              updated={item.updated}
+              mapRef={null}
+              infoWindowRef={ref}
+              dotColor={item.deviceColor}
+              radius={50}
+              zoom={zoom}
+            />)) : null}
+        {!props.irpd.loading ? showPump
           ? props.irpd.result?.map((item, index) => (
             <WaterPumpDevice
               key={'water-pump' + index}
@@ -251,8 +259,25 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               zoom={zoom}
             />
           ))
-          : null}
-        {!props.repeater.loading && showRepeaters
+          : props.irpd.result?.map((item) => (
+            <DotDevice
+              id={item.id}
+              key={`irpd-${item.id}`}
+              centerLat={item.centerLat}
+              centerLng={item.centerLng}
+              controlRadio={item.controlRadio}
+              deviceColor={item.deviceColor}
+              statusText={item.statusText}
+              lineColor=""
+              name={item.name}
+              updated={item.updated}
+              mapRef={null}
+              infoWindowRef={ref}
+              dotColor={item.deviceColor}
+              radius={50}
+              zoom={zoom}
+            />)) : null}
+        {!props.repeater.loading ? showRepeaters
           ? props.repeater.result?.map((item, index) => (
             <RepeaterDevice
               key={'reepater' + index}
@@ -266,7 +291,25 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               zoom={zoom}
             />
           ))
-          : null}
+          : props.repeater.result?.map((item) => (
+            <DotDevice
+              id={item.id}
+              key={`repeater-${item.id}`}
+              centerLat={item.centerLat}
+              centerLng={item.centerLng}
+              controlRadio={item.controlRadio}
+              deviceColor={item.deviceColor}
+              statusText={item.statusText}
+              lineColor=""
+              name={item.name}
+              updated={item.updated}
+              mapRef={null}
+              infoWindowRef={ref}
+              dotColor={"#000"}
+              radius={50}
+              zoom={zoom}
+
+            />)) : null}
       </GoogleMap>
     </>
   );
