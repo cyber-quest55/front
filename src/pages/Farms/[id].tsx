@@ -50,8 +50,6 @@ type Props = {
   connectWebsocket: any;
 };
 
-
-
 const Welcome: FunctionComponent<Props> = (props) => {
   const [activeKey, setActiveKey] = useState('1');
   const { md, xs } = useScreenHook();
@@ -90,7 +88,12 @@ const Welcome: FunctionComponent<Props> = (props) => {
     return (
       <TabBar safeArea activeKey={activeKey} onChange={value => setRouteActive(value)}>
         {tabs.map(item => (
-          <TabBar.Item key={item.key} icon={item.icon} title={item.title} style={{ cursor: disabled ? 'not-allowed' : 'pointer' }} />
+          <TabBar.Item
+            key={item.key}
+            icon={item.icon}
+            title={item.title}
+            style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+          />
         ))}
       </TabBar>
     )
@@ -194,10 +197,10 @@ const Welcome: FunctionComponent<Props> = (props) => {
     '.ant-page-header-heading': {
       paddingBlockStart: '0px !important',
     },
-  })); 
+  }));
 
   return (
-    <section className={classNamts}  >
+    <section className={classNamts}>
       <PageContainer
         className='no-padding'
         header={{ children: <div style={{ display: 'none' }}>asd</div> }}
@@ -205,84 +208,98 @@ const Welcome: FunctionComponent<Props> = (props) => {
         breadcrumb={{}}
         title={''}
       >
-        {md ? <Row >
-          <Col
-            xs={24}
-            style={{
-              height: '100vh',
-              marginTop: -23,
-              position: 'relative',
-            }}
-          >
-            <>
-              {md ? (
-                <Spin
-                  spinning={
+        {
+          md ? <Row >
+            <Col
+              xs={24}
+              style={{
+                height: '100vh',
+                marginTop: -23,
+                position: 'relative',
+              }}
+            >
+              {
+                md ? (
+                  <Spin
+                    spinning={
+                      props.pivot.loading ||
+                      props.farm.loading ||
+                      props.irpd.loading ||
+                      props.meterSystem.loading ||
+                      props.pivotInformation.loading
+                    }
+                  >
+                    <div style={{ width: '100%', height: '100vh', }}>
+                      <RenderPivots />
+                    </div>
+                    <ProCard className={className}>
+                      <PivotList />
+                    </ProCard>
+                  </Spin>
+                ) : null
+              }
+            </Col>
+            {
+              props.selectedDevice.open ? (
+                md ? (
+                  <Col
+                    xs={24}
+                    id="page-container"
+                    style={{
+                      padding: '15px 15px',
+                      minHeight: 'calc(100vh - 116px)',
+                    }}
+                  >
+                    {
+                      getDeviceBySelected(props.selectedDevice.type)
+                    }
+                  </Col>
+                ) : null
+              ) : null
+            }
+          </Row> : null
+        }
+        {
+          xs ? <div className={'app'}>
+            <div className={'body'} >
+              {
+                activeKey === '1' ? (
+                  <Spin spinning={
                     props.pivot.loading ||
                     props.farm.loading ||
                     props.irpd.loading ||
                     props.meterSystem.loading ||
                     props.pivotInformation.loading
                   }
-                >
-                  <div style={{ width: '100%', height: '100vh', }}>
-                    <RenderPivots />
-                  </div>
+                  >
+                    <div style={{ width: '100vw', }} >
+                      <RenderPivots />
+                    </div>
+                  </Spin>
+                ) : null
+              }
+              {
+                activeKey === '2' ? (
                   <ProCard className={className}>
                     <PivotList />
                   </ProCard>
-                </Spin>
-              ) : null}
-
-            </>
-          </Col>
-          {props.selectedDevice.open ? (
-            md ? (
-              <Col
-                xs={24}
-                id={"page-container"}
-                style={{
-                  padding: '15px 15px',
-                  minHeight: 'calc(100vh - 116px)',
-                }}
-              >
-                {
-                  getDeviceBySelected(props.selectedDevice.type)
-                }
-              </Col>
-
-
-            ) : null
-          ) : null}
-        </Row> : null}
-
-        {xs ? <div className={'app'}>
-          <div className={'body'} >
-            {activeKey === '1' &&
-              <Spin spinning={
-                props.pivot.loading ||
-                props.farm.loading ||
-                props.irpd.loading ||
-                props.meterSystem.loading ||
-                props.pivotInformation.loading
-              } 
-              >
-                <div style={{ width: '100vw', }} >
-                  <RenderPivots />
-                </div>
-              </Spin>}
-            {activeKey === '2' && <ProCard className={className}>
-              <PivotList />
-            </ProCard>}
-            {activeKey === '3' && <Spin spinning={false}>
-              {getDeviceBySelected(props.selectedDevice.type)}
-            </Spin>}
-          </div>
-          <div className={'bottom'}>
-            <Bottom />
-          </div>
-        </div> : null}
-
+                ) : null
+              }
+              {
+                activeKey === '3' ? (
+                  <>
+                    {
+                      getDeviceBySelected(props.selectedDevice.type)
+                    }
+                  </>
+                ) : null
+              }
+            </div>
+            <div className={'bottom'}>
+              <Bottom />
+            </div>
+          </div> : null
+        }
       </PageContainer>
     </section>
   );

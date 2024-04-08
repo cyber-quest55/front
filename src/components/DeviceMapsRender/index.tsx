@@ -8,7 +8,7 @@ import { SelectedDeviceModelProps } from '@/models/selected-device';
 import { DeviceType } from '@/utils/enum/device-type';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
-import { Component, FunctionComponent, ReactNode, useEffect, useRef } from 'react';
+import { FunctionComponent, ReactNode, useEffect, useRef } from 'react';
 import CirclePivot from '../Devices/CirclePivot';
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
@@ -38,7 +38,11 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
     const type = props.selectedDevice.type;
     switch (type) {
       case DeviceType.Pivot: {
-        if (props.pivotById.loaded === true) {
+        if (
+          props.pivotById.loaded === true &&
+          props.pivotById.result.gpsLat &&
+          props.pivotById.result.gpsLong
+        ) {
           const pivot = props.pivotById.result;
           setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
         }
@@ -66,7 +70,12 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
       case DeviceType.Pivot: {
         const item = props.pivotById.loaded ? props.pivotById.result : undefined;
 
-        if (props.pivotById.loaded && item !== undefined)
+        if (
+          props.pivotById.loaded
+          && item !== undefined
+          && item.gpsLat
+          && item.gpsLong
+        )
           return (
             <CirclePivot
               onSelect={() => null}
@@ -98,6 +107,9 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               statusText={item.statusText}
               infoWindowRef={ref}
               mapHistory={[]}
+              controlRadio={item.controlRadio}
+              currentAngle={item.currentAngle}
+              monitorRadio={item.monitorRadio}
             />
           );
         break;
@@ -114,7 +126,7 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
               id={item.id}
               onSelect={() => null}
               infoWindowRef={ref}
-
+              controlRadio={item.controlRadio || ''}
             />
           );
         break;

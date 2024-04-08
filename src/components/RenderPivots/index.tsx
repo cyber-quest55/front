@@ -204,8 +204,11 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
                 statusText={item.statusText}
                 onSelect={onSetDevice}
                 mapHistory={item.mapHistory}
+                controlRadio={item.controlRadio}
+                currentAngle={item.currentAngle}
+                monitorRadio={item.monitorRadio}
                 infoWindowRef={ref}
-                 infoWindow
+                infoWindow
               />
             );
           })
@@ -222,14 +225,12 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               onSelect={onSetDevice}
               deviceColor={item.deviceColor}
               statusText={item.statusText}
-              infoWindow
-
-              percentage={ item.percentage  }
-              meterLevel={ item.meterLevel  }
-
+              percentage={item.percentage}
+              meterLevel={item.meterLevel}
               imeterSetId={item.imeterSetId}
-              infoWindowRef={ref}
               zoom={zoom}
+              infoWindowRef={ref}
+              infoWindow
             />
           ))
           : null}
@@ -247,8 +248,9 @@ const RenderPivots: React.FC<RenderPivotsProps> = (props) => {
               statusText={item.statusText}
               infoWindowRef={ref}
               waterId={item.waterId}
-              infoWindow
+              controlRadio={item.controlRadio}
               zoom={zoom}
+              infoWindow
             />
           ))
           : null}

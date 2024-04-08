@@ -8,7 +8,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import DeviceMapsRender from '../DeviceMapsRender';
 import DevicePanelContainer from '../DevicePanel/DevicePanelContainer';
-import { useIntl } from '@umijs/max'; 
+import { useIntl } from '@umijs/max';
 
 const PumpReport: React.FC = () => {
 
@@ -16,7 +16,7 @@ const PumpReport: React.FC = () => {
   const intl = useIntl()
 
   const { tab, setTab } = useTabsHook('tab1');
- 
+
   const generalClassName = useEmotionCss(({ token }) => {
     return {
       height: '100vh',
@@ -39,58 +39,79 @@ const PumpReport: React.FC = () => {
   });
 
   return (
-    <>
-      <ProCard
-        className={generalClassName}
-        ghost
-        style={{ marginBlockStart: 8 }}
-        gutter={[8, 8]}
-        wrap
-      >
-        <ProCard ghost colSpan={{ xs: 24, md: 14 }} wrap gutter={[16, 16]}>
-          <ProCard ghost colSpan={{ xs: 24, md: 8, xxl: 9 }} style={{ height: 275 }}>
-            <DeviceMapsRender height={275} />
-          </ProCard>
-          <ProCard colSpan={{ xs: 24, md: 16, xxl: 15 }} style={{ height: md ? 275 : '100%' }}>
-            <DevicePanelContainer type={DeviceType.Pump} />
-          </ProCard>
-          <ProCard title={intl.formatMessage({ id: 'component.irpd.report.chart.consumption.title' })} >
-            <PumpEnergyConsumptionChart />
-          </ProCard>
-        </ProCard>
+    <ProCard
+      className={generalClassName}
+      style={{ marginBlockStart: 8 }}
+      gutter={[8, 8]}
+      wrap
+      ghost
+    >
 
+      <ProCard
+        ghost
+        colSpan={{ xs: 24, md: 14 }}
+        wrap
+        gutter={[16, 16]}
+      >
         <ProCard
-          colSpan={{ xs: 24, lg: 10 }}
           ghost
-          className={classNameTableProCard}
-          gutter={[0, 16]}
+          colSpan={{ xs: 24, md: 8, xxl: 9 }}
+          style={{ height: 275 }}
         >
-          <ProCard
-            title={intl.formatMessage({ id: 'component.irpd.report.title' })}
-            tabs={{
-              tabPosition: 'top',
-              activeKey: tab,
-              items: [
-                {
-                  label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.1' }),
-                  key: 'tab1',
-                  children: <IrpdActivityHistoricTable />,
-                },
-                {
-                  label: intl.formatMessage({ id: 'component.irpd.report.tabs.opt.2' }),
-                  key: 'tab2',
-                  children: <IrpdActivityEventTable />,
-                },
-              ],
-              onChange: (key) => {
-                setTab(key);
-              },
-            }}
-            colSpan={{ xs: 24, md: 24 }}
-          ></ProCard>
+          <DeviceMapsRender height={275} />
+        </ProCard>
+        <ProCard
+          colSpan={{ xs: 24, md: 16, xxl: 15 }}
+          style={{ height: md ? 275 : '100%' }}
+        >
+          <DevicePanelContainer type={DeviceType.Pump} />
+        </ProCard>
+        <ProCard
+          title={intl.formatMessage({
+            id: 'component.irpd.report.chart.consumption.title',
+          })}
+        >
+          <PumpEnergyConsumptionChart />
         </ProCard>
       </ProCard>
-    </>
+
+      <ProCard
+        className={classNameTableProCard}
+        colSpan={{ xs: 24, lg: 10 }}
+        gutter={[16, 16]}
+        ghost
+        wrap
+      >
+        <ProCard
+          title={intl.formatMessage({ id: 'component.irpd.report.title' })}
+          colSpan={{ xs: 24, md: 24 }}
+          tabs={{
+            tabPosition: 'top',
+            activeKey: tab,
+            items: [
+              {
+                label: intl.formatMessage({
+                  id: 'component.irpd.report.tabs.opt.1',
+                }),
+                key: 'tab1',
+                children: <IrpdActivityHistoricTable />,
+              },
+              {
+                label: intl.formatMessage({
+                  id: 'component.irpd.report.tabs.opt.2',
+                }),
+                key: 'tab2',
+                children: <IrpdActivityEventTable />,
+              },
+            ],
+            onChange: (key) => {
+              setTab(key);
+            },
+          }}
+        ></ProCard>
+      </ProCard>
+
+    </ProCard>
   );
 };
 
