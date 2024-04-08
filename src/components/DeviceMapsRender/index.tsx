@@ -38,7 +38,11 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
     const type = props.selectedDevice.type;
     switch (type) {
       case DeviceType.Pivot: {
-        if (props.pivotById.loaded === true) {
+        if (
+          props.pivotById.loaded === true &&
+          props.pivotById.result.gpsLat &&
+          props.pivotById.result.gpsLong
+        ) {
           const pivot = props.pivotById.result;
           setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
         }
@@ -66,7 +70,12 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
       case DeviceType.Pivot: {
         const item = props.pivotById.loaded ? props.pivotById.result : undefined;
 
-        if (props.pivotById.loaded && item !== undefined)
+        if (
+          props.pivotById.loaded
+          && item !== undefined
+          && item.gpsLat
+          && item.gpsLong
+        )
           return (
             <CirclePivot
               onSelect={() => null}
