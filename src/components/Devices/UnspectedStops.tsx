@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { Circle, HeatmapLayer } from '@react-google-maps/api';
-import { LatLng, computeDistanceBetween } from 'spherical-geometry-js';
+import { Circle, HeatmapLayer, Polygon } from '@react-google-maps/api';
+import { LatLng, computeDistanceBetween, computeOffset } from 'spherical-geometry-js';
 
 export type CirclePivotProps = {
     id: number | string;
@@ -8,8 +8,10 @@ export type CirclePivotProps = {
     centerLng: number;
     referencedLat: number,
     referencedLng: number,
+    referenceAngle: number;
     deviceColor?: string | null;
     lineColor?: string;
+    option?: { lat: number, lng: number };
     data?: { lat: number, lng: number }[]
 };
 
@@ -30,7 +32,9 @@ const UnspectedStopsDevice: React.FC<CirclePivotProps> = React.memo(({
     referencedLat,
     referencedLng,
     deviceColor,
+    option,
     data,
+    referenceAngle
 }) => {
 
     const radius = React.useMemo(() => {
@@ -38,6 +42,32 @@ const UnspectedStopsDevice: React.FC<CirclePivotProps> = React.memo(({
         const referencePositionGMaps = new LatLng(referencedLat, referencedLng);
         return computeDistanceBetween(centerPositionGMaps, referencePositionGMaps);
     }, [centerLat, centerLng, referencedLat, referencedLng])
+
+    const centerPositionGMaps = new LatLng(centerLat, centerLng);
+    /** For white triangle */
+    const referenceTriangleBottom = computeOffset(
+        centerPositionGMaps,
+        radius,
+        referenceAngle + 7,
+    );
+
+    const referenceTriangleTop = computeOffset(
+        centerPositionGMaps,
+        radius,
+        referenceAngle - 7,
+    );
+
+    const referenceTriangleCenter = computeOffset(
+        centerPositionGMaps,
+        radius / 1.3,
+        referenceAngle,
+    );
+
+    const triangleCoords = [
+        { lat: referenceTriangleBottom.lat(), lng: referenceTriangleBottom.lng() },
+        { lat: referenceTriangleTop.lat(), lng: referenceTriangleTop.lng() },
+        { lat: referenceTriangleCenter.lat(), lng: referenceTriangleCenter.lng() },
+    ];
 
     const circleOptions = useMemo(() => ({
         ...CircleOptions,
@@ -49,14 +79,32 @@ const UnspectedStopsDevice: React.FC<CirclePivotProps> = React.memo(({
         zIndex: 4,
     }), [deviceColor, radius]);
 
+
+    const circleOptionsClick = useMemo(() => ({
+        ...CircleOptions,
+        strokeColor: '#000',
+        fillOpacity: 0.3,
+        strokeWeight: 2,
+        strokeOpacity: 0.8,
+        radius: 35 ,
+        zIndex: 99,
+    }), [deviceColor]);
+
     if (!centerLat || !centerLng) return null;
 
+ 
     return (
         <>
             <Circle
                 center={{ lat: centerLat, lng: centerLng }}
                 options={circleOptions}
             />
+            {option && <Circle
+                center={{ lat: option.lat, lng: option.lng }}
+                options={circleOptionsClick}
+            />
+            }
+
             <HeatmapLayer
                 options={{
                     gradient: [
@@ -85,7 +133,17 @@ const UnspectedStopsDevice: React.FC<CirclePivotProps> = React.memo(({
                     }) as []
                 }
             />
-            : null
+            <Polygon
+                paths={triangleCoords}
+                options={{
+                    strokeColor: "#fff",
+                    strokeOpacity: 0.7,
+                    strokeWeight: 0,
+                    fillColor: "#fff",
+                    fillOpacity: 0.7,
+                    zIndex: 999,
+                }}
+            />
         </>
     );
 }, (prevProps, nextProps) => {
@@ -93,7 +151,8 @@ const UnspectedStopsDevice: React.FC<CirclePivotProps> = React.memo(({
     return (
         prevProps.centerLat === nextProps.centerLat &&
         prevProps.centerLng === nextProps.centerLng &&
-        prevProps.deviceColor === nextProps.deviceColor 
+        prevProps.deviceColor === nextProps.deviceColor &&
+        prevProps.option === nextProps.option 
     );
 
 });

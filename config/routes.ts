@@ -103,7 +103,7 @@ export default [
     name: 'Weather Station',
     component: './WeatherStation/index.tsx',
     icon: 'CloudOutlined',
-    hideOnMenu: true,
+    hideInMenu: true,
   },
   {
     path: 'farms/:farmId/metersystem/:meterSystemId/meter/:meterId/edit',
