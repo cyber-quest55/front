@@ -5,8 +5,9 @@ import {
   ProFormSelect,
   ProCard
 } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useIntl } from '@umijs/max';
-import { Button, Card, Form, Typography } from 'antd';
+import { Button, Form, Typography } from 'antd';
 import { ReactElement } from 'react';
 
 // Props
@@ -28,6 +29,17 @@ const EditPermissionsForm = ({
 }: Props): ReactElement => {
   const intl = useIntl();
   const [ form ] = Form.useForm();
+
+  const classname = useEmotionCss(() => {
+    return {
+      '.ant-space': {
+        width: '100%',
+      },
+      '.ant-space-item': {
+        width: '100%',
+      }
+    }
+  })
 
   const formValues = data.map(d => {
     return {
@@ -62,9 +74,16 @@ const EditPermissionsForm = ({
 
   // If user is admin there is no settings to be done
   if (isAdmin) return (
-    <Card style={{ marginBottom: 8, marginTop: 8 }}>
+    <ProCard
+      style={{
+        marginBottom: 8,
+        marginTop: 8,
+      }}
+    >
       <Typography.Paragraph>
-        {intl.formatMessage({ id: 'component.edit.farm.users.edit.permissions.admin.description' })}
+        {intl.formatMessage({
+          id: 'component.edit.farm.users.edit.permissions.admin.description',
+        })}
       </Typography.Paragraph>
       <Button
         disabled={loading}
@@ -72,9 +91,11 @@ const EditPermissionsForm = ({
         onClick={async () => onSubmitAdmin()}
         block
       >
-        {intl.formatMessage({ id: 'component.edit.farm.users.edit.permissions.save.admin' })}
+        {intl.formatMessage({
+          id: 'component.edit.farm.users.edit.permissions.save.admin',
+        })}
       </Button>
-    </Card>
+    </ProCard>
   )
   return (
     <ProForm
@@ -86,32 +107,49 @@ const EditPermissionsForm = ({
       onValuesChange={handleLevelChange}
       disabled={loading}
     >
-      <Card style={{ marginBottom: 8, marginTop: 8 }}>
+      <ProCard
+        style={{
+          marginBottom: 8,
+          marginTop: 8,
+        }}
+      >
         <Typography.Paragraph>
-          {intl.formatMessage({ id: 'component.edit.farm.users.edit.permissions.description' })}
+          {intl.formatMessage({
+            id: 'component.edit.farm.users.edit.permissions.description',
+          })}
         </Typography.Paragraph>
         <ProFormSelect
           name="all"
           options={[
             {
               value: -1,
-              label: intl.formatMessage({ id: 'component.edit.farm.users.permissions.custom' }),
+              label: intl.formatMessage({
+                id: 'component.edit.farm.users.permissions.custom',
+              }),
             },
             {
               value: 0,
-              label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.nopermission' }),
+              label: intl.formatMessage({
+                id: 'component.edit.farm.users.guidelines.modal.title.nopermission',
+              }),
             },
             {
               value: 1,
-              label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.viewer' }),
+              label: intl.formatMessage({
+                id: 'component.edit.farm.users.guidelines.modal.title.viewer',
+              }),
             },
             {
               value: 2,
-              label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.operator' }),
+              label: intl.formatMessage({
+                id: 'component.edit.farm.users.guidelines.modal.title.operator',
+              }),
             },
             {
               value: 3,
-              label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.technician' }),
+              label: intl.formatMessage({
+                id: 'component.edit.farm.users.guidelines.modal.title.technician',
+              }),
             },
           ]}
           onChange={handleAllSelectChange}
@@ -121,13 +159,20 @@ const EditPermissionsForm = ({
           onClick={form.submit}
           block
         >
-          {intl.formatMessage({ id: 'component.edit.farm.users.edit.permissions.save' })}
+          {intl.formatMessage({
+            id: 'component.edit.farm.users.edit.permissions.save',
+          })}
         </Button>
-      </Card>
+      </ProCard>
       <ProFormList
         name={['permissions']}
-        creatorButtonProps={{ disabled: true, style: { display: 'none' }}}
+        className={classname}
         copyIconProps={false}
+        initialValue={formValues}
+        creatorButtonProps={{
+          disabled: true,
+          style: { display: 'none' }
+        }}
         itemRender={({ listDom }, { index }) => (
           <ProCard
             key={'level' + index}
@@ -139,28 +184,37 @@ const EditPermissionsForm = ({
             {listDom}
           </ProCard>
         )}
-        initialValue={formValues}
       >
-        <ProForm.Group style={{ width: '100%' }}>
+        <ProForm.Group
+          style={{ width: '100%' }}
+        >
           <ProFormSelect
             name={['level']}
-            width="xl"
+            style={{ width: '100%' }}
             options={[
               {
                 value: 0,
-                label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.nopermission' }),
+                label: intl.formatMessage({
+                  id: 'component.edit.farm.users.guidelines.modal.title.nopermission',
+                }),
               },
               {
                 value: 1,
-                label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.viewer' }),
+                label: intl.formatMessage({
+                  id: 'component.edit.farm.users.guidelines.modal.title.viewer',
+                }),
               },
               {
                 value: 2,
-                label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.operator' }),
+                label: intl.formatMessage({
+                  id: 'component.edit.farm.users.guidelines.modal.title.operator',
+                }),
               },
               {
                 value: 3,
-                label: intl.formatMessage({ id: 'component.edit.farm.users.guidelines.modal.title.technician' }),
+                label: intl.formatMessage({
+                  id: 'component.edit.farm.users.guidelines.modal.title.technician',
+                }),
               },
             ]}
           />

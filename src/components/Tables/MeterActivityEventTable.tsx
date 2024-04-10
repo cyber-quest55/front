@@ -59,51 +59,70 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
     }
   }
 
-  const ExportButton = <Button loading={reqGetExcel.loading} onClick={handleExportReport} icon={<DownloadOutlined />}>
-    {intl.formatMessage({
-      id: 'component.export',
-    })}
-  </Button>
+  const ExportButton = (
+    <Button
+      loading={reqGetExcel.loading}
+      onClick={handleExportReport}
+      icon={<DownloadOutlined />}
+    >
+      {intl.formatMessage({
+        id: 'component.export',
+      })}
+    </Button>
+  );
 
   const handleChangeRange = (e: any) => {
     setDates(e);
   };
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Space
+      direction="vertical"
+      style={{ width: '100%' }}
+    >
       <ProTable<any>
         actionRef={ref}
         columns={[
           {
-            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.1' }),
+            title: intl.formatMessage({
+              id: 'component.meter.report.table.measurements.col.1',
+            }),
             dataIndex: 'date',
             render: (_value, item) => {
               return <>{item.date}</>;
             },
           },
           {
-            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.2' }),
+            title: intl.formatMessage({
+              id: 'component.meter.report.table.measurements.col.2',
+            }),
             dataIndex: 'measurement',
             render: (_value, item) => {
               return <>{`${item.measurement} m`}</>;
             },
           },
           {
-            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.3' }),
+            title: intl.formatMessage({
+              id: 'component.meter.report.table.measurements.col.3',
+            }),
             dataIndex: 'offset',
             render: (_value, item) => {
               return <>{item.offset} m</>;
             },
           },
           {
-            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.4' }),
+            title: intl.formatMessage({
+              id: 'component.meter.report.table.measurements.col.4',
+            }),
             dataIndex: 'tankLevel',
             render: (_value, item) => {
               return <>{item.tankLevel} m</>;
             },
           },
           {
-            title: intl.formatMessage({ id: 'component.meter.report.table.measurements.col.5' }),
+            title: intl.formatMessage({
+              id: 'component.meter.report.table.measurements.col.5',
+            }),
             dataIndex: 'flowRate',
             render: (_value, item) => {
               return <>{item.flowRate} m³/h</>;
@@ -165,10 +184,18 @@ const MeterActivityEventTable: React.FC<Props> = (props) => {
   );
 };
 
-const mapStateToProps = ({ meterSystemEvent, selectedDevice }: any) => ({
+const mapStateToProps = ({
+  meterSystemEvent,
+  selectedDevice
+}: any) => ({
   selectedDevice,
+  meterSystemEvent
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({});
+const mapDispatchToProps = () => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeterActivityEventTable);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MeterActivityEventTable);
+

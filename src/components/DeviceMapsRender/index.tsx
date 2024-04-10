@@ -9,6 +9,7 @@ import { DeviceType } from '@/utils/enum/device-type';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode, useEffect, useRef } from 'react';
+
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
 import CustomInfoWindow from '../Devices/InfoWindow';
@@ -39,7 +40,11 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
     const type = props.selectedDevice.type;
     switch (type) {
       case DeviceType.Pivot: {
-        if (props.pivotById.loaded === true) {
+        if (
+          props.pivotById.loaded === true &&
+          props.pivotById.result.gpsLat &&
+          props.pivotById.result.gpsLong
+        ) {
           const pivot = props.pivotById.result;
           setMapCenter({ lat: pivot.centerLat, lng: pivot.centerLng });
         }

@@ -223,3 +223,26 @@ ol {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--adm-color-border); 
 }
+
+// Adapt modal behavior on mobile to full screen
+@media (max-width: 768px) {
+  .ant-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0!important;
+  }
+  .ant-modal-content {
+    border-radius: 0!important;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    top: 0;
+    overflow-y: auto;
+  }
+  .ant-modal-body {
+    height: calc(100vh - 110px);
+  }
+}

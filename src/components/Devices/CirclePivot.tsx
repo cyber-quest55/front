@@ -274,9 +274,9 @@ const CirclePivot: React.FC<CirclePivotProps> = React.memo((props) => {
     return <></>;
   }
 
-  const centerPositionGMaps = new LatLng(centerLat, centerLng);
-  const referencePositionGMaps = new LatLng(referencedLat, referencedLng);
-  const gpsPositionGMaps = new LatLng(gpsLat, gpsLong);
+  const centerPositionGMaps = new LatLng(centerLat || 0, centerLng || 0);
+  const referencePositionGMaps = new LatLng(referencedLat || 0, referencedLng || 0);
+  const gpsPositionGMaps = new LatLng(gpsLat || 0, gpsLong || 0);
 
   const referenceRadius = computeDistanceBetween(centerPositionGMaps, referencePositionGMaps);
 

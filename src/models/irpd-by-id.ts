@@ -74,6 +74,7 @@ export default {
         updated: new Date(item.updated).toLocaleString(),
         deviceColor: getIrpdColor(status),
         statusText: getIrpdStatus(status),
+        controlRadio: item.pump,
       };
 
       return {
