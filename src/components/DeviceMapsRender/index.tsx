@@ -9,10 +9,11 @@ import { DeviceType } from '@/utils/enum/device-type';
 import { GoogleMap } from '@react-google-maps/api';
 import { connect } from 'dva';
 import { FunctionComponent, ReactNode, useEffect, useRef } from 'react';
-import CirclePivot from '../Devices/CirclePivot';
+
 import LakeLevelMeterDevice from '../Devices/LakeLevelMeter';
 import WaterPumpDevice from '../Devices/WaterPump';
 import CustomInfoWindow from '../Devices/InfoWindow';
+import CirclePivot from '../Devices/CirclePivot';
 
 type Props = {
   zoom: number;
@@ -24,6 +25,7 @@ type Props = {
   meterSystemById: GetMeterSystemByIdModelProps;
   pivotInformation: GetPivotInformationModelProps;
   children?: ReactNode
+  showDevice?: boolean;
 };
 
 const DeviceMapsRender: FunctionComponent<Props> = (props) => {
@@ -65,92 +67,86 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
     }
   }, [props.pivotById.loading, props.irpdById.loading, props.meterSystemById.loading]);
 
-  const renderCorrectDevice = (type: string) => {
-    switch (type) {
-      case DeviceType.Pivot: {
-        const item = props.pivotById.loaded ? props.pivotById.result : undefined;
 
-        if (
-          props.pivotById.loaded
-          && item !== undefined
-          && item.gpsLat
-          && item.gpsLong
-        )
-          return (
-            <CirclePivot
-              onSelect={() => null}
-              id={item.id}
-              key={item.id}
-              protocol={item.protocol}
-              type={item.type}
-              centerLat={item.centerLat}
-              centerLng={item.centerLng}
-              referencedLat={item.referencedLat}
-              referencedLng={item.referencedLng}
-              gpsLat={item.gpsLat}
-              gpsLong={item.gpsLong}
-              deviceColor={item.deviceColor}
-              lineColor="#fff"
-              referenceAngle={item.referenceAngle}
-              irrigationDirection={item.irrigationDirection}
-              stopAngle={item.stopAngle}
-              endAngle={item.endAngle}
-              sectorAngle={item.sectorAngle}
-              lpmGpsStreamLat={item.lpmGpsStreamLat}
-              lpmGpsStreamLng={item.lpmGpsStreamLng}
-              zoom={14}
-              hasMarker={true}
-              irrigationStatus={4}
-              dashed={false}
-              name={item.name}
-              updated={item.updated}
-              statusText={item.statusText}
-              infoWindowRef={ref}
-              mapHistory={[]}
-              controlRadio={item.controlRadio}
-              currentAngle={item.currentAngle}
-              monitorRadio={item.monitorRadio}
-            />
-          );
-        break;
+  const renderCorrectDevice = (type: string) => {
+    if (props.showDevice)
+      switch (type) {
+        case DeviceType.Pivot: {
+          const item = props.pivotById.loaded ? props.pivotById.result : undefined;
+
+          if (props.pivotById.loaded && item !== undefined)
+            return (
+              <CirclePivot
+                onSelect={() => null}
+                id={item.id}
+                key={item.id}
+                protocol={item.protocol}
+                type={item.type}
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                referencedLat={item.referencedLat}
+                referencedLng={item.referencedLng}
+                gpsLat={item.gpsLat}
+                gpsLong={item.gpsLong}
+                deviceColor={item.deviceColor}
+                lineColor="#fff"
+                referenceAngle={item.referenceAngle}
+                irrigationDirection={item.irrigationDirection}
+                stopAngle={item.stopAngle}
+                endAngle={item.endAngle}
+                sectorAngle={item.sectorAngle}
+                lpmGpsStreamLat={item.lpmGpsStreamLat}
+                lpmGpsStreamLng={item.lpmGpsStreamLng}
+                zoom={14}
+                hasMarker={true}
+                irrigationStatus={4}
+                dashed={false}
+                name={item.name}
+                updated={item.updated}
+                statusText={item.statusText}
+                infoWindowRef={ref}
+                mapHistory={[]}
+              />
+            );
+          break;
+        }
+        case DeviceType.Pump: {
+          const item = props.irpdById.loaded ? props.irpdById.result : undefined;
+          if (props.irpdById.loaded && item !== undefined)
+            return (
+              <WaterPumpDevice
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                name={item.name}
+                updated={item.updated}
+                id={item.id}
+                onSelect={() => null}
+                infoWindowRef={ref}
+
+              />
+            );
+          break;
+        }
+        case DeviceType.Meter: {
+          const item = props.meterSystemById.loaded ? props.meterSystemById.result : undefined;
+          if (props.meterSystemById.loaded && item !== undefined)
+            return (
+              <LakeLevelMeterDevice
+                key={'meter-system'}
+                centerLat={item.centerLat}
+                centerLng={item.centerLng}
+                name={item.name}
+                updated={item.updated}
+                id={item.id}
+                width={200}
+                height={200}
+                onSelect={() => null}
+                infoWindowRef={ref}
+              />
+            );
+          break;
+        }
       }
-      case DeviceType.Pump: {
-        const item = props.irpdById.loaded ? props.irpdById.result : undefined;
-        if (props.irpdById.loaded && item !== undefined)
-          return (
-            <WaterPumpDevice
-              centerLat={item.centerLat}
-              centerLng={item.centerLng}
-              name={item.name}
-              updated={item.updated}
-              id={item.id}
-              onSelect={() => null}
-              infoWindowRef={ref}
-              controlRadio={item.controlRadio || ''}
-            />
-          );
-        break;
-      }
-      case DeviceType.Meter: {
-        const item = props.meterSystemById.loaded ? props.meterSystemById.result : undefined;
-        if (props.meterSystemById.loaded && item !== undefined)
-          return (
-            <LakeLevelMeterDevice
-              key={'meter-system'}
-              centerLat={item.centerLat}
-              centerLng={item.centerLng}
-              name={item.name}
-              updated={item.updated}
-              id={item.id}
-              width={200}
-              height={200}
-              onSelect={() => null}
-              infoWindowRef={ref}
-            />
-          );
-        break;
-      }
-    }
     return null;
   };
 
@@ -173,8 +169,9 @@ const DeviceMapsRender: FunctionComponent<Props> = (props) => {
         fullscreenControl: false,
       }}
       zoom={14.5}
+
     >
-      <CustomInfoWindow ref={ref}/>
+      <CustomInfoWindow ref={ref} />
       {props.selectedDevice.open ? renderCorrectDevice(props.selectedDevice.type) : null}
       {props.children}
     </GoogleMap>

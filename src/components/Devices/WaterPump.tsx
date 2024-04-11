@@ -20,7 +20,7 @@ export type WaterPumpProps = {
   infoWindowRef?: any;
   zoom?: number;
   pumpPressure?: number | null;
-  controlRadio: string;
+  controlRadio?: string;
 };
 
 const WaterPumpDevice: React.FC<WaterPumpProps> = (props) => {
