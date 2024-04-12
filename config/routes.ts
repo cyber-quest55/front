@@ -43,6 +43,12 @@ export default [
     ],
   },
   {
+    path: 'climate/:farmId/pluviometer',
+    name: 'Pluviometer',
+    icon: 'compassOutlined',
+    component: './Climate/Pluviometer.tsx',
+  },
+  {
     path: '/farms',
     name: 'Control',
     icon: 'formOutlined',
@@ -91,7 +97,6 @@ export default [
     icon: 'deploymentUnitOutlined',
     component: './Devices',
   },
-
   {
     path: 'farms/:farmId/pivot/:pivotId/edit',
     name: 'Edit Pivot',
@@ -141,6 +146,7 @@ export default [
     icon: 'bellOutlined',
     component: './Notifications',
   },
+  
   {
     path: '/climate/farms/:id/',
     name: 'Clima',
@@ -158,4 +164,5 @@ export default [
     layout: false,
     component: './404',
   },
+
 ];
