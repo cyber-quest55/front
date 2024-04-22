@@ -49,7 +49,7 @@ jobs:
 
       - name: Decode Keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-upload-key.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ github.workspace }}/android/app/my-upload-key.keystore
 
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2
