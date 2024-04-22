@@ -32,6 +32,12 @@ jobs:
         with:
           node-version: 18.1
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # ou outra distribuição de sua preferência como 'adopt', 'zulu', etc.
+          java-version: '17'
+
       - name: Install Node modules
         run: yarn install
 
