@@ -3,7 +3,7 @@ name: Pull Request into Master, Develop and Preprod
 on:
   pull_request:
     branches:
-      - "developer"
+      - "development"
 
 jobs:
   #First job
