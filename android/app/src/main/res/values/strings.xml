@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">ant-design-pro</string>
-    <string name="title_activity_main">ant-design-pro</string>
-    <string name="package_name">com.example.app</string>
-    <string name="custom_url_scheme">com.example.app</string>
+    <string name="app_name">Irricontrol</string>
+    <string name="title_activity_main">Irricontrol</string>
+    <string name="package_name">cicd.com.irricontrol</string>
+    <string name="custom_url_scheme">cicd.com.irricontrol</string>
 </resources>

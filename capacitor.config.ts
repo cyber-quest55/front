@@ -1,9 +1,9 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "br.com.irricontrol",
+  appId: "cicd.com.irricontrol",
   appName: "Irricontrol",
-  webDir: "build",
+  webDir: "dist",
 
   server: {
     androidScheme: "https",
