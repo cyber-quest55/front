@@ -47,6 +47,10 @@ jobs:
       - name: Syncronize Capacitor
         run: npx cap sync android
 
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-upload-key.keystore
+
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2
         with:
@@ -69,6 +73,8 @@ jobs:
         run: |
           cd android && ./gradlew bundle${{inputs.environment == 'release' && 'Release' || 'Debug'}} --no-daemon
       - run: pwd
+
+
       - name: Sign app APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
