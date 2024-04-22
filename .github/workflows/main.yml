@@ -21,7 +21,7 @@ jobs:
           cache: "yarn"
 
       - name: Install Node modules
-        run: yarn
+        run: yarn install
 
   # Second Job
   build-android:
