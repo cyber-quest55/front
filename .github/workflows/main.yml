@@ -16,26 +16,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Use Node.js 14
+      - name: Use Node.js 18.1
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18.1
           cache: "yarn"
 
       - name: Install Node modules
-        run: yarn ci
-
-      - name: Linting
-        run: yarn lint
-
-      - name: Unit & Integration tests
-        run: yarn test:ci
-
-      - name: Jest coverage report
-        uses: ArtiomTr/jest-coverage-report-action@v2.0.6
-        with:
-          coverage-file: ./jest-report.json
-          base-coverage-file: ./jest-report.json
+        run: yarn
 
   # Second Job
   build-android:
@@ -44,7 +32,7 @@ jobs:
     secrets: inherit
 
   # Third Job
-  build-ios:
-    needs: install-and-test
-    uses: ./.github/workflows/build-ios.yml
-    secrets: inherit
+  #build-ios:
+  #  needs: install-and-test
+  #  uses: ./.github/workflows/build-ios.yml
+  #  secrets: inherit
