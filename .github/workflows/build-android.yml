@@ -112,7 +112,7 @@ jobs:
       - name: Upload artifact to App Center
         uses: wzieba/AppCenter-Github-Action@v1
         with:
-          appName: Timely
+          appName: weton01/plat-front
           token: ${{secrets.APPCENTER_TOKEN_ANDROID}}
           group: UKInternal
           file: android/app-release.aab
