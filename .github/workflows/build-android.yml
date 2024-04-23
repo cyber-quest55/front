@@ -112,9 +112,9 @@ jobs:
       - name: Upload artifact to App Center
         uses: wzieba/AppCenter-Github-Action@v1
         with:
-          appName: paramsinghvc/Timely
+          appName: Timely
           token: ${{secrets.APPCENTER_TOKEN_ANDROID}}
           group: UKInternal
-          file: android/app-release.aab
+          file: android/Timely.aab
           notifyTesters: true
           debug: false
