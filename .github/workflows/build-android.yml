@@ -115,6 +115,6 @@ jobs:
           appName: Timely
           token: ${{secrets.APPCENTER_TOKEN_ANDROID}}
           group: UKInternal
-          file: android/Timely.aab
+          file: android/app-release.aab
           notifyTesters: true
           debug: false
