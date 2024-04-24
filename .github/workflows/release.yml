@@ -29,7 +29,7 @@ jobs:
       - name: "Automated Version Bump"
         uses: "paramsinghvc/gh-action-bump-version@master"
         env:
-          GT_TOKEN: ${{ secrets.GT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GT_TOKEN }}
         with:
           tag-prefix: "v"
           tag-suffix: ${{ inputs.tag-suffix }}
