@@ -41,3 +41,5 @@ screenshot
 .eslintcache
 
 build
+
+./package.json-e
