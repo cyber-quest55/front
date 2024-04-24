@@ -29,7 +29,7 @@ jobs:
       - name: "Automated Version Bump"
         uses: "paramsinghvc/gh-action-bump-version@master"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GT_TOKEN: ${{ secrets.GT_TOKEN }}
         with:
           tag-prefix: "v"
           tag-suffix: ${{ inputs.tag-suffix }}
@@ -45,6 +45,6 @@ jobs:
       - name: "Automated Release"
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GT_TOKEN }}
           automatic_release_tag: "latest"
           title: ${{ inputs.release-title }}
