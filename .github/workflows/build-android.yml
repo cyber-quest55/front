@@ -47,6 +47,12 @@ jobs:
       - name: Syncronize Capacitor
         run: npx cap sync android
 
+      - name: Give sh permission
+        run: chmod +x ./shels/update-version.sh
+
+      - name: Update version
+        run:  ./shels/update-version.sh
+
       - name: Decode Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ github.workspace }}/android/app/my-upload-key.keystore

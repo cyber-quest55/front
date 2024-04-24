@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Diretórios e arquivos
-gradleFilePath="../android/app/build.gradle"
-packageJsonPath="../package.json"
+gradleFilePath="android/app/build.gradle"
+packageJsonPath="package.json"
 
 # Extrai o versionCode atual do gradle
 currentVersionCode=$(grep versionCode $gradleFilePath | awk '{ print $2 }')

@@ -21,13 +21,7 @@ jobs:
 
       - name: Install Node modules
         run: yarn install
-  
-  versioning:
-    uses: ./.github/workflows/release.yml
-    with:
-      tag-suffix: dev
-      release-title: Dev Build
-    secrets: inherit
+
 
   # Second Job
   build-android:
