@@ -22,10 +22,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.1
-          cache: "yarn"
 
       - name: Install Node modules
-        run: yarn ci
+        run: yarn install       
 
       - name: "Automated Version Bump"
         uses: "paramsinghvc/gh-action-bump-version@master"
