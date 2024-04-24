@@ -41,17 +41,17 @@ jobs:
       - name: Install Node modules
         run: yarn install
 
-      - name: Build Android
-        run: yarn build-android
-
-      - name: Syncronize Capacitor
-        run: npx cap sync android
-
       - name: Give sh permission
         run: chmod +x ./shels/update-version.sh
 
       - name: Update version
         run:  ./shels/update-version.sh
+
+      - name: Build Android
+        run: yarn build-android
+
+      - name: Syncronize Capacitor
+        run: npx cap sync android
 
       - name: Decode Keystore
         run: |
