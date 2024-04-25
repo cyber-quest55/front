@@ -5,11 +5,8 @@ on:
     branches:
       - "development"
   workflow_dispatch:
-    inputs:
-      track:
-        description: 'Track to deploy (override)'
-        required: false
-        default: ''
+    outputs:
+      track: ${{ steps.set_track.outputs.track }}  # Definir o output aqui para ser usado por outros jobs
 
 jobs:
   #First job
@@ -49,7 +46,7 @@ jobs:
     secrets: inherit
     with:
       publish: true
-      track: ${{ needs.prepare.outputs.track }}
+      track: ${{ needs.install-and-test.outputs.track }} 
   # Third Job
   #build-ios:
   #  needs: install-and-test
