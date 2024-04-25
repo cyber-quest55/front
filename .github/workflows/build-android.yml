@@ -7,6 +7,9 @@ on:
         required: false
         type: string
         default: "release"
+      track:
+        required: true
+        type: string
       publish:
         required: false
         type: boolean
@@ -42,7 +45,17 @@ jobs:
         run: yarn install
 
       - name: Build Android
-        run: yarn build-android
+        run:  |
+          if [ "${{ inputs.track }}" = "production" ]; then
+            echo "Building for production..."
+            yarn build-android:prod  
+          elif [ "${{ inputs.track }}" = "alpha" ]; then
+            echo "Building for alpha..."
+            yarn build-android:dev  
+          else
+            echo "Building for default track..."
+            yarn build-android:dev  
+          fi
 
       - name: Syncronize Capacitor
         run: npx cap sync android

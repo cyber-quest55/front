@@ -4,6 +4,12 @@ on:
   pull_request:
     branches:
       - "development"
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Track to deploy (override)'
+        required: false
+        default: ''
 
 jobs:
   #First job
@@ -21,6 +27,19 @@ jobs:
 
       - name: Install Node modules
         run: yarn install
+        
+      - name: Set track based on branch or input
+        id: set_track
+        run: |
+          if [[ "${{ github.event.inputs.track }}" != '' ]]; then
+            echo "Using manual input for track"
+            TRACK="${{ github.event.inputs.track }}"
+          elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            TRACK="production"
+          elif [[ $GITHUB_REF != 'refs/heads/main' ]]; then
+            TRACK="alpha"
+          fi
+          echo "::set-output name=track::$TRACK"
 
 
   # Second Job
@@ -30,6 +49,7 @@ jobs:
     secrets: inherit
     with:
       publish: true
+      track: ${{ needs.prepare.outputs.track }}
   # Third Job
   #build-ios:
   #  needs: install-and-test
