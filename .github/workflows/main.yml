@@ -28,15 +28,11 @@ jobs:
       - name: Set track based on branch or input
         id: set_track
         run: |
-          if [[ "${{ github.event.inputs.track }}" != '' ]]; then
-            echo "Using manual input for track"
-            TRACK="${{ github.event.inputs.track }}"
-          elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-            TRACK="production"
-          elif [[ $GITHUB_REF != 'refs/heads/main' ]]; then
-            TRACK="alpha"
+          if [[ ${{ github.base_ref }} == 'main' ]]; then
+            echo "::set-output name=track::production"
+          else
+            echo "::set-output name=track::alpha"
           fi
-          echo "::set-output name=track::$TRACK"
 
 
   # Second Job
