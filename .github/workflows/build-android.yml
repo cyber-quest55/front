@@ -128,7 +128,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT }}
           packageName: cicd.com.irricontrol
           releaseFiles: android/app-release.aab
-          track: internal
+          track: ${{ inputs.track }}
           changesNotSentForReview: true
 
       #- name: Upload artifact to App Center
