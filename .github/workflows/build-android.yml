@@ -40,7 +40,11 @@ jobs:
         with:
           distribution: 'temurin' # ou outra distribuição de sua preferência como 'adopt', 'zulu', etc.
           java-version: '17'
-
+    
+      - name: Build Android ${{inputs.environment == 'release' && 'Release' || 'Debug'}}
+        run: |
+          ./shels/update-version.sh
+     
       - name: Install Node modules
         run: yarn install
 
