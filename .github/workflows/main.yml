@@ -4,15 +4,14 @@ on:
   pull_request:
     branches:
       - "development"
-  workflow_dispatch:
-    outputs:
-      track: ${{ steps.set_track.outputs.track }}  # Definir o output aqui para ser usado por outros jobs
-
+ 
 jobs:
   #First job
   install-and-test:
     runs-on: ubuntu-latest
-
+    outputs:
+      track: ${{ steps.set_track.outputs.track }}  # Define o output no nível do job
+  
     steps:
       - name: Checkout
         uses: actions/checkout@v3
