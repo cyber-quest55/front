@@ -41,7 +41,7 @@ jobs:
           distribution: 'temurin' # ou outra distribuição de sua preferência como 'adopt', 'zulu', etc.
           java-version: '17'
     
-      - name: Build Android ${{inputs.environment == 'release' && 'Release' || 'Debug'}}
+      - name: Change the version of android
         run: |
           ./shels/update-version.sh
      
