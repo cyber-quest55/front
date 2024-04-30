@@ -54,7 +54,7 @@ jobs:
         run: npx cap sync android
 
       - name: Build iOS (Release)
-        uses: yukiarrr/ios-build-action@v1.5.0
+        uses: yukiarrr/ios-build-action@v1.11.2
         with:
           project-path: ios/Timely.xcodeproj
           p12-key-base64: ${{ secrets.P12_KEY_BASE64 }}
