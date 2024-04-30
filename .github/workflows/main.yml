@@ -42,8 +42,10 @@ jobs:
     with:
       publish: true
       track: ${{ needs.install-and-test.outputs.track }} 
-  # Third Job
-  #build-ios:
-  #  needs: install-and-test
-  #  uses: ./.github/workflows/build-ios.yml
-  #  secrets: inherit
+  build-ios:
+    needs: install-and-test
+    uses: ./.github/workflows/build-ios.yml
+    secrets: inherit
+    with:
+      publish: true
+      track: ${{ needs.install-and-test.outputs.track }} 
