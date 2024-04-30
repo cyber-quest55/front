@@ -7,6 +7,9 @@ on:
         required: false
         type: boolean
         description: Publish to Appcenter
+              track:
+      required: true
+        type: string
     secrets:
       IOS_P12_BASE64:
         required: true

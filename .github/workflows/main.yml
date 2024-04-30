@@ -35,13 +35,13 @@ jobs:
 
 
   # Second Job
-  build-android:
-    needs: install-and-test
-    uses: ./.github/workflows/build-android.yml
-    secrets: inherit
-    with:
-      publish: true
-      track: ${{ needs.install-and-test.outputs.track }} 
+  #build-android:
+  #  needs: install-and-test
+  #  uses: ./.github/workflows/build-android.yml
+  #  secrets: inherit
+  #  with:
+  #    publish: true
+  #    track: ${{ needs.install-and-test.outputs.track }} 
   build-ios:
     needs: install-and-test
     uses: ./.github/workflows/build-ios.yml
