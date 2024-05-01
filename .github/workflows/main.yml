@@ -79,13 +79,10 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         cp ${RUNNER_TEMP}/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-    - name: Build and Archive
-      env:
-        DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
-        CODE_SIGN_IDENTITY: "Apple Distribution"
-        PROFILE_NAME: $(basename ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision)
+    - name: Build and Archive 
       run: |
-        xcodebuild -workspace App.xcodeproj -scheme App -sdk iphoneos -configuration Release clean build CODE_SIGN_IDENTITY="${CODE_SIGN_IDENTITY}" PROVISIONING_PROFILE_SPECIFIER="${PROFILE_NAME}"
+        xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release clean build CODE_SIGN_IDENTITY="${CODE_SIGN_IDENTITY}" PROVISIONING_PROFILE_SPECIFIER="${PROFILE_NAME}"
+      working-directory: ios/App
 
     - name: Save Build Artifacts
       uses: actions/upload-artifact@v2
