@@ -48,11 +48,10 @@ jobs:
     - name: Synchronize Capacitor
       run: npx cap sync ios
 
-    - name: List Xcode versions (Temporary step to verify Xcode versions)
-      run: ls /Applications | grep Xcode
-
     - name: Set up Xcode
-      run: sudo xcode-select -s /Applications/Xcode_12.4.app
+      run: |
+        sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+        sudo xcodebuild -license accept
 
     - name: Decode and Install Certificate and Provisioning Profile
       env:
@@ -80,12 +79,9 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         cp ${RUNNER_TEMP}/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-    - name: Reset xcode
-      run: sudo xcode-select --reset
-
     - name: Build and Archive
       env:
-        DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
+        DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
         CODE_SIGN_IDENTITY: "Apple Distribution"
         PROFILE_NAME: $(basename ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision)
       run: |
