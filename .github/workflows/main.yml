@@ -4,15 +4,17 @@ on:
   pull_request:
     branches:
       - "development"
-  
-jobs:
-  build:
-    runs-on: macos-latest
     inputs: 
       track:
         required: false
         type: string
         default: "alpha"
+
+
+jobs:
+  build:
+    runs-on: macos-latest
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
