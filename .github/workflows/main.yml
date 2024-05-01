@@ -85,7 +85,7 @@ jobs:
         CODE_SIGN_IDENTITY: "Apple Distribution"
         PROFILE_NAME: $(basename ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision)
       run: |
-        xcodebuild -workspace App.xcworkspace -scheme YourScheme -sdk iphoneos -configuration Release clean build CODE_SIGN_IDENTITY="${CODE_SIGN_IDENTITY}" PROVISIONING_PROFILE_SPECIFIER="${PROFILE_NAME}"
+        xcodebuild -workspace ./App/App.xcworkspace -scheme YourScheme -sdk iphoneos -configuration Release clean build CODE_SIGN_IDENTITY="${CODE_SIGN_IDENTITY}" PROVISIONING_PROFILE_SPECIFIER="${PROFILE_NAME}"
 
     - name: Save Build Artifacts
       uses: actions/upload-artifact@v2
