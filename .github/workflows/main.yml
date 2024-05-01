@@ -1,7 +1,7 @@
 name: iOS CI Build
 
 on:
-  push:
+  pull_request:
     branches:
       - "development"
     paths:
