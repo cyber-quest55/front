@@ -18,7 +18,7 @@ on:
       IOS_TEAM_ID:
         required: true
       IOS_CERTIFICATE_PASSWORD:
-        required: true 
+        required: true
 
 jobs:
   build-ios:
@@ -30,10 +30,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.1
- 
+
       - name: Install Node modules
         run: yarn install
-      
+
       - name: Install pod dependencies
         run: cd ios && cd App && pod install && cd .. && cd ..
 
@@ -41,13 +41,13 @@ jobs:
         run:  |
           if [ "${{ inputs.track }}" = "production" ]; then
             echo "Building for production..."
-            yarn build-ios:prod  
+            yarn build-ios:prod
           elif [ "${{ inputs.track }}" = "alpha" ]; then
             echo "Building for alpha..."
-            yarn build-ios:dev  
+            yarn build-ios:dev
           else
             echo "Building for default track..."
-            yarn build-ios:dev  
+            yarn build-ios:dev
           fi
 
       - name: Syncronize Capacitor
@@ -59,11 +59,12 @@ jobs:
           project-path: ios/App/App.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILEPROVISION_BASE64 }}
-          code-signing-identity: "Apple Distribution" 
+          code-signing-identity: "Apple Distribution"
           team-id: ${{ secrets.IOS_TEAM_ID }}
           workspace-path: ios/App/App.xcworkspace
           output-path: "Timely.ipa"
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          bundle-identifier: "cicd.com.irricontrol"
 
 
       - name: Upload build

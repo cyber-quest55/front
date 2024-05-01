@@ -4,14 +4,14 @@ on:
   pull_request:
     branches:
       - "development"
- 
+
 jobs:
   #First job
   install-and-test:
     runs-on: ubuntu-latest
     outputs:
       track: ${{ steps.set_track.outputs.track }}  # Define o output no nível do job
-  
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Node modules
         run: yarn install
-        
+
       - name: Set track based on branch or input
         id: set_track
         run: |
@@ -41,11 +41,11 @@ jobs:
   #  secrets: inherit
   #  with:
   #    publish: true
-  #    track: ${{ needs.install-and-test.outputs.track }} 
+  #    track: ${{ needs.install-and-test.outputs.track }}
   build-ios:
     needs: install-and-test
     uses: ./.github/workflows/build-ios.yml
     secrets: inherit
     with:
       publish: true
-      track: ${{ needs.install-and-test.outputs.track }} 
+      track: ${{ needs.install-and-test.outputs.track }}
