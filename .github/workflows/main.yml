@@ -80,6 +80,9 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         cp ${RUNNER_TEMP}/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
+    - name: Reset xcode
+      run: sudo xcode-select --reset
+
     - name: Build and Archive
       env:
         DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
