@@ -3,7 +3,7 @@ name: iOS CI Build
 on:
   push:
     branches:
-      - development
+      - "development"
     paths:
       - 'ios/**'
       - '.github/workflows/ios.yml'
