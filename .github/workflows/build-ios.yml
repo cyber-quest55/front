@@ -57,13 +57,14 @@ jobs:
         uses: yukiarrr/ios-build-action@v1.11.2
         with:
           project-path: ios/Timely.xcodeproj
-          p12-key-base64: ${{ secrets.P12_KEY_BASE64 }}
-          p12-cer-base64: ${{ secrets.P12_CER_BASE64 }}
+          p12-base64: ${{ secrets.P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILEPROVISION_BASE64 }}
           code-signing-identity: "Apple Distribution" 
           team-id: ${{ secrets.IOS_TEAM_ID }}
           workspace-path: ios/Timely.xcworkspace
           output-path: "Timely.ipa"
+          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+
 
       - name: Upload build
         uses: actions/upload-artifact@v3
