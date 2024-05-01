@@ -4,10 +4,7 @@ on:
   pull_request:
     branches:
       - "development"
-    paths:
-      - 'ios/**'
-      - '.github/workflows/ios.yml'
-
+  
 jobs:
   build:
     runs-on: macos-latest
