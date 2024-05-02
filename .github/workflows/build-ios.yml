@@ -34,9 +34,6 @@ jobs:
       - name: Install Node modules
         run: yarn install
 
-      - name: Install pod dependencies
-        run: cd ios && cd App && pod install && cd .. && cd ..
-
       - name: Build ios capacitor
         run:  |
           if [ "${{ inputs.track }}" = "production" ]; then
@@ -50,8 +47,11 @@ jobs:
             yarn build-ios:dev
           fi
 
+      - name: Install pod dependencies
+        run: cd ios && cd App && pod install && cd .. && cd ..
+
       - name: Syncronize Capacitor
-        run: npx cap sync android
+        run: npx cap sync ios
 
       - name: Build iOS (Release)
         uses: yukiarrr/ios-build-action@v1.11.2
