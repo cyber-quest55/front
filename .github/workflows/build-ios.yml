@@ -56,12 +56,12 @@ jobs:
       - name: Build iOS (Release)
         uses: yukiarrr/ios-build-action@v1.11.2
         with:
-          project-path: ios/Timely.xcodeproj
+          project-path: ios/App/App.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
           mobileprovision-base64: ${{ secrets.IOS_MOBILEPROVISION_BASE64 }}
           code-signing-identity: "Apple Distribution" 
           team-id: ${{ secrets.IOS_TEAM_ID }}
-          workspace-path: ios/Timely.xcworkspace
+          workspace-path: ios/App/App.xcworkspace
           output-path: "Timely.ipa"
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
 
