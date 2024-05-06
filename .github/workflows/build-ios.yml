@@ -81,7 +81,6 @@ jobs:
         env:
           APPLEID_USERNAME: ${{ secrets.APPLEID_USERNAME }}
           APPLEID_PASSWORD: ${{ secrets.APPLEID_PASSWORD }}
-        if: ${{ github.ref == 'refs/heads/development' }}
         run: |
           xcrun altool --upload-app \
             -t ios \
