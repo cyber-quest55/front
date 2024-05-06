@@ -19,10 +19,6 @@ on:
         required: true
       IOS_CERTIFICATE_PASSWORD:
         required: true
-      APPLEID_USERNAME:
-        required: true
-      APPLEID_PASSWORD:
-        required: true
 
 jobs:
   build-ios:
