@@ -69,7 +69,6 @@ jobs:
           output-path: "Timely.ipa"
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           bundle-identifier: "cicd.com.irricontrol"
-          increment-version-number: "patch"
           increment-build-number: true
 
       - name: Upload build
