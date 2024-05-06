@@ -78,7 +78,6 @@ jobs:
           path: "Timely.ipa"
 
   deploy_to_testflight:
-    needs: build_and_upload
     runs-on: macos-latest
     steps:
       - name: Download Timely.ipa
