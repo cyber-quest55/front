@@ -76,11 +76,6 @@ jobs:
   deploy_to_testflight:
     runs-on: macos-latest
     steps:
-      - name: Download Timely.ipa
-        uses: actions/download-artifact@v3
-        with:
-          name: "Timely.ipa"
-
       - name: 'Upload app to TestFlight'
         uses: apple-actions/upload-testflight-build@v1
         with: 
