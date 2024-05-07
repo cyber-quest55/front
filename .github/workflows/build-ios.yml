@@ -75,6 +75,7 @@ jobs:
 
   deploy_to_testflight:
     runs-on: macos-latest
+    needs: build-ios
     steps:
       - uses: actions/checkout@v2
 
