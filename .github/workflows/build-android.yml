@@ -1,0 +1,144 @@
+name: "Android Build"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: false
+        type: string
+        default: "release"
+      track:
+        required: true
+        type: string
+      publish:
+        required: false
+        type: boolean
+        description: Publish to Appcenter
+    secrets: 
+      ANDROID_KEYSTORE:
+        required: true
+      ANDROID_KEY_ALIAS:
+        required: true
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 18.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # ou outra distribuição de sua preferência como 'adopt', 'zulu', etc.
+          java-version: '17'
+    
+      - name: Change the version of android
+        run: |
+          ./shels/update-version.sh
+     
+      - name: Install Node modules
+        run: yarn install
+
+      - name: Build Android
+        run:  |
+          if [ "${{ inputs.track }}" = "production" ]; then
+            echo "Building for production..."
+            yarn build-android:prod  
+          elif [ "${{ inputs.track }}" = "alpha" ]; then
+            echo "Building for alpha..."
+            yarn build-android:dev  
+          else
+            echo "Building for default track..."
+            yarn build-android:dev  
+          fi
+
+      - name: Syncronize Capacitor
+        run: npx cap sync android
+
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ github.workspace }}/android/app/my-upload-key.keystore
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+      - name: Make Gradlew Executable
+        run: cd android && chmod +x ./gradlew
+        # Build Command
+
+      - name: Build Android ${{inputs.environment == 'release' && 'Release' || 'Debug'}}
+        run: |
+          cd android && ./gradlew bundle${{inputs.environment == 'release' && 'Release' || 'Debug'}} --no-daemon
+      - run: pwd
+
+
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          # keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      # Upload to Artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Timely.aab
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+  publish-to-playstore:
+    if: ${{ inputs.publish == true }}
+    runs-on: ubuntu-latest
+    needs: build-android
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: Timely.aab
+          path: "android/"
+
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Deploy Android APK
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT }}
+          packageName: cicd.com.irricontrol
+          releaseFiles: android/app-release.aab
+          track: ${{ inputs.track }}
+          changesNotSentForReview: true
+
+      #- name: Upload artifact to App Center
+      #  uses: wzieba/AppCenter-Github-Action@v1
+      #  with:
+      #    appName: weton01/plat-front
+      #    token: ${{secrets.APPCENTER_TOKEN_ANDROID}}
+      #    group: UKInternal
+      #    file: android/app-release.aab
+      #    notifyTesters: true
+      #    debug: false

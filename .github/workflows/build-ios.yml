@@ -1,0 +1,94 @@
+name: "iOS Build"
+
+on:
+  workflow_call:
+    inputs:
+      publish:
+        required: false
+        type: boolean
+        description: Publish to Appcenter
+      track:
+        required: true
+        type: string
+    secrets:
+      IOS_P12_BASE64:
+        required: true
+      IOS_MOBILEPROVISION_BASE64:
+        required: true
+      IOS_TEAM_ID:
+        required: true
+      IOS_CERTIFICATE_PASSWORD:
+        required: true
+
+jobs:
+  build-ios:
+    runs-on: macos-12 #Monterey
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 18.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.1
+
+      - name: Install Node modules
+        run: yarn install
+
+      - name: Build ios capacitor
+        run:  |
+          if [ "${{ inputs.track }}" = "production" ]; then
+            echo "Building for production..."
+            yarn build-ios:prod
+          elif [ "${{ inputs.track }}" = "alpha" ]]; then
+            echo "Building for alpha..."
+            yarn build-ios:dev
+          else
+            echo "Building for default track..."
+            yarn build-ios:dev
+          fi
+
+      - name: Install pod dependencies
+        run: cd ios && cd App && pod install && cd .. && cd ..
+
+      - name: Syncronize Capacitor
+        run: npx cap sync ios
+
+      - name: Build iOS (Release)
+        uses: yukiarrr/ios-build-action@v1.11.2
+        id: sign_app
+        with:
+          project-path: ios/App/App.xcodeproj
+          p12-base64: ${{ secrets.IOS_P12_BASE64 }}
+          mobileprovision-base64: ${{ secrets.IOS_MOBILEPROVISION_BASE64 }}
+          code-signing-identity: "Apple Distribution"
+          team-id: ${{ secrets.IOS_TEAM_ID }}
+          workspace-path: ios/App/App.xcworkspace
+          output-path: "Timely.ipa"
+          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          bundle-identifier: "cicd.com.irricontrol"
+          increment-build-number: true
+
+      - name: Upload build
+        uses: actions/upload-artifact@v3
+        with:
+          name: "Timely.ipa"
+          path: "Timely.ipa"
+
+  deploy_to_testflight:
+    runs-on: macos-latest
+    needs: build-ios
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: "Timely.ipa"
+          path: "ios/"
+
+      - name: 'Upload app to TestFlight'
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: 'ios/Timely.ipa'  # Usa o nome do arquivo diretamente se estiver na raiz do diretório de trabalho
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
