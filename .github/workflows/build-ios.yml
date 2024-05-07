@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: "Timely.ipa"
-          path: "Timely.ipa"
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
   deploy_to_testflight:
     runs-on: macos-latest
