@@ -55,6 +55,7 @@ jobs:
 
       - name: Build iOS (Release)
         uses: yukiarrr/ios-build-action@v1.11.2
+        id: sign_app
         with:
           project-path: ios/App/App.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_BASE64 }}
@@ -71,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: "Timely.ipa"
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: "Timely.ipa"
 
   deploy_to_testflight:
     runs-on: macos-latest
