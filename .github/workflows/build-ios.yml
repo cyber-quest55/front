@@ -76,10 +76,17 @@ jobs:
   deploy_to_testflight:
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: "Timely.ipa"
+          path: "ios/"
+
       - name: 'Upload app to TestFlight'
         uses: apple-actions/upload-testflight-build@v1
-        with: 
-          app-path: 'Timely.ipa'  # Usa o nome do arquivo diretamente se estiver na raiz do diretório de trabalho
+        with:
+          app-path: 'ios/Timely.ipa'  # Usa o nome do arquivo diretamente se estiver na raiz do diretório de trabalho
           issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
