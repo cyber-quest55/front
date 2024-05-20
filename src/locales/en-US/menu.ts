@@ -13,5 +13,7 @@ export default {
   'menu.Edit Meter': 'Edit Meter',
   'menu.User Profile': 'User Profile',
   'menu.Edit Pump': 'Edit Pump',
+  'menu.Device Operations': 'Device Operations',
+
   'menu.Weather Station': 'Weather Station',
 };

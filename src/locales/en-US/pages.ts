@@ -68,5 +68,11 @@ export default {
   'pages.edit.farm.tab.options.pivotreports': 'Pivot Reports',
   'pages.edit.farm.tab.options.pumpreports': 'Pump Reports',
   'pages.edit.farm.tab.options.holidays': 'Holidays',
-  'pages.edit.farm.tab.options.users': 'Users'
+  'pages.edit.farm.tab.options.users': 'Users',
+  'pages.devices.operations.tab.1': 'Pivots',
+  'pages.devices.operations.tab.2': 'Meters',
+  'pages.devices.operations.tab.3': 'Repeaters',
+  'pages.devices.operations.tab.4': 'Pumps',
+  'pages.devices.operations.tab.5': 'Pluviometers',
+
  };

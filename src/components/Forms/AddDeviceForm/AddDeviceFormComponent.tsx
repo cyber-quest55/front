@@ -7,7 +7,7 @@ import { queryRepeater } from '@/models/repeaters';
 import { PlusCircleFilled } from '@ant-design/icons';
 import { CheckCard, ModalForm, ProForm } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
-import { Avatar, Button, Col, Form, Row, Steps } from 'antd';
+import { Avatar, Button, ButtonProps, Col, Form, Row, Steps } from 'antd';
 import React from 'react';
 import IrpdForm from './Forms/IrpdForm';
 import LinearPivotMonitorForm from './Forms/LinearPivotMonitorForm';
@@ -25,6 +25,7 @@ interface AddDeviceFormComponentProps {
   queryIrpd: typeof queryIrpd;
   queryRepeater: typeof queryRepeater;
   base: string;
+  buttonProps: ButtonProps
   location: string;
 }
 
@@ -93,7 +94,7 @@ const AddDeviceFormComponent: React.FC<AddDeviceFormComponentProps> = (props) =>
         },
       }}
       trigger={
-        <Button size="large" type="primary" icon={<PlusCircleFilled />} onClick={openModalForm}>
+        <Button size="large" type="primary" icon={<PlusCircleFilled />} onClick={openModalForm} {...props.buttonProps}>
           {intl.formatMessage({
             id: 'component.adddevice.modal.trigger',
           })}

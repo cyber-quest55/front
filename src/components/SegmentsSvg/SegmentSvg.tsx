@@ -54,7 +54,7 @@ const SegmentSVG: React.FC<SegmentSVGProps> = (props) => {
   const novoPontoInicial = calcularCoordenadasCircunferencia(beginAngle);
   const novoPontoFinal = calcularCoordenadasCircunferencia(endAngle);
 
-  const pontos = [];
+  const pontos: any[]= [];
 
   pontos.push({ x: centro.x, y: centro.y });
 

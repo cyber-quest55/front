@@ -14,6 +14,7 @@ export default {
   'component.presets.rangepicker': 'Last {value} Days',
   'component.popconfirm.oktext': 'Are you sure about that?',
   'component.datepiker.oktext': 'Ok',
+  'component.button.new': 'New',
 
   'component.message.error': 'Error!',
   'component.descriptor.opt.disabled.label': 'Disabled',
@@ -1023,4 +1024,14 @@ export default {
   'component.signal.map.logs.field.fromdevice': 'From device: ',
   'component.signal.map.logs.field.todevice': 'To device: ',
   'component.signal.map.logs.field.connection': 'Connection strength: ',
+
+  // Operations table
+  'component.operations.table.col.1': 'Name',
+  'component.operations.table.col.2': 'Status',
+  'component.operations.table.col.3': 'Type',
+
+  'component.operations.table.col.4': 'Last Comunication',
+  'component.operations.table.col.5': 'Pressure',
+  'component.operations.table.col.6': 'Angle',
+  'component.operations.table.col.7': 'Actions',  
 };

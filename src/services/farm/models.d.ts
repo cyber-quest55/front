@@ -5,7 +5,7 @@ declare namespace APIModels {
     timezone: string;
     is_administrator: boolean;
     payment_status: number;
-    base: {
+    base?: {
       id: number;
       type: string;
       created: string;

@@ -3,10 +3,13 @@ import * as React from 'react';
 import StartPivotSimpleComponent from './StartPivotSimpleComponent';
 import StartPivotSimpleSkeleton from './StartPivotSimpleSkeleton';
 import { connect } from 'dva';
-import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
+import { GetPivotByIdModelProps, queryPivotByIdStart } from '@/models/pivot-by-id';
 
 interface ILocationFormContainerProps {
+  queryPivotByIdStart: typeof queryPivotByIdStart
   pivotById: GetPivotByIdModelProps
+  deviceId: number;
+  farmId: number;
 }
 
 const StartPivotSimpleFormContainer: React.FunctionComponent<ILocationFormContainerProps> = (
@@ -14,14 +17,18 @@ const StartPivotSimpleFormContainer: React.FunctionComponent<ILocationFormContai
 ) => {
   const { xs } = useScreenHook();
 
+  const queryPivotById = () => { 
+    props.queryPivotByIdStart({ farmId: props.farmId, pivotId: props.deviceId})
+  }
+
   return (
     <>
       {false ? (
         <StartPivotSimpleSkeleton />
       ) : xs ? (
-        <StartPivotSimpleComponent {...props} />
+        <StartPivotSimpleComponent queryPivotById={queryPivotById} {...props} />
       ) : (
-        <StartPivotSimpleComponent {...props} />
+        <StartPivotSimpleComponent queryPivotById={queryPivotById} {...props} />
       )}
     </>
   );
@@ -32,8 +39,9 @@ const mapStateToProps = ({ pivotById }: any) => ({
   pivotById,
 });
 
-const mapDispatchToProps = () => ({
- });
+const mapDispatchToProps = (dispatch ) => ({
+  queryPivotByIdStart: (props) => dispatch(queryPivotByIdStart(props))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartPivotSimpleFormContainer);
 

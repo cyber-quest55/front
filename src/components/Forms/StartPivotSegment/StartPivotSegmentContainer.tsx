@@ -3,10 +3,13 @@ import { connect } from 'dva';
 import * as React from 'react';
 import StartPivotSegmentComponent from './StartPivotSegmentComponent';
 import StartPivotSegmentSkeleton from './StartPivotSegmentSkeleton';
-import { GetPivotByIdModelProps } from '@/models/pivot-by-id';
+import { GetPivotByIdModelProps, queryPivotByIdStart } from '@/models/pivot-by-id';
 
 interface IStartPivotSegmentContainerProps {
-    pivotById: GetPivotByIdModelProps
+  queryPivotByIdStart: typeof queryPivotByIdStart
+  pivotById: GetPivotByIdModelProps
+  deviceId: number;
+  farmId: number;
 }
 
 const StartPivotSegmentContainer: React.FunctionComponent<IStartPivotSegmentContainerProps> = (
@@ -14,14 +17,19 @@ const StartPivotSegmentContainer: React.FunctionComponent<IStartPivotSegmentCont
 ) => {
   const { xs } = useScreenHook();
 
+  const queryPivotById = () => { 
+    props.queryPivotByIdStart({ farmId: props.farmId, pivotId: props.deviceId})
+  }
+
+
   return (
     <>
       {false ? (
         <StartPivotSegmentSkeleton />
       ) : xs ? (
-        <StartPivotSegmentComponent {...props} />
+        <StartPivotSegmentComponent queryPivotById={queryPivotById} {...props} />
       ) : (
-        <StartPivotSegmentComponent {...props} />
+        <StartPivotSegmentComponent queryPivotById={queryPivotById} {...props} />
       )}
     </>
   );
@@ -31,6 +39,9 @@ const mapStateToProps = ({ pivotById }: any) => ({
   pivotById,
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch ) => ({
+  queryPivotByIdStart: (props) => dispatch(queryPivotByIdStart(props))
+});
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartPivotSegmentContainer);

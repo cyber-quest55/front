@@ -11,6 +11,8 @@ import { useEffect, useState } from 'react';
 import AddDeviceFormComponent from './AddDeviceFormComponent';
 import AddDeviceFormSkeleton from './AddDeviceFormSkeleton';
 import { queryPivot } from '@/models/pivot';
+import { GetFarmModelProps } from '@/models/farm';
+import { ButtonProps } from 'antd';
 
 interface AddDeviceFormContainerProps {
   queryPivotInformation: typeof queryPivotInformation;
@@ -18,7 +20,8 @@ interface AddDeviceFormContainerProps {
   queryMeterSystem: typeof queryMeterSystem;
   queryIrpd: typeof queryIrpd;
   queryRepeater: typeof queryRepeater;
-  base: string;
+  farm: GetFarmModelProps;
+  buttonProps: ButtonProps
 }
 
 const AddDeviceFormContainer: React.FunctionComponent<AddDeviceFormContainerProps> = (props) => {
@@ -26,6 +29,7 @@ const AddDeviceFormContainer: React.FunctionComponent<AddDeviceFormContainerProp
   const getFarmByIdReq = useRequest(getFarmById, { manual: true });
   const params = useParams();
   const [location, setLocation] = useState<string>('');
+  const base = (props?.farm?.selectedFarm as any)?.base?.radio_id
 
   useEffect(() => {
     getFarmByIdReq.runAsync({ id: params.id as string }).then((data) => {
@@ -44,8 +48,9 @@ const AddDeviceFormContainer: React.FunctionComponent<AddDeviceFormContainerProp
           queryMeterSystem={props.queryMeterSystem}
           queryIrpd={props.queryIrpd}
           queryRepeater={props.queryRepeater}
-          base={props.base}
+          base={base}
           location={location}
+          buttonProps={props.buttonProps}
         />
       ) : (
         <AddDeviceFormComponent
@@ -54,15 +59,17 @@ const AddDeviceFormContainer: React.FunctionComponent<AddDeviceFormContainerProp
           queryMeterSystem={props.queryMeterSystem}
           queryIrpd={props.queryIrpd}
           queryRepeater={props.queryRepeater}
-          base={props.base}
+          base={base}
           location={location}
+          buttonProps={props.buttonProps}
+
         />
       )}
     </>
   );
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = ({farm}) => ({farm});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryPivotInformation: (props: any) => dispatch(queryPivotInformation(props)),

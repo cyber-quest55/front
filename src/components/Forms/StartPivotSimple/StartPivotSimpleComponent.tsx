@@ -13,7 +13,7 @@ import {
   ProFormSelect,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import { useIntl, useParams } from '@umijs/max';
+import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { App, Button, Form, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
@@ -22,12 +22,14 @@ import * as yup from 'yup';
 
 interface IStartPivotSimpleComponentProps {
   pivotById: GetPivotByIdModelProps;
+  queryPivotById: any;
+  deviceId: number;
+  farmId: number;
 }
 
 const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleComponentProps> = (
   props,
 ) => {
-  const params = useParams();
   const [form] = Form.useForm<any>();
   const intl = useIntl();
 
@@ -174,9 +176,9 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
 
   const pauseTime1 = pivot.controllerconfig?.content?.pause_time_command?.pause_time_command
     ? [
-        `${pivot.controllerconfig?.content?.pause_time?.start_pause_time_hour_1}:${pivot.controllerconfig?.content?.pause_time?.start_pause_time_minute_1}`,
-        `${pivot.controllerconfig?.content?.pause_time?.end_pause_time_hour_1}:${pivot.controllerconfig?.content?.pause_time?.end_pause_time_minute_1}`,
-      ]
+      `${pivot.controllerconfig?.content?.pause_time?.start_pause_time_hour_1}:${pivot.controllerconfig?.content?.pause_time?.start_pause_time_minute_1}`,
+      `${pivot.controllerconfig?.content?.pause_time?.end_pause_time_hour_1}:${pivot.controllerconfig?.content?.pause_time?.end_pause_time_minute_1}`,
+    ]
     : ['00:00', '00:00'];
 
   const pauseTime2 = [
@@ -200,7 +202,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
         return (
           (Math.abs(
             pivot.controllerconfig?.content?.sector?.end_angle -
-              pivot.controllerconfig?.content?.sector?.start_angle,
+            pivot.controllerconfig?.content?.sector?.start_angle,
           ) *
             rounds) |
           1
@@ -213,8 +215,8 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
   const handleFetchLastConfig = async () => {
     const result = await getLastSimple.runAsync(
       {
-        farmId: params.id as any,
-        pivotId: pivot.id as any,
+        farmId: props.farmId as any,
+        pivotId: props.deviceId as any,
       },
       {},
     );
@@ -230,6 +232,9 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
 
   return (
     <ModalForm<any>
+      onOpenChange={() => {
+        props.queryPivotById()
+      }}
       onFieldsChange={(fields) => {
         const name = fields[0].name.join('.');
 
@@ -335,8 +340,8 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
 
           await postReq.runAsync(
             {
-              farmId: params.id as any,
-              pivotId: pivot.id as any,
+              farmId: props.farmId as any,
+              pivotId: props.deviceId as any,
               deviceId: pivot.control as any,
             },
             {
@@ -389,7 +394,7 @@ const StartPivotSimpleComponent: React.FunctionComponent<IStartPivotSimpleCompon
         }
         return true;
       }}
-    > 
+    >
       <ProForm.Group style={{ marginBottom: 12 }}>
         <Typography.Text>
           {intl.formatMessage({

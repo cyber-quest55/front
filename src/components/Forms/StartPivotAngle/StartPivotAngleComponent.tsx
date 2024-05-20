@@ -19,13 +19,14 @@ import {
 import { GoogleMap } from '@react-google-maps/api';
 import { useIntl, useParams } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { App, Button, Form, Space, Typography } from 'antd';
+import { App, Button, Form, Space, Spin, Typography } from 'antd';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import * as yup from 'yup';
 
 interface IStartPivotAngleComponentProps {
   pivotById: GetPivotByIdModelProps;
+  queryPivotById: any;
 }
 
 const colors = ['#1d39c4', '#d3adf7', '#e6fffb', '#ffa39e', '#b7eb8f'];
@@ -218,7 +219,7 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
     );
 
     const scheduleIrr = result.content.segment_irrigation_parameters;
-    const newList = [];
+    const newList: any = [];
 
     for (let index = 0; index < result.content.segment_modes.length; index++) {
       const item1 = result.content.segment_modes[index]
@@ -231,7 +232,7 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
       })
     }
 
-     const newValues = {
+    const newValues = {
       ...formValues,
       content: {
         ...formValues.content,
@@ -262,8 +263,8 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
 
   // used to format the segments to form and map
   React.useEffect(() => {
-    const newData = []; // to mapsRender, used in segments
-    const formData = []; // to formList, used in segments
+    const newData: any[] = []; // to mapsRender, used in segments
+    const formData: any[] = []; // to formList, used in segments
 
     if (pivot && pivot.controllerconfig) {
       for (let i = 0; i < pivot?.controllerconfig?.content?.segments?.length; i++) {
@@ -396,7 +397,11 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
 
   return (
     <ModalForm<any>
-      onOpenChange={(v) => setVisible(v)}
+      
+      onOpenChange={(v) => {
+        setVisible(v)
+        props.queryPivotById()
+      }}
       onFieldsChange={(fields) => {
         // o nome do campo está sempre na ultima posição
         const name = fields[0].name.at(-1);
@@ -464,7 +469,7 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
         delete values?.content?.segment_irrigation_parameters?.garbage;
 
         const isStartMode = startMode !== 0 && startMode !== 1
- 
+
         try {
           await postReq.runAsync(
             {
@@ -491,8 +496,8 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
                   stop_angle: values.content?.segment_irrigation_parameters?.stop_angle | 360,
                   start_time_year: isStartMode ? 0 : startTime.get('y') - 2000,
                   start_time_month: isStartMode ? 0 : startTime.get('M') + 1,
-                  start_time_day: isStartMode? 0 : startTime.get('D'),
-                  start_time_hour: isStartMode? 0 : startTime.get('h'),
+                  start_time_day: isStartMode ? 0 : startTime.get('D'),
+                  start_time_hour: isStartMode ? 0 : startTime.get('h'),
                   start_time_minute: isStartMode ? 0 : startTime.get('m'),
                   end_time_year: endMode !== 5 ? 0 : endTime.get('y') - 2000,
                   end_time_month: endMode !== 5 ? 0 : endTime.get('M') + 1,
@@ -560,7 +565,7 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
         },
       }}
     >
-      <>
+      <Spin spinning={props.pivotById.loading}>
         <ProCard ghost>
           <ProCard ghost colSpan={{ xs: 24, sm: 15, md: 15 }}>
             <ProForm.Group>
@@ -801,7 +806,7 @@ const StartPivotAngleComponent: React.FunctionComponent<IStartPivotAngleComponen
         >
           <RenderCard />
         </ProFormList>
-      </>
+      </Spin>
     </ModalForm>
   );
 };

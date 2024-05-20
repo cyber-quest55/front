@@ -17,15 +17,18 @@ import {
   ProFormSelect,
 } from '@ant-design/pro-components';
 import { GoogleMap } from '@react-google-maps/api';
-import { useIntl, useParams } from '@umijs/max';
+import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { App, Button, Form, Space, Typography } from 'antd';
+import { App, Button, Form, Space, Spin, Typography } from 'antd';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import * as yup from 'yup';
 
 interface IStartPivotSegmentComponentProps {
   pivotById: GetPivotByIdModelProps;
+  queryPivotById: any;
+  deviceId: number;
+  farmId: number;
 }
 
 const colors = ['#1d39c4', '#d3adf7', '#e6fffb', '#ffa39e', '#b7eb8f'];
@@ -43,12 +46,11 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
   const positions = props.pivotById?.unformated?.controllerconfig?.content?.pivot_positions;
 
   const intl = useIntl();
-  const params = useParams();
   const { message } = App.useApp();
   const [form] = Form.useForm<any>();
-  const { zoom, setZoom, map, setMap, mapCenter } = useMapHook(15, {
-    lat: positions?.latitude_center,
-    lng: positions?.longitude_center,
+  const { zoom, setZoom, map, setMap, mapCenter, setMapCenter } = useMapHook(15, {
+    lat: positions ? positions.latitude_center : 0.0,
+    lng: positions ? positions.longitude_center : 0.0,
   });
 
   const postReq = useRequest(postSimpleIrrigation, { manual: true });
@@ -211,14 +213,14 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
 
     const result = await getLastSchedule.runAsync(
       {
-        farmId: params.id as any,
-        pivotId: pivot.id as any,
+        farmId: props.farmId as any,
+        pivotId: props.deviceId as any,
       },
       {},
     );
 
     const scheduleIrr = result.content.segment_irrigation_parameters;
-    const newList = [];
+    const newList: any[] = [];
 
     for (let index = 0; index < result.content.segment_modes.length; index++) {
       const item1 = result.content.segment_modes[index]
@@ -231,7 +233,7 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
       })
     }
 
-     const newValues = {
+    const newValues = {
       ...formValues,
       content: {
         ...formValues.content,
@@ -260,45 +262,6 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
     form.setFieldsValue(newValues);
   };
 
-  // used to format the segments to form and map
-  React.useEffect(() => {
-    const newData = []; // to mapsRender, used in segments
-    const formData = []; // to formList, used in segments
-
-    if (pivot && pivot.controllerconfig) {
-      for (let i = 0; i < pivot?.controllerconfig?.content?.segments?.length; i++) {
-        const segment = pivot?.controllerconfig?.content?.segments[i];
-        const group = pivot?.controllerconfig?.segments_crop[i];
-
-        newData.push({
-          name: group?.name,
-          plantingType: group?.segment_type,
-          begin: segment?.angle_start,
-          end: segment?.angle_end,
-          plantingDate: group?.crop_plant_date,
-          harvestDate: group?.crop_harvest_date,
-          color: colors[i],
-          id: `key-table-segment-${i}`,
-        } as any);
-
-        const result = PTPToMillimeter(pivot, 100);
-
-        formData.push({
-          percent_forward: 100,
-          percent_reverse: 100,
-          milimiter: result,
-          mode_forward: 1,
-          mode_reverse: 1,
-          name: group?.name,
-          begin_angle: segment?.angle_start,
-          end_angle: segment?.angle_end,
-        });
-      }
-
-      setDataSource(newData);
-      form.setFieldValue(['content', 'segment_modes'], formData);
-    }
-  }, [visible]);
 
   const RenderTabs: React.FunctionComponent<{ activeTab: string }> = (props) => {
     return (
@@ -394,9 +357,57 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
     );
   };
 
+  // used to format the segments to form and map
+  React.useEffect(() => {
+    const newData: any = []; // to mapsRender, used in segments
+    const formData: any = []; // to formList, used in segments
+
+    if (pivot && pivot.controllerconfig) {
+      for (let i = 0; i < pivot?.controllerconfig?.content?.segments?.length; i++) {
+        const segment = pivot?.controllerconfig?.content?.segments[i];
+        const group = pivot?.controllerconfig?.segments_crop[i];
+
+        newData.push({
+          name: group?.name,
+          plantingType: group?.segment_type,
+          begin: segment?.angle_start,
+          end: segment?.angle_end,
+          plantingDate: group?.crop_plant_date,
+          harvestDate: group?.crop_harvest_date,
+          color: colors[i],
+          id: `key-table-segment-${i}`,
+        } as any);
+
+        const result = PTPToMillimeter(pivot, 100);
+
+        formData.push({
+          percent_forward: 100,
+          percent_reverse: 100,
+          milimiter: result,
+          mode_forward: 1,
+          mode_reverse: 1,
+          name: group?.name,
+          begin_angle: segment?.angle_start,
+          end_angle: segment?.angle_end,
+        });
+      }
+
+      setDataSource(newData);
+      form.setFieldValue(['content', 'segment_modes'], formData);
+    }
+  }, [visible, positions]);
+
+  React.useEffect(() => {
+    if (positions)
+      setMapCenter({ lat: positions.latitude_center, lng: positions.longitude_center })
+  }, [positions]);
+
   return (
     <ModalForm<any>
-      onOpenChange={(v) => setVisible(v)}
+      onOpenChange={(v) => {
+        props.queryPivotById()
+        setVisible(v)
+      }}
       onFieldsChange={(fields) => {
         // o nome do campo está sempre na ultima posição
         const name = fields[0].name.at(-1);
@@ -464,17 +475,17 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
         delete values?.content?.segment_irrigation_parameters?.garbage;
 
         const isStartMode = startMode !== 0 && startMode !== 1
- 
+
         try {
           await postReq.runAsync(
             {
-              farmId: params.id as any,
-              pivotId: pivot.id as any,
+              farmId: props.farmId as any,
+              pivotId: props.deviceId as any,
               deviceId: pivot.control as any,
             },
             {
               message_subtype: 'segment',
-              equipment: pivot.id,
+              equipment: props.deviceId,
               content: {
                 ...values.content,
                 injection_pump_command: {
@@ -491,8 +502,8 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
                   stop_angle: values.content?.segment_irrigation_parameters?.stop_angle | 360,
                   start_time_year: isStartMode ? 0 : startTime.get('y') - 2000,
                   start_time_month: isStartMode ? 0 : startTime.get('M') + 1,
-                  start_time_day: isStartMode? 0 : startTime.get('D'),
-                  start_time_hour: isStartMode? 0 : startTime.get('h'),
+                  start_time_day: isStartMode ? 0 : startTime.get('D'),
+                  start_time_hour: isStartMode ? 0 : startTime.get('h'),
                   start_time_minute: isStartMode ? 0 : startTime.get('m'),
                   end_time_year: endMode !== 5 ? 0 : endTime.get('y') - 2000,
                   end_time_month: endMode !== 5 ? 0 : endTime.get('M') + 1,
@@ -560,7 +571,7 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
         },
       }}
     >
-      <>
+      <Spin spinning={props.pivotById.loading}>
         <ProCard ghost>
           <ProCard ghost colSpan={{ xs: 24, sm: 15, md: 15 }}>
             <ProForm.Group>
@@ -801,7 +812,7 @@ const StartPivotSegmentComponent: React.FunctionComponent<IStartPivotSegmentComp
         >
           <RenderCard />
         </ProFormList>
-      </>
+      </Spin>
     </ModalForm>
   );
 };

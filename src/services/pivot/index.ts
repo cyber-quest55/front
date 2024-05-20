@@ -243,7 +243,7 @@ export async function createLinearPivotMonitor(
 
 /**  /farms/${farmID}/pivots/${pivotID}/device/${deviceID}/action/ */
 export async function getEstimatedTime(props: {}, options: API.GetEstimatedTimeParams) {
-  return request<API.GetEstimatedTimeResponse>(`/estimated-time/`, {
+  return request<API.GetEstimatedTimeResponse>(`/v3/estimated-time/`, {
     method: 'GET',
     params: options,
   });

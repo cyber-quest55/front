@@ -498,7 +498,6 @@ const DeviceBox: React.FC<Props> = (props) => {
       <Row justify="center" style={{ marginTop: -45 }}>
         <Col>
           <AddDeviceFormContainer
-            base={(props.selectedFarm as any)?.base?.radio_id}
           />
         </Col>
       </Row>

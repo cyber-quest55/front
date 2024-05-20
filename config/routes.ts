@@ -43,6 +43,11 @@ export default [
     ],
   },
   {
+    path: '/test',
+    icon: 'compassOutlined',
+
+  },
+  {
     path: 'climate/:farmId/pluviometer',
     name: 'Pluviometer',
     icon: 'compassOutlined',
@@ -59,20 +64,27 @@ export default [
         path: '/farms/:id',
         name: 'Sua Fazenda',
         component: './Farms/[id].tsx',
-      }, 
+      },
       {
         path: '/farms/:id/edit',
         name: 'Editar fazenda',
         hideInMenu: true,
         component: './Farms/Edit.tsx'
       },
+    
+
     ],
+  },
+  {
+    name: 'Device Operations',
+    path: '/devices/operations',
+    component: './Devices/Operation',
   },
   {
     path: 'report/',
     name: 'Relatórios',
     icon: 'pieChartOutlined',
-     routes: [
+    routes: [
       {
         path: 'report/farms/:id',
         name: 'Relatório do Negócio',
@@ -146,7 +158,7 @@ export default [
     icon: 'bellOutlined',
     component: './Notifications',
   },
-  
+
   {
     path: '/climate/farms/:id/',
     name: 'Clima',

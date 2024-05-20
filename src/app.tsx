@@ -31,6 +31,7 @@ const loginPath = '/user/login';
 import { setDefaultConfig } from 'antd-mobile'
 import enUS from 'antd-mobile/es/locales/en-US'
 import { ToggleDarkMode } from './components/ToggleDarkMode';
+import Initializer from './components/Initializer';
 
 
 type Libraries = ('drawing' | 'geometry' | 'localContext' | 'places' | 'visualization')[];
@@ -93,32 +94,32 @@ const loaderId = uniqid('loader-');
 
 const libraries: Libraries = ['visualization'];
 
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  }) => {
-  
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState, }) => {
+
   return {
-    ...initialState?.settings, 
+    ...initialState?.settings,
     unAccessible: <ForbidenPage />,
-    noFound: <NoFoundPage />, 
+    noFound: <NoFoundPage />,
     onCollapse: () => {
       setInitialState({ ...initialState, collapsed: !initialState?.collapsed });
     },
     actionsRender: ({ collapsed, isMobile }) => {
       if (isMobile) {
         return [<div key="ToggleDarkMode" style={{ color: 'rgba(255,255,255,0.75)' }}>
-        <ToggleDarkMode initialState={initialState} setInitialState={setInitialState}/>
-      </div>];
+          <ToggleDarkMode initialState={initialState} setInitialState={setInitialState} />
+        </div>];
       }
       return [
         <div key="SelectLang" style={{ color: 'rgba(255,255,255,0.75)' }}>
           <LocaleSelectorContainer isCollapsed={collapsed} />
         </div>,
         <div key="ToggleDarkMode" style={{ color: 'rgba(255,255,255,0.75)' }}>
-          <ToggleDarkMode initialState={initialState} setInitialState={setInitialState}/>
+          <ToggleDarkMode initialState={initialState} setInitialState={setInitialState} />
         </div>
         // <div key="SelectFarm" style={{ color: 'white' }}> <FarmSelect /></div>
       ];
     },
-    siderMenuType: initialState?.collapsed ? 'sub' : 'group', 
+    siderMenuType: initialState?.collapsed ? 'sub' : 'group',
     logo: Logo,
     hasSiderMenu: false,
     breakpoint: false,
@@ -127,7 +128,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
       src: <UserOutlined />,
       title: <AvatarName />,
       render: (props: any, avatarChildren: any) => {
-        return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
+        return <>
+          <AvatarDropdown>{avatarChildren}</AvatarDropdown>
+          <Initializer />
+        </>;
       },
     },
 
@@ -148,7 +152,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
       ]
       : [],
     menuHeaderRender: undefined,
-    
+
     menuExtraRender: ({ collapsed }) =>
       !collapsed && (
         <div style={{ paddingInline: 12 }}>
@@ -156,15 +160,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
         </div>
       ),
 
-  
+
 
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     token: initialState?.settings?.navTheme === 'realDark' ? {} : defaultSettings.token,
-    childrenRender: (children, {  }  ) => {
+    childrenRender: (children, { }) => {
       // if (initialState?.loading) return <PageLoading />;
-       
+
       return (
         <App >
           <ProConfigProvider token={{ colorPrimary: defaultSettings.colorPrimary }} >
@@ -175,16 +179,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState,  })
               loadingElement={<div>Carregando</div>}
               googleMapsApiKey="&key=AIzaSyAQKe7iZYZV4kufAQiYWMLVMqvdNtvnQrU"
             >
-              
+
               {children}
-              
+
               <ZendeskChat />
               <PushNotificationConfig />
             </LoadScript>
           </ProConfigProvider>
         </App>
       );
-    }, 
+    },
 
     menu: {
       collapsedShowGroupTitle: true,
@@ -210,7 +214,7 @@ export const dva = {
           }
         )
       )
-    ]
+    ],
   },
 }
 

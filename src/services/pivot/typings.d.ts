@@ -23,7 +23,7 @@ declare namespace API {
 
   type GetPivotByIdInformationParam = {
     farmId: number;
-    pivotId: string;
+    pivotId: string | number;
   };
 
   type GetPivotByIdInformationResponse = APIModels.PivotByIdInformation;
