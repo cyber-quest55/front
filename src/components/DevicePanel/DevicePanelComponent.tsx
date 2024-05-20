@@ -1,5 +1,5 @@
 import { useScreenHook } from '@/hooks/screen';
-import { setDeviceClose } from '@/models/selected-device';
+import { SelectedDeviceModelProps, setDeviceClose } from '@/models/selected-device';
 import {
   getDeviceIsOnline,
   getPivotMaintnanceMode,
@@ -67,6 +67,8 @@ type Props = {
   devicePanel:  DevicePanelModelProps;
 
   togglePivotMaintenance: typeof togglePivotMaintenance;
+
+  selectedDevice: SelectedDeviceModelProps
 };
 
 export const DevicePanelComponent: React.FC<Props> = (props) => {
@@ -278,19 +280,19 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: <StartPivotSimpleFormContainer />,
+      label: <StartPivotSimpleFormContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
     },
     {
       key: '2',
-      label: <StartPivotAngleContainer />,
+      label: <StartPivotAngleContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
     },
     {
       key: '3',
-      label: <StartPivotSegmentContainer />,
+      label: <StartPivotSegmentContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
     },
     {
       key: '4',
-      label: <StartPivotScheduleContainer />,
+      label: <StartPivotScheduleContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
     },
   ];
 

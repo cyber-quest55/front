@@ -15,8 +15,8 @@ import { connect } from 'dva';
 import { useEffect, useState } from 'react';
 import { DevicePanelComponent } from './DevicePanelComponent';
 import { DevicePanelSkeleton } from './DevicePanelSkeleton';
-import  { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
-import { useUnmount} from 'ahooks'
+import { GetMeterSystemByIdModelProps } from '@/models/meter-by-id';
+import { useUnmount } from 'ahooks'
 import { DevicePanelModelProps, togglePivotMaintenance } from '../../models/device-panel';
 
 type Props = {
@@ -27,7 +27,7 @@ type Props = {
   meterSystem: GetMeterSystemModelProps;
   meterSystemById: GetMeterSystemByIdModelProps;
   selectedDevice: SelectedDeviceModelProps;
-  devicePanel:  DevicePanelModelProps;
+  devicePanel: DevicePanelModelProps;
   togglePivotMaintenance: typeof togglePivotMaintenance;
   setSelectedDevice: typeof setSelectedDevice;
   setDeviceClose: typeof setDeviceClose;
@@ -40,15 +40,15 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   const [options, setOptions] = useState<Array<{ value: number; label: string }>>([]);
 
   const {
-    irpd, pivot, pivotById,  meterSystem,
-    meterSystemById,  type,  selectedDevice, setSelectedDevice,
+    irpd, pivot, pivotById, meterSystem,
+    meterSystemById, type, selectedDevice, setSelectedDevice,
     setDeviceClose, devicePanel, togglePivotMaintenance,
   } = props;
 
   const loading = pivot.loading || irpd.loading || meterSystem.loading;
 
   useEffect(() => {
-     switch (type) {
+    switch (type) {
       case DeviceType.Pivot: {
         const device = pivotById.result;
         setDevice({
@@ -127,7 +127,7 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
             type: DeviceType.Meter,
             deviceId: device.id,
             farmId,
-            otherProps: {imeterSetId: device.imeterSetId},
+            otherProps: { imeterSetId: device.imeterSetId },
           });
         break;
       }
@@ -147,7 +147,7 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
   };
 
   useUnmount(() => {
-    if(!xs)
+    if (!xs)
       setDeviceClose()
   })
 
@@ -157,14 +157,15 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
         <DevicePanelSkeleton type={type} />
       ) : xs ? (
         <DevicePanelComponent
-        options={options}
-        type={type}
-        onChangeDevice={onChangeDevice}
-        device={device}
-        setDeviceClose={setDeviceClose}
-        devicePanel={devicePanel}
-        togglePivotMaintenance = {togglePivotMaintenance}
-       />
+          options={options}
+          type={type}
+          onChangeDevice={onChangeDevice}
+          device={device}
+          setDeviceClose={setDeviceClose}
+          devicePanel={devicePanel}
+          togglePivotMaintenance={togglePivotMaintenance}
+          selectedDevice={selectedDevice}
+        />
       ) : (
         <DevicePanelComponent
           options={options}
@@ -173,8 +174,9 @@ const DevicePanelContainer: React.FC<Props> = (props) => {
           device={device}
           setDeviceClose={setDeviceClose}
           devicePanel={devicePanel}
-          togglePivotMaintenance = {togglePivotMaintenance}
-         />
+          togglePivotMaintenance={togglePivotMaintenance}
+          selectedDevice={selectedDevice}
+        />
       )}
     </>
   );
