@@ -1,12 +1,14 @@
 import { UndoOutlined } from '@ant-design/icons';
 import { ProList } from '@ant-design/pro-components';
 import { useIntl } from '@umijs/max';
-import { Button, Dropdown, MenuProps, Progress, Space, Tag, Typography } from 'antd';
+import { App, Button, Dropdown, MenuProps, Popconfirm, Progress, Space, Tag, Typography } from 'antd';
 import { useState } from 'react';
 import StartPivotAngleContainer from '@/components/Forms/StartPivotAngle/StartPivotAngleContainer';
 import StartPivotScheduleContainer from '@/components/Forms/StartPivotSchedule/StartPivotScheduleContainer';
 import StartPivotSegmentContainer from '@/components/Forms/StartPivotSegment/StartPivotSegmentContainer';
 import StartPivotSimpleFormContainer from '@/components/Forms/StartPivotSimple/StartPivotSimpleContainer';
+import { useRequest } from 'ahooks';
+import { stopPivot } from '@/services/pivot';
 
 const defaultData = [
   {
@@ -44,6 +46,39 @@ type DataItem = (typeof defaultData)[number];
 export default () => {
   const intl = useIntl();
   const [dataSource, setDataSource] = useState<DataItem[]>(defaultData);
+  const stopReq = useRequest(stopPivot, { manual: true });
+  const { message } = App.useApp();
+
+  const isInMaintenance = false;
+
+
+  const handleStopPivot = async (farmId: number, deviceId: number) => {
+    try {
+      await stopReq.runAsync(
+        {
+          farmId,
+          pivotId: deviceId as any,
+        },
+        {
+          maintenance: !isInMaintenance,
+        },
+      );
+
+      message.success(
+        intl.formatMessage({
+          id: 'component.message.success',
+        }),
+      );
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'component.message.error',
+        }),
+      );
+      return false;
+    }
+    return true;
+  };
 
   const items: MenuProps['items'] = [
     {
@@ -131,7 +166,24 @@ export default () => {
         actions: {
           render: () => {
             return [
-              <Button danger key="stop_pivot" >Parar</Button>,
+              <Popconfirm
+                key="stop_pivot"  
+                placement="bottom"
+                title={intl.formatMessage({
+                  id: 'component.popconfirm.oktext',
+                })}
+                onConfirm={() => handleStopPivot(232, 256)}
+              >
+                <Button
+                  type="default"
+                  danger
+                >
+                  {intl.formatMessage({
+                    id: 'component.pivot.operationalpanel.button.stop',
+                  })}
+                </Button>
+              </Popconfirm>
+              ,
               <Dropdown
                 key="init_pivot"
                 trigger={['click']}

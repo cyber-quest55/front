@@ -43,10 +43,10 @@ import StartPivotSegmentContainer from '../Forms/StartPivotSegment/StartPivotSeg
 import StartPivotSimpleFormContainer from '../Forms/StartPivotSimple/StartPivotSimpleContainer';
 import StartPumpScheduleContainer from '../Forms/StartPumpSchedule/StartPumpScheduleContainer';
 import CropSegmentsModalContainer from '../Modals/Crop/CropContainer';
- import { DevicePanelModelProps, togglePivotMaintenance } from '../../models/device-panel';
- 
+import { DevicePanelModelProps, togglePivotMaintenance } from '../../models/device-panel';
+
 import WeatherStationOverviewContainer from '../Modals/WeatherStationOverview/WeatherStationOverviewContainer';
- 
+
 
 const { Text } = Typography;
 
@@ -64,7 +64,7 @@ type Props = {
 
   setDeviceClose: typeof setDeviceClose;
 
-  devicePanel:  DevicePanelModelProps;
+  devicePanel: DevicePanelModelProps;
 
   togglePivotMaintenance: typeof togglePivotMaintenance;
 
@@ -107,7 +107,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const meterVolume =
     meter?.imeter_set?.length > 0
       ? meter?.imeter_set[0]?.latest_periodic_stream?.content?.imanage_sensor_measure_value[0]
-          ?.value
+        ?.value
       : undefined;
 
   const { options, device, type, onChangeDevice } = props;
@@ -145,7 +145,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
           },
         );
 
-         await mtncGetReq.refreshAsync();
+        await mtncGetReq.refreshAsync();
 
         message.success(
           intl.formatMessage({
@@ -280,19 +280,19 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: <StartPivotSimpleFormContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
+      label: <StartPivotSimpleFormContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId} />,
     },
     {
       key: '2',
-      label: <StartPivotAngleContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
+      label: <StartPivotAngleContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId} />,
     },
     {
       key: '3',
-      label: <StartPivotSegmentContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
+      label: <StartPivotSegmentContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId} />,
     },
     {
       key: '4',
-      label: <StartPivotScheduleContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId}/>,
+      label: <StartPivotScheduleContainer deviceId={props.selectedDevice.deviceId} farmId={props.selectedDevice.farmId} />,
     },
   ];
 
@@ -411,11 +411,11 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
               title={
                 isInMaintenance
                   ? `${intl.formatMessage({
-                      id: 'component.pivot.operationalpanel.button.tooltip.maintain.2',
-                    })}?`
+                    id: 'component.pivot.operationalpanel.button.tooltip.maintain.2',
+                  })}?`
                   : `${intl.formatMessage({
-                      id: 'component.pivot.operationalpanel.button.tooltip.maintain',
-                    })}?`
+                    id: 'component.pivot.operationalpanel.button.tooltip.maintain',
+                  })}?`
               }
             >
               <Button icon={isInMaintenance ? <GiPadlock /> : <GiPadlockOpen />} />
@@ -581,7 +581,7 @@ export const DevicePanelComponent: React.FC<Props> = (props) => {
 
   // To lo((minLimit / 100) * maxValue) / 10 ad maintain mode
   useEffect(() => {
-    if ( !mtncGetReq.loading  && mtncGetReq.data ) {
+    if (!mtncGetReq.loading && mtncGetReq.data) {
       props.togglePivotMaintenance(mtncGetReq.data)
     }
   }, [mtncGetReq.data]);
